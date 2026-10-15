@@ -20,77 +20,29 @@ function newDayLog(){return {gross:0,expense:0,shopping:0,labor:0,living:0,bills
  sales:{es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0},lost:0,
  dailyExpenses:[],weather:'panas',buyerCount:0};}
 
-// LOGIKA SEDERHANA: Selalu load save jika ada
-function initGameState(){
- const hasSave = localStorage.getItem(SAVE_KEY) !== null;
- console.log('Initializing game state. Has save:', hasSave);
- 
- if(hasSave){
-  loadSaved();
-  console.log('Loaded saved game. Day:', S.day, 'Gold:', S.gold);
- } else {
-  loadFresh();
-  console.log('No save found. Started fresh game.');
- }
-}
-
-function loadFresh(){
- S=defaultState();
- save();
- console.log('Fresh state created and saved.');
-}
-
+function loadFresh(){S=defaultState();save();}
 function loadSaved(){
- try{
-  const r=localStorage.getItem(SAVE_KEY);
-  if(r){
-   S=JSON.parse(r);
-   // Migration: tambahkan field yang mungkin belum ada di save lama
-   if(!S.dayLog)S.dayLog=newDayLog();
-   if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0};
-   if(!S.warung.fridge)S.warung.fridge=false;
-   if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
-   if(!S.cuaca)S.cuaca='panas';
-   console.log('Save loaded successfully:', S);
-  } else {
-   throw new Error('Save data is null');
-  }
- }catch(e){
-  console.error('Failed to load save:', e);
-  S=defaultState();
- }
+ try{const r=localStorage.getItem(SAVE_KEY);if(r){S=JSON.parse(r);}else{loadFresh();return;}}catch(e){loadFresh();return;}
+ if(!S.dayLog)S.dayLog=newDayLog();
+ if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0};
+ if(!S.warung.fridge)S.warung.fridge=false;
+ if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
+ if(!S.cuaca)S.cuaca='panas';
+ if(S.v!==5){loadFresh();}
 }
-
-function save(){
- try{
-  localStorage.setItem(SAVE_KEY,JSON.stringify(S));
-  console.log('Game saved. Day:', S.day, 'Gold:', S.gold);
- }catch(e){
-  console.error('Failed to save game:', e);
- }
-}
-
-function resetGame(){
- if(confirm('Yakin ingin reset game? Semua progres akan hilang!')){
-  localStorage.removeItem(SAVE_KEY);
-  location.reload();
- }
-}
-
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));}catch(e){}}
+function resetGame(){if(confirm('Yakin reset game? Semua progres hilang!')){localStorage.removeItem(SAVE_KEY);location.reload();}}
 function ledger(cat,desc,amt,detail){S.ledger.push({day:S.day,cat,desc,amt,detail:detail||null});}
 function rp(n){return 'Rp '+Math.round(n).toLocaleString('id-ID');}
 function monthOf(d){return Math.floor((d-1)/30)+1;}
 function stockQty(){return S.stock.biasa+S.stock.super;}
 function stockAge(){return S.day-S.harvestDay;}
 function stockClass(){const q=stockQty();if(q<=0)return null;const a=stockAge();return a<=DATA.degrade.muda?'muda':a<=DATA.degrade.tua?'tua':'busuk';}
-function rollWeather(){
- const r=Math.random();
- if(r<0.4)return 'panas';
- if(r<0.75)return 'berawan';
- return 'hujan';
-}
-function rollBuyers(base){
- const w=DATA.weather[S.cuaca];
- const vary=0.7+Math.random()*0.6;
- return Math.max(5,Math.floor(base*w.esMult*vary));
+function rollWeather(){const r=Math.random();if(r<0.4)return 'panas';if(r<0.75)return 'berawan';return 'hujan';}
+function rollBuyers(base){const w=DATA.weather[S.cuaca];const vary=0.7+Math.random()*0.6;return Math.max(5,Math.floor(base*w.esMult*vary));}
+
+// HANYA SATU TEMPAT INISIALISASI - dipanggil dari ui.js setelah DOM siap
+function bootGame(){
+ const hasSave=localStorage.getItem(SAVE_KEY)!==null;
+ if(hasSave){loadSaved();}else{loadFresh();}
 }
