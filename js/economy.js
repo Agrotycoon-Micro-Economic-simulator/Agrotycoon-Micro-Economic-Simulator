@@ -23,14 +23,14 @@ function shopMaterials(items){
   totalCost+=cost;
   details.push({name:def.name,qty:it.qty,unit:def.unit,subtotal:cost});
  });
- if(totalCost<=0){msg('⚠️ Tidak ada yang dibeli.');return false;}
- if(S.gold<totalCost){msg('⚠️ Uang tidak cukup.');return false;}
+ if(totalCost<=0){msg('️ Tidak ada yang dibeli.');return false;}
+ if(S.gold<totalCost){msg('️ Uang tidak cukup.');return false;}
  spend('BELANJA','Belanja bahan warung',totalCost,'shopping',details);
- details.forEach(d=>{
-  const def=Object.values(DATA.shop).find(x=>x.name===d.name);
-  if(def.portions)S.warung.ice+=d.name.includes('Es')?d.qty*def.portions:0;
-  if(def.portions&&d.name.includes('Gula'))S.warung.sugar+=d.qty*def.portions;
-  if(def.pcs)S.warung.cups+=d.qty*def.pcs;
+ items.forEach(it=>{
+  const def=DATA.shop[it.key];
+  if(def.portions&&it.key==='iceKarung')S.warung.ice+=it.qty*def.portions;
+  if(def.portions&&it.key==='sugarBloc')S.warung.sugar+=it.qty*def.portions;
+  if(def.pcs)S.warung.cups+=it.qty*def.pcs;
  });
  say('Mentor','🤖','Bahan masuk gudang warung.');
  save();render();return true;
@@ -43,27 +43,68 @@ function buyFridge(){
  say('Mentor','🤖','Kulkas terpasang! Es sisa tidak akan mencair malam ini.');
  save();render();
 }
+
+// NPC TENGKULAK INTERAKTIF
 function sellTengkulak(){
  if(stockClass()!=='muda'){msg('️ Tengkulak hanya membeli butir muda.');return;}
- const q=stockQty(),rev=S.stock.biasa*DATA.priceTengkulak.biasa+S.stock.super*DATA.priceTengkulak.super;
+ const q=stockQty();
+ const biasaQty=S.stock.biasa||0;
+ const superQty=S.stock.super||0;
+ const revBiasa=biasaQty*DATA.priceTengkulak.biasa;
+ const revSuper=superQty*DATA.priceTengkulak.super;
+ const totalRev=revBiasa+revSuper;
+ 
+ // Dialog NPC Tengkulak
+ let dialogHtml='<h3>🧑💼 Pak Tengkulak Datang</h3>';
+ dialogHtml+='<div style="background:#fff3cd;padding:12px;border-radius:8px;margin:10px 0;border-left:4px solid #ffc107">';
+ dialogHtml+='<p><strong>"Halo Bos '+S.name+'! Saya lihat panenmu bagus hari ini."</strong></p>';
+ dialogHtml+='<p>"Saya tawar harga standar ya: kelapa biasa Rp 3.500/butir, kelapa super Rp 5.000/butir. Saya borong semua, langsung saya angkut pakai truk."</p>';
+ dialogHtml+='</div>';
+ dialogHtml+='<div style="background:#e3f2fd;padding:12px;border-radius:8px;margin:10px 0">';
+ dialogHtml+='<p><strong>Detail Penawaran:</strong></p>';
+ dialogHtml+='<p>🥥 Kelapa biasa: '+biasaQty+' butir × Rp 3.500 = <b>'+rp(revBiasa)+'</b></p>';
+ dialogHtml+='<p>🥥 Kelapa super: '+superQty+' butir × Rp 5.000 = <b>'+rp(revSuper)+'</b></p>';
+ dialogHtml+='<hr><p><strong>Total: '+rp(totalRev)+'</strong></p>';
+ dialogHtml+='</div>';
+ dialogHtml+='<div style="background:#f5f5f5;padding:12px;border-radius:8px;margin:10px 0;font-size:13px">';
+ dialogHtml+='<p><strong>💡 Info dari Pak Tengkulak:</strong></p>';
+ dialogHtml+='<p>"Nanti saya juga bisa bantu jualin komoditas lain lho: '+DATA.futureCommodities.join(', ')+'. Tapi itu nanti ya, sekarang fokus kelapa dulu."</p>';
+ dialogHtml+='<p>"Kalau kau mau harga lebih tinggi, coba olah sendiri jadi es kelapa atau jual eceran di warung. Tapi risikonya juga ada - stok bisa busuk kalau tidak laku."</p>';
+ dialogHtml+='</div>';
+ dialogHtml+='<div style="margin-top:15px">';
+ dialogHtml+='<button class="btn btn-success" onclick="confirmSellTengkulak(true)">✅ Jual Semua ('+rp(totalRev)+')</button>';
+ dialogHtml+='<button class="btn btn-warning" onclick="confirmSellTengkulak(false)">❌ Tidak Jadi Jual</button>';
+ dialogHtml+='</div>';
+ showModal(dialogHtml);
+}
+function confirmSellTengkulak(jual){
+ closeModal();
+ if(!jual){
+  say('Tengkulak','🧑💼','"Yaudah, lain kali aja ya Bos. Saya lewat lagi besok."');
+  save();render();
+  return;
+ }
+ const q=stockQty();
+ const rev=(S.stock.biasa||0)*DATA.priceTengkulak.biasa+(S.stock.super||0)*DATA.priceTengkulak.super;
  earn('PENJUALAN','Jual tengkulak '+q+' butir',rev,{biasa:S.stock.biasa,super:S.stock.super});
  S.dayLog.sales.tengkulak=q;S.dayLog.sales.tengkulakRev=rev;
  S.stats.tengkulak+=q;S.stock={biasa:0,super:0};
- say('Tengkulak','🧑‍💼','Beres. Semua saya angkut hari ini juga.');
+ say('Tengkulak','‍💼','"Makasih Bos! Saya angkut semua ya. Sampai jumpa panen berikutnya!"');
  save();render();
 }
+
 function sellPasar(){
  if(stockClass()!=='tua'){msg('⚠️ Pasar hanya membeli kelapa tua untuk santan.');return;}
  const q=stockQty(),rev=q*DATA.pricePasarTua;
  earn('PENJUALAN','Jual pasar kelapa santan '+q+' butir',rev);
  S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
  S.stock={biasa:0,super:0};
- say('Pedagang','👩🏻','Yang tua saya ambil untuk santan.');
+ say('Pedagang','👩‍','Yang tua saya ambil untuk santan.');
  save();render();
 }
 function openWarung(){
  const total=DATA.warungCapex.reduce((a,c)=>a+c[1],0);
- if(S.gold<total){msg('️ Uang tidak cukup untuk peralatan ('+rp(total)+').');return;}
+ if(S.gold<total){msg('⚠️ Uang tidak cukup untuk peralatan ('+rp(total)+').');return;}
  DATA.warungCapex.forEach(c=>spend('CAPEX','Peralatan warung - '+c[0],c[1],'capex'));
  S.warung.open=true;
  say('Mentor','🤖','Warung berdiri. Setiap pagi belanja bahan, siang buka jam 09.00-21.00.');
@@ -109,9 +150,8 @@ function buyLivingItem(key){
  const item=DATA.living[key];if(!item)return;
  if(S.gold<item.price){msg('⚠️ Uang tidak cukup.');return;}
  spend('HIDUP','Beli '+item.name,item.price,'living');
- if(key==='rice')S.livingStock.rice+=1;
- if(key==='lauk')S.livingStock.lauk+=1;
- if(key==='oil')S.livingStock.oil+=1;
+ if(!S.livingStock)S.livingStock={};
+ S.livingStock[key]=(S.livingStock[key]||0)+1;
  save();render();
 }
 function emptySlots(){return DATA.slots-S.trees.length;}
@@ -120,7 +160,7 @@ function buySeedling(n){
  if(S.day<=30){msg('⚠️ Toko bibit super baru buka bulan ke-2.');return;}
  if(n>emptySlots()){msg('⚠️ Slot kosong tinggal '+emptySlots()+'.');return;}
  const cost=n*(DATA.seedling.price+DATA.seedling.labor);
- if(S.gold<cost){msg('️ Uang tidak cukup: butuh '+rp(cost)+'.');return;}
+ if(S.gold<cost){msg('⚠️ Uang tidak cukup: butuh '+rp(cost)+'.');return;}
  spend('CAPEX','Bibit super '+n+' pohon (bibit+upah tanam)',cost,'capex',{pohon:n});
  for(let i=0;i<n;i++)S.trees.push({slot:S.trees.length,type:'super',plantedDay:S.day,mature:false,lastHarvest:null});
  save();render();showAccelOffer();

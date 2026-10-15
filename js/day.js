@@ -1,6 +1,6 @@
 function startSleep(){
  if(!el('warung-scene').classList.contains('hidden'))closeScene(true);
- const steps=['Merekap transaksi warung...','Menghitung bahan terpakai...','Memproses cuaca besok...','Memotong biaya hidup...','Menyusun laporan harian...'];
+ const steps=['Merekap transaksi warung...','Menghitung bahan terpakai...','Belanja kebutuhan harian otomatis...','Memproses cuaca besok...','Memotong biaya hidup...','Menyusun laporan harian...'];
  const ov=el('progress');ov.classList.remove('hidden');
  let i=0;
  el('bar-fill').style.width='0';
@@ -21,45 +21,42 @@ function finishDay(){
   ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
   S.warung.ice=0;
  }else if(S.warung.fridge){
-  // Es tersisa di kulkas, tidak rugi
   const sisa=S.warung.ice;
   if(sisa>0)ledger('INFO','Es tersisa di kulkas: '+sisa+' porsi (aman)',0);
  }
  S.warung.operatedToday=false;
- // Pengeluaran harian detail
+ 
+ // BELANJA HARIAN OTOMATIS
  const livingDetails=[];
- // Beras: 1kg untuk 2 hari
- if(S.day%2===1||S.livingStock.rice<=0){
-  if(S.livingStock.rice<=0){
-   spend('HIDUP','Beli beras 1 kg (stok habis)',DATA.living.rice.price,'living');
-   S.livingStock.rice=1;
-   livingDetails.push({item:DATA.living.rice.name,amt:DATA.living.rice.price});
-  }else{
-   S.livingStock.rice--;
+ const autoBuy=[
+  {key:'rice',check:()=>(S.livingStock.rice||0)<=0},
+  {key:'egg',check:()=>(S.day%5===1||(S.livingStock.egg||0)<=0)},
+  {key:'oil',check:()=>(S.day%30===1||(S.livingStock.oil||0)<=0)},
+  {key:'mie',check:()=>(S.day%3===1||(S.livingStock.mie||0)<=0)},
+  {key:'tempe',check:()=>(S.day%2===1||(S.livingStock.tempe||0)<=0)},
+  {key:'sayur',check:()=>true},
+  {key:'lauk',check:()=>(S.day%2===0||(S.livingStock.lauk||0)<=0)}
+ ];
+ autoBuy.forEach(ab=>{
+  const item=DATA.living[ab.key];
+  if(!item)return;
+  if(ab.check()){
+   spend('HIDUP','Beli '+item.name+' (otomatis)',item.price,'living');
+   livingDetails.push({item:item.name,amt:item.price});
+   if(!S.livingStock)S.livingStock={};
+   S.livingStock[ab.key]=(S.livingStock[ab.key]||0)+1;
   }
- }
- // Lauk harian
- spend('HIDUP','Lauk pauk harian (tempe+ikan asin)',DATA.living.lauk.price,'living');
- livingDetails.push({item:DATA.living.lauk.name,amt:DATA.living.lauk.price});
- // Minyak
- spend('HIDUP','Minyak goreng harian',DATA.living.oil.price,'living');
- livingDetails.push({item:DATA.living.oil.name,amt:DATA.living.oil.price});
- // Gas
- spend('HIDUP','Gas LPG harian',DATA.living.gas.price,'living');
- livingDetails.push({item:DATA.living.gas.name,amt:DATA.living.gas.price});
- // Listrik
- spend('HIDUP','Listrik harian',DATA.living.electric.price,'living');
- livingDetails.push({item:DATA.living.electric.name,amt:DATA.living.electric.price});
- // Pulsa
- spend('HIDUP','Pulsa harian',DATA.living.pulsa.price,'living');
- livingDetails.push({item:DATA.living.pulsa.name,amt:DATA.living.pulsa.price});
- // Bensin
- spend('HIDUP','Bensin motor harian',DATA.living.bensin.price,'living');
- livingDetails.push({item:DATA.living.bensin.name,amt:DATA.living.bensin.price});
- // Mandi
- spend('HIDUP','Sabun mandi/cuci harian',DATA.living.mandi.price,'living');
- livingDetails.push({item:DATA.living.mandi.name,amt:DATA.living.mandi.price});
+ });
+ // Biaya rutin harian
+ ['electric','pulsa','bensin','mandi'].forEach(k=>{
+  const item=DATA.living[k];
+  if(item){
+   spend('HIDUP',item.name,item.price,'living');
+   livingDetails.push({item:item.name,amt:item.price});
+  }
+ });
  L.dailyExpenses=livingDetails;
+ 
  const mOld=monthOf(S.day);
  S.day++;
  if(monthOf(S.day)>mOld){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
@@ -68,7 +65,6 @@ function finishDay(){
   ledger('RUGI','Kelapa busuk '+q+' butir',0);
   L.lossRot=q;S.stock={biasa:0,super:0};S.quarterUsed=0;
  }
- // Cuaca besok
  S.cuaca=rollWeather();
  const net=-L.expense+L.gross;
  S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,net,

@@ -17,21 +17,24 @@ const DATA={
  },
  warungCapex:[['2 meja kayu',400000],['Tupperware besar 5L',50000],['Tupperware kecil air gula',20000],['2 golok',100000],['Cup plastik starter 50 pcs',15000]],
  living:{
-  rice:{name:'Beras 1 kg',price:12000,days:2},
-  lauk:{name:'Lauk (tempe+ikan asin)',price:10000,days:1},
-  oil:{name:'Minyak goreng 130ml',price:4200,days:1},
-  gas:{name:'Gas LPG 33g',price:383,days:1},
+  rice:{name:'Beras 5 liter',price:65000,period:10,unit:'liter'},
+  egg:{name:'Telur 1 kg',price:28000,period:5,unit:'kg'},
+  oil:{name:'Minyak goreng 2 liter',price:32000,period:30,unit:'liter'},
+  mie:{name:'Mie instan 5 bungkus',price:15000,period:3,unit:'bungkus'},
+  tempe:{name:'Tempe 2 potong',price:8000,period:2,unit:'potong'},
+  sayur:{name:'Sayur harian',price:7000,period:1,unit:'porsi'},
+  lauk:{name:'Lauk tambahan (ikan/ayam)',price:15000,period:2,unit:'porsi'},
   electric:{name:'Listrik harian',price:8333,days:1},
   pulsa:{name:'Pulsa harian',price:4167,days:1},
   bensin:{name:'Bensin motor harian',price:6667,days:1},
   mandi:{name:'Sabun mandi/cuci',price:6667,days:1},
-  bills:{name:'Tagihan bulanan (listrik+pulsa+bensin+mandi+sabun)',amount:775000}
+  bills:{name:'Tagihan bulanan',amount:775000}
  },
  degrade:{muda:14,tua:25},
  accel:{idrPer5:1000,adDays:30},
  hours:{open:9,close:21,secPerHour:2500},
  weather:{
-  panas:{name:'️ Panas',esMult:1.4,wholeMult:0.8},
+  panas:{name:'☀️ Panas',esMult:1.4,wholeMult:0.8},
   berawan:{name:'⛅ Berawan',esMult:1.0,wholeMult:1.0},
   hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3}
  },
@@ -39,15 +42,16 @@ const DATA={
   warung:{name:'Warung Es Kelapa',desc:'Olah sendiri, margin tinggi, butuh kulkas & modal'},
   tengkulak:{name:'Jual ke Tengkulak + Bertani',desc:'Cepat dapat uang, margin tipis, fokus tanam komoditas lain'},
   mix:{name:'Kombinasi',desc:'Sebagian ke tengkulak, sebagian untuk warung'}
- }
+ },
+ futureCommodities:['Cabai Rawit','Ayam Pedaging','Padi','Jagung','Tomat','Sapi']
 };
-const PORTR={kakek:'👴',tengkulak:'🧑‍💼',pedagang:'🏻‍',mentor:'',pemain:['🧑🏻','👩🏻‍','🏻','🏻']};
+const PORTR={kakek:'',tengkulak:'🧑‍💼',pedagang:'👩‍',mentor:'🤖',pemain:['🧑‍','👩‍','🧔','👨‍']};
 const STORY=[
  ['Narator','📜','Kakekmu wafat minggu lalu. Notaris membacakan warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif - nilai aset Rp 250.000.000 - ditambah uang tunai tabungan Rp 5.000.000.'],
  ['Kakek','👴','"Nak... kelapa itu kehidupan. Tapi ingat hukum kakek: kelapa yang sudah dipetik, waktunya terus berjalan. Sampai 14 hari ia masih muda - manis untuk es kelapa. Hari 15 sampai 25, airnya asam dan dagingnya mengeras; bawa ke pasar sebagai kelapa santan, harga jatuh tapi kau tidak rugi semua. Lewat 25 hari - ia busuk, dan kau rugi segalanya."'],
  ['Kakek','👴','"Tengkulak datang tiap siang saat panen; ia borong semua dengan harganya sendiri. Warung desa ramai dari jam sembilan pagi sampai sembilan malam... kalau kau berani mengolah sendiri, untung itu punyamu."'],
  ['Kamu','🧑‍','"Aku tidak akan menjual tanah ini. Aku memilih bertani - dan aku akan menjadi pengusaha dari tanah ini."'],
- ['Mentor','🤖','"Harimu terbagi: Pagi untuk lahan dan belanja bahan, Siang untuk membuka warung, Sore untuk pasar dan evaluasi, Malam untuk laporan. Biaya hidup berjalan tiap hari; tagihan datang tiap bulan. Selamat bekerja, Bos."']
+ ['Mentor','🤖','"Harimu terbagi: Pagi untuk lahan, Siang untuk membuka warung, Sore untuk pasar dan evaluasi, Malam untuk laporan. Biaya hidup berjalan tiap hari; tagihan datang tiap bulan. Selamat bekerja, Bos."']
 ];
 const LEARN=[
  '1 pohon biasa = 20 butir/bulan; kelapa super = 30 butir/bulan.',
