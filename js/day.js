@@ -1,6 +1,11 @@
 function endDay(){
+ if(!el('warung-scene').classList.contains('hidden'))closeScene(true);
  const oldStart=S.dayStartGold;
  const report=[];
+ const ls=S.lastSale||{sold:0,rev:0,spoiled:0};
+ if(ls.sold>0)report.push(['Es terjual '+ls.sold+' gelas',ls.rev]);
+ if(ls.spoiled>0)report.push(['Es basi '+ls.spoiled+' gelas (rugi)',0]);
+ if(S.warung.open&&!ls.sold)report.push(['Tidak ada penjualan hari ini',0]);
  S.gold-=DATA.living.food;ledger('Biaya hidup - makan',-DATA.living.food);
  report.push(['Makan harian',-DATA.living.food]);
  const mOld=monthOf(S.day);
@@ -16,6 +21,6 @@ function endDay(){
   report.push(['Busuk (rugi total) '+q+' butir',0]);
   S.stock={biasa:0,super:0};
  }
- S.phase='pagi';S.dayStartGold=S.gold;
+ S.phase='pagi';S.dayStartGold=S.gold;S.lastSale={sold:0,rev:0,spoiled:0};
  save();showReport(report,S.gold-oldStart);render();
 }

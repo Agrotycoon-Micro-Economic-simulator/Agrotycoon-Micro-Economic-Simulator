@@ -16,7 +16,7 @@ function sellTengkulak(){
  const rev=S.stock.biasa*DATA.priceTengkulak.biasa+S.stock.super*DATA.priceTengkulak.super;
  S.gold+=rev;ledger('Jual tengkulak ('+stockQty()+' butir)',rev);
  S.stats.tengkulak+=stockQty();S.stock={biasa:0,super:0};
- say('Tengkulak','🧑‍💼','Beres. Semua saya angkut hari ini juga. Sampai jumpa panen berikutnya.');
+ say('Tengkulak','🧑🏻‍','Beres. Semua saya angkut hari ini juga. Sampai jumpa panen berikutnya.');
  save();render();
 }
 function sellPasar(){
@@ -32,23 +32,34 @@ function openWarung(){
  if(S.gold<total){msg('⚠️ Uang tidak cukup untuk peralatan ('+rp(total)+').');return;}
  DATA.warungCapex.forEach(c=>{S.gold-=c[1];ledger('Peralatan warung - '+c[0],-c[1]);});
  S.warung.open=true;
- say('Mentor','🤖','Warung berdiri di depan rumah. Setiap siang Anda bisa memproduksi es kelapa.');
+ say('Mentor','🤖','Warung berdiri di depan rumah. Setiap pagi produksi gelas, setiap siang buka warung dan layani pelanggan.');
  save();render();
 }
 function demandToday(){return 15+((S.day*7919)%36);}
-function produceEs(cups){
- cups=Math.max(0,Math.floor(cups));if(cups<=0)return;
- const need=Math.ceil(cups/DATA.es.cupsPerFruit);
- if(stockClass()!=='muda'||stockQty()<need){msg('⚠️ Stok muda tidak cukup: butuh '+need+' butir.');return;}
- let cost=cups*DATA.es.plastic;
+function produceCups(n){
+ n=Math.max(0,Math.floor(n));if(n<=0)return false;
+ const need=Math.ceil(n/DATA.es.cupsPerFruit);
+ if(stockClass()!=='muda'||stockQty()<need){msg('⚠️ Stok muda tidak cukup: butuh '+need+' butir.');return false;}
+ let cost=n*DATA.es.plastic;
  if(S.warung.fixedPaidDay!==S.day){cost+=DATA.es.ice+DATA.es.sugar;S.warung.fixedPaidDay=S.day;}
- S.gold-=cost;ledger('HPP es kelapa ('+cups+' gelas)',-cost);
- let take=need;const fromB=Math.min(S.stock.biasa,take);S.stock.biasa-=fromB;take-=fromB;S.stock.super-=take;
- const sold=Math.min(cups,demandToday());
- const rev=sold*DATA.es.price;S.gold+=rev;ledger('Penjualan es kelapa ('+sold+' gelas)',rev);
- S.stats.es+=sold;
- say('Mentor','🤖','Terjual '+sold+' gelas; '+(cups-sold)+' gelas sisa basi. Penerimaan '+rp(rev)+'.');
- save();render();
+ S.gold-=cost;ledger('HPP es kelapa ('+n+' gelas)',-cost);
+ let take=need;const b=Math.min(S.stock.biasa,take);S.stock.biasa-=b;take-=b;S.stock.super-=take;
+ S.warung.cups+=n;
+ say('Mentor','🤖',n+' gelas siap jual. Ingat: sisa gelas yang tidak terjual akan basi malam ini.');
+ save();render();return true;
+}
+function sellOneCup(){
+ if(S.warung.cups<=0)return false;
+ S.warung.cups--;S.warung.soldToday++;S.warung.revToday+=DATA.es.price;S.gold+=DATA.es.price;S.stats.es++;
+ save();return true;
+}
+function closeWarungDay(){
+ const out={sold:S.warung.soldToday,rev:S.warung.revToday,spoiled:S.warung.cups};
+ if(out.rev>0)ledger('Penjualan es kelapa ('+out.sold+' gelas)',out.rev);
+ if(out.spoiled>0)ledger('Es basi '+out.spoiled+' gelas (rug)',0);
+ S.lastSale=out;
+ S.warung.cups=0;S.warung.soldToday=0;S.warung.revToday=0;
+ save();return out;
 }
 function emptySlots(){return DATA.slots-S.trees.length;}
 function buySeedling(n){

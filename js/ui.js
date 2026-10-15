@@ -18,16 +18,21 @@ function render(){
  el('s-stock').textContent=stockLabel();
  const A=el('actions');let h='';
  if(S.phase==='pagi'){
-  say('Mentor','🤖','Pagi, Bos '+S.name+'. Satu hari satu keputusan. Mau ke lahan atau langsung lanjut?');
+  say('Mentor','🤖','Pagi, Bos '+S.name+'. Kelola lahan, lalu siapkan dagangan.');
   if(readyTrees().length&&stockQty()===0)h+='<button class="btn btn-success" onclick="harvest()">🌾 Panen ('+readyTrees().length+' pohon siap)</button>';
-  h+='<button class="btn btn-primary" onclick="showLearn()">📚 Modul Belajar Kelapa</button>';
+  if(S.warung.open)h+='<button class="btn btn-primary" onclick="showProduce()">🍧 Produksi Es Kelapa (buat gelas)</button>';
+  h+='<button class="btn btn-primary" onclick="showLearn()">📚 Modul Belajar</button>';
   h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
  }else if(S.phase==='siang'){
-  say('Tengkulak','🧑🏻‍','Saya lewat tiap siang saat panen. Kalau warungmu buka, saingi harga saya kalau bisa.');
-  if(!S.warung.open)h+='<button class="btn btn-primary" onclick="openWarung()">🏪 Buka Warung Es Kelapa (beli peralatan)</button>';
-  if(S.warung.open)h+='<button class="btn btn-success" onclick="showProduce()">🍹 Produksi & Jual Es Kelapa</button>';
+  if(!S.warung.open){
+   say('Tengkulak','🧑🏻‍💼','Saya lewat tiap siang saat panen. Kalau warungmu buka, saingi harga saya kalau bisa.');
+   h+='<button class="btn btn-primary" onclick="openWarung()">🏪 Buka Warung Es Kelapa (beli peralatan)</button>';
+  }else{
+   say('Mentor','🤖',S.warung.cups>0?('Siang ramai. '+S.warung.cups+' gelas siap dijual. Buka warung dan layani pelanggan!'):'Tidak ada gelas siap jual. Produksi dulu pagi tadi, atau jual butir ke tengkulak.');
+   if(S.warung.cups>0)h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (pelanggan datang)</button>';
+  }
   if(stockClass()==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()">💼 Jual semua ke Tengkulak</button>';
-  h+='<button class="btn btn-warning" onclick="setPhase(\'sore\')">➡ Lanjut ke Sore</button>';
+  h+='<button class="btn btn-warning" onclick="goSore()">➡ Lanjut ke Sore</button>';
  }else{
   say('Mentor','🤖','Sore. Urus gudang dan rencana besok, lalu tidur.');
   if(stockClass()==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar (santan)</button>';
@@ -37,18 +42,25 @@ function render(){
  A.innerHTML=h;
 }
 function setPhase(p){S.phase=p;save();render();}
+function goSore(){
+ if(S.phase==='siang'&&S.warung.open&&S.warung.cups>0&&S.warung.soldToday===0){
+  if(!confirm('Warung belum dibuka hari ini. '+S.warung.cups+' gelas akan basi malam ini. Lewati penjualan?'))return;
+  S.stats.missedDays++;
+ }
+ S.phase='sore';save();render();
+}
 function showLearn(){
  showModal('<h3>📚 Modul: Fakta Kelapa (tanpa kesimpulan)</h3><ul>'+LEARN.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn btn-primary" onclick="S.learned=true;save();closeModal();render()">✅ Tutup</button>');
 }
 function showProduce(){
  const buah=stockQty();
- showModal('<h3>🍹 Produksi Es Kelapa</h3><p>Stok muda: <b>'+buah+' butir</b> (maks '+buah*4+' gelas).</p><p>Biaya: cup Rp 400/gelas; es Rp 20.000 + gula Rp 20.000 sekali per hari.</p><input type="number" id="inp-cups" min="1" max="'+buah*4+'" placeholder="Jumlah gelas..."><button class="btn btn-success" onclick="produceEs(el(\'inp-cups\').value);closeModal()">Produksi & Jual</button> <button class="btn" onclick="closeModal()">Batal</button>');
+ showModal('<h3>🍧 Produksi Es Kelapa (Pagi)</h3><p>Stok kelapa muda: <b>'+buah+' butir</b> → maksimal '+buah*4+' gelas.</p><p>Biaya: cup Rp 400/gelas; es Rp 20.000 + gula Rp 20.000 sekali per hari.</p><p>⚠️ Sisa gelas yang tidak terjual sampai malam akan <b>basi</b>.</p><input type="number" id="inp-cups" min="1" max="'+(buah*4)+'" placeholder="Jumlah gelas..."><button class="btn btn-success" onclick="if(produceCups(+el(\'inp-cups\').value))closeModal()">Produksi</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showShop(){
  showModal('<h3>🌱 Toko Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + upah tanam Rp 10.000 = Rp 60.000/pohon.</p><p>Hasil: 30 butir/bulan; harga tengkulak Rp 5.000/butir.</p><p>Slot kosong: '+emptySlots()+'</p><input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1"><button class="btn btn-primary" onclick="buySeedling(el(\'inp-seed\').value);closeModal()">Beli & Tanam</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showAccelOffer(){
- showModal('<h3>⏳ Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>. Pilih jalan Anda:</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Percepatan Rp 1.000 uang asli / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Tonton Iklan (skip 30 hari)</button>');
+ showModal('<h3>⏳ Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>. Pilih jalan Anda:</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 uang asli / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Tonton Iklan (skip 30 hari)</button>');
 }
 function showReport(rows,net){
  let h='<h3>🌙 Laporan Hari '+S.day+'</h3><table><tr><th>Pos</th><th>Nilai</th></tr>';
@@ -57,6 +69,55 @@ function showReport(rows,net){
  if(S.gold<0)h+='<p class="neg">⚠️ Kas minus! Anda hidup dari utang.</p>';
  h+='<button class="btn btn-primary" onclick="closeModal()">☀ Bangun (Pagi)</button>';
  showModal(h);
+}
+const SCENE={timer:null,left:0};
+function openScene(){
+ if(S.warung.cups<=0){msg('Tidak ada gelas untuk dijual.');return;}
+ S.warung.soldToday=0;S.warung.revToday=0;
+ SCENE.left=demandToday();
+ el('sc-day').textContent='Hari '+S.day;
+ el('keeper').textContent=PORTR.pemain[S.avatar]||'🧑‍🍳';
+ updScene();
+ el('warung-scene').classList.remove('hidden');
+ SCENE.timer=setInterval(spawnCustomer,1700);
+}
+function updScene(){
+ el('sc-cups').textContent=S.warung.cups;
+ el('sc-sold').textContent=S.warung.soldToday;
+ el('sc-rev').textContent=rp(S.warung.revToday);
+ el('sc-left').textContent=SCENE.left;
+}
+function spawnCustomer(){
+ if(SCENE.left<=0){clearInterval(SCENE.timer);setTimeout(()=>closeScene(false),2200);return;}
+ SCENE.left--;updScene();
+ const sc=el('scene');
+ const c=document.createElement('div');c.className='customer';
+ const faces=['🧑🏻','🏻','👨🏻‍🌾','🧕🏻','👦🏻','👵🏻','🏻‍','👷🏻','🏻‍','👩🏻‍'];
+ c.innerHTML='<span class="face">'+faces[Math.floor(Math.random()*faces.length)]+'</span>';
+ sc.appendChild(c);
+ setTimeout(()=>c.classList.add('walk'),60);
+ setTimeout(()=>{
+  if(sellOneCup()){
+   c.innerHTML+='<span class="bubble">🍹</span>';
+   floatText('+Rp5.000');
+  }else{
+   c.innerHTML+='<span class="bubble">💢</span>';
+   floatText('Kehabisan stok!');
+   clearInterval(SCENE.timer);
+   setTimeout(()=>closeScene(false),1800);
+  }
+  updScene();
+  setTimeout(()=>{c.classList.add('leave');setTimeout(()=>c.remove(),1200);},700);
+ },1500);
+}
+function floatText(t){const f=document.createElement('div');f.className='float-money';f.textContent=t;el('scene').appendChild(f);setTimeout(()=>f.remove(),1300);}
+function closeScene(silent){
+ if(el('warung-scene').classList.contains('hidden'))return;
+ clearInterval(SCENE.timer);
+ el('warung-scene').classList.add('hidden');
+ const out=closeWarungDay();
+ if(!silent)say('Mentor','🤖','Warung tutup. Terjual '+out.sold+' gelas, penerimaan '+rp(out.rev)+'.'+(out.spoiled>0?(' '+out.spoiled+' gelas basi menjadi kerugian.'):''));
+ save();render();
 }
 const OB={idx:0,av:0,
  startStory(){
@@ -68,22 +129,21 @@ const OB={idx:0,av:0,
  },
  showSlide(){
   const s=STORY[this.idx];
-  if(S.name&&s[0]==='Kamu')el('st-portrait').textContent=PORTR.pemain[S.avatar];else el('st-portrait').textContent=s[1];
+  el('st-portrait').textContent=(s[0]==='Kamu')?(PORTR.pemain[S.avatar]):s[1];
   el('st-speaker').textContent=s[0];el('st-text').textContent=s[2];
  },
  nextSlide(){
   this.idx++;
-  if(this.idx>=STORY.length){S.storyDone=true;save();startGame();return;}
+  if(this.idx>=STORY.length){S.storyDone=true;save();finishOnboard();return;}
   this.showSlide();
  }
 };
-function startGame(){
- el('onboard').classList.add('hidden');el('game').classList.remove('hidden');render();
-}
+function finishOnboard(){const ob=el('onboard');if(ob)ob.remove();startGame();}
+function startGame(){el('game').classList.remove('hidden');render();}
 function initAvatars(){
  const w=el('avatar-pick');
  w.innerHTML=PORTR.pemain.map((p,i)=>'<button class="avatar-btn'+(i===0?' sel':'')+'" onclick="OB.av='+i+';initAvatars()">'+p+'</button>').join('');
 }
 load();
-if(!S.storyDone){el('onboard').classList.remove('hidden');initAvatars();}
-else startGame();
+if(!S.storyDone){initAvatars();}
+else{const ob=el('onboard');if(ob)ob.remove();startGame();}
