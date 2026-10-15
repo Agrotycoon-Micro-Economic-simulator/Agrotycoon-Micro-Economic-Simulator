@@ -19,49 +19,49 @@ function render(){
  el('s-weather').textContent=DATA.weather[S.cuaca].name;
  const A=el('actions');let h='';
  if(S.phase==='pagi'){
-  say('Mentor','🤖','Pagi, Bos '+S.name+'. Cuaca hari ini: '+DATA.weather[S.cuaca].name+'. Kelola lahan dan belanja.');
-  if(readyTrees().length&&stockQty()===0)h+='<button class="btn btn-success" onclick="harvest()">🌾 Panen ('+readyTrees().length+' pohon siap)</button>';
+  say('Mentor','','Pagi, Bos '+S.name+'. Cuaca: '+DATA.weather[S.cuaca].name+'.');
+  if(readyTrees().length&&stockQty()===0)h+='<button class="btn btn-success" onclick="harvest()">🌾 Panen ('+readyTrees().length+' pohon)</button>';
   if(S.warung.open){
    h+='<button class="btn btn-primary" onclick="showShop()">🛒 Belanja Bahan Warung</button>';
    h+='<button class="btn btn-warning" onclick="showLivingShop()">🛒 Belanja Kebutuhan Harian</button>';
-   if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas Mini (Rp 2.000.000)</button>';
+   if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">️ Beli Kulkas (Rp 2.000.000)</button>';
   }
   if(!S.path)h+='<button class="btn btn-primary" onclick="showPathChoose()"> Pilih Jalur Usaha</button>';
   h+='<button class="btn btn-primary" onclick="showLearn()">📚 Modul Belajar</button>';
   h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
  }else if(S.phase==='siang'){
   if(!S.warung.open){
-   say('Tengkulak','🏻‍💼','Saya lewat tiap siang saat panen. Kalau warungmu buka, saingi harga saya kalau bisa.');
-   h+='<button class="btn btn-primary" onclick="openWarung()"> Buka Warung Es Kelapa (beli peralatan)</button>';
+   say('Tengkulak','‍💼','Saya lewat tiap siang saat panen.');
+   h+='<button class="btn btn-primary" onclick="openWarung()">🏪 Buka Warung Es Kelapa</button>';
   }else if(!S.warung.operatedToday){
-   say('Mentor','🤖','Cuaca: '+DATA.weather[S.cuaca].name+'. '+S.warung.cups>0?('Ada '+S.warung.cups+' gelas siap jual.'):'Belanja bahan dulu.');
-   h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (09.00-21.00)</button>';
+   say('Mentor','🤖','Cuaca: '+DATA.weather[S.cuaca].name+'. '+(S.warung.cups>0?S.warung.cups+' gelas siap.':'Belanja bahan dulu.'));
+   h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (09-21)</button>';
   }else{
    say('Mentor','🤖','Warung sudah beroperasi hari ini.');
   }
-  if(stockClass()==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()">💼 Jual semua ke Tengkulak</button>';
+  if(stockClass()==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()">💼 Jual ke Tengkulak</button>';
   h+='<button class="btn btn-warning" onclick="goSore()">➡ Lanjut ke Sore</button>';
  }else{
-  say('Mentor','','Sore. Urus gudang dan rencana besok, lalu tidur.');
-  if(stockClass()==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar (santan)</button>';
+  say('Mentor','🤖','Sore. Urus gudang dan rencana besok, lalu tidur.');
+  if(stockClass()==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar</button>';
   if(S.day>30)h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Toko Bibit Kelapa Super</button>';
-  h+='<button class="btn btn-danger" onclick="startSleep()"> Tidur (Ganti Hari)</button>';
+  h+='<button class="btn btn-danger" onclick="startSleep()">😴 Tidur (Ganti Hari)</button>';
  }
  A.innerHTML=h;
 }
 function setPhase(p){S.phase=p;save();render();}
 function goSore(){
  if(S.phase==='siang'&&S.warung.open&&!S.warung.operatedToday){
-  if(!confirm('Warung belum dibuka hari ini. Permintaan hari ini akan hilang. Lewati?'))return;
+  if(!confirm('Warung belum dibuka hari ini. Lewati?'))return;
   S.stats.missedDays++;
  }
  S.phase='sore';save();render();
 }
 function showLearn(){
- showModal('<h3>📚 Modul: Fakta Kelapa (tanpa kesimpulan)</h3><ul>'+LEARN.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn btn-primary" onclick="closeModal();render()">✅ Tutup</button>');
+ showModal('<h3>📚 Modul: Fakta Kelapa</h3><ul>'+LEARN.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn btn-primary" onclick="closeModal();render()">✅ Tutup</button>');
 }
 function showPathChoose(){
- let h='<h3> Pilih Jalur Usaha</h3><p>Mentor: "Mau fokus ke mana, Bos?"</p>';
+ let h='<h3>🧭 Pilih Jalur Usaha</h3><p>Mentor: "Mau fokus ke mana, Bos?"</p>';
  Object.keys(DATA.paths).forEach(k=>{
   const p=DATA.paths[k];
   h+='<div style="background:#e8f5e9;padding:12px;margin:8px 0;border-radius:8px"><strong>'+p.name+'</strong><p style="font-size:13px">'+p.desc+'</p><button class="btn btn-primary" onclick="choosePath(\''+k+'\');closeModal()">Pilih</button></div>';
@@ -76,8 +76,8 @@ function showShop(){
   {key:'cupPack',label:'Cup Plastik 1 Pak (20 pcs)',price:8000}
  ];
  let h='<h3>🛒 Belanja Bahan Warung</h3>';
- h+='<p>Stok: 🧊 '+S.warung.ice+' porsi | 🍯 '+S.warung.sugar+' porsi | 🥤 '+S.warung.cups+' pcs | 🥥 '+stockQty()+' butir</p>';
- h+='<p>Cuaca hari ini: '+DATA.weather[S.cuaca].name+'</p>';
+ h+='<p>Stok: 🧊 '+S.warung.ice+' | 🍯 '+S.warung.sugar+' | 🥤 '+S.warung.cups+' | 🥥 '+stockQty()+'</p>';
+ h+='<p>Cuaca: '+DATA.weather[S.cuaca].name+'</p>';
  items.forEach((it,i)=>{
   h+='<div style="margin:8px 0;padding:8px;background:#f9f9f9;border-radius:6px"><strong>'+it.label+'</strong> - '+rp(it.price)+'/unit<br><input type="number" id="shop-'+i+'" min="0" value="0" style="width:80px"> unit</div>';
  });
@@ -99,59 +99,59 @@ function doShop(){
    details.push({name:it.label,qty,unit:it.portions?'porsi':'pcs',subtotal:cost});
   }
  });
- if(total===0){msg('⚠️ Tidak ada yang dibeli.');return;}
+ if(total===0){msg('️ Tidak ada yang dibeli.');return;}
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
  spend('BELANJA','Belanja bahan warung',total,'shopping',details);
  buy.forEach(b=>{
   const def=items.find(x=>x.key===b.key);
-  if(def.portions&&b.key==='iceKarung')S.warung.ice+=b.qty*def.portions;
-  if(def.portions&&b.key==='sugarBloc')S.warung.sugar+=b.qty*def.portions;
-  if(def.pcs)S.warung.cups+=b.qty*def.pcs;
+  if(b.key==='iceKarung')S.warung.ice+=b.qty*def.portions;
+  if(b.key==='sugarBloc')S.warung.sugar+=b.qty*def.portions;
+  if(b.key==='cupPack')S.warung.cups+=b.qty*def.pcs;
  });
- say('Mentor','','Bahan masuk gudang warung.');
+ say('Mentor','🤖','Bahan masuk gudang warung.');
  save();closeModal();render();
 }
 function showLivingShop(){
  const items=[
   {key:'rice',label:'Beras 1 kg (untuk 2 hari)',price:12000,stock:S.livingStock.rice},
-  {key:'lauk',label:'Lauk pauk (tempe+ikan asin)',price:10000,stock:S.livingStock.lauk},
+  {key:'lauk',label:'Lauk (tempe+ikan asin)',price:10000,stock:S.livingStock.lauk},
   {key:'oil',label:'Minyak goreng 130ml',price:4200,stock:S.livingStock.oil}
  ];
  let h='<h3>🛒 Belanja Kebutuhan Harian</h3>';
- h+='<p>Stok: 🍚 Beras '+S.livingStock.rice+' kg |  Lauk '+S.livingStock.lauk+' porsi | 🛢️ Minyak '+S.livingStock.oil+' porsi</p>';
+ h+='<p>Stok: 🍚 '+S.livingStock.rice+' kg | 🥘 '+S.livingStock.lauk+' | ️ '+S.livingStock.oil+'</p>';
  items.forEach((it,i)=>{
-  h+='<div style="margin:8px 0;padding:8px;background:#f9f9f9;border-radius:6px"><strong>'+it.label+'</strong> - '+rp(it.price)+'/unit (stok: '+it.stock+')<br><button class="btn btn-primary" onclick="buyLivingItem(\''+it.key+'\');closeModal();render()">Beli 1</button></div>';
+  h+='<div style="margin:8px 0;padding:8px;background:#f9f9f9;border-radius:6px"><strong>'+it.label+'</strong> - '+rp(it.price)+' (stok: '+it.stock+')<br><button class="btn btn-primary" onclick="buyLivingItem(\''+it.key+'\');closeModal();render()">Beli 1</button></div>';
  });
  h+='<button class="btn" onclick="closeModal()">Tutup</button>';
  showModal(h);
 }
 function showSeedShop(){
- showModal('<h3> Toko Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + upah tanam Rp 10.000 = Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+emptySlots()+'</p><input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1"><button class="btn btn-primary" onclick="buySeedling(el(\'inp-seed\').value);closeModal()">Beli & Tanam</button> <button class="btn" onclick="closeModal()">Batal</button>');
+ showModal('<h3>🌱 Toko Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + upah Rp 10.000 = Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+emptySlots()+'</p><input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1"><button class="btn btn-primary" onclick="buySeedling(el(\'inp-seed\').value);closeModal()">Beli & Tanam</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showAccelOffer(){
- showModal('<h3>⏳ Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 uang asli / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Tonton Iklan (skip 30 hari)</button>');
+ showModal('<h3>⏳ Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
 }
 function showReport(L,net){
  let h='<h3>🌙 Laporan Hari '+(S.day-1)+'</h3>';
- h+='<p><strong>Cuaca:</strong> '+DATA.weather[L.weather].name+' | <strong>Pembeli es:</strong> '+L.buyerCount+' orang</p>';
+ h+='<p><strong>Cuaca:</strong> '+DATA.weather[L.weather].name+' | <strong>Pembeli:</strong> '+L.buyerCount+'</p>';
  h+='<h4>💰 Penghasilan Kotor</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
- h+='<tr><td>🍹 Penjualan es ('+L.sales.es+' gelas)</td><td class="pos">'+rp(L.sales.esRev)+'</td></tr>';
- h+='<tr><td>🥥 Penjualan kelapa utuh ('+L.sales.whole+' butir)</td><td class="pos">'+rp(L.sales.wholeRev)+'</td></tr>';
- if(L.sales.tengkulak)h+='<tr><td>💼 Tengkulak ('+L.sales.tengkulak+' butir)</td><td class="pos">'+rp(L.sales.tengkulakRev)+'</td></tr>';
- if(L.sales.pasar)h+='<tr><td>🛒 Pasar santan ('+L.sales.pasar+' butir)</td><td class="pos">'+rp(L.sales.pasarRev)+'</td></tr>';
+ h+='<tr><td>🍹 Es ('+L.sales.es+' gelas)</td><td class="pos">'+rp(L.sales.esRev)+'</td></tr>';
+ h+='<tr><td> Kelapa utuh ('+L.sales.whole+' butir)</td><td class="pos">'+rp(L.sales.wholeRev)+'</td></tr>';
+ if(L.sales.tengkulak)h+='<tr><td>💼 Tengkulak ('+L.sales.tengkulak+')</td><td class="pos">'+rp(L.sales.tengkulakRev)+'</td></tr>';
+ if(L.sales.pasar)h+='<tr><td>🛒 Pasar ('+L.sales.pasar+')</td><td class="pos">'+rp(L.sales.pasarRev)+'</td></tr>';
  h+='<tr><td><b>Total Kotor</b></td><td class="pos"><b>'+rp(L.gross)+'</b></td></tr></table>';
- h+='<h4>📤 Pengeluaran Harian Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
+ h+='<h4>📤 Pengeluaran Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
  L.dailyExpenses.forEach(d=>{h+='<tr><td>'+d.item+'</td><td class="neg">-'+rp(d.amt)+'</td></tr>';});
- h+='<tr><td> Modal belanja bahan warung</td><td class="neg">-'+rp(L.shopping)+'</td></tr>';
- h+='<tr><td>👷 Tenaga (kuli panen)</td><td class="neg">-'+rp(L.labor)+'</td></tr>';
- h+='<tr><td>🏪 CAPEX peralatan/bibit/kulkas</td><td class="neg">-'+rp(L.capex)+'</td></tr>';
+ h+='<tr><td>🛒 Belanja bahan warung</td><td class="neg">-'+rp(L.shopping)+'</td></tr>';
+ h+='<tr><td>👷 Kuli panen</td><td class="neg">-'+rp(L.labor)+'</td></tr>';
+ h+='<tr><td>🏪 CAPEX</td><td class="neg">-'+rp(L.capex)+'</td></tr>';
  if(L.bills)h+='<tr><td>🧾 Tagihan bulanan</td><td class="neg">-'+rp(L.bills)+'</td></tr>';
  h+='<tr><td><b>Total Pengeluaran</b></td><td class="neg"><b>'+rp(L.expense)+'</b></td></tr></table>';
- h+='<h4>📦 Bahan Terpakai</h4><p>🥥 '+L.materials.kelapa+' butir | 🧊 '+L.materials.ice+' porsi es | 🍯 '+L.materials.sugar+' porsi gula | 🥤 '+L.materials.cup+' cup</p>';
- if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi (nilai '+rp(L.lossIceValue)+')'+(S.warung.fridge?' (seharusnya tidak terjadi jika ada kulkas!)':'')+'</p>';
- if(L.lost)h+='<p>😢 Pelanggan lepas: '+L.lost+' orang</p>';
+ h+='<h4> Bahan Terpakai</h4><p> '+L.materials.kelapa+' |  '+L.materials.ice+' |  '+L.materials.sugar+' | 🥤 '+L.materials.cup+'</p>';
+ if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi (nilai '+rp(L.lossIceValue)+')</p>';
+ if(L.lost)h+='<p>😢 Pelanggan lepas: '+L.lost+'</p>';
  h+='<h3 style="margin-top:15px">NET PROFIT: <span class="'+(net<0?'neg':'pos')+'">'+rp(net)+'</span></h3>';
- h+='<p><b>🤖 AI Mentor:</b> "Kamu hari ini '+(net>=0?'untung bersih':'rugi bersih')+' '+rp(Math.abs(net))+'. '+(net>=0?'Pertahankan ritme ini.':'Evaluasi belanja dan perhatikan cuaca.')+'"</p>';
+ h+='<p><b>🤖 AI:</b> "Kamu hari ini '+(net>=0?'untung':'rugi')+' bersih '+rp(Math.abs(net))+'. '+(net>=0?'Pertahankan.':'Evaluasi belanja & cuaca.')+'"</p>';
  h+='<button class="btn btn-primary" onclick="closeModal()">☀ Bangun (Hari '+S.day+')</button>';
  showModal(h);
 }
@@ -166,7 +166,7 @@ function openScene(){
  for(let i=0;i<W;i++)SCENE.events.push({h:DATA.hours.open+Math.floor(Math.random()*12),t:'whole'});
  SCENE.events.sort((a,b)=>a.h-b.h);
  el('sc-day').textContent='Hari '+S.day+' | '+DATA.weather[S.cuaca].name;
- el('keeper').textContent=PORTR.pemain[S.avatar]||'🧑🏻‍';
+ el('keeper').textContent=PORTR.pemain[S.avatar]||'‍🍳';
  updScene();
  el('warung-scene').classList.remove('hidden');
  SCENE.timer=setInterval(tickHour,DATA.hours.secPerHour);
@@ -187,7 +187,7 @@ function spawnCustomer(t){
  if(el('warung-scene').classList.contains('hidden'))return;
  const sc=el('scene');
  const c=document.createElement('div');c.className='customer';
- const faces=['🧑🏻','👩🏻','‍','🏻','','👵🏻','👷🏻','👩‍'];
+ const faces=['🏻','👩🏻','👨‍🌾','👩‍🌾','👦🏻','👵🏻','👷🏻','‍💼'];
  c.innerHTML='<span class="face">'+faces[Math.floor(Math.random()*faces.length)]+'</span>';
  sc.appendChild(c);
  setTimeout(()=>c.classList.add('walk'),60);
@@ -215,7 +215,7 @@ function closeScene(silent){
  if(el('warung-scene').classList.contains('hidden'))return;
  clearInterval(SCENE.timer);
  el('warung-scene').classList.add('hidden');
- if(!silent)say('Mentor','','Warung tutup. Es terjual '+S.dayLog.sales.es+' gelas, kelapa utuh '+S.dayLog.sales.whole+' butir.'+(S.warung.fridge?' Sisa es aman di kulkas.':' Sisa es akan mencair malam ini.'));
+ if(!silent)say('Mentor','🤖','Warung tutup. Es '+S.dayLog.sales.es+', utuh '+S.dayLog.sales.whole+'.'+(S.warung.fridge?' Sisa es aman di kulkas.':' Sisa es mencair malam ini.'));
  save();render();
 }
 const OB={idx:0,av:0,
@@ -242,6 +242,8 @@ function startGame(){el('game').classList.remove('hidden');render();}
 function initAvatars(){
  el('avatar-pick').innerHTML=PORTR.pemain.map((p,i)=>'<button class="avatar-btn'+(i===0?' sel':'')+'" onclick="OB.av='+i+';initAvatars()">'+p+'</button>').join('');
 }
-if(DEV_MODE){loadFresh();}else{loadSaved();}
+
+// INISIALISASI UTAMA - WAJIB PANGGIL initGameState()
+initGameState();
 if(!S.storyDone){initAvatars();}
 else{const ob=el('onboard');if(ob)ob.remove();startGame();}
