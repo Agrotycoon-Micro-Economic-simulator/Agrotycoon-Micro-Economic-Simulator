@@ -1,6 +1,6 @@
 const SAVE_KEY='agrotycoon_save_v5';
-const DEV_MODE=true;
 let S=null;
+
 function defaultState(){
  const trees=[];
  for(let i=0;i<10;i++)trees.push({slot:i,type:'biasa',plantedDay:0,mature:true,lastHarvest:-30});
@@ -19,6 +19,29 @@ function newDayLog(){return {gross:0,expense:0,shopping:0,labor:0,living:0,bills
  materials:{kelapa:0,ice:0,sugar:0,cup:0},
  sales:{es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0},lost:0,
  dailyExpenses:[],weather:'panas',buyerCount:0};}
+
+// LOGIKA PINTAR: Bedakan Refresh vs Klik Link
+function initGameState(){
+ const navEntries = performance.getEntriesByType("navigation");
+ const navType = navEntries.length > 0 ? navEntries[0].type : 'navigate';
+ const hasSave = localStorage.getItem(SAVE_KEY) !== null;
+
+ // ATURAN DEBUGGING:
+ // 1. Jika ada save DAN user melakukan Refresh (navType === 'reload') -> HAPUS SAVE, mulai baru.
+ // 2. Jika ada save DAN user Klik Link dari halaman lain (navType === 'navigate' atau 'back_forward') -> MUAT SAVE.
+ // 3. Jika tidak ada save -> Mulai baru.
+ 
+ if(hasSave && navType === 'reload'){
+  console.log('Hard Refresh detected. Resetting game for debugging...');
+  loadFresh();
+ } else if(hasSave){
+  console.log('Navigation detected. Loading saved game...');
+  loadSaved();
+ } else {
+  loadFresh();
+ }
+}
+
 function loadFresh(){S=defaultState();save();}
 function loadSaved(){
  try{const r=localStorage.getItem(SAVE_KEY);S=r?JSON.parse(r):defaultState();}catch(e){S=defaultState();}

@@ -1,7 +1,11 @@
-loadSaved();
+// Inisialisasi state dengan logika pintar (tidak reset jika dari navigasi)
+initGameState();
+
+const accDiv = document.getElementById('acc');
 let h='';
-if(!S||S.ledger.length===0){
- h='<div class="panel"><p>Belum ada data sesi ini.</p></div>';
+
+if(!S || S.ledger.length === 0){
+ h='<div class="panel"><p>Belum ada data sesi ini. Mainkan dulu di index.html, lalu buka halaman ini lagi.</p></div>';
 }else{
  // Laba Rugi Bulan Berjalan
  const curMonth=monthOf(S.day);
@@ -29,15 +33,15 @@ if(!S||S.ledger.length===0){
  // Arus Kas
  const cashIn=S.reports.reduce((a,r)=>a+r.gross,0);
  const cashOut=S.reports.reduce((a,r)=>a+r.expense,0);
- h+='<div class="panel"><h3> Arus Kas Kumulatif</h3>';
+ h+='<div class="panel"><h3>💹 Arus Kas Kumulatif</h3>';
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Kas Masuk (Total Pendapatan)</td><td class="pos">'+rp(cashIn)+'</td></tr>';
  h+='<tr><td>Kas Keluar (Total Pengeluaran)</td><td class="neg">-'+rp(cashOut)+'</td></tr>';
  h+='<tr><td><b>Arus Kas Bersih</b></td><td class="'+(cashIn-cashOut<0?'neg':'pos')+'"><b>'+rp(cashIn-cashOut)+'</b></td></tr></table></div>';
  
  // Ringkasan Harian
- h+='<div class="panel"><h3> Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th><th>Es/Utuh/Lepas</th><th>Bahan</th></tr>';
- S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+r.es+'/'+r.whole+'/'+r.lost+'</td><td>'+r.mat.kelapa+'/'+r.mat.ice+'/'+r.mat.sugar+'/'+r.mat.cup+(r.iceMelt?' 🫠'+r.iceMelt:'')+'</td></tr>';});
+ h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th><th>Es/Utuh/Lepas</th><th>Bahan</th></tr>';
+ S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+r.es+'/'+r.whole+'/'+r.lost+'</td><td>'+r.mat.kelapa+'/'+r.mat.ice+'/'+r.mat.sugar+'/'+r.mat.cup+(r.iceMelt?' '+r.iceMelt:'')+'</td></tr>';});
  h+='</table></div>';
  
  // Buku Kas Detail
@@ -45,4 +49,4 @@ if(!S||S.ledger.length===0){
  S.ledger.slice().reverse().forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+r.cat+'</td><td>'+r.desc+'</td><td>'+(r.detail?JSON.stringify(r.detail):'-')+'</td><td class="'+(r.amt<0?'neg':'pos')+'">'+rp(r.amt)+'</td></tr>';});
  h+='</table></div>';
 }
-document.getElementById('acc').innerHTML=h;
+accDiv.innerHTML=h;
