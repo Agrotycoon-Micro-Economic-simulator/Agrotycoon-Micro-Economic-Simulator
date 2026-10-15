@@ -211,3 +211,17 @@ function choosePath(p){
  say('Mentor','🤖','Jalur dipilih: '+DATA.paths[p].name+'.');
  save();render();
 }
+
+// ACHIEVEMENT CHECK - dipanggil setelah setiap aksi penting
+function triggerAchievementCheck() {
+  if (typeof checkAllAchievements === 'function') {
+    checkAllAchievements();
+  }
+}
+
+// Override earn() untuk trigger achievement
+const originalEarn = earn;
+earn = function(cat, desc, amt, detail) {
+  originalEarn(cat, desc, amt, detail);
+  triggerAchievementCheck();
+};

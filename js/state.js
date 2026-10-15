@@ -11,7 +11,8 @@ function defaultState(){
   dayLog:newDayLog(),
   reports:[],ledger:[],realMoney:0,lastAdDay:0,storyDone:false,
   stats:{es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0},
-  livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0}
+  livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
+  unlockedAchievements:[]
  };
 }
 function newDayLog(){return {gross:0,expense:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
@@ -33,6 +34,7 @@ function loadSaved(){
    if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0};
    if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
    if(!S.xp)S.xp=0; if(!S.level)S.level=1;
+   if(!S.unlockedAchievements)S.unlockedAchievements=[];
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); }
 }
