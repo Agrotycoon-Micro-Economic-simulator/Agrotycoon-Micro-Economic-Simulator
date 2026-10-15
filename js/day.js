@@ -1,7 +1,10 @@
 function startSleep(){
+ console.log('startSleep dipanggil');
  if(!el('warung-scene').classList.contains('hidden'))closeScene(true);
- const steps=['Merekap transaksi warung...','Menghitung bahan terpakai...','Belanja kebutuhan harian otomatis...','Memproses cuaca besok...','Memotong biaya hidup...','Menyusun laporan harian...'];
- const ov=el('progress');ov.classList.remove('hidden');
+ const steps=['Merekap transaksi warung...','Belanja kebutuhan harian otomatis...','Memproses cuaca besok...','Memotong biaya hidup...','Menyusun laporan harian...'];
+ const ov=el('progress');
+ if(!ov){console.error('progress overlay tidak ada!');return;}
+ ov.classList.remove('hidden');
  let i=0;
  el('bar-fill').style.width='0';
  const iv=setInterval(()=>{
@@ -11,18 +14,22 @@ function startSleep(){
   if(i>=5){clearInterval(iv);setTimeout(finishDay,400);}
  },1000);
 }
+
 function finishDay(){
- el('progress').classList.add('hidden');
+ console.log('finishDay dipanggil');
+ const ov=el('progress');
+ if(ov)ov.classList.add('hidden');
  const L=S.dayLog;
- // Es mencair hanya jika TIDAK ada kulkas
+ if(!L){console.error('dayLog tidak ada');return;}
+ 
+ // Es mencair jika tidak ada kulkas
  if(!S.warung.fridge&&S.warung.ice>0){
   L.lossIcePortions=S.warung.ice;
   L.lossIceValue=S.warung.ice/DATA.shop.iceKarung.portions*DATA.shop.iceKarung.price;
   ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
   S.warung.ice=0;
- }else if(S.warung.fridge){
-  const sisa=S.warung.ice;
-  if(sisa>0)ledger('INFO','Es tersisa di kulkas: '+sisa+' porsi (aman)',0);
+ }else if(S.warung.fridge&&S.warung.ice>0){
+  ledger('INFO','Es tersisa di kulkas: '+S.warung.ice+' porsi (aman)',0);
  }
  S.warung.operatedToday=false;
  
@@ -47,7 +54,6 @@ function finishDay(){
    S.livingStock[ab.key]=(S.livingStock[ab.key]||0)+1;
   }
  });
- // Biaya rutin harian
  ['electric','pulsa','bensin','mandi'].forEach(k=>{
   const item=DATA.living[k];
   if(item){
