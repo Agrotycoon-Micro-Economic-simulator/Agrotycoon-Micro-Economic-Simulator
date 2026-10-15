@@ -8,12 +8,14 @@
 </head>
 <body>
 <div class="container">
-<header><h1> Agrotycoon</h1><p>Simulasi Ekonomi Mikro Berbasis Data Nyata</p>
-<a class="link" href="akuntansi.html"> Laporan Akuntansi</a></header>
+<header><h1>🌾 Agrotycoon</h1><p>Simulasi Ekonomi Mikro Berbasis Data Nyata</p>
+<a class="link" href="akuntansi.html">📊 Laporan Akuntansi</a>
+<button onclick="resetGame()" style="background:#f44336;color:white;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:12px;margin-left:10px">🔄 Reset</button>
+</header>
 <div id="game" class="hidden">
   <div class="stats-bar">
     <div class="stat">💰 <span id="s-gold"></span></div>
-    <div class="stat"> Hari <span id="s-day"></span> (Bln <span id="s-month"></span>)</div>
+    <div class="stat">📅 Hari <span id="s-day"></span> (Bln <span id="s-month"></span>)</div>
     <div class="stat">🌤️ <span id="s-weather"></span></div>
     <div class="stat">🥥 <span id="s-stock"></span></div>
   </div>
@@ -27,7 +29,7 @@
 <div id="onboard" class="overlay">
   <div class="modal-content">
     <div id="ob-char">
-      <h3>👋 Selamat datang di Desa Warisan</h3>
+      <h3> Selamat datang di Desa Warisan</h3>
       <p>Siapa nama Anda, Kepala Desa?</p>
       <input id="inp-name" placeholder="Nama Anda..." maxlength="20">
       <div id="avatar-pick"></div>
@@ -45,10 +47,10 @@
   <div class="modal-content wide">
     <h3>🏪 Warung Es Kelapa — <span id="sc-day"></span> | 🕘 <span id="sc-clock">09.00</span></h3>
     <div class="scene" id="scene">
-      <div class="sun">️</div>
-      <div class="stall">🏪</div>
+      <div class="sun">☀️</div>
+      <div class="stall"></div>
       <div class="table">🪵</div>
-      <div class="keeper" id="keeper">‍🍳</div>
+      <div class="keeper" id="keeper">🧑🍳</div>
     </div>
     <div class="stats-bar">
       <div class="stat">🍹 Es terjual: <span id="sc-es">0</span></div>
@@ -57,7 +59,7 @@
       <div class="stat">😢 Lepas: <span id="sc-lost">0</span></div>
     </div>
     <div class="stats-bar">
-      <div class="stat"> Es: <span id="sc-ice">0</span> porsi</div>
+      <div class="stat">🧊 Es: <span id="sc-ice">0</span> porsi</div>
       <div class="stat">🍯 Gula: <span id="sc-sugar">0</span> porsi</div>
       <div class="stat">🥤 Cup: <span id="sc-cup">0</span> pcs</div>
       <div class="stat">🥥 Stok: <span id="sc-coco">0</span> butir</div>
@@ -68,7 +70,7 @@
 
 <div id="progress" class="overlay hidden">
   <div class="modal-content">
-    <h3>🌙 Pergantian Hari</h3>
+    <h3> Pergantian Hari</h3>
     <div class="bar"><div id="bar-fill"></div></div>
     <p id="prog-text">Merekap transaksi...</p>
   </div>
