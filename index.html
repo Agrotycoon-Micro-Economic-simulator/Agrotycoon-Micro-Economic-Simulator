@@ -1,56 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agrotycoon - Simulasi Ekonomi Desa</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrotycoon - Simulasi Ekonomi Desa</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🌾 Agrotycoon</h1>
-            <p>Simulasi Ekonomi Mikro Berbasis Data Nyata</p>
-        </header>
+<div class="container">
+<header><h1>🌾 Agrotycoon</h1><p>Simulasi Ekonomi Mikro Berbasis Data Nyata</p>
+<a class="link" href="akuntansi.html">📊 Laporan Akuntansi</a></header>
 
-        <div class="stats-bar">
-            <div class="stat">💰 Gold: <span id="gold">5.000.000</span></div>
-            <div class="stat">🌴 Kelapa: <span id="kelapa">0</span></div>
-            <div class="stat">📅 Hari: <span id="hari">1</span></div>
-            <div class="stat">📉 Defisit/Bln: <span id="defisit" class="danger">-1.364.500</span></div>
-        </div>
+<div id="onboard" class="hidden">
+  <div id="ob-char" class="panel">
+    <h2>Siapa nama Anda, Kepala Desa?</h2>
+    <input id="inp-name" placeholder="Nama Anda..." maxlength="20">
+    <div id="avatar-pick"></div>
+    <button class="btn btn-primary" onclick="OB.startStory()">Mulai Perjalanan</button>
+  </div>
+  <div id="ob-story" class="panel hidden">
+    <div class="dialog"><div class="portrait" id="st-portrait"></div>
+    <div><strong id="st-speaker"></strong><p id="st-text"></p></div></div>
+    <button class="btn btn-primary" onclick="OB.nextSlide()">Lanjut ➡</button>
+  </div>
+</div>
 
-        <main id="game-area">
-            <h2>Lahan Warisan (10 Pohon Kelapa Siap Panen)</h2>
-            <p id="mentor-text">🤖 AI Mentor: "Selamat datang! Anda punya 10 pohon kelapa. Tapi ingat, biaya hidup Anda Rp 1.364.500/bulan. Jangan jual mentah ke tengkulak, atau Anda akan bangkrut dalam 4 bulan!"</p>
-            
-            <div class="actions">
-                <button class="btn btn-primary" onclick="bukaModulBelajar()">📚 Belajar Bertani Kelapa</button>
-                <button class="btn btn-success" id="btn-panen" onclick="panenKelapa()" disabled>🌾 Panen Kelapa (200 butir)</button>
-                <button class="btn btn-warning" id="btn-jual" onclick="bukaMenuJual()" disabled>💰 Jual Hasil</button>
-            </div>
-
-            <div id="message-area" class="message"></div>
-        </main>
-
-        <footer>
-            <p>Agrotycoon Micro Economic Simulator &copy; 2024 Dzikri Fauzan</p>
-            <a href="akuntansi.html" class="link">📊 Lihat Laporan Akuntansi (Segera Hadir)</a>
-        </footer>
-    </div>
-
-    <div id="modal-belajar" class="modal">
-        <div class="modal-content">
-            <h3>📚 Modul: Bertani & Mengolah Kelapa</h3>
-            <div id="modul-text">
-                <p><strong>Fakta Agronomis:</strong> 1 pohon kelapa menghasilkan rata-rata 20 butir/bulan. 10 pohon = 200 butir.</p>
-                <p><strong>Perangkap Tengkulak:</strong> Harga beli tengkulak Rp 3.500/butir. Total = Rp 700.000. Dikurangi biaya kuli panen (200 x Rp 500 = Rp 100.000). Sisa: <strong>Rp 600.000</strong>. (Anda rugi Rp 764.500 bulan ini!)</p>
-                <p><strong>Solusi Nilai Tambah:</strong> Olah jadi Es Kelapa. 1 butir = 4 gelas jumbo. HPP per gelas hanya Rp 1.525. Jual Rp 5.000/gelas. Profit per gelas = Rp 3.475.</p>
-            </div>
-            <button class="btn btn-primary" onclick="selesaiBelajar()">✅ Saya Sudah Paham & Siap Panen</button>
-        </div>
-    </div>
-
-    <script src="js/game.js"></script>
+<div id="game" class="hidden">
+  <div class="stats-bar">
+    <div class="stat">💰 <span id="s-gold"></span></div>
+    <div class="stat">📅 Hari <span id="s-day"></span> (Bln <span id="s-month"></span>)</div>
+    <div class="stat">🕒 <span id="s-phase"></span></div>
+    <div class="stat">🥥 <span id="s-stock"></span></div>
+  </div>
+  <div class="dialog"><div class="portrait" id="d-portrait"></div>
+  <div><strong id="d-speaker"></strong><p id="d-text"></p></div></div>
+  <div id="actions" class="actions"></div>
+  <div id="msg" class="message hidden"></div>
+</div>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-content" id="modal-body"></div></div>
+<script src="js/data.js"></script>
+<script src="js/state.js"></script>
+<script src="js/economy.js"></script>
+<script src="js/day.js"></script>
+<script src="js/ui.js"></script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+load();
+const q=stockQty(),cls=stockClass();
+let h='<div class="panel"><h3>Status Kas & Gudang</h3><p>Kas: <b>'+rp(S.gold)+'</b> | Hari '+S.day+' (Bulan '+monthOf(S.day)+')</p><p>Gudang: '+stockLabel()+'</p><p>Pohon: '+S.trees.filter(t=>t.mature||S.day>=t.plantedDay+DATA.matureDays).length+' produktif, '+S.trees.filter(t=>!(t.mature||S.day>=t.plantedDay+DATA.matureDays)).length+' belum berbuah</p><p>Total gelas es terjual: '+S.stats.es+' | Butir ke tengkulak: '+S.stats.tengkulak+' | Butir busuk: '+S.stats.rotten+'</p></div>';
+const byMonth={};
+S.ledger.forEach(r=>{const m=monthOf(r.day);byMonth[m]=byMonth[m]||{in:0,out:0};if(r.amt>=0)byMonth[m].in+=r.amt;else byMonth[m].out+=-r.amt;});
+h+='<div class="panel"><h3>Ringkasan Bulanan</h3><table><tr><th>Bulan</th><th>Pemasukan</th><th>Pengeluaran</th><th>Net</th></tr>';
+Object.keys(byMonth).sort((a,b)=>a-b).forEach(m=>{const b=byMonth[m];h+='<tr><td>'+m+'</td><td class="pos">'+rp(b.in)+'</td><td class="neg">'+rp(b.out)+'</td><td class="'+(b.in-b.out<0?'neg':'pos')+'">'+rp(b.in-b.out)+'</td></tr>';});
+h+='</table></div>';
+h+='<div class="panel"><h3>Buku Kas (100 terakhir)</h3><table><tr><th>Hari</th><th>Keterangan</th><th>Nilai</th></tr>';
+S.ledger.slice(-100).reverse().forEach(r=>h+='<tr><td>'+r.day+'</td><td>'+r.desc+'</td><td class="'+(r.amt<0?'neg':'pos')+'">'+rp(r.amt)+'</td></tr>');
+h+='</table></div>';
+document.getElementById('acc').innerHTML=h;
