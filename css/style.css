@@ -36,14 +36,27 @@ th{background:#e8f5e9}
 .table{position:absolute;left:17%;bottom:68px;font-size:1.5em}
 .keeper{position:absolute;left:13%;bottom:92px;font-size:1.8em}
 
-/* VISUAL UPGRADE: CUSTOMER ANIMATION */
-.customer{position:absolute;bottom:70px;left:105%;width:40px;height:40px;transition:left 1.2s linear,opacity 1s}
+/* FIX: Customer adalah figur manusia, bukan jeruk */
+.customer{position:absolute;bottom:70px;left:105%;width:32px;height:56px;transition:left 1.2s linear,opacity 1s}
 .customer.walk{left:32%}
 .customer.leave{left:-12%;opacity:0}
-.cust-avatar{width:36px;height:36px;background:#FF9800;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);position:relative;top:2px}
-.cust-avatar::after{content:'';position:absolute;bottom:-8px;left:8px;width:20px;height:8px;background:#333;border-radius:4px}
-.bubble{position:absolute;top:-20px;left:4px;font-size:.6em;background:#fff;border-radius:8px;padding:2px 4px;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
-.float-money{position:absolute;left:46%;top:36%;font-weight:bold;color:#1B5E20;font-size:1.1em;animation:rise 1.2s forwards;text-shadow:0 0 4px #fff}
+
+/* Figur manusia: kepala + badan + kaki */
+.human-figure{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center}
+.h-head{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,0.15);position:relative;z-index:2}
+.h-body{width:22px;height:20px;border-radius:4px 4px 2px 2px;margin-top:-2px;position:relative;z-index:1}
+.h-legs{display:flex;gap:3px;margin-top:-1px}
+.h-leg{width:7px;height:12px;background:#333;border-radius:2px}
+
+/* Animasi berjalan (bounce) */
+.customer.walk .human-figure{animation:walkBounce 0.4s infinite alternate}
+@keyframes walkBounce{
+ 0%{transform:translateY(0)}
+ 100%{transform:translateY(-3px)}
+}
+
+.bubble{position:absolute;top:-20px;left:4px;font-size:.6em;background:#fff;border-radius:8px;padding:2px 4px;box-shadow:0 1px 3px rgba(0,0,0,0.2);z-index:10}
+.float-money{position:absolute;left:46%;top:36%;font-weight:bold;color:#1B5E20;font-size:1.1em;animation:rise 1.2s forwards;text-shadow:0 0 4px #fff;z-index:20}
 @keyframes rise{to{transform:translateY(-70px);opacity:0}}
 .bar{width:100%;height:22px;background:#ddd;border-radius:11px;overflow:hidden;margin:15px 0}
 #bar-fill{height:100%;width:0;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 1s linear}
