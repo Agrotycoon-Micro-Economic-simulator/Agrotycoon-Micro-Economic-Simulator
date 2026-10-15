@@ -517,3 +517,94 @@ function getActiveBuffsDisplay() {
   
   return activeBuffs;
 }
+
+// ===== PATCH: SISTEM ACHIEVEMENT IKLAN YANG BENAR =====
+// Achievement iklan TETAP TERCATAT di profil (tidak hilang)
+// TAPI buff-nya RESET TOTAL setiap 3 bulan
+// Pemain harus nonton ulang dari awal untuk dapat buff lagi
+
+// Inisialisasi tracking iklan per season (dipanggil saat load game)
+function initAdSeasonTracking() {
+  if (!S.adSeason) {
+    S.adSeason = {
+      startDate: Date.now(),
+      adsWatchedThisSeason: 0,
+      activeBuffs: { discount_rate: 0 }
+    };
+    save();
+  }
+  
+  // Cek apakah sudah 3 bulan (90 hari)
+  const threeMonths = 90 * 24 * 60 * 60 * 1000;
+  const seasonAge = Date.now() - S.adSeason.startDate;
+  
+  if (seasonAge > threeMonths) {
+    // RESET TOTAL buff iklan, tapi achievement tetap tercatat
+    S.adSeason = {
+      startDate: Date.now(),
+      adsWatchedThisSeason: 0,
+      activeBuffs: { discount_rate: 0 }
+    };
+    save();
+    console.log('🔄 Season iklan direset! Buff iklan = 0. Mulai nonton dari awal.');
+  }
+}
+
+// Hitung buff achievement iklan berdasarkan adsWatchedThisSeason
+function calculateAdAchievementBuffs() {
+  initAdSeasonTracking();
+  
+  const adsWatched = S.adSeason.adsWatchedThisSeason || 0;
+  const buffs = { discount_rate: 0 };
+  
+  // Milestone: 10, 50, 100, 500, 1000, 2500 video
+  if (adsWatched >= 2500) buffs.discount_rate = 0.25;
+  else if (adsWatched >= 1000) buffs.discount_rate = 0.15;
+  else if (adsWatched >= 500) buffs.discount_rate = 0.10;
+  else if (adsWatched >= 100) buffs.discount_rate = 0.05;
+  else if (adsWatched >= 50) buffs.discount_rate = 0.03;
+  else if (adsWatched >= 10) buffs.discount_rate = 0.01;
+  
+  return buffs;
+}
+
+// Track iklan yang ditonton (dipanggil setiap kali pemain nonton iklan)
+function trackAdWatchedForSeason() {
+  initAdSeasonTracking();
+  S.adSeason.adsWatchedThisSeason = (S.adSeason.adsWatchedThisSeason || 0) + 1;
+  
+  // Update total lifetime ads (untuk achievement permanen di profil)
+  if (!S.totalAdsWatched) S.totalAdsWatched = 0;
+  S.totalAdsWatched++;
+  
+  save();
+  
+  // Cek apakah ada achievement iklan baru yang unlock (untuk badge profil)
+  checkAllAchievements();
+}
+
+// Override calculateTotalBuffs untuk pakai adSeason
+const _originalCalculateTotalBuffs = calculateTotalBuffs;
+calculateTotalBuffs = function() {
+  const achievementBuffs = calculateAchievementBuffs();
+  const adAchievementBuffs = calculateAdAchievementBuffs(); // PAKAI YANG BARU
+  const premiumBuffs = S.premiumBuffs || { profit_multiplier: 0, yield_bonus: 0, loss_reduction: 0, discount_rate: 0 };
+  const activeAdBuffs = S.activeAdBuffs || { profit_multiplier: 0, yield_bonus: 0, loss_reduction: 0, discount_rate: 0 };
+  
+  return {
+    profit_multiplier: Math.min(0.50, achievementBuffs.profit_multiplier + premiumBuffs.profit_multiplier + activeAdBuffs.profit_multiplier),
+    tengkulak_price_bonus: Math.min(0.50, achievementBuffs.tengkulak_price_bonus + premiumBuffs.tengkulak_price_bonus + activeAdBuffs.tengkulak_price_bonus),
+    yield_bonus: Math.min(0.50, achievementBuffs.yield_bonus + premiumBuffs.yield_bonus + activeAdBuffs.yield_bonus),
+    loss_reduction: Math.min(0.50, achievementBuffs.loss_reduction + premiumBuffs.loss_reduction + activeAdBuffs.loss_reduction),
+    discount_rate: Math.min(0.50, achievementBuffs.discount_rate + adAchievementBuffs.discount_rate + premiumBuffs.discount_rate + activeAdBuffs.discount_rate)
+  };
+};
+
+// Panggil init saat load
+if (typeof loadSaved !== 'undefined') {
+  const _originalLoadSaved = loadSaved;
+  loadSaved = function() {
+    _originalLoadSaved();
+    initAdSeasonTracking();
+  };
+}
