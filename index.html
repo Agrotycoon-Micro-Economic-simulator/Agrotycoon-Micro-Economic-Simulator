@@ -43,20 +43,34 @@
 
 <div id="warung-scene" class="overlay hidden">
   <div class="modal-content wide">
-    <h3>🏪 Warung Es Kelapa — <span id="sc-day"></span></h3>
+    <h3>🏪 Warung Es Kelapa — <span id="sc-day"></span> | 🕘 <span id="sc-clock">09.00</span></h3>
     <div class="scene" id="scene">
       <div class="sun">☀️</div>
       <div class="stall">🏪</div>
-      <div class="table">🪵🍹</div>
-      <div class="keeper" id="keeper">🧑🏻‍🍳</div>
+      <div class="table">🪵</div>
+      <div class="keeper" id="keeper">🧑‍🍳</div>
     </div>
     <div class="stats-bar">
-      <div class="stat">🍹 Gelas: <span id="sc-cups">0</span></div>
-      <div class="stat">✅ Terjual: <span id="sc-sold">0</span></div>
-      <div class="stat">💰 <span id="sc-rev">Rp 0</span></div>
-      <div class="stat">🚶 Sisa: <span id="sc-left">0</span></div>
+      <div class="stat">🍹 Es terjual: <span id="sc-es">0</span></div>
+      <div class="stat">🥥 Utuh terjual: <span id="sc-whole">0</span></div>
+      <div class="stat">💰 Kotor: <span id="sc-rev">Rp 0</span></div>
+      <div class="stat">😢 Lepas: <span id="sc-lost">0</span></div>
     </div>
-    <button class="btn btn-danger" onclick="closeScene(false)">🔒 Tutup Warung & Rekap</button>
+    <div class="stats-bar">
+      <div class="stat">🧊 Es: <span id="sc-ice">0</span> porsi</div>
+      <div class="stat">🍯 Gula: <span id="sc-sugar">0</span> porsi</div>
+      <div class="stat">🥤 Cup: <span id="sc-cup">0</span> pcs</div>
+      <div class="stat">🥥 Stok: <span id="sc-coco">0</span> butir</div>
+    </div>
+    <button class="btn btn-danger" onclick="closeScene(false)">🔒 Tutup Warung Sekarang</button>
+  </div>
+</div>
+
+<div id="progress" class="overlay hidden">
+  <div class="modal-content">
+    <h3>🌙 Pergantian Hari</h3>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p id="prog-text">Merekap transaksi...</p>
   </div>
 </div>
 
