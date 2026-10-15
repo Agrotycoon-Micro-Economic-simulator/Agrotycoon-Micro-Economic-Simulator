@@ -3,60 +3,52 @@ const accDiv = document.getElementById('acc');
 let h='';
 
 if(!S || S.ledger.length === 0){
- h='<div class="panel"><p>Belum ada data sesi ini. Mainkan dulu di index.html, lalu buka halaman ini lagi.</p></div>';
+ h='<div class="panel"><p>Belum ada data sesi ini. Mainkan dulu di index.html.</p></div>';
 }else{
- // Hitung pohon muda (belum produktif)
- const pohonMuda = S.trees.filter(t => !(t.mature || S.day >= t.plantedDay + DATA.matureDays)).length;
- const pohonProduktif = S.trees.length - pohonMuda;
- const nilaiAsetBiologis = pohonMuda * (DATA.seedling.price + DATA.seedling.labor); // Rp 60.000/pohon
- 
- // Laba Rugi Bulan Berjalan
  const curMonth=monthOf(S.day);
  const monthReports=S.reports.filter(r=>monthOf(r.day)===curMonth);
  const monthGross=monthReports.reduce((a,r)=>a+r.gross,0);
  const monthExpense=monthReports.reduce((a,r)=>a+r.expense,0);
- const monthNet=monthGross-monthExpense;
  
+ // HITUNG ASET
+ const stockValue = stockQty() * 3500;
+ const bahanWarung = ((S.warung.ice||0)*500) + ((S.warung.sugar||0)*400) + ((S.warung.cups||0)*400);
+ const pohonMuda = S.trees.filter(t => !(t.mature || S.day >= t.plantedDay + DATA.matureDays)).length;
+ const nilaiAsetBiologis = pohonMuda * 60000;
+ const kulkasValue = S.warung.fridge ? 2000000 : 0;
+ // Aset Tetap Warung (estimasi penyusutan sederhana: 50% dari CAPEX)
+ const capexTotal = S.ledger.filter(l=>l.cat==='CAPEX' && l.desc.includes('Paket')).reduce((a,l)=>a+Math.abs(l.amt),0);
+ const nilaiAsetTetapWarung = Math.floor(capexTotal * 0.5); 
+ 
+ const totalAsetLancar = S.gold + stockValue + bahanWarung;
+ const totalAsetTetap = nilaiAsetBiologis + kulkasValue + nilaiAsetTetapWarung + 250000000; // +250jt nilai lahan warisan
+ const totalAset = totalAsetLancar + totalAsetTetap;
+
  h+='<div class="panel"><h3>📊 Laba Rugi Bulan '+curMonth+'</h3>';
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
- h+='<tr><td>Pendapatan Kotor</td><td class="pos">'+safeRp(monthGross)+'</td></tr>';
- h+='<tr><td>Beban Operasional</td><td class="neg">-'+safeRp(monthExpense)+'</td></tr>';
- h+='<tr><td><b>Laba Bersih Bulan Ini</b></td><td class="'+(monthNet<0?'neg':'pos')+'"><b>'+safeRp(monthNet)+'</b></td></tr></table></div>';
+ h+='<tr><td>Pendapatan Kotor</td><td class="pos">'+rp(monthGross)+'</td></tr>';
+ h+='<tr><td>Beban Operasional</td><td class="neg">-'+rp(monthExpense)+'</td></tr>';
+ h+='<tr><td><b>Laba Bersih Bulan Ini</b></td><td class="'+(monthGross-monthExpense<0?'neg':'pos')+'"><b>'+rp(monthGross-monthExpense)+'</b></td></tr></table></div>';
  
- // Neraca dengan Aset Biologis
- const stockValue = stockQty() * 3500;
- const bahanWarung = (S.warung.ice||0)*500 + (S.warung.sugar||0)*400 + (S.warung.cups||0)*400;
- const kulkasValue = S.warung.fridge ? 2000000 : 0;
- const totalAset = S.gold + stockValue + bahanWarung + kulkasValue + nilaiAsetBiologis;
+ h+='<div class="panel"><h3>⚖️ Neraca Posisi Keuangan</h3>';
+ h+='<h4 style="color:#2E7D32;margin:10px 0">A. ASET LANCAR (Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
+ h+='<tr><td>💰 Kas / Uang Tunai</td><td>'+rp(S.gold)+'</td></tr>';
+ h+='<tr><td>🥥 Stok Kelapa ('+stockQty()+' butir)</td><td>'+rp(stockValue)+'</td></tr>';
+ h+='<tr><td>🧊 Stok Bahan Warung (Es, Gula, Cup)</td><td>'+rp(bahanWarung)+'</td></tr>';
+ h+='<tr><td><b>Total Aset Lancar</b></td><td><b>'+rp(totalAsetLancar)+'</b></td></tr></table>';
  
- h+='<div class="panel"><h3>⚖️ Neraca Sederhana</h3>';
- h+='<table><tr><th>Aset</th><th>Nilai</th></tr>';
- h+='<tr><td>💰 Kas</td><td>'+safeRp(S.gold)+'</td></tr>';
- h+='<tr><td>🥥 Stok Kelapa ('+stockQty()+' butir)</td><td>'+safeRp(stockValue)+'</td></tr>';
- h+='<tr><td>🧊 Stok Bahan Warung</td><td>'+safeRp(bahanWarung)+'</td></tr>';
- if(kulkasValue>0)h+='<tr><td>❄️ Kulkas</td><td>'+safeRp(kulkasValue)+'</td></tr>';
- if(pohonMuda>0)h+='<tr><td>🌱 Aset Biologis ('+pohonMuda+' pohon muda)</td><td>'+safeRp(nilaiAsetBiologis)+'</td></tr>';
- h+='<tr><td><b>Total Aset</b></td><td><b>'+safeRp(totalAset)+'</b></td></tr>';
- h+='<tr><td colspan="2" style="font-size:12px;color:#666">Detail: '+pohonProduktif+' pohon produktif + '+pohonMuda+' pohon muda (Rp 60.000/pohon)</td></tr>';
- h+='</table></div>';
+ h+='<h4 style="color:#1565C0;margin:15px 0 10px 0">B. ASET TETAP (Non-Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
+ h+='<tr><td>🌴 Lahan Warisan (2.430 m²)</td><td>'+rp(250000000)+'</td></tr>';
+ h+='<tr><td>🌱 Aset Biologis ('+pohonMuda+' pohon muda @ Rp 60.000)</td><td>'+rp(nilaiAsetBiologis)+'</td></tr>';
+ if(kulkasValue>0)h+='<tr><td>❄️ Kulkas Mini</td><td>'+rp(kulkasValue)+'</td></tr>';
+ if(nilaiAsetTetapWarung>0)h+='<tr><td>🏪 Peralatan Warung (Nilai Buku)</td><td>'+rp(nilaiAsetTetapWarung)+'</td></tr>';
+ h+='<tr><td><b>Total Aset Tetap</b></td><td><b>'+rp(totalAsetTetap)+'</b></td></tr></table>';
  
- // Arus Kas
- const cashIn=S.reports.reduce((a,r)=>a+r.gross,0);
- const cashOut=S.reports.reduce((a,r)=>a+r.expense,0);
- h+='<div class="panel"><h3> Arus Kas Kumulatif</h3>';
- h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
- h+='<tr><td>Kas Masuk (Total Pendapatan)</td><td class="pos">'+safeRp(cashIn)+'</td></tr>';
- h+='<tr><td>Kas Keluar (Total Pengeluaran)</td><td class="neg">-'+safeRp(cashOut)+'</td></tr>';
- h+='<tr><td><b>Arus Kas Bersih</b></td><td class="'+(cashIn-cashOut<0?'neg':'pos')+'"><b>'+safeRp(cashIn-cashOut)+'</b></td></tr></table></div>';
+ h+='<h4 style="color:#E65100;margin:15px 0 10px 0">C. EKUITAS</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
+ h+='<tr><td><b>TOTAL ASET (Lancar + Tetap)</b></td><td><b>'+rp(totalAset)+'</b></td></tr></table></div>';
  
- // Ringkasan Harian
- h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th><th>Es/Utuh/Lepas</th><th>Bahan</th></tr>';
- S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+safeRp(r.gross)+'</td><td class="neg">'+safeRp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+safeRp(r.net)+'</td><td>'+r.es+'/'+r.whole+'/'+r.lost+'</td><td>'+r.mat.kelapa+'/'+r.mat.ice+'/'+r.mat.sugar+'/'+r.mat.cup+(r.iceMelt?' 🫠'+r.iceMelt:'')+'</td></tr>';});
- h+='</table></div>';
- 
- // Buku Kas Detail
- h+='<div class="panel"><h3>📚 Buku Kas Detail</h3><table><tr><th>Hari</th><th>Kategori</th><th>Keterangan</th><th>Detail</th><th>Nilai</th></tr>';
- S.ledger.slice().reverse().forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+r.cat+'</td><td>'+r.desc+'</td><td>'+(r.detail?JSON.stringify(r.detail):'-')+'</td><td class="'+(r.amt<0?'neg':'pos')+'">'+safeRp(r.amt)+'</td></tr>';});
+ h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th></tr>';
+ S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td></tr>';});
  h+='</table></div>';
 }
 accDiv.innerHTML=h;

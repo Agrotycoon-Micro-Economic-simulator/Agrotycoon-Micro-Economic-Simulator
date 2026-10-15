@@ -9,29 +9,31 @@ const DATA={
  matureDays:1080,
  seedling:{price:50000,labor:10000},
  es:{price:5000},
- // HARGA BELI DARI LUAR (untuk arbitrase)
- buyFromFarmer:3500,  // beli dari petani lain (murah, harus panen sendiri)
- buyFromTengkulak:5000, // beli dari tengkulak (mahal, siap pakai)
+ buyFromFarmer:3500,
+ buyFromTengkulak:5000,
  shop:{
   iceKarung:{name:'Es Batu 1 Karung',price:20000,portions:40,unit:'karung'},
   sugarBloc:{name:'Gula Merah 1 Blok',price:20000,portions:50,unit:'blok'},
   cupPack:{name:'Cup Plastik 1 Pak (20 pcs)',price:8000,pcs:20,unit:'pak'},
   fridge:{name:'Kulkas Mini 1 Unit',price:2000000,unit:'unit',capacity:200}
  },
- warungCapex:[['2 meja kayu',400000],['Tupperware besar 5L',50000],['Tupperware kecil air gula',20000],['2 golok',100000],['Cup plastik starter 50 pcs',15000]],
+ // PAKET PERLENGKAPAN WARUNG
+ warungPackages:{
+  hemat:{name:'Paket Hemat (Rekomendasi)', items:[['Meja bekas',75000],['Golok warisan',0],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:160000},
+  standar:{name:'Paket Standar (Baru Semua)', items:[['Meja kayu baru',200000],['Golok baru',50000],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:335000}
+ },
  living:{
-  rice:{name:'Beras 5 liter',price:65000,period:10,unit:'liter'},
-  egg:{name:'Telur 1 kg',price:28000,period:5,unit:'kg'},
-  oil:{name:'Minyak goreng 2 liter',price:32000,period:30,unit:'liter'},
-  mie:{name:'Mie instan 5 bungkus',price:15000,period:3,unit:'bungkus'},
-  tempe:{name:'Tempe 2 potong',price:8000,period:2,unit:'potong'},
-  sayur:{name:'Sayur harian',price:7000,period:1,unit:'porsi'},
-  lauk:{name:'Lauk tambahan (ikan/ayam)',price:15000,period:2,unit:'porsi'},
-  electric:{name:'Listrik harian',price:8333,days:1},
-  pulsa:{name:'Pulsa harian',price:4167,days:1},
-  bensin:{name:'Bensin motor harian',price:6667,days:1},
-  mandi:{name:'Sabun mandi/cuci',price:6667,days:1}
-  // TAGIHAN 775RB DIHAPUS - sudah double counting
+  rice:{name:'Beras 5 liter',price:65000,period:10},
+  egg:{name:'Telur 1 kg',price:28000,period:5},
+  oil:{name:'Minyak goreng 2 liter',price:32000,period:30},
+  mie:{name:'Mie instan 5 bungkus',price:15000,period:3},
+  tempe:{name:'Tempe 2 potong',price:8000,period:2},
+  sayur:{name:'Sayur harian',price:7000,period:1},
+  lauk:{name:'Lauk tambahan',price:15000,period:2},
+  electric:{name:'Listrik harian',price:8333},
+  pulsa:{name:'Pulsa harian',price:4167},
+  bensin:{name:'Bensin motor harian',price:6667},
+  mandi:{name:'Sabun mandi/cuci',price:6667}
  },
  degrade:{muda:14,tua:25},
  accel:{idrPer5:1000,adDays:30},
@@ -42,27 +44,29 @@ const DATA={
   hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3,minBuyers:10}
  },
  paths:{
-  warung:{name:'Warung Es Kelapa',desc:'Olah sendiri, margin tinggi, butuh kulkas & modal'},
-  tengkulak:{name:'Jual ke Tengkulak + Bertani',desc:'Cepat dapat uang, margin tipis, fokus tanam komoditas lain'},
-  mix:{name:'Kombinasi',desc:'Sebagian ke tengkulak, sebagian untuk warung'}
+  warung:{name:'Warung Es Kelapa',desc:'Olah sendiri, margin tinggi. Mulai dengan modal kecil.'},
+  tengkulak:{name:'Jual ke Tengkulak + Bertani',desc:'Cepat dapat uang, fokus tanam komoditas lain.'},
+  mix:{name:'Kombinasi',desc:'Sebagian ke tengkulak, sebagian untuk warung.'}
  },
- futureCommodities:['Cabai Rawit','Ayam Pedaging','Padi','Jagung','Tomat','Sapi']
+ // SISTEM LEVEL & KOMODITAS
+ levels:{
+  1:{name:'Pemula', xpReq:0, unlock:['Kelapa']},
+  2:{name:'Pedagang Desa', xpReq:100, unlock:['Kelapa','Toge']},
+  3:{name:'Juragan Kecil', xpReq:300, unlock:['Kelapa','Toge','Cabai Rawit']}
+ },
+ futureCommodities:['Jagung','Tomat','Ayam Pedaging','Lele','Bawang Merah']
 };
-const PORTR={kakek:'👴',tengkulak:'🧑‍💼',pedagang:'👩‍',mentor:'🤖',pemain:['🧑','👩‍','🧔','👨‍']};
+const PORTR={kakek:'👴',tengkulak:'🧑‍💼',pedagang:'👩‍🌾',mentor:'🤖',pemain:['🧑‍🌾','👩‍🌾','🧔🏻','👨🏻']};
 const STORY=[
- ['Narator','📜','Kakekmu wafat minggu lalu. Notaris membacakan warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif - nilai aset Rp 250.000.000 - ditambah uang tunai tabungan Rp 5.000.000.'],
- ['Kakek','','"Nak... kelapa itu kehidupan. Tapi ingat hukum kakek: kelapa yang sudah dipetik, waktunya terus berjalan. Sampai 14 hari ia masih muda - manis untuk es kelapa. Hari 15 sampai 25, airnya asam dan dagingnya mengeras; bawa ke pasar sebagai kelapa santan, harga jatuh tapi kau tidak rugi semua. Lewat 25 hari - ia busuk, dan kau rugi segalanya."'],
- ['Kakek','👴','"Tengkulak datang tiap siang saat panen; ia borong semua dengan harganya sendiri. Warung desa ramai dari jam sembilan pagi sampai sembilan malam... kalau kau berani mengolah sendiri, untung itu punyamu."'],
- ['Kamu','‍','"Aku tidak akan menjual tanah ini. Aku memilih bertani - dan aku akan menjadi pengusaha dari tanah ini."'],
- ['Mentor','🤖','"Harimu terbagi: Pagi untuk lahan, Siang untuk membuka warung, Sore untuk pasar dan evaluasi, Malam untuk laporan. Biaya hidup berjalan tiap hari. Selamat bekerja, Bos."']
+ ['Narator','📜','Kakekmu wafat minggu lalu. Warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif (Aset Rp 250.000.000) + uang tunai Rp 5.000.000.'],
+ ['Kakek','👴','"Nak, ingat hukum kakek: kelapa petik punya waktu. ≤14 hari: muda (enak untuk es). 15-25 hari: tua (jadi santan, harga jatuh). >25 hari: busuk (rugi total)."'],
+ ['Kakek','👴','"Tengkulak borong siang hari. Warung ramai pagi sampai malam. Kalau kau berani olah sendiri, untung itu punyamu."'],
+ ['Kamu','🧑‍🌾','"Aku tidak akan menjual tanah ini. Aku akan menjadi pengusaha dari tanah ini."'],
+ ['Mentor','🤖','"Selamat bekerja, Bos. Biaya hidup berjalan tiap hari. Kelola modal dengan bijak."']
 ];
 const LEARN=[
- '1 pohon biasa = 20 butir/bulan; kelapa super = 30 butir/bulan.',
- 'Upah kuli panen (panjat) = Rp 500/butir.',
- 'Tengkulak membeli butir muda: biasa Rp 3.500, super Rp 5.000.',
- 'Es kelapa laku Rp 5.000/gelas; 1 butir = 4 gelas; 1 gelas butuh 1 porsi es, 1 porsi gula, 1 cup.',
- 'Kelapa utuh muda laku Rp 13.000/butir di warung; di kampung peminatnya 1-6 orang per hari.',
- 'Belanja: es Rp 20.000/karung (40 porsi), gula merah Rp 20.000/blok (50 porsi), cup Rp 8.000/pak (20 pcs). Es sisa mencair saat malam TANPA kulkas.',
- 'Pasar tradisional membeli kelapa tua (santan) Rp 3.500/butir.',
- 'Hukum Kakek: umur <=14 hari muda; 15-25 hari tua; >25 hari busuk (Rp 0).'
+ '1 pohon biasa = 20 butir/bulan; super = 30 butir/bulan. Upah kuli = Rp 500/butir.',
+ 'Es kelapa: Rp 5.000/gelas. 1 butir = 4 gelas. HPP per gelas ≈ Rp 1.525 (es, gula, cup).',
+ 'Kelapa utuh muda laku Rp 13.000/butir. Kelapa tua (santan) laku Rp 3.500/butir.',
+ 'Tips: Gunakan "Paket Hemat" saat membuka warung untuk menekan modal awal. Beli bahan sesuai rekomendasi cuaca.'
 ];
