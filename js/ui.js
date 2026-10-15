@@ -16,30 +16,36 @@ function render(){
  el('s-month').textContent=monthOf(S.day);
  el('s-phase').textContent=S.phase.toUpperCase();
  el('s-stock').textContent=stockLabel();
+ el('s-weather').textContent=DATA.weather[S.cuaca].name;
  const A=el('actions');let h='';
  if(S.phase==='pagi'){
-  say('Mentor','','Pagi, Bos '+S.name+'. Kelola lahan dan belanja bahan dagang.');
+  say('Mentor','🤖','Pagi, Bos '+S.name+'. Cuaca hari ini: '+DATA.weather[S.cuaca].name+'. Kelola lahan dan belanja.');
   if(readyTrees().length&&stockQty()===0)h+='<button class="btn btn-success" onclick="harvest()">🌾 Panen ('+readyTrees().length+' pohon siap)</button>';
-  if(S.warung.open)h+='<button class="btn btn-primary" onclick="showShop()">🛒 Belanja Bahan (hitung otomatis)</button>';
-  h+='<button class="btn btn-primary" onclick="showLearn()"> Modul Belajar</button>';
+  if(S.warung.open){
+   h+='<button class="btn btn-primary" onclick="showShop()">🛒 Belanja Bahan Warung</button>';
+   h+='<button class="btn btn-warning" onclick="showLivingShop()">🛒 Belanja Kebutuhan Harian</button>';
+   if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas Mini (Rp 2.000.000)</button>';
+  }
+  if(!S.path)h+='<button class="btn btn-primary" onclick="showPathChoose()"> Pilih Jalur Usaha</button>';
+  h+='<button class="btn btn-primary" onclick="showLearn()">📚 Modul Belajar</button>';
   h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
  }else if(S.phase==='siang'){
   if(!S.warung.open){
-   say('Tengkulak','🧑‍💼','Saya lewat tiap siang saat panen. Kalau warungmu buka, saingi harga saya kalau bisa.');
-   h+='<button class="btn btn-primary" onclick="openWarung()">🏪 Buka Warung Es Kelapa (beli peralatan)</button>';
+   say('Tengkulak','🏻‍💼','Saya lewat tiap siang saat panen. Kalau warungmu buka, saingi harga saya kalau bisa.');
+   h+='<button class="btn btn-primary" onclick="openWarung()"> Buka Warung Es Kelapa (beli peralatan)</button>';
   }else if(!S.warung.operatedToday){
-   say('Mentor','🤖',S.warung.cups>0?('Siang ramai. '+S.warung.cups+' gelas siap dijual. Buka warung dan layani pelanggan!'):'Tidak ada gelas siap jual. Produksi dulu pagi tadi, atau jual butir ke tengkulak.');
-   if(S.warung.cups>0)h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (09.00-21.00)</button>';
+   say('Mentor','🤖','Cuaca: '+DATA.weather[S.cuaca].name+'. '+S.warung.cups>0?('Ada '+S.warung.cups+' gelas siap jual.'):'Belanja bahan dulu.');
+   h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (09.00-21.00)</button>';
   }else{
-   say('Mentor','🤖','Warung sudah beroperasi hari ini. Lanjutkan ke sore.');
+   say('Mentor','🤖','Warung sudah beroperasi hari ini.');
   }
-  if(stockClass()==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()"> Jual semua ke Tengkulak</button>';
+  if(stockClass()==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()">💼 Jual semua ke Tengkulak</button>';
   h+='<button class="btn btn-warning" onclick="goSore()">➡ Lanjut ke Sore</button>';
  }else{
-  say('Mentor','🤖','Sore. Urus gudang dan rencana besok, lalu tidur.');
+  say('Mentor','','Sore. Urus gudang dan rencana besok, lalu tidur.');
   if(stockClass()==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar (santan)</button>';
   if(S.day>30)h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Toko Bibit Kelapa Super</button>';
-  h+='<button class="btn btn-danger" onclick="startSleep()">😴 Tidur (Ganti Hari)</button>';
+  h+='<button class="btn btn-danger" onclick="startSleep()"> Tidur (Ganti Hari)</button>';
  }
  A.innerHTML=h;
 }
@@ -54,99 +60,98 @@ function goSore(){
 function showLearn(){
  showModal('<h3>📚 Modul: Fakta Kelapa (tanpa kesimpulan)</h3><ul>'+LEARN.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn btn-primary" onclick="closeModal();render()">✅ Tutup</button>');
 }
+function showPathChoose(){
+ let h='<h3> Pilih Jalur Usaha</h3><p>Mentor: "Mau fokus ke mana, Bos?"</p>';
+ Object.keys(DATA.paths).forEach(k=>{
+  const p=DATA.paths[k];
+  h+='<div style="background:#e8f5e9;padding:12px;margin:8px 0;border-radius:8px"><strong>'+p.name+'</strong><p style="font-size:13px">'+p.desc+'</p><button class="btn btn-primary" onclick="choosePath(\''+k+'\');closeModal()">Pilih</button></div>';
+ });
+ h+='<button class="btn" onclick="closeModal()">Nanti Saja</button>';
+ showModal(h);
+}
 function showShop(){
- // Hitung stok bahan saat ini
- const curIce=S.warung.ice, curSugar=S.warung.sugar, curCup=S.warung.cups;
- const maxFromCoconut=stockQty()*4; // maksimal gelas dari stok kelapa
- const maxFromIce=curIce;
- const maxFromSugar=curSugar;
- const maxFromCup=curCup;
- const maxPossible=Math.min(maxFromCoconut, maxFromIce, maxFromSugar, maxFromCup);
- 
- showModal('<h3>🛒 Belanja Bahan Harian (Otomatis)</h3>'+
- '<p>Stok saat ini: 🧊 '+curIce+' porsi | 🍯 '+curSugar+' porsi |  '+curCup+' pcs | 🥥 '+stockQty()+' butir (= '+maxFromCoconut+' gelas)</p>'+
- '<p><strong>Masukkan jumlah gelas yang ingin diproduksi hari ini:</strong></p>'+
- '<p style="font-size:12px;color:#666">Sistem akan otomatis hitung berapa karung es, blok gula, dan pak cup yang perlu dibeli.</p>'+
- '<input type="number" id="in-gelas" min="1" max="'+Math.max(1,maxFromCoconut)+'" value="'+Math.min(40,maxFromCoconut)+'" placeholder="Jumlah gelas...">'+
- '<button class="btn btn-primary" onclick="previewShop()">🔍 Hitung Biaya</button> '+
- '<button class="btn" onclick="closeModal()">Batal</button>'+
- '<div id="shop-preview" style="margin-top:15px"></div>');
+ const items=[
+  {key:'iceKarung',label:'Es Batu 1 Karung (40 porsi)',price:20000},
+  {key:'sugarBloc',label:'Gula Merah 1 Blok (50 porsi)',price:20000},
+  {key:'cupPack',label:'Cup Plastik 1 Pak (20 pcs)',price:8000}
+ ];
+ let h='<h3>🛒 Belanja Bahan Warung</h3>';
+ h+='<p>Stok: 🧊 '+S.warung.ice+' porsi | 🍯 '+S.warung.sugar+' porsi | 🥤 '+S.warung.cups+' pcs | 🥥 '+stockQty()+' butir</p>';
+ h+='<p>Cuaca hari ini: '+DATA.weather[S.cuaca].name+'</p>';
+ items.forEach((it,i)=>{
+  h+='<div style="margin:8px 0;padding:8px;background:#f9f9f9;border-radius:6px"><strong>'+it.label+'</strong> - '+rp(it.price)+'/unit<br><input type="number" id="shop-'+i+'" min="0" value="0" style="width:80px"> unit</div>';
+ });
+ h+='<button class="btn btn-success" onclick="doShop()">Beli</button> <button class="btn" onclick="closeModal()">Batal</button>';
+ showModal(h);
 }
-function previewShop(){
- const gelas=+el('in-gelas').value;
- if(!gelas||gelas<=0){msg('⚠️ Masukkan jumlah gelas.');return;}
- 
- // Hitung kebutuhan bahan
- const needIce=Math.max(0, gelas-S.warung.ice);
- const needSugar=Math.max(0, gelas-S.warung.sugar);
- const needCup=Math.max(0, gelas-S.warung.cups);
- 
- // Konversi ke unit belanja
- const karung=Math.ceil(needIce/DATA.shop.icePortions);
- const blok=Math.ceil(needSugar/DATA.shop.sugarPortions);
- const pak=Math.ceil(needCup/DATA.shop.cupPcs);
- 
- const cost=karung*DATA.shop.iceKarung+blok*DATA.shop.sugarBloc+pak*DATA.shop.cupPack;
- 
- // Cek stok kelapa
- if(gelas>stockQty()*4){
-  el('shop-preview').innerHTML='<p style="color:#d32f2f">⚠️ Stok kelapa tidak cukup! Butuh '+Math.ceil(gelas/4)+' butir, punya '+stockQty()+' butir.</p>';
-  return;
- }
- 
- if(cost===0){
-  el('shop-preview').innerHTML='<p style="color:#2E7D32">✅ Bahan sudah cukup untuk '+gelas+' gelas. Tidak perlu belanja!</p>'+
-   '<button class="btn btn-success" onclick="closeModal()">OK</button>';
-  return;
- }
- 
- el('shop-preview').innerHTML=
- '<div style="background:#e8f5e9;padding:12px;border-radius:8px;margin:10px 0">'+
- '<p><strong>Untuk produksi '+gelas+' gelas, sistem akan beli:</strong></p>'+
- (karung>0?'<p>🧊 '+karung+' karung es × Rp '+DATA.shop.iceKarung.toLocaleString('id-ID')+' = Rp '+(karung*DATA.shop.iceKarung).toLocaleString('id-ID')+'</p>':'')+
- (blok>0?'<p> '+blok+' blok gula × Rp '+DATA.shop.sugarBloc.toLocaleString('id-ID')+' = Rp '+(blok*DATA.shop.sugarBloc).toLocaleString('id-ID')+'</p>':'')+
- (pak>0?'<p>🥤 '+pak+' pak cup × Rp '+DATA.shop.cupPack.toLocaleString('id-ID')+' = Rp '+(pak*DATA.shop.cupPack).toLocaleString('id-ID')+'</p>':'')+
- '<hr><p><strong>Total: Rp '+cost.toLocaleString('id-ID')+'</strong></p>'+
- '<p style="font-size:12px">Saldo Anda: Rp '+S.gold.toLocaleString('id-ID')+'</p>'+
- (cost>S.gold?'<p style="color:#d32f2f">⚠️ Uang tidak cukup!</p>':'')+
- '</div>'+
- '<button class="btn btn-success" onclick="confirmShop('+karung+','+blok+','+pak+','+cost+')">✅ Beli Sekarang</button> '+
- '<button class="btn" onclick="closeModal()">Batal</button>';
-}
-function confirmShop(k,b,p,cost){
- if(S.gold<cost){msg('️ Uang tidak cukup.');return;}
- spend('BELANJA','Belanja es '+k+' karung, gula '+b+' blok, cup '+p+' pak',cost,'shopping');
- S.warung.ice+=k*DATA.shop.icePortions;
- S.warung.sugar+=b*DATA.shop.sugarPortions;
- S.warung.cups+=p*DATA.shop.cupPcs;
- say('Mentor','','Bahan masuk gudang warung. Ingat: es sisa akan mencair malam nanti.');
+function doShop(){
+ const items=[
+  {key:'iceKarung',label:'Es Batu 1 Karung',price:20000,portions:40},
+  {key:'sugarBloc',label:'Gula Merah 1 Blok',price:20000,portions:50},
+  {key:'cupPack',label:'Cup Plastik 1 Pak',price:8000,pcs:20}
+ ];
+ const buy=[];let total=0;const details=[];
+ items.forEach((it,i)=>{
+  const qty=+el('shop-'+i).value||0;
+  if(qty>0){
+   const cost=qty*it.price;total+=cost;
+   buy.push({key:it.key,qty});
+   details.push({name:it.label,qty,unit:it.portions?'porsi':'pcs',subtotal:cost});
+  }
+ });
+ if(total===0){msg('⚠️ Tidak ada yang dibeli.');return;}
+ if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
+ spend('BELANJA','Belanja bahan warung',total,'shopping',details);
+ buy.forEach(b=>{
+  const def=items.find(x=>x.key===b.key);
+  if(def.portions&&b.key==='iceKarung')S.warung.ice+=b.qty*def.portions;
+  if(def.portions&&b.key==='sugarBloc')S.warung.sugar+=b.qty*def.portions;
+  if(def.pcs)S.warung.cups+=b.qty*def.pcs;
+ });
+ say('Mentor','','Bahan masuk gudang warung.');
  save();closeModal();render();
 }
+function showLivingShop(){
+ const items=[
+  {key:'rice',label:'Beras 1 kg (untuk 2 hari)',price:12000,stock:S.livingStock.rice},
+  {key:'lauk',label:'Lauk pauk (tempe+ikan asin)',price:10000,stock:S.livingStock.lauk},
+  {key:'oil',label:'Minyak goreng 130ml',price:4200,stock:S.livingStock.oil}
+ ];
+ let h='<h3>🛒 Belanja Kebutuhan Harian</h3>';
+ h+='<p>Stok: 🍚 Beras '+S.livingStock.rice+' kg |  Lauk '+S.livingStock.lauk+' porsi | 🛢️ Minyak '+S.livingStock.oil+' porsi</p>';
+ items.forEach((it,i)=>{
+  h+='<div style="margin:8px 0;padding:8px;background:#f9f9f9;border-radius:6px"><strong>'+it.label+'</strong> - '+rp(it.price)+'/unit (stok: '+it.stock+')<br><button class="btn btn-primary" onclick="buyLivingItem(\''+it.key+'\');closeModal();render()">Beli 1</button></div>';
+ });
+ h+='<button class="btn" onclick="closeModal()">Tutup</button>';
+ showModal(h);
+}
 function showSeedShop(){
- showModal('<h3>🌱 Toko Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + upah tanam Rp 10.000 = Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+emptySlots()+'</p><input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1"><button class="btn btn-primary" onclick="buySeedling(el(\'inp-seed\').value);closeModal()">Beli & Tanam</button> <button class="btn" onclick="closeModal()">Batal</button>');
+ showModal('<h3> Toko Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + upah tanam Rp 10.000 = Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+emptySlots()+'</p><input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1"><button class="btn btn-primary" onclick="buySeedling(el(\'inp-seed\').value);closeModal()">Beli & Tanam</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showAccelOffer(){
- showModal('<h3> Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 uang asli / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Tonton Iklan (skip 30 hari)</button>');
+ showModal('<h3>⏳ Bibit Tertanam</h3><p>Pohon super berbuah setelah <b>1.080 hari game</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu 1.080 hari</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 uang asli / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Tonton Iklan (skip 30 hari)</button>');
 }
 function showReport(L,net){
  let h='<h3>🌙 Laporan Hari '+(S.day-1)+'</h3>';
- h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
+ h+='<p><strong>Cuaca:</strong> '+DATA.weather[L.weather].name+' | <strong>Pembeli es:</strong> '+L.buyerCount+' orang</p>';
+ h+='<h4>💰 Penghasilan Kotor</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>🍹 Penjualan es ('+L.sales.es+' gelas)</td><td class="pos">'+rp(L.sales.esRev)+'</td></tr>';
  h+='<tr><td>🥥 Penjualan kelapa utuh ('+L.sales.whole+' butir)</td><td class="pos">'+rp(L.sales.wholeRev)+'</td></tr>';
  if(L.sales.tengkulak)h+='<tr><td>💼 Tengkulak ('+L.sales.tengkulak+' butir)</td><td class="pos">'+rp(L.sales.tengkulakRev)+'</td></tr>';
  if(L.sales.pasar)h+='<tr><td>🛒 Pasar santan ('+L.sales.pasar+' butir)</td><td class="pos">'+rp(L.sales.pasarRev)+'</td></tr>';
- h+='<tr><td><b>Penghasilan Kotor</b></td><td class="pos"><b>'+rp(L.gross)+'</b></td></tr>';
- h+='<tr><td>🛒 Modal belanja harian</td><td class="neg">-'+rp(L.shopping)+'</td></tr>';
+ h+='<tr><td><b>Total Kotor</b></td><td class="pos"><b>'+rp(L.gross)+'</b></td></tr></table>';
+ h+='<h4>📤 Pengeluaran Harian Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
+ L.dailyExpenses.forEach(d=>{h+='<tr><td>'+d.item+'</td><td class="neg">-'+rp(d.amt)+'</td></tr>';});
+ h+='<tr><td> Modal belanja bahan warung</td><td class="neg">-'+rp(L.shopping)+'</td></tr>';
  h+='<tr><td>👷 Tenaga (kuli panen)</td><td class="neg">-'+rp(L.labor)+'</td></tr>';
- h+='<tr><td>🏪 CAPEX peralatan/bibit</td><td class="neg">-'+rp(L.capex)+'</td></tr>';
- h+='<tr><td>🍚 Biaya hidup makan</td><td class="neg">-'+rp(L.living)+'</td></tr>';
+ h+='<tr><td>🏪 CAPEX peralatan/bibit/kulkas</td><td class="neg">-'+rp(L.capex)+'</td></tr>';
  if(L.bills)h+='<tr><td>🧾 Tagihan bulanan</td><td class="neg">-'+rp(L.bills)+'</td></tr>';
- h+='<tr><td><b>Total Pengeluaran</b></td><td class="neg"><b>'+rp(L.expense)+'</b></td></tr>';
- h+='<tr><td>📦 Bahan terpakai</td><td>🥥 '+L.materials.kelapa+' | 🧊 '+L.materials.ice+' |  '+L.materials.sugar+' |  '+L.materials.cup+'</td></tr>';
- if(L.lossIcePortions)h+='<tr><td>🫠 Es mencair ('+L.lossIcePortions+' porsi)</td><td class="neg">nilai '+rp(L.lossIceValue)+'</td></tr>';
- if(L.lost)h+='<tr><td>😢 Pelanggan lepas</td><td>'+L.lost+' orang</td></tr>';
- h+='<tr><td><b>NET PROFIT</b></td><td class="'+(net<0?'neg':'pos')+'"><b>'+rp(net)+'</b></td></tr></table>';
- h+='<p><b>🤖 AI Mentor:</b> "Kamu hari ini '+(net>=0?'untung bersih':'rugi bersih')+' '+rp(Math.abs(net))+'. Ini laporannya. '+(net>=0?'Pertahankan ritme ini.':'Evaluasi belanja bahan dan jam bukamu.')+'"</p>';
+ h+='<tr><td><b>Total Pengeluaran</b></td><td class="neg"><b>'+rp(L.expense)+'</b></td></tr></table>';
+ h+='<h4>📦 Bahan Terpakai</h4><p>🥥 '+L.materials.kelapa+' butir | 🧊 '+L.materials.ice+' porsi es | 🍯 '+L.materials.sugar+' porsi gula | 🥤 '+L.materials.cup+' cup</p>';
+ if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi (nilai '+rp(L.lossIceValue)+')'+(S.warung.fridge?' (seharusnya tidak terjadi jika ada kulkas!)':'')+'</p>';
+ if(L.lost)h+='<p>😢 Pelanggan lepas: '+L.lost+' orang</p>';
+ h+='<h3 style="margin-top:15px">NET PROFIT: <span class="'+(net<0?'neg':'pos')+'">'+rp(net)+'</span></h3>';
+ h+='<p><b>🤖 AI Mentor:</b> "Kamu hari ini '+(net>=0?'untung bersih':'rugi bersih')+' '+rp(Math.abs(net))+'. '+(net>=0?'Pertahankan ritme ini.':'Evaluasi belanja dan perhatikan cuaca.')+'"</p>';
  h+='<button class="btn btn-primary" onclick="closeModal()">☀ Bangun (Hari '+S.day+')</button>';
  showModal(h);
 }
@@ -155,11 +160,12 @@ function openScene(){
  S.warung.operatedToday=true;
  SCENE.hour=DATA.hours.open;SCENE.done=false;SCENE.idx=0;
  const D=demandToday(),W=wholeBuyersToday();
+ S.dayLog.buyerCount=D+W;
  SCENE.events=[];
  for(let i=0;i<D;i++)SCENE.events.push({h:DATA.hours.open+Math.floor(Math.random()*12),t:'es'});
  for(let i=0;i<W;i++)SCENE.events.push({h:DATA.hours.open+Math.floor(Math.random()*12),t:'whole'});
  SCENE.events.sort((a,b)=>a.h-b.h);
- el('sc-day').textContent='Hari '+S.day;
+ el('sc-day').textContent='Hari '+S.day+' | '+DATA.weather[S.cuaca].name;
  el('keeper').textContent=PORTR.pemain[S.avatar]||'🧑🏻‍';
  updScene();
  el('warung-scene').classList.remove('hidden');
@@ -181,7 +187,7 @@ function spawnCustomer(t){
  if(el('warung-scene').classList.contains('hidden'))return;
  const sc=el('scene');
  const c=document.createElement('div');c.className='customer';
- const faces=['🧑🏻','👩🏻','👨‍','🏻','🏻','👵🏻','👷🏻','👩‍'];
+ const faces=['🧑🏻','👩🏻','‍','🏻','','👵🏻','👷🏻','👩‍'];
  c.innerHTML='<span class="face">'+faces[Math.floor(Math.random()*faces.length)]+'</span>';
  sc.appendChild(c);
  setTimeout(()=>c.classList.add('walk'),60);
@@ -209,7 +215,7 @@ function closeScene(silent){
  if(el('warung-scene').classList.contains('hidden'))return;
  clearInterval(SCENE.timer);
  el('warung-scene').classList.add('hidden');
- if(!silent)say('Mentor','','Warung tutup jam '+el('sc-clock').textContent+'. Es terjual '+S.dayLog.sales.es+' gelas, kelapa utuh '+S.dayLog.sales.whole+' butir. Sisa es akan mencair malam ini.');
+ if(!silent)say('Mentor','','Warung tutup. Es terjual '+S.dayLog.sales.es+' gelas, kelapa utuh '+S.dayLog.sales.whole+' butir.'+(S.warung.fridge?' Sisa es aman di kulkas.':' Sisa es akan mencair malam ini.'));
  save();render();
 }
 const OB={idx:0,av:0,
