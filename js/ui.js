@@ -126,6 +126,7 @@ function render(){
    // Sore - semua jalur bisa jual pasar untuk kelapa tua
    const sc=stockClassSafe();
    if(sc==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar</button>';
+   if(S.warung&&S.warung.open)h+='<button class="btn btn-primary" onclick="showSupplyShop()">🥥 Beli Kelapa dari Luar (Arbitrase)</button>';
    if((S.day||0)>30){
     if(S.path==='tengkulak'||S.path==='mix')h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Bibit Kelapa Super</button>';
    }
@@ -442,3 +443,29 @@ if(S&&!S.storyDone){
  startGame();
 }
 console.log('=== UI.JS INIT END ===');
+
+// TAMBAHAN: FITUR BELI DARI LUAR (ARBITRASE)
+function showSupplyShop(){
+ let h='<h3>🥥 Beli Kelapa dari Luar</h3>';
+ h+='<p><strong>Masalah:</strong> Stok kelapa habis sebelum 14 hari? Beli dari petani lain untuk tetap jualan!</p>';
+ h+='<div style="background:#e8f5e9;padding:12px;margin:10px 0;border-radius:8px">';
+ h+='<p><strong>Opsi 1: Beli dari Petani Lain</strong></p>';
+ h+='<p>Harga: Rp 3.500/butir (murah, tapi harus panen sendiri)</p>';
+ h+='<p>Cocok untuk: Stok besar, margin tipis tapi aman</p>';
+ h+='<button class="btn btn-primary" onclick="buyKelapaLuar(\'petani\')">Beli dari Petani</button>';
+ h+='</div>';
+ h+='<div style="background:#fff3cd;padding:12px;margin:10px 0;border-radius:8px">';
+ h+='<p><strong>Opsi 2: Beli dari Tengkulak</strong></p>';
+ h+='<p>Harga: Rp 5.000/butir (mahal, tapi siap pakai)</p>';
+ h+='<p>Cocok untuk: Stok mendesak, margin lebih tipis</p>';
+ h+='<button class="btn btn-warning" onclick="buyKelapaLuar(\'tengkulak\')">Beli dari Tengkulak</button>';
+ h+='</div>';
+ h+='<div style="background:#f5f5f5;padding:12px;margin:10px 0;border-radius:8px;font-size:13px">';
+ h+='<p><strong>💡 Tips Arbitrase:</strong></p>';
+ h+='<p>Beli Rp 3.500 → Olah jadi es → Jual Rp 5.000/gelas (4 gelas/butir = Rp 20.000)</p>';
+ h+='<p>HPP es: Rp 1.525/gelas → Profit Rp 3.475/gelas × 4 = Rp 13.900/butir</p>';
+ h+='<p>Margin: Rp 13.900 - Rp 3.500 = <b>Rp 10.400/butir</b> (297% ROI!)</p>';
+ h+='</div>';
+ h+='<button class="btn" onclick="closeModal()">Tutup</button>';
+ showModal(h);
+}

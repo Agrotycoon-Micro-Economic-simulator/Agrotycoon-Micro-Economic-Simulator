@@ -9,6 +9,9 @@ const DATA={
  matureDays:1080,
  seedling:{price:50000,labor:10000},
  es:{price:5000},
+ // HARGA BELI DARI LUAR (untuk arbitrase)
+ buyFromFarmer:3500,  // beli dari petani lain (murah, harus panen sendiri)
+ buyFromTengkulak:5000, // beli dari tengkulak (mahal, siap pakai)
  shop:{
   iceKarung:{name:'Es Batu 1 Karung',price:20000,portions:40,unit:'karung'},
   sugarBloc:{name:'Gula Merah 1 Blok',price:20000,portions:50,unit:'blok'},
@@ -27,16 +30,16 @@ const DATA={
   electric:{name:'Listrik harian',price:8333,days:1},
   pulsa:{name:'Pulsa harian',price:4167,days:1},
   bensin:{name:'Bensin motor harian',price:6667,days:1},
-  mandi:{name:'Sabun mandi/cuci',price:6667,days:1},
-  bills:{name:'Tagihan bulanan',amount:775000}
+  mandi:{name:'Sabun mandi/cuci',price:6667,days:1}
+  // TAGIHAN 775RB DIHAPUS - sudah double counting
  },
  degrade:{muda:14,tua:25},
  accel:{idrPer5:1000,adDays:30},
  hours:{open:9,close:21,secPerHour:2500},
  weather:{
-  panas:{name:'☀️ Panas',esMult:1.4,wholeMult:0.8},
-  berawan:{name:'⛅ Berawan',esMult:1.0,wholeMult:1.0},
-  hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3}
+  panas:{name:'☀️ Panas',esMult:1.4,wholeMult:0.8,minBuyers:45},
+  berawan:{name:'⛅ Berawan',esMult:1.0,wholeMult:1.0,minBuyers:30},
+  hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3,minBuyers:10}
  },
  paths:{
   warung:{name:'Warung Es Kelapa',desc:'Olah sendiri, margin tinggi, butuh kulkas & modal'},
@@ -45,13 +48,13 @@ const DATA={
  },
  futureCommodities:['Cabai Rawit','Ayam Pedaging','Padi','Jagung','Tomat','Sapi']
 };
-const PORTR={kakek:'',tengkulak:'🧑‍💼',pedagang:'👩‍',mentor:'🤖',pemain:['🧑‍','👩‍','🧔','👨‍']};
+const PORTR={kakek:'👴',tengkulak:'🧑‍💼',pedagang:'👩‍',mentor:'🤖',pemain:['🧑','👩‍','🧔','👨‍']};
 const STORY=[
  ['Narator','📜','Kakekmu wafat minggu lalu. Notaris membacakan warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif - nilai aset Rp 250.000.000 - ditambah uang tunai tabungan Rp 5.000.000.'],
- ['Kakek','👴','"Nak... kelapa itu kehidupan. Tapi ingat hukum kakek: kelapa yang sudah dipetik, waktunya terus berjalan. Sampai 14 hari ia masih muda - manis untuk es kelapa. Hari 15 sampai 25, airnya asam dan dagingnya mengeras; bawa ke pasar sebagai kelapa santan, harga jatuh tapi kau tidak rugi semua. Lewat 25 hari - ia busuk, dan kau rugi segalanya."'],
+ ['Kakek','','"Nak... kelapa itu kehidupan. Tapi ingat hukum kakek: kelapa yang sudah dipetik, waktunya terus berjalan. Sampai 14 hari ia masih muda - manis untuk es kelapa. Hari 15 sampai 25, airnya asam dan dagingnya mengeras; bawa ke pasar sebagai kelapa santan, harga jatuh tapi kau tidak rugi semua. Lewat 25 hari - ia busuk, dan kau rugi segalanya."'],
  ['Kakek','👴','"Tengkulak datang tiap siang saat panen; ia borong semua dengan harganya sendiri. Warung desa ramai dari jam sembilan pagi sampai sembilan malam... kalau kau berani mengolah sendiri, untung itu punyamu."'],
- ['Kamu','🧑‍','"Aku tidak akan menjual tanah ini. Aku memilih bertani - dan aku akan menjadi pengusaha dari tanah ini."'],
- ['Mentor','🤖','"Harimu terbagi: Pagi untuk lahan, Siang untuk membuka warung, Sore untuk pasar dan evaluasi, Malam untuk laporan. Biaya hidup berjalan tiap hari; tagihan datang tiap bulan. Selamat bekerja, Bos."']
+ ['Kamu','‍','"Aku tidak akan menjual tanah ini. Aku memilih bertani - dan aku akan menjadi pengusaha dari tanah ini."'],
+ ['Mentor','🤖','"Harimu terbagi: Pagi untuk lahan, Siang untuk membuka warung, Sore untuk pasar dan evaluasi, Malam untuk laporan. Biaya hidup berjalan tiap hari. Selamat bekerja, Bos."']
 ];
 const LEARN=[
  '1 pohon biasa = 20 butir/bulan; kelapa super = 30 butir/bulan.',
