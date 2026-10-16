@@ -52,14 +52,14 @@ node tests/unit_economics.test.js
 The existing `js/data.js` already contains a playable es-kelapa business model. Preserve it as the first benchmark and reconcile its figures before declaring it source-validated.
 
 Current values found in the game configuration (all are **game parameters unless independently sourced**):
-- Sale price: Rp5,000/glass.
-- Existing lesson text: one coconut yields 4 glasses.
-- Coconut purchase: Rp3,500 from farmer and Rp5,000 from collector/tengkulak.
-- Ice: Rp20,000 per sack / 40 portions = Rp500 per portion.
-- Palm sugar: Rp20,000 per block / 50 portions = Rp400 per portion.
-- Cups: Rp8,000 per pack / 20 cups = Rp400 per cup.
-- The simple sum of those three listed non-coconut consumables is Rp1,300 per glass. Existing lesson text says HPP is approximately Rp1,525 for “ice, sugar, cup”; that Rp225 difference is currently unexplained and must be reconciled, not silently accepted.
-- Provisional direct-material arithmetic, before labor, spoilage, water, transport, utilities, permits, and fixed costs: at Rp3,500/coconut and 4 glasses/coconut, coconut input is Rp875/glass, so the subtotal is Rp2,175/glass; at Rp5,000/coconut, the subtotal is Rp2,550/glass. These are **derived from game parameters**, not verified market HPP or net profit.
+- Owner benchmark: direct sale of one whole coconut to a customer is Rp13,000/butir; es kelapa sells for Rp5,000/glass; one coconut yields 4 glasses. Preserve these values and do not replace the direct-customer price with a national producer/tengkulak price.
+- No milk is used. Never add milk or its cost to this recipe.
+- Ice: Rp20,000 per sack / 40 portions = Rp500 per glass.
+- Palm-sugar syrup: current allowance Rp20,000 per batch serving 50 glasses = Rp400/glass. Owner says one approximately 1 L Tupperware serves 50 glasses with one small ladle per glass. The online Rp20,000/kg gula merah reference is only a price benchmark; the exact mass used per batch is not yet confirmed. Water and cooking fuel are not included.
+- Cups: corrected to Rp15,000 per 50 cups = Rp300/cup, aligned with the existing starter-pack configuration and within observed online 16 oz/50-piece listings of roughly Rp12,100–Rp18,246 as checked 2026-10-17. Sources: https://www.blibli.com/jual/cup-16-oz-50-pcs and https://www.blibli.com/jual/cup-plastik. These are market references, not a verified owner supplier invoice.
+- The corrected listed non-coconut consumables subtotal is Rp500 + Rp400 + Rp300 = **Rp1,200/glass**. The old lesson figure Rp1,525 is not supported by the listed component arithmetic and must not remain the subtotal for these three components. Rp1,200 excludes coconut, labor, water, cooking fuel, spoilage, transport, utilities, permits, rent and other fixed costs; it is not complete HPP.
+- Four glasses yield Rp20,000 revenue. Relative to direct sale of the same whole coconut for Rp13,000, processing adds Rp7,000 revenue before consumables; the four glasses use Rp4,800 of listed consumables, leaving **Rp2,200 per coconut before all omitted costs**. This is a comparative contribution subtotal, not net profit.
+- For external purchase scenarios, use Rp3,500/farmer or Rp5,000/collector only where those configured sourcing channels apply. For owner-orchard fruit, show cultivation/harvest cash cost and the Rp13,000 direct-sale opportunity forgone. Do not call own fruit free. The separate direct-customer sale value Rp13,000 is not interchangeable with national producer prices.
 - Existing code lists labor at Rp500 per fruit, startup packages at Rp160,000 and Rp335,000, a mini-fridge at Rp2,000,000, and different demand/rent assumptions by location. Reconcile their periods and applicability before using them in an official profit comparison.
 
 The benchmark must eventually compare at least:
