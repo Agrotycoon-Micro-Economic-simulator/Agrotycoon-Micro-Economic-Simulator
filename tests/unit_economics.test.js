@@ -18,7 +18,8 @@ const scenario = {
     quantityPerOutput: 0.25,
     sourcingMode: "buy",
     purchasePricePerUnit: 3500,
-    evidence: gameEvidence
+    quantityEvidence: gameEvidence,
+    purchasePriceEvidence: gameEvidence
   }],
   variableCosts: [{ id: "ice-sugar-cup", costPerProducedUnit: 1300, evidence: gameEvidence }],
   fixedCostsMonthly: [{ id: "home-stand", amountPerMonth: 0, evidence: gameEvidence }],
@@ -49,7 +50,9 @@ const scenario = {
     sourcingMode: "own",
     ownProductionCostPerUnit: 1000,
     marketOpportunityPricePerUnit: 3500,
-    evidence: { kind: "experimental_assumption", sourceUrl: "test fixture", period: "test only" }
+    quantityEvidence: { kind: "experimental_assumption", sourceUrl: "test fixture", period: "test only" },
+    ownProductionCostEvidence: { kind: "experimental_assumption", sourceUrl: "test fixture", period: "test only" },
+    marketOpportunityPriceEvidence: { kind: "experimental_assumption", sourceUrl: "test fixture", period: "test only" }
   };
   const result = economics.calculate(own);
   assert.equal(result.ok, true);
@@ -69,7 +72,7 @@ const scenario = {
   integrated.id = "coconut-chain-scope-test";
   integrated.inputs[0] = {
     id: "coconut", quantityPerOutput: 0.25, sourcingMode: "own",
-    ownProductionCostPerUnit: 1000, marketOpportunityPricePerUnit: 3500, evidence: gameEvidence
+    ownProductionCostPerUnit: 1000, marketOpportunityPricePerUnit: 3500, quantityEvidence: gameEvidence, ownProductionCostEvidence: gameEvidence, marketOpportunityPriceEvidence: gameEvidence
   };
   integrated.fixedCostsMonthly.push({ id: "orchard-maintenance", amountPerMonth: 100000, scope: "upstream", evidence: gameEvidence });
   integrated.capex.push({ id: "orchard-assets", amount: 1200000, usefulLifeMonths: 12, scope: "upstream", evidence: gameEvidence });
