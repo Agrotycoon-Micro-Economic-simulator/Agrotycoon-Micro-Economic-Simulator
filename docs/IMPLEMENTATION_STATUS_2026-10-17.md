@@ -69,3 +69,14 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 6. Implement and test level unlocks for all action paths, not only land acquisition and crop planting.
 7. Add consultant/mentor/government gameplay only after simulation/data validation. Consultant price plan (1–10 Gold/project) and US$5/100 Gold remain design notes; premium Gold wallet and real payments are not active.
 8. No Supabase until frontend workflows and local simulation are complete and tested.
+
+
+## Production tier taxonomy pass — 2026-10-17
+
+- Read the owner's Library blueprint documents, including `data game.docx`, `harga komoditi.docx`, and `data peternakan dan pertanian.docx`; Tier definitions were found in `data game.docx`.
+- Added `docs/PRODUCTION_TIERS.md` to preserve the exact production taxonomy and explicitly distinguish it from the market-stage columns used in `harga komoditi.docx`.
+- Added `js/production_tiers.js`: dependency-free metadata for Tier 1 raw (0% school buff), Tier 2 semi-processed (+10%), Tier 3 industrial (+15%), Tier 4 national specialization (+20%); normalizer, lookup, upward-transition check, and minimal definition validation.
+- Added `tests/production_tiers.test.js` for tier metadata, normalization, invalid input, upward transitions and product-definition validation.
+- Important: school buffs are design values from the blueprint, not verified empirical productivity effects. This does not create commodity prices, recipe ratios, yields, costs, or historical observations.
+- Verification status: test source was added but **not executed in a Node runtime in this GitHub-only pass**. Do not mark it as passing until `node tests/production_tiers.test.js` is run in a checkout.
+- Next: run the new test and current finance/world-simulation tests in a real Node environment, then select one commodity for a source-backed end-to-end production chain. Keep `productionTier` separate from `marketStage`. No backend/Supabase work.
