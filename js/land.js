@@ -106,7 +106,7 @@ function careCommodity(landId,plotId){
 function harvestCommodity(landId,plotId){
  ensureAgriState();const l=S.landSystem.lands.find(x=>x.id===landId),idx=l&&l.plots.findIndex(x=>x.id===plotId);if(!l||idx<0)return;
  const p=l.plots[idx],c=COMMODITY_BY_ID[p.commodity];if(S.day-p.plantedDay<c.growDays){msg("Belum matang.");return;}
- const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),riskLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),qty=Math.max(0,Math.round(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss)*100)/100);
+ const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),weatherLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),worldLoss=Math.max(0,Math.min(.8,Number(p.worldEventLoss)||0)),riskLoss=1-(1-weatherLoss)*(1-worldLoss),qty=Math.max(0,Math.round(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss)*100)/100);
  S.landSystem.inventory[c.id]=(S.landSystem.inventory[c.id]||0)+qty;
  p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);
  if(!S.dayLog.commodityHarvests)S.dayLog.commodityHarvests=[];
@@ -122,11 +122,19 @@ function getCommodityPrice(id){
 }
 function tickAgricultureDay(){
  ensureAgriState();
+ const world=typeof AgroWorldSim!=="undefined"?AgroWorldSim.ensure():null;
+ const regionIds={ "Banten":"banten","Jambi":"jambi","Jawa Timur":"jatim","Sulawesi Selatan":"sulsel","Nusa Tenggara Barat":"ntb" };
+ const cropIds={ padi:"padi",jagung:"jagung",bawang_merah:"bawang_merah",kelapa:"kelapa",cabai_merah:"bawang_merah" };
  S.landSystem.lands.forEach(l=>(l.plots||[]).forEach(p=>{
   const c=COMMODITY_BY_ID[p.commodity];if(!c)return;
   const daysSince=S.day-(p.lastCareDay||p.plantedDay);
   let loss=0;if(S.cuaca==="hujan"&&["hortikultura","pangan"].includes(c.category))loss=.5;else if(S.cuaca==="panas"&&daysSince>10)loss=.7;
   if(loss){p.health=Math.max(0,(p.health||100)-loss);p.risk=loss===.5?"kelebihan air":"stres kekeringan";}
+  // Simulated disaster effects apply only when a land has a known matching region.
+  // Unknown/inherited locations are intentionally not assigned a guessed region.
+  const rid=regionIds[l.region],wid=cropIds[p.commodity],effect=world&&rid&&wid&&world.regions.find(x=>x.id===rid)?world.ensure().regions[rid].activeEffects[wid]||0:0;
+  p.worldEventLoss=Math.max(0,Math.min(.8,effect));
+  if(p.worldEventLoss>0)p.risk="risiko bencana simulasi";
  }));
 }
 
