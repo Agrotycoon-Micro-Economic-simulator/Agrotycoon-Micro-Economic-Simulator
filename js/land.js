@@ -193,6 +193,7 @@ function estimateLogistics(quantity,distanceKm,vehicle,coldBox,options={}){
  const efficiency={motor:35,pickup:8,truck2:4.5,truck3:3.5,truck4:2.8,truck5:2.3}[v];
  const fuelPerLiter=Number.isFinite(Number(options.fuelPerLiter))?Math.max(0,Number(options.fuelPerLiter)):19000;
  const days=Math.max(1,Math.ceil(roundTrip/(v==="motor"?250:v==="pickup"?350:300)));
+ const capacityKg={motor:20,pickup:1000,truck2:5000,truck3:8000,truck4:15000,truck5:20000}[v],trips=Math.max(1,Math.ceil(Math.max(0,Number(quantity)||0)/capacityKg));
  const fuel=Math.ceil(roundTrip/efficiency*fuelPerLiter);
  const driverDaily=Number(options.driverDaily)||175000,mealDaily=Number(options.mealDaily)||100000;
  const driver=driverDaily*days,meal=mealDaily*days;
@@ -200,13 +201,14 @@ function estimateLogistics(quantity,distanceKm,vehicle,coldBox,options={}){
  const toll=Math.max(0,Number(options.toll)||0),rentalDaily=Math.max(0,Number(options.rentalDaily)||0),rental=rentalDaily*days;
  const unofficialRisk=Math.max(0,Number(options.unofficialRisk)||0);
  const cooling=coldBox?Math.max(0,Number(options.coldBoxFee)||75000):0,packaging=Math.ceil(Math.max(0,quantity)*500);
- return {distanceKm,roundTripKm:roundTrip,days,vehicle:v,vehicleLabel:({motor:"Motor",pickup:"Pickup · tol Gol I",truck2:"Truk · Gol II",truck3:"Truk · Gol III",truck4:"Truk · Gol IV",truck5:"Truk · Gol V"})[v],fuelType:options.fuelType||((v.startsWith("truck"))?"Solar/diesel":"Bensin"),tollClass:options.tollClass||({motor:"di luar jalan tol",pickup:"Golongan I",truck2:"Golongan II",truck3:"Golongan III",truck4:"Golongan IV",truck5:"Golongan V"})[v],fuelPerLiter,efficiency,fuel,driverDaily,driver,mealDaily,meal,parkingDaily,parking,toll,rentalDaily,rental,unofficialRisk,coldBox:cooling,packaging,total:fuel+driver+meal+parking+toll+rental+unofficialRisk+cooling+packaging};
+ const baseTripCost=fuel+driver+meal+parking+toll+rental;
+ return {distanceKm,roundTripKm:roundTrip,days,trips,capacityKg,vehicle:v,vehicleLabel:({motor:"Motor",pickup:"Pickup · tol Gol I",truck2:"Truk · tol Gol II",truck3:"Truk · tol Gol III",truck4:"Truk · tol Gol IV",truck5:"Truk · tol Gol V"})[v],fuelType:options.fuelType||((v.startsWith("truck"))?"Solar/diesel non-subsidi (default)":"Bensin"),tollClass:options.tollClass||({motor:"di luar jalan tol",pickup:"Golongan I",truck2:"Golongan II",truck3:"Golongan III",truck4:"Golongan IV",truck5:"Golongan V"})[v],fuelPerLiter,efficiency,fuel:fuel*trips,driverDaily,driver:driver*trips,mealDaily,meal:meal*trips,parkingDaily,parking:parking*trips,toll:toll*trips,rentalDaily,rental:rental*trips,unofficialRisk:unofficialRisk*trips,coldBox:cooling*trips,packaging,total:baseTripCost*trips+unofficialRisk*trips+cooling*trips+packaging};
 }
 function logisticsPrompt(quantity,distance,vehicle,cold){
  const v0=String(vehicle||"pickup").toLowerCase(),v=["truck2","truck3","truck4","truck5"].includes(v0)?v0:v0==="motor"?"motor":"pickup";
  const days=Math.max(1,Math.ceil(distance*2/({motor:250,pickup:350,truck2:300,truck3:300,truck4:300,truck5:300}[v])));
  const fuelType=(v.startsWith("truck")?"solar/diesel":"bensin");
- const defaultFuel=v.startsWith("truck")?6800:15950;
+ const defaultFuel=v.startsWith("truck")?23700:15950;
  const fuel=Number(prompt("Jenis BBM "+fuelType+". Harga per liter (Rp); sesuaikan wilayah, tanggal, dan kelayakan BBM:",""+defaultFuel));
  const driver=Number(prompt("Biaya sopir/uang jalan per hari (Rp), di luar makan:","250000"));
  const meal=Number(prompt("Uang makan sopir per hari (Rp):","100000"));
@@ -221,7 +223,7 @@ function logisticsPrompt(quantity,distance,vehicle,cold){
  const vals=[fuel,driver,meal,toll,parking,rental,loading,maintenance,risk,coldFee];
  if(vals.some(x=>!Number.isFinite(x)||x<0))return null;
  const result=estimateLogistics(quantity,distance,v,cold,{fuelPerLiter:fuel,fuelType,driverDaily:driver,mealDaily:meal,toll,parkingDaily:parking/days,rentalDaily:rental,unofficialRisk:risk,coldBoxFee:coldFee});
- result.loading=loading;result.maintenance=Math.round(result.roundTripKm*maintenance);result.maintenanceRate=maintenance;result.total+=loading+result.maintenance;return result;
+ result.loading=loading*result.trips;result.maintenance=Math.round(result.roundTripKm*maintenance)*result.trips;result.maintenanceRate=maintenance;result.total+=(loading+Math.round(result.roundTripKm*maintenance))*result.trips;return result;
 }
 function logisticsBreakdown(r){
  return "Kendaraan: "+(r.vehicleLabel||r.vehicle)+" · kelas tol: "+(r.tollClass||"periksa rute")+" · BBM: "+(r.fuelType||"sesuai kendaraan")+"\nJarak PP: "+r.roundTripKm+" km ("+r.days+" hari estimasi)\nBBM: "+safeRp(r.fuel)+" ("+r.efficiency+" km/l × "+safeRp(r.fuelPerLiter)+"/liter)\nUang jalan sopir: "+safeRp(r.driver)+" ("+safeRp(r.driverDaily)+"/hari, terpisah dari makan)\nUang makan sopir: "+safeRp(r.meal)+" ("+safeRp(r.mealDaily)+"/hari)\nTol: "+safeRp(r.toll)+"\nParkir: "+safeRp(r.parking)+"\nSewa kendaraan: "+safeRp(r.rental)+"\nBongkar-muat: "+safeRp(r.loading||0)+"\nServis/ban/penyusutan: "+safeRp(r.maintenance||0)+"\nCadangan risiko biaya tak terduga: "+safeRp(r.unofficialRisk)+"\nBox pendingin: "+safeRp(r.coldBox)+"\nKemasan: "+safeRp(r.packaging)+"\nTOTAL DISTRIBUSI: "+safeRp(r.total);
