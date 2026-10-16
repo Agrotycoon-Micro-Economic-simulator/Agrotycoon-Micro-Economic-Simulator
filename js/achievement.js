@@ -324,7 +324,7 @@ function calculateAchievementBuffs() {
     if (S.unlockedAchievements.includes(ach.id) && ach.buff) {
       const type = ach.buff.type;
       if (ach.buff.value > buffs[type]) {
-        buffs[type] = ach.buff.value;
+        buffs[type] = Math.min(0.05, ach.buff.value);
       }
     }
   });
