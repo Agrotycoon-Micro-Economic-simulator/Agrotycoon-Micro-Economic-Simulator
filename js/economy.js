@@ -74,12 +74,12 @@ function shopMaterials(){
  const total=k*20000+g*20000+c*8000;
  showModal('<h3>🛒 Belanja Bahan Warung</h3>'+
  '<p>Cuaca: <b>'+p.w.name+'</b> | Target permintaan hari ini: <b>'+p.demand+' gelas</b></p>'+
- '<p>Aturan stok: batas rencana 150% target = <b>'+p.target+' unit</b> per bahan. Jika stok sudah mencapai/melewati batas, rekomendasi pembelian menjadi nol.</p>'+
+ '<p>Target stok 150% permintaan = <b>'+p.target+' unit</b> per bahan. Jika stok sudah mencapai/melewati batas, rekomendasi pembelian menjadi nol.</p>'+
  '<div style="background:#e3f2fd;padding:10px;border-radius:6px;margin:10px 0">'+
  '<p><strong>🤖 Rekomendasi berbasis kekurangan stok:</strong></p>'+
- '<p>🧊 Es: stok '+p.current.ice+' porsi; '+(k?'beli '+k+' karung ('+(k*40)+' porsi)':'🔒 DIKUNCI — 0 karung')+'.</p>'+
- '<p>🍯 Gula: stok '+p.current.sugar+' porsi; '+(g?'beli '+g+' blok ('+(g*50)+' porsi)':'🔒 DIKUNCI — 0 blok')+'.</p>'+
- '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*20)+' pcs)':'🔒 DIKUNCI — 0 pak')+'.</p>'+
+ '<p>🧊 Es: stok '+p.current.ice+' porsi; '+(k?'beli '+k+' karung ('+(k*40)+' porsi)':'stok memenuhi target — 0 karung')+'.</p>'+
+ '<p>🍯 Gula: stok '+p.current.sugar+' porsi; '+(g?'beli '+g+' blok ('+(g*50)+' porsi)':'stok memenuhi target — 0 blok')+'.</p>'+
+ '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*20)+' pcs)':'stok memenuhi target — 0 pak')+'.</p>'+
  '<p style="font-size:12px">Item juga dikunci ke 0 bila satu paket utuh akan melampaui batas stok 150% target.</p>'+
  '<p><b>Total: '+rp(total)+'</b></p></div>'+
  '<button class="btn btn-success" '+(total===0?'disabled ':'')+'onclick="buyRecommended('+k+','+g+','+c+')">✅ '+(total===0?'Tidak perlu belanja':'Beli sesuai rekomendasi')+'</button> '+
