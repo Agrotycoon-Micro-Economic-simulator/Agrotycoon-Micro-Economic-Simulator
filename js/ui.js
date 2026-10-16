@@ -17,6 +17,7 @@ function stockLabel(){
 function render(){
  try{
   if(!S){console.error('S undefined');return;}
+  if(typeof ensureAgriState==='function')ensureAgriState();
   safeText('s-gold',safeRp(S.gold));
   safeText('s-day',S.day||1);
   safeText('s-month',monthOf(S.day||1));
@@ -60,6 +61,8 @@ function render(){
    if(!S.path)h+='<button class="btn btn-primary" onclick="showPathChoose()">🧭 Pilih Jalur Usaha</button>';
    // Menu iklan
    h+='<button class="btn btn-primary" onclick="showMentorQuestions()">🤖 Tanya Mentor (Pilihan A/B/C)</button>';
+   h+='<button class="btn btn-primary" onclick="showGarden()">🌴 Kebun Saya & Pertumbuhan</button>';
+   h+='<button class="btn btn-primary" onclick="showLandMarket()">🗺️ Beli / Kelola Lahan</button>';
    h+='<button class="btn btn-primary" onclick="showAdMenu()">📺 Nonton Iklan (Dapat Buff)</button>';
    h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
   }else if(phase==='siang'){
@@ -388,19 +391,18 @@ function showMentorQuestions(){
  window._mentorQuestionBank=topics;
 }
 function showMentorAnswer(index){
- const topics=window._mentorQuestionBank||[];
- const t=topics[index];if(!t)return;
- showModal('<h3>'+t.q+'</h3>'+
- '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>A.</b> '+t.a+'</div>'+
- '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>B.</b> '+t.b+'</div>'+
- '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>C.</b> '+t.c+'</div>'+
- '<button class="btn btn-success" onclick="showMentorExplanation('+index+')">Lihat jawaban dan penjelasan</button> <button class="btn" onclick="showMentorQuestions()">Kembali</button>');
-}
-function showMentorExplanation(index){
  const topics=window._mentorQuestionBank||[];const t=topics[index];if(!t)return;
- const correct=t.correct.toUpperCase();
- showModal('<h3>📘 Penjelasan Mentor</h3><p><b>Jawaban yang benar: '+correct+'.</b></p><p>'+t.why+'</p>'+
- '<button class="btn btn-primary" onclick="showMentorQuestions()">Pilih topik lain</button> <button class="btn" onclick="closeModal()">Selesai</button>');
+ showModal('<h3>'+t.q+'</h3><p>Pilih jawaban Anda. Mentor akan menjelaskan konsekuensi pilihan.</p>'+
+ ['a','b','c'].map(k=>'<button class="btn btn-primary" style="display:block;width:100%;margin:7px 0;text-align:left" onclick="answerMentorQuestion('+index+',\''+k+'\')"><b>'+k.toUpperCase()+'.</b> '+t[k]+'</button>').join('')+
+ '<button class="btn" onclick="showMentorQuestions()">Kembali</button>');
+}
+function answerMentorQuestion(index,choice){
+ const topics=window._mentorQuestionBank||[];const t=topics[index];if(!t)return;
+ ensureAgriState();const ok=choice===t.correct;
+ S.landSystem.quiz.attempts=(S.landSystem.quiz.attempts||0)+1;
+ if(ok){S.landSystem.quiz.correct=(S.landSystem.quiz.correct||0)+1;S.landSystem.quiz.mastery[index]=(S.landSystem.quiz.mastery[index]||0)+1;}
+ save();
+ showModal('<h3>'+(ok?'✅ Jawaban benar':'📘 Mari pelajari lagi')+'</h3><p><b>Jawaban Anda:</b> '+choice.toUpperCase()+'</p><p><b>Jawaban yang benar:</b> '+t.correct.toUpperCase()+'.</p><p>'+t.why+'</p><p>Penguasaan topik: '+(S.landSystem.quiz.mastery[index]||0)+' jawaban benar · Akurasi keseluruhan: '+Math.round(100*(S.landSystem.quiz.correct||0)/Math.max(1,S.landSystem.quiz.attempts||0))+'%</p><button class="btn btn-primary" onclick="showMentorQuestions()">Pilih topik lain</button> <button class="btn" onclick="closeModal()">Selesai</button>');
 }
 function getDailyLesson(){
  const lessons=[
