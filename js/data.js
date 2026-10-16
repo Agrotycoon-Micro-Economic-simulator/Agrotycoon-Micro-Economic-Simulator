@@ -26,33 +26,25 @@ const DATA={
   depanRumah:{
    name:'Depan Rumah',
    minBuyersModifier:1.0,
-   desc:'Lokasi standar, demand normal',
+   minBuyersByWeather:{hujan:10,berawan:30,panas:45},
+   desc:'Depan rumah: hujan mulai 10 gelas (maksimum 45), berawan minimum 30, panas minimum 45.',
    sewaTahunan:0,
    biayaOperasionalBulanan:0
   },
   pinggirJalan:{
    name:'Ruko Pinggir Jalan (4x5m)',
    minBuyersModifier:1.5,
-   desc:'Demand +50%. Sewa Rp 10jt/tahun + operasional Rp 5.833.333/bulan',
-   sewaTahunan:10000000,
-   biayaOperasionalBulanan:5833333,
-   detailBiaya:{
-    sewa:10000000,
-    listrik:100000,
-    air:100000,
-    uangPasar:50000,
-    uangSampah:50000,
-    jatahReman:200000,
-    gajiKaryawan:3000000,
-    uangMakanKaryawan:1500000
-   }
+   desc:'Permintaan minimum: hujan 25, berawan 45, panas 70 gelas. Sewa Rp10–15 juta/bulan.',
+   minBuyersByWeather:{hujan:25,berawan:45,panas:70},
+   sewaBulananMin:10000000,
+   sewaBulananMax:15000000,
   },
   pasar:{
    name:'Dekat Pasar/Kampus/Pabrik',
    minBuyersModifier:2.0,
-   desc:'Demand +100%. Sewa Rp 20jt/tahun + operasional Rp 10.000.000/bulan',
-   sewaTahunan:20000000,
-   biayaOperasionalBulanan:10000000
+   desc:'Permintaan minimum: hujan 50, berawan 120, panas 180 gelas. Sewa Rp25 juta/bulan.',
+   minBuyersByWeather:{hujan:50,berawan:120,panas:180},
+   sewaBulanan:25000000
   }
  },
  living:{
@@ -74,7 +66,7 @@ const DATA={
  weather:{
   panas:{name:'☀️ Panas',esMult:1.4,wholeMult:0.8,minBuyers:45},
   berawan:{name:' Berawan',esMult:1.0,wholeMult:1.0,minBuyers:30},
-  hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3,minBuyers:10}
+  hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3,minBuyers:10,maxBuyersAtHome:45}
  },
  paths:{
   warung:{name:'Warung Es Kelapa',desc:'Olah sendiri, margin tinggi. Mulai dengan modal kecil.'},
@@ -109,7 +101,7 @@ const STORY=[
  ['Mentor','','"Selamat bekerja, Bos. Biaya hidup berjalan tiap hari. Kelola modal dengan bijak."']
 ];
 const LEARN=[
- '1 pohon biasa = 20 butir/bulan; super = 30 butir/bulan. Upah kuli = Rp 500/butir.',
+ '1 pohon biasa = 20 butir/bulan; super = 30 butir/bulan. Bibit super Rp50.000 + tanam Rp10.000 per pohon; 20 pohon membutuhkan Rp1.200.000, termasuk biaya tanam Rp200.000.',
  'Es kelapa: Rp 5.000/gelas. 1 butir = 4 gelas. HPP per gelas ≈ Rp 1.525 (es, gula, cup).',
  'Kelapa utuh muda laku Rp 13.000/butir. Kelapa tua (santan) laku Rp 3.500/butir.',
  'Tips: Gunakan "Paket Hemat" saat membuka warung untuk menekan modal awal. Beli bahan sesuai rekomendasi cuaca.'
