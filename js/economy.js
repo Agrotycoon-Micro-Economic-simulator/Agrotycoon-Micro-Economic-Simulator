@@ -148,7 +148,7 @@ function sellPasar(){
  say('Pedagang','👩‍🌾','Yang tua saya ambil untuk santan.');
  save();render();
 }
-function demandToday(){const w=DATA.weather[S.cuaca];return w.minBuyers+Math.floor(Math.random()*30);}
+function demandToday(location){const loc=DATA.warungLocations[location||((S.warung&&S.warung.location)||'depanRumah')]||DATA.warungLocations.depanRumah;const weather=S.cuaca||'panas';const minimum=(loc.minBuyersByWeather&&loc.minBuyersByWeather[weather])??(DATA.weather[weather]||DATA.weather.panas).minBuyers;let demand=minimum+Math.floor(Math.random()*30);if((location||((S.warung&&S.warung.location)||'depanRumah'))==='depanRumah'&&weather==='hujan')demand=Math.min(demand,45);return demand;}
 function wholeBuyersToday(){const r=((S.day*104729)%100)/100;const w=DATA.weather[S.cuaca];const base=r<0.3?1:r<0.6?2:r<0.8?3:r<0.9?4:r<0.96?5:6;return Math.max(1,Math.ceil(base*w.wholeMult));}
 function takeCoconut(){
  if(S.quarterUsed>0){S.quarterUsed++;if(S.quarterUsed>=4)S.quarterUsed=0;return true;}
@@ -187,7 +187,6 @@ function buyLivingItem(key){
 function emptySlots(){return DATA.slots-S.trees.length;}
 function buySeedling(n){
  n=Math.max(1,Math.floor(n));
- if(S.day<=30){msg('⚠️ Toko bibit super buka bulan ke-2.');return;}
  if(n>emptySlots()){msg('⚠️ Slot kosong tinggal '+emptySlots()+'.');return;}
  const cost=n*(DATA.seedling.price+DATA.seedling.labor);
  if(S.gold<cost){msg('⚠️ Uang tidak cukup: '+rp(cost)+'.');return;}
