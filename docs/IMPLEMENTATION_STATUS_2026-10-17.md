@@ -43,9 +43,10 @@ The current curated registry in `js/real_economic_data.js` contains:
 - 5 subsidized-fertilizer HET points, dated 2025-10-22.
 - 3 feed-price points, dated 2026-09.
 - 17 provincial live-cattle producer price points, snapshot 2026-10-14.
+- 46 coconut price points: annual producer and consumer prices for 2002–2024 (23 observations per market stage), Rp/butir, national.
 - 14 official toll segment tariff entries.
 
-That is 33 listed food/input/animal price points plus 14 toll-segment entries; it is **not thousands of historical price observations**. The toll entries are transport parameters, not commodity observations. No bulk BPS monthly tables, Bapanas provincial producer/consumer time series, SPORA feed history, or BNPB raw event workbook has yet been committed as normalized observations.
+That is 79 food/input/animal/coconut price records plus 14 toll-segment entries; it is **not thousands of historical price observations**. The toll entries are transport parameters, not commodity observations. No bulk BPS monthly tables, Bapanas provincial producer/consumer time series, SPORA feed history, or BNPB raw event workbook has yet been committed as normalized observations.
 
 ## Official sources to ingest next
 
