@@ -186,7 +186,6 @@ function trySellEs(){
  S.dayLog.materials.ice++;S.dayLog.materials.sugar++;S.dayLog.materials.cup++;
  earn('PENJUALAN','Es kelapa 1 gelas',DATA.es.price);
  S.dayLog.sales.es++;S.dayLog.sales.esRev+=DATA.es.price;S.stats.es++;
- if(typeof playGameSound==='function')playGameSound('sale');
  if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
  return true;
 }
