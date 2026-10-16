@@ -63,6 +63,7 @@ function finishDay(){
  });
  L.dailyExpenses=livingDetails;
  
+ if(typeof tickAgricultureDay==='function')tickAgricultureDay();
  const mOld=monthOf(S.day);
  S.day++;
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
