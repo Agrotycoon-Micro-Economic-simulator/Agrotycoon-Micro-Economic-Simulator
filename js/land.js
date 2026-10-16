@@ -150,7 +150,7 @@ function sellCommodity(id,channel){
  const qty=S.landSystem.inventory[id]||0;if(qty<=0){msg("Persediaan kosong.");return;}
  const price=channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice,rev=Math.round(qty*price);
  const distance=Number(prompt("Jarak pengiriman satu arah (km). Default 10 km:", "10"));if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; penjualan dibatalkan.");return;}
- const vehicle=(prompt("Kendaraan: ketik motor atau pickup. Default pickup untuk volume besar:",qty>=20?"pickup":"motor")||"motor").toLowerCase();
+ const vehicle=(prompt("Kendaraan: motor, pickup, truck2, truck3, truck4, atau truck5. Gunakan kelas truk sesuai kendaraan/ruas tol.",qty>=1000?"truck3":qty>=20?"pickup":"motor")||"pickup").toLowerCase();
  const cold=/^(y|ya|yes|1)$/i.test(prompt("Gunakan box pendingin? Ketik ya atau tidak. Untuk cabai segar, sesuaikan kebutuhan rute/mutu.","tidak")||"tidak");
  const logistics=logisticsPrompt(qty,distance,vehicle,cold);if(!logistics){msg("Biaya distribusi tidak valid; penjualan dibatalkan.");return;}const net=rev-logistics.total;
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+"\nOmzet: "+safeRp(rev)+"\n"+logisticsBreakdown(logistics)+"\nKas bersih sebelum biaya budidaya: "+safeRp(net)))return;
@@ -168,7 +168,7 @@ function processCommodity(id){
  if(units<1){msg("Persediaan belum cukup untuk membuat satu unit "+p.name+".");return;}
  const input=units*p.inputKg,rev=units*p.price,cost=units*p.otherCost;
  const distance=Number(prompt("Jarak pengiriman produk jadi satu arah (km). Default 10 km:", "10"));if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; pengolahan dibatalkan.");return;}
- const vehicle=(prompt("Kendaraan distribusi: motor atau pickup.","motor")||"motor").toLowerCase();
+ const vehicle=(prompt("Kendaraan distribusi: motor, pickup, truck2, truck3, truck4, atau truck5.","pickup")||"pickup").toLowerCase();
  const cold=/^(y|ya|yes|1)$/i.test(prompt("Perlu box pendingin? Ketik ya/tidak.","tidak")||"tidak");
  const logistics=logisticsPrompt(units,distance,vehicle,cold);if(!logistics){msg("Biaya distribusi tidak valid; pengolahan dibatalkan.");return;}
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet "+safeRp(rev)+", biaya bahan tambahan "+safeRp(cost)+"\n"+logisticsBreakdown(logistics)+"\nKas bersih sebelum budidaya "+safeRp(rev-cost-logistics.total)+". Produk diasumsikan langsung terjual."))return;
@@ -189,9 +189,10 @@ function resetTestCrops(){
 }
 
 function estimateLogistics(quantity,distanceKm,vehicle,coldBox,options={}){
- const v=vehicle==="pickup"?"pickup":"motor",roundTrip=Math.max(0,distanceKm)*2;
- const fuelPerLiter=Number(options.fuelPerLiter)||19000,efficiency=v==="pickup"?8:35;
- const days=Math.max(1,Math.ceil(roundTrip/350));
+ const v=["truck2","truck3","truck4","truck5"].includes(vehicle)?vehicle:vehicle==="pickup"?"pickup":"motor",roundTrip=Math.max(0,distanceKm)*2;
+ const efficiency={motor:35,pickup:8,truck2:4.5,truck3:3.5,truck4:2.8,truck5:2.3}[v];
+ const fuelPerLiter=Number.isFinite(Number(options.fuelPerLiter))?Math.max(0,Number(options.fuelPerLiter)):19000;
+ const days=Math.max(1,Math.ceil(roundTrip/(v==="motor"?250:v==="pickup"?350:300)));
  const fuel=Math.ceil(roundTrip/efficiency*fuelPerLiter);
  const driverDaily=Number(options.driverDaily)||175000,mealDaily=Number(options.mealDaily)||100000;
  const driver=driverDaily*days,meal=mealDaily*days;
