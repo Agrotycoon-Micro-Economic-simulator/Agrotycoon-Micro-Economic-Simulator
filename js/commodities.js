@@ -1,7 +1,7 @@
 // Katalog simulasi 60 komoditas. Harga/biaya adalah parameter balancing game, bukan kutipan harga pasar real-time.
 const COMMODITIES=[
 ["kelapa","Kelapa","perkebunan",1080,20,3500,60000,"pohon"],
-["jagung","Jagung","pangan",100,2.4,5992,24312,"tanaman"],
+["jagung","Jagung","pangan",100,1.72,5992,4594,"tanaman"],
 ["padi","Padi","pangan",110,5000,6500,4200000,"tanaman"],
 ["bawang_merah","Bawang Merah","hortikultura",65,900,18000,8500000,"tanaman"],
 ["bawang_putih","Bawang Putih","hortikultura",120,700,28000,12000000,"tanaman"],
@@ -67,5 +67,5 @@ const COMMODITY_BY_ID=Object.fromEntries(COMMODITIES.map(c=>[c.id,c]));
 const COMMODITY_ECONOMICS={
  kelapa:{unit:"buah",growDays:1080,yieldPerCycle:20,cyclesDays:30,farmerPrice:3500,retailPrice:13000,processed:{name:"Es kelapa",outputUnit:"gelas",inputPerUnit:1,price:13000,otherCost:2500},notes:"Harga tengkulak mengikuti harga game kelapa yang sudah ada; bukan harga nasional yang seragam."},
  cabai_merah:{unit:"kg",growDays:100,yieldPer4m2:2.36,costPer4m2:24310,farmerPrice:27810,tengkulakPrice:25000,retailPrice:35000,processed:{name:"Sambal kemasan 250 g",inputKg:.25,price:18000,otherCost:4500},notes:"Acuan statistik BPS SEP 2024: nilai produksi Rp159,09 juta/ha, biaya Rp60,78 juta/ha, produktivitas 0,59 kg/m², harga petani Rp27.810/kg dan biaya Rp13.340/kg. Game memakai 4 m² per unit petak; angka setup Rp24.310 sedikit di atas acuan biaya 4 m² untuk memasukkan biaya pengelolaan."},
- jagung:{unit:"kg pipilan kering",growDays:100,yieldPer4m2:2.4,costPer4m2:24312,farmerPrice:5992,tengkulakPrice:5400,retailPrice:8000,processed:{name:"Jagung bakar",inputKg:.25,price:10000,otherCost:2500},notes:"Harga acuan jagung pipilan kering tingkat petani Rp5.992/kg pada November 2025 menurut dataset Badan Pangan Nasional. Biaya dan hasil per petak adalah asumsi uji game yang harus dikalibrasi menurut varietas, kadar air, wilayah dan metode budidaya."}
+ jagung:{unit:"kg pipilan kering",growDays:100,yieldPer4m2:1.72,costPer4m2:4594,farmerPrice:5992,tengkulakPrice:5400,retailPrice:8000,processed:{name:"Jagung bakar",inputKg:.25,price:10000,otherCost:2500},notes:"BPS SEP 2024 melaporkan produktivitas rata-rata 42,94 kuintal/ha, biaya produksi Rp11,486 juta/ha dan harga petani Rp4.970/kg; dataset Badan Pangan Nasional mencatat Rp5.992/kg pada November 2025. Hasil 1,72 kg/4 m² dan biaya Rp4.594/4 m² diturunkan dari survei 2024; variasi wilayah, varietas dan kadar air tetap berlaku."}
 };
