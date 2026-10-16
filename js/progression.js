@@ -27,5 +27,7 @@
  function rule(id){return RULES.find(r=>r.id===id)||null}
  function status(id,state){const r=rule(id);if(!r)return {allowed:false,reason:"Aturan tidak ditemukan."};const s=state||root.S||{};const lv=Math.max(1,number(s.level)||1),w=wealth(s),missing=[];if(lv<r.level)missing.push("Level "+r.level);if(w<r.wealth)missing.push("kekayaan Rp "+r.wealth.toLocaleString("id-ID"));return {allowed:missing.length===0,rule:r,level:lv,wealth:w,missing,reason:missing.length?"Syarat belum terpenuhi: "+missing.join(" dan "):"Syarat level dan kekayaan terpenuhi."}}
  function landRule(tierId){return ({small:"small_land",medium:"medium_land",large:"large_land",huge:"huge_land"})[tierId]||"small_land"}
- root.AgroProgression={version:"1.0.0",rules:RULES,wealth,rule,status,landRule};
+ function commodityLevel(c){if(!c)return 1;if(c.category==="pangan")return 1;if(c.category==="hortikultura"||c.category==="buah")return 3;if(c.category==="perkebunan"||c.category==="rempah")return 5;if(c.category==="peternakan")return 7;if(c.category==="perikanan")return 10;if(c.category==="industri")return 12;return 5}
+ function commodityStatus(c,state){const s=state||root.S||{},required=commodityLevel(c),level=Math.max(1,number(s.level)||1);return {allowed:level>=required,required,level,reason:level>=required?"Komoditas terbuka.":"Komoditas terbuka mulai level "+required+"."}}
+ root.AgroProgression={version:"1.0.0",rules:RULES,wealth,rule,status,landRule,commodityLevel,commodityStatus};
 })(typeof window!=="undefined"?window:this);
