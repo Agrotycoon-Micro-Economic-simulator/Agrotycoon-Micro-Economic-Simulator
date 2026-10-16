@@ -14,7 +14,7 @@ This ledger separates shipped code from incomplete work. No Supabase integration
 - Added regional qualitative land-use/logistics profiles. They are labeled hypotheses, not official suitability classifications or appraisals.
 - Improved historical CSV import for comma/semicolon/tab delimiters, Indonesian number formats, year/month periods, and market-level provenance.
 - Fixed the world simulation's state lookup: the save uses top-level lexical `let S`, so checking `window.S` prevented initialization.
-- Added `tests/world_simulation.test.js`.
+- Added `tests/world_simulation.test.js` and `tests/finance.test.js`.
 
 ## Additional implementation in the latest pass
 
@@ -23,14 +23,17 @@ This ledger separates shipped code from incomplete work. No Supabase integration
 - Added regional qualitative profiles for Banten, Central Java, East Java, Jambi, South Kalimantan, Central Kalimantan, South Sulawesi, NTB, and Riau, with farming/trade ideas and logistics risks. These are hypotheses, not official land suitability results.
 - Daily reports now separately track cash inflow, cash outflow, and net cash flow rather than conflating cash flow with profit. Accounting includes recorded loan/payroll liabilities and purchased land cost.
 - Importer now supports comma, semicolon, and tab-delimited CSV; Indonesian thousands/decimal separators; year/month periods; market-level field; and source URL provenance.
+- Audited liability aggregation across credit summary and accounting. `AgroFinance.totalDebt()` now includes active/overdue loans, payroll payable, and legacy `finance.debt`, matching the three liability components shown by accounting.
+- Extended `tests/finance.test.js` to cover legacy debt and payroll aggregation, and ensure new loan liabilities do not mask existing obligations.
 
 ## Verification actually performed
 
 - JavaScript syntax compilation passed for the changed core JS modules and inline scripts in the principal frontend pages.
 - Runtime smoke test simulated 365 in-game days: nonnegative inventories, finite and bounded price indices, deterministic event sequence and price indices, and all generated bulletins marked `SIMULASI` passed.
-- Local module smoke test passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
+- Earlier local module smoke tests passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
 - CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.
-- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Runtime smoke tests passed for the 365-day world simulation, progression, staff payroll, loan origination/interest/repayment, and market/importer scripts.
+- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Historical smoke-test results are recorded above; they do not mean every current test file was run against the latest commit.
+- `tests/finance.test.js` now contains focused assertions for loan lifecycle and liability aggregation, but **this latest version has not been executed in a Node runtime during this pass**. Do not report it as passing until `node tests/finance.test.js` is run.
 - A full browser end-to-end run was not performed. A local clone could not be obtained in the current runtime because network DNS resolution failed; this does not affect the GitHub commits but limits browser verification.
 
 ## Historical data coverage: honest count
