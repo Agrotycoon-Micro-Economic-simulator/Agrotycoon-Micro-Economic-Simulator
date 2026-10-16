@@ -57,8 +57,8 @@ if(!S || S.ledger.length === 0){
  h+='<tr><td><b>Total liabilitas</b></td><td><b>'+rp(totalLiabilities)+'</b></td></tr>';
  h+='<tr><td><b>Ekuitas (Aset − Liabilitas)</b></td><td><b>'+rp(equity)+'</b></td></tr></table><p class="accounting-note">Catatan: nilai lahan warisan Rp250 juta berasal dari narasi game, bukan appraisal; nilai pohon dan perlengkapan masih estimasi. Lahan tambahan dicatat berdasarkan biaya perolehan. Bunga pinjaman dan utang gaji berasal dari simulasi lokal.</p></div>';
  
- h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th></tr>';
- S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td></tr>';});
+ h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Pendapatan</th><th>Beban</th><th>Laba/rugi</th><th>Kas masuk</th><th>Kas keluar</th><th>Arus kas bersih</th></tr>';
+ S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+(DATA.weather[r.weather]?.name||r.weather||'—')+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+rp(r.cashIn||0)+'</td><td>'+rp(r.cashOut||0)+'</td><td class="'+((r.cashflow||0)<0?'neg':'pos')+'">'+rp(r.cashflow!==undefined?r.cashflow:((r.cashIn||0)-(r.cashOut||0)))+'</td></tr>';});
  h+='</table></div>';
 }
 accDiv.innerHTML=h;
