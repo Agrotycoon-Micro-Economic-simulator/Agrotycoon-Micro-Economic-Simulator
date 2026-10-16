@@ -101,3 +101,5 @@ header h1{letter-spacing:.2px}
 @keyframes stallIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @keyframes keeperIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.stall,.keeper,.customer.walk .human-figure{animation:none!important;transition:none!important}}
+
+.agri-card{background:#10251f;border:1px solid #285548;border-radius:10px;padding:12px;margin:10px 0;color:#e6fff5}.agri-card p{margin:6px 0;font-size:13px}.agri-card input,.agri-card select,#modal-body select,#modal-body input{max-width:100%;padding:8px;margin:6px 0}.agri-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0}.agri-progress{height:8px;background:#243b35;border-radius:8px;overflow:hidden;margin:8px 0}.agri-progress span{display:block;height:100%;background:#10b981}.agri-card h4{margin-bottom:6px}#modal-body label{display:block;margin-top:8px;color:#a7f3d0}
