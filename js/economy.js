@@ -67,9 +67,10 @@ function materialPlan(){
  const target=Math.ceil(demand*1.5);
  const current={ice:S.warung.ice||0,sugar:S.warung.sugar||0,cups:S.warung.cups||0};
  const need={
-  ice:current.ice>=target?0:Math.ceil((target-current.ice)/40),
-  sugar:current.sugar>=target?0:Math.ceil((target-current.sugar)/50),
-  cups:current.cups>=target?0:Math.ceil((target-current.cups)/20)
+  // Gunakan pembulatan ke bawah: pembelian paket tidak boleh membuat stok melewati 150% target.
+  ice:current.ice>=target?0:Math.floor((target-current.ice)/40),
+  sugar:current.sugar>=target?0:Math.floor((target-current.sugar)/50),
+  cups:current.cups>=target?0:Math.floor((target-current.cups)/20)
  };
  return {w,demand,target,current,need};
 }
@@ -81,9 +82,10 @@ function shopMaterials(){
  '<p>Aturan stok: batas rencana 150% target = <b>'+p.target+' unit</b> per bahan. Jika stok sudah mencapai/melewati batas, rekomendasi pembelian menjadi nol.</p>'+
  '<div style="background:#e3f2fd;padding:10px;border-radius:6px;margin:10px 0">'+
  '<p><strong>🤖 Rekomendasi berbasis kekurangan stok:</strong></p>'+
- '<p>🧊 Es: stok '+p.current.ice+' porsi; beli '+k+' karung ('+(k*40)+' porsi).</p>'+
- '<p>🍯 Gula: stok '+p.current.sugar+' porsi; beli '+g+' blok ('+(g*50)+' porsi).</p>'+
- '<p>🥤 Cup: stok '+p.current.cups+' pcs; beli '+c+' pak ('+(c*20)+' pcs).</p>'+
+ '<p>🧊 Es: stok '+p.current.ice+' porsi; '+(k?'beli '+k+' karung ('+(k*40)+' porsi)':'🔒 DIKUNCI — 0 karung')+'.</p>'+
+ '<p>🍯 Gula: stok '+p.current.sugar+' porsi; '+(g?'beli '+g+' blok ('+(g*50)+' porsi)':'🔒 DIKUNCI — 0 blok')+'.</p>'+
+ '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*20)+' pcs)':'🔒 DIKUNCI — 0 pak')+'.</p>'+
+ '<p style="font-size:12px">Item juga dikunci ke 0 bila satu paket utuh akan melampaui batas stok 150% target.</p>'+
  '<p><b>Total: '+rp(total)+'</b></p></div>'+
  '<button class="btn btn-success" '+(total===0?'disabled ':'')+'onclick="buyRecommended('+k+','+g+','+c+')">✅ '+(total===0?'Tidak perlu belanja':'Beli sesuai rekomendasi')+'</button> '+
  '<button class="btn btn-primary" onclick="showManualShop()">⚙️ Atur Manual (tetap dibatasi)</button> '+
