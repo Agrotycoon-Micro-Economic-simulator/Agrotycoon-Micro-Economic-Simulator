@@ -44,8 +44,9 @@ if(!S || S.ledger.length === 0){
  if(nilaiAsetTetapWarung>0)h+='<tr><td>🏪 Peralatan Warung (Nilai Buku)</td><td>'+rp(nilaiAsetTetapWarung)+'</td></tr>';
  h+='<tr><td><b>Total Aset Tetap</b></td><td><b>'+rp(totalAsetTetap)+'</b></td></tr></table>';
  
- h+='<h4 style="color:#E65100;margin:15px 0 10px 0">C. EKUITAS</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
- h+='<tr><td><b>TOTAL ASET (Lancar + Tetap)</b></td><td><b>'+rp(totalAset)+'</b></td></tr></table></div>';
+ h+='<h4 style="color:#E65100;margin:15px 0 10px 0">C. LIABILITAS & EKUITAS</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
+ h+='<tr><td>Liabilitas tercatat</td><td>'+rp(0)+'</td></tr>';
+ h+='<tr><td><b>Ekuitas (Aset − Liabilitas tercatat)</b></td><td><b>'+rp(totalAset)+'</b></td></tr></table><p class="accounting-note">Catatan: game saat ini belum mencatat utang atau kewajiban. Ekuitas ini dihitung berdasarkan liabilitas tercatat = Rp 0; nilai aset warisan dan aset tetap masih berupa estimasi.</p></div>';
  
  h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Kotor</th><th>Pengeluaran</th><th>Net</th></tr>';
  S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+DATA.weather[r.weather].name+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td></tr>';});
