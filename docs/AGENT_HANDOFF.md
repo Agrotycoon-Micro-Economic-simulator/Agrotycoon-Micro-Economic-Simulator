@@ -94,3 +94,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - `js/data.js` now preserves owner standards: direct whole coconut Rp13,000, es kelapa Rp5,000/glass, four glasses/coconut, no milk; syrup batch allowance Rp20,000/50 glasses; cup pack Rp15,000/50.
 - Corrected listed non-coconut consumables subtotal = Rp1,200/glass. Online cup prices are comparison evidence only, not a verified owner supplier invoice. Sugar batch cost remains provisional until actual gula merah grams per 1 L Tupperware are known. Water and cooking fuel remain excluded.
 - `tests/es_kelapa_benchmark.test.js` passed when the committed test and `js/data.js` were fetched from GitHub and executed in an isolated V8 harness with Node API stubs. This is not a checked-out repository run. Before further integration, run `node tests/es_kelapa_benchmark.test.js` plus unit economics and core tests in a real checkout.
+
+## Latest P0 correctness work — 2026-10-17
+
+- `js/finance.js` now creates collision-resistant loan IDs using a timestamp plus a monotonic sequence, and checks existing loan records before accepting an ID.
+- `tests/finance.test.js` includes a same-timestamp regression test verifying two loans receive distinct IDs and both liabilities remain counted.
+- Latest status note is in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
+- Validation limitation: cloning the branch into the runtime failed because github.com DNS resolution was unavailable. The committed Node test has not been executed from a repository checkout. A reviewer/next agent must run `node tests/finance.test.js` and `node tests/world_simulation.test.js` from a checkout before claiming these tests pass.
+- Continue with P0 finance correctness audit (rounding and due-day boundaries), then stock/transaction integration. Do not switch focus to es-kelapa recipe tuning. Never modify `main`.
