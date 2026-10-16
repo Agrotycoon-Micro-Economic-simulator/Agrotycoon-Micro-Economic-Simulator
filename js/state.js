@@ -6,7 +6,7 @@ function defaultState(){
  return {v:15,name:'',avatar:0,day:1,phase:'pagi',gold:5000000, xp:0, level:1,
   stock:{biasa:0,super:0},harvestDay:-99,trees,quarterUsed:0,
   cuaca:'panas',
-  warung:{open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0},
+  warung:{open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
   path:null,
   dayLog:newDayLog(),
   reports:[],ledger:[],realMoney:0,lastAdDay:0,storyDone:false,
@@ -31,7 +31,9 @@ function loadSaved(){
    S=JSON.parse(r);
    if(!S.dayLog)S.dayLog=newDayLog();
    if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0};
-   if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0};
+   if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0};
+   if(typeof S.warung.autoMode!=='boolean')S.warung.autoMode=false;
+   if(!Number.isFinite(S.warung.successfulSales))S.warung.successfulSales=0;
    if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
    if(!S.xp)S.xp=0; if(!S.level)S.level=1;
    if(!S.unlockedAchievements)S.unlockedAchievements=[];
