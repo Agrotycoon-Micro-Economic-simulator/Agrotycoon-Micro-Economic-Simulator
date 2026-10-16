@@ -1,0 +1,49 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Impor Data Historis — Agrotycoon</title><style>
+:root{color-scheme:dark;--bg:#0b1121;--p:#121c30;--line:#263750;--txt:#e8eef8;--muted:#9bacc3;--green:#10b981;--amber:#fbbf24;--red:#fb7185}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 system-ui}main{max-width:1100px;margin:auto;padding:20px}header,.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}a{color:#7dd3fc}label{display:grid;gap:6px;margin:10px 0}input,select,textarea{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%}button{background:var(--green);color:#052e24;border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;margin:5px 5px 5px 0}.muted{color:var(--muted)}.warn{background:#302719;color:#fde68a;padding:10px;border-radius:8px}.good{background:#0c2c25;padding:10px;border-radius:8px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto;background:var(--bg);padding:12px;border-radius:8px}.metrics{font-size:1.2rem;font-weight:700}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:7px;border-bottom:1px solid var(--line)}
+</style></head><body><main>
+<header><h1>🧾 Impor & Audit Data Historis</h1><p class="muted">Jalur resmi untuk memasukkan observasi nyata ke Agrotycoon. Tidak ada angka yang dibuat untuk menutup data kosong.</p><p><a href="index.html">← Game</a> · <a href="dunia-simulasi.html">Dunia simulasi</a></p></header>
+<section class="card"><h2>1. Unduh data dari penerbit</h2><div class="grid"><div><b>Bapanas — harga pangan produsen provinsi</b><p><a href="https://data.badanpangan.go.id/datasetpublications/5jb/rata-rata-harga-pangan-bulanan-produsen-provinsi" target="_blank" rel="noopener">Buka dataset</a></p><p class="muted">Dataset prioritas mungkin memerlukan akses melalui SAPA. Jangan mengakali pembatasan akses.</p></div><div><b>BPS — harga produsen pertanian</b><p><a href="https://www.bps.go.id/assets/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html" target="_blank" rel="noopener">Buka publikasi 2025</a></p></div><div><b>BNPB — kejadian bencana</b><p><a href="https://data.bnpb.go.id/dataset/data-bencana-indonesia" target="_blank" rel="noopener">Buka dataset bencana</a></p></div></div><div class="warn">Harga konsumen tidak sama dengan harga produsen. Jangan gabungkan harga beras eceran, gabah petani, jagung pakan, dan harga per kg berat hidup ternak sebagai satu seri.</div></section>
+<section class="card"><h2>2. Muat CSV atau JSON</h2><p class="muted">Pemrosesan berlangsung lokal di browser. File yang Anda pilih tidak diunggah ke server melalui halaman ini. JSON dapat berupa array objek; CSV harus memiliki header.</p><label>Pilih file data<input type="file" id="file" accept=".csv,.json,.txt"></label><label>Jenis data<select id="kind"><option value="price">Harga komoditas</option><option value="disaster">Kejadian bencana</option><option value="production">Produksi/luas panen</option><option value="weather">Curah hujan/cuaca</option><option value="other">Lainnya</option></select></label><label>Nama sumber dan URL dataset<input id="source" placeholder="Contoh: Bapanas — URL dataset resmi"></label><button id="process">Validasi dan audit</button><div id="status" class="muted">Belum ada file diproses.</div></section>
+<section class="card"><h2>3. Hasil audit</h2><div id="metrics" class="grid"></div><div id="report"></div><button id="download" disabled>Ekspor observasi tervalidasi JSON</button><button id="save" disabled>Simpan snapshot lokal browser</button><button id="load">Lihat snapshot lokal tersimpan</button><p class="muted">Snapshot lokal hanya ada di browser/perangkat ini. Untuk menjadi dataset repository yang dapat diuji oleh semua pemain, ekspor file dan lakukan review sebelum commit. Data yang ditolak tetap tercantum dalam laporan audit.</p></section>
+</main><script>
+(function(){
+"use strict";let normalized=[],audit=null;
+const $=id=>document.getElementById(id);
+function csv(text){const rows=[];let row=[],field="",q=false;for(let i=0;i<text.length;i++){const c=text[i];if(q){if(c==='"'&&text[i+1]==='"'){field+='"';i++;}else if(c==='"')q=false;else field+=c;}else if(c==='"')q=true;else if(c===','){row.push(field);field="";}else if(c==="\n"){row.push(field.replace(/\r$/,""));if(row.some(v=>v.trim()))rows.push(row);row=[];field="";}else field+=c;}if(field.length||row.length){row.push(field.replace(/\r$/,""));rows.push(row);}if(rows.length<2)throw Error("CSV harus berisi header dan minimal satu baris");const headers=rows.shift().map(h=>h.trim());return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,(r[i]??"").trim()])));}
+function normKey(obj,patterns){const keys=Object.keys(obj);for(const p of patterns){const k=keys.find(x=>x.toLowerCase().replace(/[^a-z0-9]/g,"").includes(p));if(k&&obj[k]!=="")return obj[k];}return "";}
+function num(v){if(v===null||v===undefined||String(v).trim()==="")return null;const n=Number(String(v).replace(/\s/g,"").replace(/^(Rp|IDR)/i,"").replace(/\./g,"").replace(",", "."));return Number.isFinite(n)?n:null;}
+function normalize(rows,kind,source){
+ const out=[],bad=[];rows.forEach((raw,i)=>{
+  const date=normKey(raw,["observedat","tanggal","periode","tahunbulan","date","bulan"]);
+  const region=normKey(raw,["geographyname","provinsi","kabupaten","wilayah","region","lokasi"]);
+  const commodity=normKey(raw,["commodity","komoditas","namaindikator","indikator","jenisbencana","kejadian"]);
+  const rawValue=normKey(raw,["value","harga","nilai","jumlah","produksi","curahhujan"]);
+  const unit=normKey(raw,["unit","satuan"]);
+  const val=num(rawValue);
+  const issue=[];
+  if(!date)issue.push("periode/tanggal kosong");
+  if(!region)issue.push("wilayah kosong");
+  if(!commodity)issue.push("komoditas/indikator kosong");
+  if(val===null)issue.push("nilai bukan angka/kolom nilai tidak ditemukan");
+  if(val!==null&&val<0)issue.push("nilai negatif perlu review");
+  const rec={observation_id:"obs-"+(i+1),source_name:source||"Sumber tidak diisi",source_row:i+2,kind,observed_at:date||null,geography_name:region||null,indicator_or_commodity:commodity||null,value:val,unit:unit||null,raw_fields:raw,quality_status:issue.length?"needs_review":"verified",issues:issue};
+  if(issue.length)bad.push(rec);else out.push(rec);
+ });
+ return {out,bad};
+}
+function metric(label,value){return '<div class="card"><div class="muted">'+label+'</div><div class="metrics">'+value+'</div></div>';}
+$("process").addEventListener("click",async()=>{
+ const file=$("file").files[0];if(!file){$("status").textContent="Pilih file terlebih dahulu.";return;}
+ try{const text=await file.text();const rows=file.name.toLowerCase().endsWith(".json")?JSON.parse(text):csv(text);if(!Array.isArray(rows)||!rows.length||typeof rows[0]!=="object")throw Error("Format harus array JSON objek atau CSV bertajuk.");
+ const r=normalize(rows,$("kind").value,$("source").value.trim());normalized=r.out;audit={source:$("source").value.trim(),filename:file.name,processedAt:new Date().toISOString(),received:rows.length,valid:r.out.length,needsReview:r.bad.length,observations:r.out,rejected:r.bad};
+ $("status").textContent="Audit selesai. Baris tidak valid tidak dihapus; baris tersebut masuk daftar needs_review.";
+ $("metrics").innerHTML=metric("Baris diterima",rows.length)+metric("Valid dasar",r.out.length)+metric("Perlu review",r.bad.length);
+ $("report").innerHTML='<h3>Baris yang perlu review</h3><pre>'+JSON.stringify(r.bad.slice(0,30).map(x=>({row:x.source_row,issues:x.issues,raw:x.raw_fields})),null,2).replace(/</g,"&lt;")+'</pre><p class="muted">Valid dasar hanya berarti kolom penting tersedia dan nilai dapat dibaca. Ini bukan sertifikasi kebenaran sumber, satuan, atau representativitas.</p>';
+ $("download").disabled=false;$("save").disabled=false;
+ }catch(e){$("status").textContent="Gagal memproses: "+e.message;$("metrics").innerHTML="";$("report").innerHTML="";$("download").disabled=true;$("save").disabled=true;}
+});
+$("download").addEventListener("click",()=>{if(!audit)return;const blob=new Blob([JSON.stringify(audit,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="agrotycoon-audit-"+Date.now()+".json";a.click();URL.revokeObjectURL(url);});
+$("save").addEventListener("click",()=>{if(!audit)return;try{localStorage.setItem("agrotycoon_historical_import_v1",JSON.stringify(audit));$("status").textContent="Snapshot audit disimpan pada browser/perangkat ini.";}catch(e){$("status").textContent="Tidak bisa menyimpan snapshot lokal: "+e.message;}});
+$("load").addEventListener("click",()=>{try{const raw=localStorage.getItem("agrotycoon_historical_import_v1");if(!raw){$("status").textContent="Belum ada snapshot tersimpan di browser ini.";return;}audit=JSON.parse(raw);normalized=audit.observations||[];$("metrics").innerHTML=metric("Baris diterima",audit.received)+metric("Valid dasar",audit.valid)+metric("Perlu review",audit.needsReview);$("status").textContent="Snapshot lokal dimuat: "+audit.filename+" · "+audit.processedAt;$("download").disabled=false;$("save").disabled=false;}catch(e){$("status").textContent="Gagal membaca snapshot: "+e.message;}});
+})();
+</script></body></html>
