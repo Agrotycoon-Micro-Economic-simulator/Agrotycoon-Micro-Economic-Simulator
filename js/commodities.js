@@ -60,7 +60,7 @@ const COMMODITIES=[
 ["patin","Patin","perikanan",180,300,28000,5500000,"kolam"],
 ["madu","Lebah Madu","peternakan",180,15,85000,3500000,"koloni"],
 ["jamur_tiram","Jamur Tiram","hortikultura",45,800,16000,5000000,"rak"]
-].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.35),careCost:Math.round(setupCost*.15),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
+].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
 if(COMMODITIES.length!==60)throw new Error("Katalog harus berisi tepat 60 komoditas; saat ini "+COMMODITIES.length);
 const COMMODITY_BY_ID=Object.fromEntries(COMMODITIES.map(c=>[c.id,c]));
 
