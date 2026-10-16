@@ -51,7 +51,7 @@ function render(){
     h+='<button class="btn btn-primary" onclick="shopMaterials()">🛒 Belanja Bahan (Smart Rec)</button>';
     if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas (Rp 2.000.000)</button>';
     // Upgrade lokasi warung
-    if(S.warung.location==='depanRumah')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Ruko Pinggir Jalan (Rp 5.000.000)</button>';
+    if(S.warung.location==='depanRumah')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Ruko Pinggir Jalan (belum wajib)</button>';
     if(S.warung.location==='pinggirJalan')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Pasar/Kampus (Rp 15.000.000)</button>';
    }
    if(S.path==='tengkulak'||S.path==='mix'){
@@ -178,8 +178,7 @@ function openScene(){
  SCENE.hour=DATA.hours.open;SCENE.done=false;SCENE.idx=0;
  // Hitung demand berdasarkan lokasi warung
  const location = S.warung.location || 'depanRumah';
- const locationMod = DATA.warungLocations[location].minBuyersModifier;
- const D=Math.floor(demandToday()*locationMod);
+ const D=demandToday(location);
  const W=wholeBuyersToday();
  if(!S.dayLog)S.dayLog={};
  S.dayLog.buyerCount=D+W;
@@ -384,7 +383,7 @@ function runAutoWarungDay(){
  S.warung.operatedToday=true;
  const location=S.warung.location||'depanRumah';
  const locData=DATA.warungLocations[location]||DATA.warungLocations.depanRumah;
- const demand=Math.floor(demandToday()*(locData.minBuyersModifier||1));
+ const demand=demandToday(location);
  const wholeDemand=wholeBuyersToday();
  if(!S.dayLog.sales)S.dayLog.sales={es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0};
  S.dayLog.buyerCount=(S.dayLog.buyerCount||0)+demand+wholeDemand;
