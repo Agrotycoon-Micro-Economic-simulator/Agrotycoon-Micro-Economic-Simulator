@@ -29,7 +29,7 @@ function render(){
   safeText('s-xp', xpText);
   const phase=S.phase||'pagi';
   let speaker='Mentor',portrait='🤖',dialogText='';
-  if(phase==='pagi'){speaker='Mentor';portrait='🤖';dialogText='Pagi, Bos '+(S.name||'')+'. Cuaca: '+cuacaName+'.';}
+  if(phase==='pagi'){const lesson=getDailyLesson();speaker=lesson.speaker;portrait=lesson.portrait;dialogText='Pagi, '+(S.name||'Bos')+'. Cuaca: '+cuacaName+'. '+lesson.text;}
   else if(phase==='siang'){speaker='Tengkulak';portrait='🧑‍💼';dialogText='Saya lewat tiap siang saat panen.';}
   else{speaker='Mentor';portrait='';dialogText='Sore. Urus gudang dan rencana besok.';}
   say(speaker,portrait,dialogText);
@@ -49,7 +49,7 @@ function render(){
     if((S.warung.successfulSales||0)>=3)h+='<button class="btn '+(S.warung.autoMode?'btn-success':'btn-primary')+'" onclick="toggleWarungMode()">'+(S.warung.autoMode?'🤖 Mode Otomatis AKTIF — Ubah ke Manual':'🧑‍🍳 Mode Manual — Aktifkan Otomatis')+'</button>';
     else h+='<p class="mode-hint">Mode otomatis terbuka setelah 3 transaksi penjualan berhasil ('+(S.warung.successfulSales||0)+'/3).</p>';
     h+='<button class="btn btn-primary" onclick="shopMaterials()">🛒 Belanja Bahan (Smart Rec)</button>';
-    if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas (Rp 2.000.000)</button>';
+    if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="showFridgeTutorial()">❄️ Pelajari Kulkas (Rp 2.000.000)</button>';
     // Upgrade lokasi warung
     if(S.warung.location==='depanRumah')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Ruko Pinggir Jalan (belum wajib)</button>';
     if(S.warung.location==='pinggirJalan')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Pasar/Kampus (Rp 15.000.000)</button>';
@@ -81,10 +81,10 @@ function render(){
    if(sc==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar</button>';
    // Menu beli dari luar HANYA tgl 15-16
    const dayOfMonth = ((S.day - 1) % 30) + 1;
-   if(dayOfMonth >= 15 && dayOfMonth <= 16 && S.warung && S.warung.open){
+   if(dayOfMonth >= 15 && dayOfMonth <= 16 && S.warung && S.warung.open && (!S.purchases||S.purchases.externalCoconutMonth!==monthOf(S.day))){
     h+='<button class="btn btn-primary" onclick="showSupplyShop()">🥥 Beli Kelapa dari Luar (Hari '+dayOfMonth+' saja!)</button>';
    }
-   h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Bibit Kelapa Super (Rp 50.000 + tanam Rp 10.000/pohon)</button>';
+   if((!S.purchases||S.purchases.seedlingMonth!==monthOf(S.day))&&emptySlots()>0)h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Pelajari Bibit Kelapa Super</button>';
    h+='<button class="btn btn-danger" onclick="startSleep()">😴 Tidur (Ganti Hari)</button>';
   }
   if(A)A.innerHTML=h;
@@ -140,7 +140,10 @@ function showSupplyShop(){
 }
 function showSeedShop(){
  const empty=emptySlots();
- showModal('<h3>🌱 Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + tanam Rp 10.000/pohon = Rp 60.000/pohon. Untuk 20 pohon: Rp 1.200.000 (biaya tanam Rp 200.000). Hasil 30 butir/bulan saat matang.</p><p>Slot kosong: '+empty+'</p><input type="number" id="inp-seed" min="1" max="'+empty+'" value="1"><button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Beli</button> <button class="btn" onclick="closeModal()">Batal</button>');
+ showModal('<h3>🌱 Pelajaran: Bibit Kelapa Super</h3><p><b>Fungsi:</b> menambah kapasitas produksi jangka panjang. Setiap bibit berharga Rp50.000 dan penanaman Rp10.000; total Rp60.000/pohon.</p><p><b>Waktu panen:</b> simulasi menetapkan matang pada hari ke-1.080 sejak tanam; setelah matang, siklus panen berikutnya mengikuti aturan 30 hari.</p><p><b>Jenis & perawatan:</b> bibit super menghasilkan 30 butir per pohon per siklus menurut parameter game. Dalam praktik nyata, hasil dipengaruhi varietas, umur, air, unsur hara, gulma, dan hama; lakukan penyiraman awal dan pemantauan rutin.</p><p>Slot kosong: '+empty+'. Pembelian bibit hanya sekali per bulan simulasi.</p><input type="number" id="inp-seed" min="1" max="'+empty+'" value="1"><button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Pahami & Beli</button> <button class="btn" onclick="closeModal()">Tutup</button>');
+}
+function showFridgeTutorial(){
+ showModal('<h3>❄️ Pelajaran: Kulkas Mini</h3><p><b>Fungsi:</b> menjaga stok es batu tetap tersedia sampai hari berikutnya. Tanpa kulkas, sisa es dibukukan sebagai kerugian saat pergantian hari.</p><p><b>Manfaat ekonomi:</b> mengurangi pemborosan bahan dan membuat pembelian lebih efisien. Harga simulasi: Rp2.000.000; kapasitas tercatat 200 porsi.</p><p><b>Keputusan investasi:</b> beli jika penghematan es yang biasanya mencair berpotensi menutup biaya kulkas. Perhatikan arus kas, bukan omzet saja.</p><button class="btn btn-success" onclick="buyFridge();closeModal()">Pahami & Beli</button> <button class="btn" onclick="closeModal()">Nanti</button>');
 }
 function showAccelOffer(){
  showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
@@ -230,6 +233,7 @@ function spawnCustomer(t){
   let ok=false;
   try{ if(t==='es')ok=trySellEs(); else ok=trySellWhole(); }catch(e){ok=false;}
   if(ok){
+   playGameSound('sale');
    c.innerHTML+='<span class="bubble">'+(t==='es'?'🍹':'')+'</span>';
    floatText(t==='es'?'+Rp5.000':'+Rp13.000');
   }else{
@@ -358,6 +362,9 @@ function upgradeWarungLocation(){
  };
  const upgrade = upgrades[currentLocation];
  if(!upgrade){msg('⚠️ Lokasi sudah maksimal.');return;}
+ if(!S.tutorialSeen)S.tutorialSeen={};
+ const tutorialKey='upgrade_'+currentLocation;
+ if(!S.tutorialSeen[tutorialKey]){S.tutorialSeen[tutorialKey]=true;save();showModal('<h3>🏪 Pelajaran: Memilih Lokasi</h3><p>Lokasi ramai dapat menaikkan permintaan, tetapi keputusan lokasi harus dibandingkan dengan modal, biaya sewa, tenaga kerja, dan stok yang mampu Anda suplai.</p><p>Perlu diingat: upgrade lokasi dalam versi simulasi ini memiliki biaya investasi awal. Hitung periode balik modal sebelum mengambil keputusan.</p><button class="btn btn-primary" onclick="closeModal();upgradeWarungLocation()">Lanjut lihat biaya</button> <button class="btn" onclick="closeModal()">Belajar nanti</button>');return;}
  if(S.gold<upgrade.cost){msg('⚠️ Uang tidak cukup.');return;}
  spend('CAPEX','Upgrade warung ke '+upgrade.name,upgrade.cost,'capex');
  S.warung.location = upgrade.next;
@@ -365,6 +372,29 @@ function upgradeWarungLocation(){
  save();render();
 }
 
+function getDailyLesson(){
+ const lessons=[
+  {speaker:'Mentor',portrait:'🤖',text:'Konsep hari ini: modal kerja adalah uang untuk membeli bahan dan membayar biaya operasi. Jangan habiskan seluruh kas untuk aset tetap.'},
+  {speaker:'Naya • Mentor Kelapa',portrait:'👩🏻‍🌾',text:'Kelapa muda dan tua tidak selalu punya pasar yang sama. Umur panen memengaruhi mutu, harga, dan pembeli yang cocok. Catat umur stok agar tidak membusuk.'},
+  {speaker:'Mentor',portrait:'🤖',text:'Omzet bukan laba. Laba bersih dihitung setelah HPP, upah, biaya hidup usaha, dan kerugian stok dikurangi dari pendapatan.'},
+  {speaker:'Naya • Mentor Kelapa',portrait:'👩🏽‍🌾',text:'Satu butir kelapa dapat diolah menjadi beberapa gelas. Bandingkan pendapatan olahan dengan biaya es, gula, cup, tenaga, waktu, dan risiko barang tidak terjual.'},
+  {speaker:'Mentor',portrait:'🤖',text:'Persediaan terlalu sedikit menyebabkan kehilangan penjualan; terlalu banyak mengikat modal dan meningkatkan risiko rusak. Gunakan target stok berdasarkan permintaan, bukan tebakan.'},
+  {speaker:'Alya • Mentor Jagung',portrait:'👩🏻‍🌾',text:'Komoditas berikutnya yang akan dipelajari adalah jagung: keputusan tanam perlu mempertimbangkan umur panen, biaya benih, pupuk, air, hasil per hektare, dan harga pasar.'},
+  {speaker:'Mentor',portrait:'🤖',text:'Kulkas adalah aset produktif jika penghematan bahan lebih besar daripada biaya kepemilikan dan operasinya. Nilai investasi dari arus kas, bukan dari tampilannya.'},
+  {speaker:'Mira • Mentor Peternakan',portrait:'👩🏾‍🌾',text:'Dalam peternakan, biaya pakan dan tingkat kematian dapat menentukan laba. Pendapatan tinggi belum tentu menguntungkan jika biaya variabel dan risikonya tinggi.'}
+ ];
+ return lessons[((Math.max(1,S.day)-1)%lessons.length)];
+}
+function playGameSound(type){
+ if(S&&S.soundEnabled===false)return;
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;
+  const ctx=new AudioCtx(),now=ctx.currentTime;
+  const notes=type==='sale'?[660,880]:type==='purchase'?[440,554,659]:[523,659,784];
+  notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,now+i*.09);gain.gain.exponentialRampToValueAtTime(.08,now+i*.09+.015);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.09+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+i*.09);osc.stop(now+i*.09+.18);});
+  setTimeout(()=>ctx.close(),700);
+ }catch(e){console.debug('Audio tidak tersedia',e);}
+}
 console.log('=== UI.JS INIT ===');
 if(typeof initGameState==='function'){ initGameState(); } else { loadSaved(); }
 if(S&&!S.storyDone){ initAvatars(); }
@@ -375,6 +405,7 @@ function toggleWarungMode(){
  if(!S.warung||!S.warung.open){msg('Buka warung terlebih dahulu.');return;}
  if((S.warung.successfulSales||0)<3){msg('Mode otomatis terbuka setelah 3 penjualan berhasil.');return;}
  S.warung.autoMode=!S.warung.autoMode;
+ if(S.warung.autoMode)playGameSound('purchase');
  save();render();
  msg(S.warung.autoMode?'Mode otomatis aktif. Warung akan beroperasi saat fase siang.':'Mode manual aktif. Buka warung secara manual pada fase siang.');
 }
