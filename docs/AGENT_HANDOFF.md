@@ -21,7 +21,7 @@ Longer-term: full Tier 1–4 commodity workflows. The owner's Library definition
 - Local staff hiring/payroll and unpaid wage liability; credit eligibility, disbursement, daily interest on remaining principal, partial/full repayment, overdue status.
 - Daily reports separate gross/expense and cashIn/cashOut/net cashflow. Accounting shows estimated assets and recorded liabilities.
 - Production-tier metadata is defined in `js/production_tiers.js` (Tier 1 raw, Tier 2 semi-processed, Tier 3 industrial, Tier 4 national specialization); school buffs 0/10/15/20% are blueprint design values. `js/market_chain.js` remains a separate market-stage model. See `docs/PRODUCTION_TIERS.md`.
-- `js/unit_economics.js` now provides a provenance-aware unit-economics calculator. It distinguishes bought inputs, own production cost, integrated-chain accounting and opportunity-adjusted value; missing required numeric inputs block a result. It is not yet integrated into every UI or transaction path. Contract and benchmark: `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`.
+- `js/unit_economics.js` now provides a provenance-aware unit-economics calculator. It distinguishes bought inputs, own production cost, integrated-chain accounting and opportunity-adjusted value; provenance is tracked for recipe quantity and relevant prices, and fixed costs/assets support `stand`, `upstream`, or `chain` scope. Missing required numeric inputs block a result. It is not yet integrated into every UI or transaction path. Contract and benchmark: `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`.
 - `js/real_economic_data.js` now includes 46 official annual coconut producer/consumer price observations for 2002–2024 (23 years × 2 market stages), sourced from the Ministry of Agriculture Pusdatin coconut outlook and attributed there to BPS/Susenas. These are national historical prices for unhusked coconut in Rp/butir, not current local quotes. The rest of the catalogue still contains game balancing parameters and the registry is nowhere near thousands of observations.
 - World simulation v0.1.0 covers 5 regions and 4 crops. Event odds/impacts/inventory/production/demand are experimental; its indices are not wired to all actual player transactions.
 - Local CSV/JSON import supports common delimiters and Indonesian numeric formats; it is not automated bulk ETL.
@@ -31,7 +31,10 @@ Longer-term: full Tier 1–4 commodity workflows. The owner's Library definition
 - `b508b8dc6fe06834b0f4806cf97278bff94b5949`: payroll settlement change.
 - `78066f60487056475afd23448dad049e36f013bf`: accrued interest enters daily expense and ledger as non-cash.
 - `95e2a3be880ccbf75620e4bd42490489c010cac6`: credit UI no longer calls interest “flat”; says 1.5% per 30 days on remaining principal, accrued daily.
-Latest: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/95e2a3be880ccbf75620e4bd42490489c010cac6
+Recent current-branch work:
+- `d0a88226c340304ed488d43ba5bd1f98c23231d5`: added 46 official annual coconut producer/consumer price observations.
+- `6c9c0482f4282ab36a2d6b4bf6ca5befdb8eddab`: separated stand and upstream fixed costs/capex in unit economics.
+- Latest: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/b4a61342102dd306475a8a0ab584eeb59de6262c
 
 ## Real-data status — do not overstate
 The curated registry contains 8 food-price points (2026-03), 5 subsidized-fertilizer HET points (2025-10-22), 3 feed points (2026-09), 17 live-cattle producer prices (snapshot 2026-10-14), and 46 annual coconut producer/consumer price points (2002–2024). Total: 79 commodity/input price records plus 14 toll-segment entries. This is NOT thousands of historical observations. Verify registry before repeating counts.
@@ -79,7 +82,7 @@ P5 product:
 19. Only after local engine acceptance, design backend/Supabase and monetization.
 
 ## Latest unit-economics status
-- New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. The unit-economics test passed in a scratch Node v22.16.0 harness built from the authored module/test logic; it has not been run from a repository checkout. The committed real-economic-data test has not yet been executed against the full registry in a repository checkout. Do not claim full test-suite success.
+- New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. Both committed tests passed when executed against fetched committed sources in an isolated V8 harness with Node API stubs; the unit-economics test also passed in a scratch Node v22.16.0 harness using equivalent local copies. Neither test was run from a repository checkout. Existing finance/world-simulation tests and browser E2E were not run; do not claim full test-suite success.
 - Static inspection of the committed coconut series found 46 unique year/stage rows (23 producer + 23 consumer), 2002–2024, with 2024 values Rp3,422 and Rp6,061 per coconut.
 - The existing lesson says es-kelapa HPP ~Rp1,525 for ice/sugar/cup, while current configured component arithmetic is Rp500 + Rp400 + Rp400 = Rp1,300/glass. Difference Rp225 is unexplained. Coconut input, labor, spoilage, utilities, transport and fixed costs are additional. Do not call the current subtotal complete HPP.
 
