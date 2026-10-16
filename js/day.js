@@ -80,7 +80,7 @@ function finishDay(){
   mat:Object.assign({},L.materials),iceMelt:L.lossIcePortions,
   shopping:L.shopping,living:L.living,bills:L.bills,
   weather:L.weather,buyers:L.buyerCount,
-  dailyExpenses:L.dailyExpenses,fridge:S.warung.fridge});
+  dailyExpenses:L.dailyExpenses,commoditySales:L.commoditySales||[],fridge:S.warung.fridge});
  S.phase='pagi';S.dayLog=newDayLog();S.dayLog.weather=S.cuaca;
  save();showReport(L,net);render();
 }
