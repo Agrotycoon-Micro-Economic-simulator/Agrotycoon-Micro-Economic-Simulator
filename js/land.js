@@ -53,6 +53,10 @@ function showLandMarket(){
 }
 function buyLandTier(id,profileId,useId){
  ensureAgriState();const t=LAND_TIERS.find(x=>x.id===id);if(!t)return;
+ if(typeof AgroProgression!=="undefined"){
+  const gate=AgroProgression.status(AgroProgression.landRule(id),S);
+  if(!gate.allowed){msg("🔒 "+t.name+" belum terbuka. "+gate.reason);return;}
+ }
  const offer=landOffer(t,profileId,useId),f=landFeeBreakdown(offer),cost=totalLandCost(offer);
  if(!Number.isFinite(cost)||cost<=0){msg("Perhitungan biaya lahan tidak valid.");return;}
  if(S.gold<cost){msg("Kas tidak cukup. Total biaya simulasi: "+safeRp(cost));return;}
@@ -87,6 +91,10 @@ function updatePlantingPlan(){
 function plantCommodity(){
  ensureAgriState();const land=S.landSystem.lands.find(l=>l.id===el("garden-land").value),c=COMMODITY_BY_ID[el("garden-crop").value],count=Math.max(1,Math.min(10000,Math.floor(Number(el("garden-count").value)||1)));
  if(!land||!c){msg("Lahan atau komoditas tidak valid.");return;}
+ if(typeof AgroProgression!=="undefined"){
+  const gate=AgroProgression.commodityStatus(c,S);
+  if(!gate.allowed){msg("🔒 "+c.name+" terbuka mulai level "+gate.required+". Naikkan level terlebih dahulu.");return;}
+ }
  const areaPerUnit=agriAreaPerUnit(c);
  const used=(land.plots||[]).reduce((sum,p)=>sum+p.count*(agriAreaPerUnit(COMMODITY_BY_ID[p.commodity])),0);
  if(used+count*areaPerUnit>land.areaM2){msg("Lahan tidak cukup. Kebutuhan "+(count*areaPerUnit)+" m²; tersedia "+(land.areaM2-used)+" m².");return;}
