@@ -72,6 +72,14 @@ The benchmark must eventually compare at least:
 
 Do not mark any scenario “real-data validated” until each material cost, price, yield, sales-volume and fixed-cost assumption has traceable evidence or is explicitly left unknown.
 
+## First official coconut-price history added
+
+`js/real_economic_data.js` now stores 46 long-form annual observations for 2002–2024: 23 producer-price points and 23 consumer-price points for unhusked coconut, in Rp/butir, national geography. Source: Pusat Data dan Sistem Informasi Pertanian, Kementerian Pertanian, *Outlook Komoditas Perkebunan Kelapa Tahun 2025*, Lampiran 27; the publication states the price series is based on BPS/Susenas and compiled by Pusdatin. Official PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_KELAPA_2025_sign.pdf
+
+The 2024 observations are Rp3,422/butir at producer level and Rp6,061/butir at consumer level. They are historical national annual values, not live prices and not a local price for every region. The existing game parameters (farmer Rp3,500, tengkulak Rp5,000, whole coconut direct sale Rp13,000) remain unchanged and must not be relabeled as these official observations. They represent separate game settings/market contexts.
+
+Test: `node tests/real_economic_data.test.js` checks the 46 rows, source metadata, 2024 values, units and market-stage separation. These observations improve coconut-price calibration; they do not provide stand demand, es-coconut recipe costs, labor, rent, yields or business net profit.
+
 ## Extend to every business chain
 
 Build recipes as a directed graph of product inputs/outputs, not as isolated tier multipliers. Examples from the owner's blueprint:
