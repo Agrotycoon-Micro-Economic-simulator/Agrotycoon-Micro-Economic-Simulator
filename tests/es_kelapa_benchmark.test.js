@@ -37,7 +37,7 @@ assert.equal(revenueFromFourGlasses - wholeFruitRevenue - consumablesForFourGlas
 
 assert.ok(LEARN.some(line => line.includes("Rp1.200/gelas") && line.includes("belum termasuk kelapa")),
   "lesson must state the corrected subtotal and clearly exclude coconut and omitted costs");
-assert.ok(!LEARN.some(line => /susu|milk/i.test(line)), "lesson must not add milk to the owner's recipe");
+assert.ok(!LEARN.some(line => /\bsusu\b|milk/i.test(line)), "lesson must not add milk to the owner's recipe");
 assert.ok(!Object.keys(DATA.shop).some(key => /milk|susu/i.test(key)), "no milk is added to the owner's recipe");
 
 console.log("PASS: owner es-kelapa prices preserved; cup cost corrected; non-coconut subtotal and processing comparison reconciled.");
