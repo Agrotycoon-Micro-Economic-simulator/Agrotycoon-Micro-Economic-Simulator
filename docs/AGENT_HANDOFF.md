@@ -20,7 +20,9 @@ Longer-term: full Tier 1–4 commodity workflows. The owner's Library definition
 - Core files: `js/state.js`, `data.js`, `economy.js`, `day.js`, `game.js`, `ui.js`, `land.js`, `progression.js`, `staff.js`, `finance.js`, `commodities.js`, `market_chain.js`, `market_prices.js`, `real_economic_data.js`, `world_simulation.js`.
 - Local staff hiring/payroll and unpaid wage liability; credit eligibility, disbursement, daily interest on remaining principal, partial/full repayment, overdue status.
 - Daily reports separate gross/expense and cashIn/cashOut/net cashflow. Accounting shows estimated assets and recorded liabilities.
-- Production-tier metadata is now defined in `js/production_tiers.js` (Tier 1 raw, Tier 2 semi-processed, Tier 3 industrial, Tier 4 national specialization) with school buffs 0/10/15/20% as game-design values from the owner blueprint. `js/market_chain.js` remains a separate market-stage model. See `docs/PRODUCTION_TIERS.md`. Catalogue has 60 commodity entries, but many values are game balancing parameters, not verified historical data. Market chain has a few examples; missing stages remain null.
+- Production-tier metadata is defined in `js/production_tiers.js` (Tier 1 raw, Tier 2 semi-processed, Tier 3 industrial, Tier 4 national specialization); school buffs 0/10/15/20% are blueprint design values. `js/market_chain.js` remains a separate market-stage model. See `docs/PRODUCTION_TIERS.md`.
+- `js/unit_economics.js` now provides a provenance-aware unit-economics calculator. It distinguishes bought inputs, own production cost, integrated-chain accounting and opportunity-adjusted value; missing required numeric inputs block a result. It is not yet integrated into every UI or transaction path. Contract and benchmark: `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`.
+- `js/real_economic_data.js` now includes 46 official annual coconut producer/consumer price observations for 2002–2024 (23 years × 2 market stages), sourced from the Ministry of Agriculture Pusdatin coconut outlook and attributed there to BPS/Susenas. These are national historical prices for unhusked coconut in Rp/butir, not current local quotes. The rest of the catalogue still contains game balancing parameters and the registry is nowhere near thousands of observations.
 - World simulation v0.1.0 covers 5 regions and 4 crops. Event odds/impacts/inventory/production/demand are experimental; its indices are not wired to all actual player transactions.
 - Local CSV/JSON import supports common delimiters and Indonesian numeric formats; it is not automated bulk ETL.
 - No Supabase.
@@ -56,9 +58,10 @@ P1 real data:
 6. Add provenance/freshness/quality UI; historical series must stay separated by market stage.
 
 P2 commodities:
-7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Next: map one commodity end-to-end using explicit source-backed inputs/outputs, while keeping production tier and market stage separate.
-8. Define canonical per-commodity schema: suitable region/soil/climate, seed/breed, input bill of materials, tasks, duration/stages, labor/equipment, yield/quality, loss/storage, processing/byproducts, capex/working capital, buyers, units/prices, transport, risk and source references.
-9. Complete one source-backed vertical slice end-to-end before expanding all commodities.
+7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Unit economics contract is in `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`. Next: reconcile the es-kelapa HPP discrepancy (listed ice+sugar+cup arithmetic = Rp1,300/glass vs lesson text Rp1,525), then map buy-from-farmer, buy-from-collector, own-orchard and mixed strategies using sourced data and explicitly unknown values.
+8. Wire the new calculator to actual es-kelapa model state and business UI only after reconciling costs and sales-volume semantics; test that monthly profit/cashflow and internal transfer accounting agree.
+9. Define canonical per-commodity schema: suitable region/soil/climate, seed/breed, input bill of materials, tasks, duration/stages, labor/equipment, yield/quality, loss/storage, processing/byproducts, capex/working capital, buyers, units/prices, transport, risk and source references.
+10. Complete one source-backed vertical slice end-to-end before expanding all commodities.
 
 P3 world engine:
 10. Wire player harvest/purchases/storage/processing/sales to regional inventory, production, demand, shipments, spoilage and price.
@@ -75,5 +78,5 @@ P5 product:
 17. Audit every unlock/action path, navigation, mobile layout, local save/new game/migration, stock/accounting/assets/payroll/credit end-to-end.
 18. Only after local engine acceptance, design backend/Supabase and monetization.
 
-## Resume protocol
+## Latest unit-economics status\n- New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. The unit-economics test passed in a scratch Node v22.16.0 harness built from the authored module/test logic; it has not been run from a repository checkout. The committed real-economic-data test has not yet been executed against the full registry in a repository checkout. Do not claim full test-suite success.\n- The existing lesson says es-kelapa HPP ~Rp1,525 for ice/sugar/cup, while current configured component arithmetic is Rp500 + Rp400 + Rp400 = Rp1,300/glass. Difference Rp225 is unexplained. Coconut input, labor, spoilage, utilities, transport and fixed costs are additional. Do not call the current subtotal complete HPP.\n\n## Resume protocol
 Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's Tier 1–4 definitions are in Library `data game.docx` and have been transcribed to `docs/PRODUCTION_TIERS.md`; the Library's market-price table uses a separate market-stage axis.
