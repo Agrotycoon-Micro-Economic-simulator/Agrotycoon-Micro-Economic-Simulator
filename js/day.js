@@ -69,6 +69,7 @@ function finishDay(){
   const payroll=AgroStaff.payroll();
   if(payroll.count)ledger("SDM","Rekap payroll "+payroll.count+" karyawan",0,{paid:payroll.paid,unpaid:payroll.unpaid});
  }
+ if(typeof AgroFinance!=="undefined")AgroFinance.accrueDay();
  // Advance the seeded world economy before incrementing the in-game clock.
  if(typeof AgroWorldSim!=='undefined'){
   const worldEvents=AgroWorldSim.updateDay(S.day);
