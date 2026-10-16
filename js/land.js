@@ -108,7 +108,7 @@ function harvestCommodity(landId,plotId){
  const p=l.plots[idx],c=COMMODITY_BY_ID[p.commodity];if(S.day-p.plantedDay<c.growDays){msg("Belum matang.");return;}
  const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),weatherLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),worldLoss=Math.max(0,Math.min(.8,Number(p.worldEventLoss)||0)),riskLoss=1-(1-weatherLoss)*(1-worldLoss),qty=Math.max(0,Math.round(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss)*100)/100);
  S.landSystem.inventory[c.id]=(S.landSystem.inventory[c.id]||0)+qty;
- p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);
+ p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);p.worldEventLoss=0;p.risk="normal";
  if(!S.dayLog.commodityHarvests)S.dayLog.commodityHarvests=[];
  S.dayLog.commodityHarvests.push({commodity:c.id,name:c.name,quantity:qty,riskLoss});
  save();msg("Panen "+c.name+": "+qty+" "+(COMMODITY_ECONOMICS[c.id]?.unit||"unit")+" masuk persediaan. Pilih jual ke tengkulak, jual langsung, atau olah menjadi produk.");showCommodityEconomics(c.id);render();
@@ -133,8 +133,10 @@ function tickAgricultureDay(){
   // Simulated disaster effects apply only when a land has a known matching region.
   // Unknown/inherited locations are intentionally not assigned a guessed region.
   const rid=regionIds[l.region],wid=cropIds[p.commodity],effect=world&&rid&&wid&&world.regions.find(x=>x.id===rid)?world.ensure().regions[rid].activeEffects[wid]||0:0;
-  p.worldEventLoss=Math.max(0,Math.min(.8,effect));
-  if(p.worldEventLoss>0)p.risk="risiko bencana simulasi";
+  // Preserve the strongest event exposure until harvest; otherwise the effect would disappear
+  // if the event ended before the crop reached maturity.
+  if(effect>0)p.worldEventLoss=Math.max(Number(p.worldEventLoss)||0,Math.min(.8,effect));
+  if((Number(p.worldEventLoss)||0)>0)p.risk="risiko bencana simulasi";
  }));
 }
 
