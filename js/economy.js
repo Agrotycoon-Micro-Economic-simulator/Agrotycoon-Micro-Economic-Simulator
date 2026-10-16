@@ -52,7 +52,8 @@ function buyWarungPackage(pkgKey){
  if(S.gold<pkg.total){msg('⚠️ Uang tidak cukup.');return;}
  spend('CAPEX','Paket perlengkapan warung ('+pkg.name+')',pkg.total,'capex',pkg.items);
  S.warung.open=true;
- say('Mentor','🤖','Warung berdiri! Setiap pagi belanja bahan, siang buka jam 09.00-21.00.');
+ S.warung.autoMode=false;S.warung.successfulSales=S.warung.successfulSales||0;
+ say('Mentor','🤖','Warung berdiri! Mode manual aktif. Setelah 3 transaksi berhasil, mode otomatis dapat dipilih.');
  save();closeModal();render();
 }
 function shopMaterials(){
@@ -162,6 +163,7 @@ function trySellEs(){
  S.dayLog.materials.ice++;S.dayLog.materials.sugar++;S.dayLog.materials.cup++;
  earn('PENJUALAN','Es kelapa 1 gelas',DATA.es.price);
  S.dayLog.sales.es++;S.dayLog.sales.esRev+=DATA.es.price;S.stats.es++;
+ if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
  return true;
 }
 function trySellWhole(){
@@ -172,6 +174,7 @@ function trySellWhole(){
  S.dayLog.materials.kelapa++;
  earn('PENJUALAN','Kelapa utuh 1 butir',DATA.wholePrice);
  S.dayLog.sales.whole++;S.dayLog.sales.wholeRev+=DATA.wholePrice;S.stats.whole++;
+ if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
  return true;
 }
 function buyLivingItem(key){
