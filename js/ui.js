@@ -434,5 +434,6 @@ function runAutoWarungDay(){
   S.stats.lostSales=(S.stats.lostSales||0)+1;
  }
  save();render();
+ if(typeof playGameSound==='function'&&((S.dayLog.sales.es||0)+(S.dayLog.sales.whole||0)>0))playGameSound('sale');
  say('Sistem Warung','🤖','Operasi otomatis selesai. Es terjual '+(S.dayLog.sales.es||0)+', kelapa utuh '+(S.dayLog.sales.whole||0)+'.');
 }
