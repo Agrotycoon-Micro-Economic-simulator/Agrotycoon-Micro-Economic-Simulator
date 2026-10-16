@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pasar Komoditas Antarprovinsi — Agrotycoon</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1121;--panel:#121c30;--line:#263750;--text:#e8eef8;--muted:#9bacc3;--accent:#10b981;--warn:#f6c453}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:auto;padding:20px}a{color:#67e8c0}h1{font-size:clamp(1.5rem,4vw,2.2rem);margin:.3rem 0}h2{font-size:1.1rem;margin:0 0 12px}.muted{color:var(--muted)}.notice{border:1px solid #6b5520;background:#302712;padding:12px;border-radius:10px;color:#ffe6a0;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+label{display:block;font-size:.9rem;color:var(--muted);margin:9px 0 4px}select,input{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:#0b1425;color:var(--text);font:inherit}
+button{border:0;background:var(--accent);color:#03281c;font-weight:700;border-radius:8px;padding:10px 14px;cursor:pointer;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:600px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px}th{color:var(--muted);font-size:.85rem}td.num{text-align:right;font-variant-numeric:tabular-nums}.table-wrap{overflow:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}.kpi{background:#0b1425;border:1px solid var(--line);padding:12px;border-radius:10px}.kpi small{display:block;color:var(--muted)}.kpi strong{font-size:1.15rem;overflow-wrap:anywhere}
+.positive{color:#6ee7b7}.negative{color:#fca5a5}.pill{font-size:.78rem;border:1px solid var(--line);border-radius:99px;padding:3px 8px}.foot{font-size:.86rem;color:var(--muted)}@media(max-width:600px){main{padding:12px}.panel{padding:12px}}
+</style>
+</head>
+<body><main>
+<p><a href="index.html">← Kembali ke game</a></p>
+<h1>🧭 Pasar Komoditas Antarprovinsi</h1>
+<p class="muted">Papan peluang dagang: bandingkan harga sumber dan tujuan, lalu hitung margin setelah biaya logistik.</p>
+<div class="notice"><strong>Transparansi data:</strong> snapshot resmi harga produsen sapi hidup per <span id="snapshot-date">—</span>. Ini belum merupakan feed API real-time. Harga yang tidak tersedia tidak ditebak. Ongkos angkut dan biaya lain pada kalkulator di bawah adalah input simulasi pemain, bukan tarif resmi otomatis.</div>
+<div class="panel">
+<h2>Harga provinsi — Sapi hidup</h2>
+<p class="muted">Satuan: Rp/kg berat hidup · tingkat harga: produsen. Perubahan dibanding periode sebelumnya sebagaimana ditampilkan sumber.</p>
+<div class="table-wrap"><table><thead><tr><th>Provinsi</th><th class="num">Harga</th><th class="num">Perubahan</th></tr></thead><tbody id="prices-body"></tbody></table></div>
+<p class="foot">Sumber: <a id="source-link" href="https://simponiternak.pertanian.go.id/data-harga-harian" target="_blank" rel="noopener">SIMPONI Ternak — Kementerian Pertanian</a>. Harga produsen bukan harga grosir atau eceran.</p>
+</div>
+<div class="panel">
+<h2>Kalkulator peluang dagang</h2>
+<p class="muted">Pilih provinsi dengan data resmi tersedia. Masukkan berat rata-rata, jumlah ternak, biaya angkut per ekor, serta biaya lain. Perhitungan ini hanya menghitung margin kotor setelah biaya yang Anda masukkan; belum menghitung mortalitas, susut bobot, pajak, biaya izin, karantina, atau biaya modal.</p>
+<div class="grid">
+<div><label for="origin">Beli dari provinsi</label><select id="origin"></select></div>
+<div><label for="destination">Jual ke provinsi</label><select id="destination"></select></div>
+<div><label for="weight">Berat hidup rata-rata per ekor (kg)</label><input id="weight" type="number" min="1" step="1" value="250"></div>
+<div><label for="qty">Jumlah ekor</label><input id="qty" type="number" min="1" step="1" value="10"></div>
+<div><label for="transport">Biaya angkut total per ekor (Rp)</label><input id="transport" type="number" min="0" step="1000" value="0"></div>
+<div><label for="other">Biaya lain total per ekor (Rp)</label><input id="other" type="number" min="0" step="1000" value="0"></div>
+</div>
+<button id="calculate" type="button">Hitung peluang</button>
+<div class="kpis" aria-live="polite">
+<div class="kpi"><small>Harga beli / ekor</small><strong id="buy-cost">—</strong></div>
+<div class="kpi"><small>Harga jual / ekor</small><strong id="sell-revenue">—</strong></div>
+<div class="kpi"><small>Margin / ekor</small><strong id="margin-head">—</strong></div>
+<div class="kpi"><small>Margin total</small><strong id="margin-total">—</strong></div>
+</div>
+<p id="result-note" class="foot" aria-live="polite">Pilih rute dan tekan “Hitung peluang”.</p>
+</div>
+<div class="panel">
+<h2>Aturan integrasi game</h2>
+<ul>
+<li>Harga dengan tanggal, sumber, level pasar, satuan, dan wilayah disimpan sebagai observasi historis.</li>
+<li>Game hanya boleh menyebut peluang “real-time” setelah koneksi sumber live berhasil dan waktu pembaruan ditampilkan.</li>
+<li>Harga beda tingkat pasar tidak dibandingkan langsung tanpa konversi yang dapat dipertanggungjawabkan.</li>
+<li>Rute antarpulau harus menghitung kapal/feri, perjalanan darat, biaya penanganan ternak, dokumen kesehatan hewan, dan karantina bila diwajibkan.</li>
+<li>Data kosong ditandai “belum tersedia”; tidak diganti dengan angka tebakan.</li>
+</ul>
+</div>
+<p class="foot">Papan ini adalah tahap awal untuk komoditas sapi hidup, bukan cakupan seluruh komoditas atau seluruh provinsi. Snapshot harga belum otomatis diperbarui dari API. Data historis lengkap dan integrasi feed otomatis masih diperlukan.</p>
+</main>
+<script src="js/market_prices.js"></script>
+<script>
+(function(){
+ const data=window.MARKET_PRICE_DATA;
+ const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+ document.getElementById('snapshot-date').textContent=data.snapshotDate;
+ document.getElementById('source-link').href=data.sourceUrl;
+ const body=document.getElementById('prices-body');
+ const origin=document.getElementById('origin'), destination=document.getElementById('destination');
+ data.rows.slice().sort((a,b)=>a.price-b.price).forEach(row=>{
+   const tr=document.createElement('tr');
+   const td1=document.createElement('td');td1.textContent=row.province;
+   const td2=document.createElement('td');td2.className='num';td2.textContent=rupiah(row.price);
+   const td3=document.createElement('td');td3.className='num '+(row.changePct>0?'positive':row.changePct<0?'negative':'');
+   td3.textContent=(row.changePct>0?'+':'')+row.changePct.toFixed(2)+'%';
+   tr.append(td1,td2,td3);body.appendChild(tr);
+   [origin,destination].forEach(sel=>{const op=document.createElement('option');op.value=row.province;op.textContent=row.province;sel.appendChild(op);});
+ });
+ origin.value='Jambi';
+ destination.value='Banten';
+ function calculate(){
+   const a=data.rows.find(x=>x.province===origin.value), b=data.rows.find(x=>x.province===destination.value);
+   const w=Number(document.getElementById('weight').value), q=Number(document.getElementById('qty').value);
+   const transport=Number(document.getElementById('transport').value), other=Number(document.getElementById('other').value);
+   const note=document.getElementById('result-note');
+   if(!a||!b||!Number.isFinite(w)||w<=0||!Number.isFinite(q)||q<=0||transport<0||other<0){
+    note.textContent='Input tidak valid atau data harga belum tersedia.';return;
+   }
+   const buy=a.price*w, sell=b.price*w, margin=sell-buy-transport-other;
+   document.getElementById('buy-cost').textContent=rupiah(buy);
+   document.getElementById('sell-revenue').textContent=rupiah(sell);
+   const mh=document.getElementById('margin-head'), mt=document.getElementById('margin-total');
+   mh.textContent=rupiah(margin);mt.textContent=rupiah(margin*q);
+   mh.className=margin>=0?'positive':'negative';mt.className=margin>=0?'positive':'negative';
+   note.textContent=origin.value===destination.value?'Provinsi asal dan tujuan sama. Ini hanya pembanding harga, bukan transaksi lintas provinsi.':
+    (margin>0?'Margin positif berdasarkan input saat ini; belum berarti transaksi pasti cuan.':'Margin tidak positif berdasarkan input saat ini.')+
+    ' Harga beli/jual memakai tingkat produsen yang sama dan snapshot '+data.snapshotDate+'. Pastikan biaya rute, dokumen, dan harga transaksi aktual sebelum menyimpulkan peluang.';
+ }
+ document.getElementById('calculate').addEventListener('click',calculate);
+ [origin,destination,'weight','qty','transport','other'].forEach(id=>{
+  const el=typeof id==='string'?document.getElementById(id):id;
+  el.addEventListener('change',calculate);if(el.tagName==='INPUT')el.addEventListener('input',calculate);
+ });
+ calculate();
+})();
+</script>
+</body></html>
