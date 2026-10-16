@@ -134,7 +134,7 @@ function showTokoPertanian(){
 function showSupplyShop(){
  showModal('<h3>🥥 Pelajaran: Membeli Kelapa dari Luar</h3>'+
  '<p><b>Fungsi:</b> menambah bahan baku ketika panen sendiri belum cukup. Ini keputusan modal kerja, bukan keuntungan otomatis.</p><p><b>Risiko:</b> hitung biaya beli, sisa umur kesegaran, kapasitas olah, dan peluang penjualan. Jangan membeli lebih banyak daripada kemampuan menjual.</p>'+
- '<p style="font-size:13px;color:#666">⚠️ Tersedia tanggal 15–16 setiap bulan simulasi, dan hanya satu transaksi pembelian luar per bulan.</p>'
+ '<p style="font-size:13px;color:#666">⚠️ Tersedia tanggal 15–16 setiap bulan simulasi, dan hanya satu transaksi pembelian luar per bulan.</p>'+
  '<div style="background:#e8f5e9;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 1: Petani Lain</strong><br>Harga: Rp 3.500/butir (murah)</p><button class="btn btn-primary" onclick="buyKelapaLuar(\'petani\')">Beli</button></div>'+
  '<div style="background:#fff3cd;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 2: Tengkulak</strong><br>Harga: Rp 5.000/butir (siap pakai)</p><button class="btn btn-warning" onclick="buyKelapaLuar(\'tengkulak\')">Beli</button></div>'+
  '<button class="btn" onclick="closeModal()">Tutup</button>');
