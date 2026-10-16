@@ -13,7 +13,7 @@ function defaultState(){
   reports:[],ledger:[],realMoney:0,lastAdDay:0,storyDone:false,
   stats:{es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0},
   livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
-  unlockedAchievements:[]
+  unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
  };
 }
 function newDayLog(){return {gross:0,expense:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
@@ -41,6 +41,10 @@ function loadSaved(){
    if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
    if(!S.xp)S.xp=0; if(!S.level)S.level=1;
    if(!S.unlockedAchievements)S.unlockedAchievements=[];
+   if(!Array.isArray(S.employees))S.employees=[];
+   if(!S.finance)S.finance={debt:0,payablesPayroll:0};
+   if(!Number.isFinite(S.finance.debt))S.finance.debt=0;
+   if(!Number.isFinite(S.finance.payablesPayroll))S.finance.payablesPayroll=0;
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.landSystem)S.landSystem=null;
   } else { throw new Error('Null save'); }
