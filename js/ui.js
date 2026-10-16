@@ -151,7 +151,7 @@ function showFridgeTutorial(){
  showModal('<h3>❄️ Pelajaran: Kulkas Mini</h3><p><b>Fungsi:</b> menjaga stok es batu tetap tersedia sampai hari berikutnya. Tanpa kulkas, sisa es dibukukan sebagai kerugian saat pergantian hari.</p><p><b>Manfaat ekonomi:</b> mengurangi pemborosan bahan dan membuat pembelian lebih efisien. Harga simulasi: Rp2.000.000; kapasitas tercatat 200 porsi.</p><p><b>Keputusan investasi:</b> beli jika penghematan es yang biasanya mencair berpotensi menutup biaya kulkas. Perhatikan arus kas, bukan omzet saja.</p><button class="btn btn-success" onclick="buyFridge();closeModal()">Pahami & Beli</button> <button class="btn" onclick="closeModal()">Nanti</button>');
 }
 function showAccelOffer(){
- showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
+ showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu</button><button class="btn btn-warning" onclick="accelIAP()">⚡ Speedy — US$1 / 20 pohon (belum aktif)</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
 }
 function showReport(L,net){
  if(!L)L={sales:{},materials:{},dailyExpenses:[]};
