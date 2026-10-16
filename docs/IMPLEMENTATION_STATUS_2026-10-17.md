@@ -29,7 +29,8 @@ This ledger separates shipped code from incomplete work. No Supabase integration
 - JavaScript syntax compilation passed for the changed core JS modules and inline scripts in the principal frontend pages.
 - Runtime smoke test simulated 365 in-game days: nonnegative inventories, finite and bounded price indices, deterministic event sequence and price indices, and all generated bulletins marked `SIMULASI` passed.
 - Local module smoke test passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
-- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.\n- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Runtime smoke tests passed for the 365-day world simulation, progression, staff payroll, loan origination/interest/repayment, and market/importer scripts.
+- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.
+- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Runtime smoke tests passed for the 365-day world simulation, progression, staff payroll, loan origination/interest/repayment, and market/importer scripts.
 - A full browser end-to-end run was not performed. A local clone could not be obtained in the current runtime because network DNS resolution failed; this does not affect the GitHub commits but limits browser verification.
 
 ## Historical data coverage: honest count
