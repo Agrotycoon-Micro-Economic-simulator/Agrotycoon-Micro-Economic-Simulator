@@ -34,11 +34,11 @@ File: `js/unit_economics.js`
 
 Scenario fields include:
 - `sellPricePerUnit`, `plannedSalesUnitsPerMonth`, `wasteRate`
-- `inputs[]`: `quantityPerOutput`, `sourcingMode`, and either `purchasePricePerUnit` or both `ownProductionCostPerUnit` and `marketOpportunityPricePerUnit`
+- `inputs[]`: `quantityPerOutput`, `quantityEvidence`, `sourcingMode`, and either `purchasePricePerUnit` + `purchasePriceEvidence` or both `ownProductionCostPerUnit` + `ownProductionCostEvidence` and `marketOpportunityPricePerUnit` + `marketOpportunityPriceEvidence`
 - `variableCosts[]`: other cost per produced unit, such as packaging, ice, feed, fertilizer, energy, consumables, or per-unit labor
-- `fixedCostsMonthly[]`: rent, wages, subscriptions, maintenance, transport contracts, and other monthly fixed costs
-- `capex[]`: startup asset amount and useful life for monthly depreciation
-- Each numeric cost record should have an `evidence` object with a kind and, for source-backed records, URL + period.
+- `fixedCostsMonthly[]`: rent, wages, subscriptions, maintenance, transport contracts, and other monthly fixed costs. Optional `scope` is `stand`, `upstream`, or `chain` (default `chain`).
+- `capex[]`: startup asset amount and useful life for monthly depreciation; optional `scope` uses the same values. Stand-only cash results exclude upstream fixed costs, while integrated-chain results include them.
+- Selling price, planned sales volume, waste rate, recipe quantity, each relevant input price, variable cost, fixed cost, and capex/useful life must each carry provenance evidence. Use a kind and, for source-backed records, URL + period. Missing provenance is surfaced as incomplete even when a scenario is numerically calculable.
 
 The calculation reports revenue, production volume required after waste, input costs under each sourcing view, other variable costs, fixed costs, depreciation, initial capex cash outflow, operating cash profit, integrated accounting profit, opportunity-adjusted profit, HPP per saleable unit, contribution per unit, and break-even volume.
 
