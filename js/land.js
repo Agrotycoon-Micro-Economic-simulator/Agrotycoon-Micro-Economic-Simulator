@@ -190,28 +190,26 @@ function resetTestCrops(){
 
 // Tarif tol Golongan I pulang-pergi sebagai nilai awal; rute tertentu masih estimasi model.
 const LOGISTICS_ROUTES=[
- {id:"local",name:"Lokal/non-tol",distanceKm:20,tollI:0,confidence:"estimasi lokal"},
- {id:"jakarta-serang",name:"Jakarta–Serang",distanceKm:90,tollI:110000,confidence:"estimasi rute; cek ruas aktual"},
- {id:"jakarta-magelang",name:"Jakarta–Magelang",distanceKm:500,tollI:1000000,confidence:"estimasi rute via Trans-Jawa; bukan tarif final"},
- {id:"jakarta-semarang",name:"Jakarta–Semarang",distanceKm:450,tollI:947000,confidence:"acuan model Gol I; cek gerbang masuk/keluar"},
- {id:"jakarta-palembang",name:"Jakarta–Palembang",distanceKm:700,tollI:1252000,confidence:"estimasi model dari tarif Gol I per arah"},
- {id:"jakarta-surabaya",name:"Jakarta–Surabaya",distanceKm:780,tollI:1871000,confidence:"estimasi rute Gol I PP; cek gerbang aktual"}
+ {id:"local",name:"Lokal/non-tol",distanceKm:20,confidence:"Tidak ada tarif tol; BBM dihitung dari jarak input"},
+ ...(window.REAL_ECONOMIC_DATA?.tollSegments||[]).map((s,i)=>({id:"official-segment-"+i,name:s.road+": "+s.entry+" → "+s.exit,segment:s,distanceKm:20,confidence:"Tarif resmi BPJT untuk segmen ini saja; "+s.decision}))
 ];
 function logisticsToll(routeId,vehicle){
- const r=LOGISTICS_ROUTES.find(x=>x.id===routeId)||LOGISTICS_ROUTES[0];
- const multiplier=({motor:0,pickup:1,truck2:1.5,truck3:1.5,truck4:2,truck5:2})[vehicle]??1;
- return Math.round(r.tollI*multiplier/500)*500;
+ if(routeId==="local")return 0;
+ const idx=Number(String(routeId).replace("official-segment-",""));
+ const seg=window.REAL_ECONOMIC_DATA?.tollSegments?.[idx]; if(!seg)return null;
+ const group=({motor:0,pickup:1,truck2:2,truck3:3,truck4:4,truck5:5})[vehicle];
+ if(group===0)return 0;
+ return group===1?seg.golI:(group===2||group===3)?seg.golII_III:seg.golIV_V;
 }
 function updateLogisticsDefaults(){
  const v=el("log-vehicle")?.value||"pickup",routeId=el("log-route")?.value||"local";
  const route=LOGISTICS_ROUTES.find(x=>x.id===routeId)||LOGISTICS_ROUTES[0];
- const fuel=el("log-fuel"),toll=el("log-toll"),tc=el("log-toll-class"),dist=el("log-distance"),note=el("log-route-note"),maint=el("log-maintenance");
+ const fuel=el("log-fuel"),toll=el("log-toll"),tc=el("log-toll-class"),dist=el("log-distance"),note=el("log-route-note");
  if(fuel)fuel.value=v.startsWith("truck")?6800:15950;
- if(toll)toll.value=logisticsToll(routeId,v);
+ const fare=logisticsToll(routeId,v); if(toll)toll.value=fare===null?"":fare;
  if(tc)tc.value=v==="motor"?"Tidak lewat tol":({pickup:"Golongan I",truck2:"Golongan II",truck3:"Golongan III",truck4:"Golongan IV",truck5:"Golongan V"})[v];
  if(dist)dist.value=route.distanceKm;
- if(maint)maint.value=v.startsWith("truck")?1500:v==="pickup"?500:100;
- if(note)note.textContent=route.confidence+" · tarif awal dapat dikoreksi bila gerbang/rute berbeda.";
+ if(note)note.textContent=route.confidence+(fare===null?" · tarif kelas ini belum ada; jangan gunakan nol sebagai tarif aktual.":" · nilai hanya untuk segmen terpilih; total perjalanan harus menjumlahkan semua segmen.");
 }
 function estimateLogistics(quantity,distanceKm,vehicle,coldBox,options={}){
  const v=["truck2","truck3","truck4","truck5"].includes(vehicle)?vehicle:vehicle==="pickup"?"pickup":"motor",roundTrip=Math.max(0,distanceKm)*2;
@@ -254,7 +252,7 @@ function logisticsBreakdown(r){
  return "Kendaraan: "+(r.vehicleLabel||r.vehicle)+" · kelas tol: "+(r.tollClass||"periksa rute")+" · BBM: "+(r.fuelType||"sesuai kendaraan")+"\nJarak PP: "+r.roundTripKm+" km ("+r.days+" hari estimasi)\nBBM: "+safeRp(r.fuel)+" ("+r.efficiency+" km/l × "+safeRp(r.fuelPerLiter)+"/liter)\nUang jalan sopir: "+safeRp(r.driver)+" ("+safeRp(r.driverDaily)+"/hari, terpisah dari makan)\nUang makan sopir: "+safeRp(r.meal)+" ("+safeRp(r.mealDaily)+"/hari)\nTol: "+safeRp(r.toll)+"\nParkir: "+safeRp(r.parking)+"\nSewa kendaraan: "+safeRp(r.rental)+"\nBongkar-muat: "+safeRp(r.loading||0)+"\nServis/ban/penyusutan: "+safeRp(r.maintenance||0)+"\nCadangan risiko biaya tak terduga: "+safeRp(r.unofficialRisk)+"\nBox pendingin: "+safeRp(r.coldBox)+"\nKemasan: "+safeRp(r.packaging)+"\nTOTAL DISTRIBUSI: "+safeRp(r.total);
 }
 function showLogisticsCalculator(){
- const h='<h3>🚚 Kalkulator Distribusi</h3><p>Biaya BBM dan tol harus disesuaikan dengan tanggal, wilayah, kendaraan, dan rute. Tarif di bawah hanya nilai awal yang bisa diubah; konsumsi BBM adalah asumsi simulasi, bukan spesifikasi semua kendaraan.</p><label>Jumlah barang (kg/unit)</label><input id="log-qty" type="number" min="0" value="1000"><label>Rute pengiriman (nilai awal otomatis)</label><select id="log-route" onchange="updateLogisticsDefaults()">'+LOGISTICS_ROUTES.map(r=>'<option value="'+r.id+'">'+r.name+'</option>').join('')+'</select><small id="log-route-note">Tarif awal; sesuaikan bila gerbang berbeda.</small><label>Jarak satu arah (km)</label><input id="log-distance" type="number" min="0" value="20"><label>Kendaraan</label><select id="log-vehicle" onchange="updateLogisticsDefaults()"><option value="motor">Motor (di luar tol)</option><option value="pickup" selected>Pickup · Gol I</option><option value="truck2">Truk · Gol II</option><option value="truck3">Truk · Gol III</option><option value="truck4">Truk · Gol IV</option><option value="truck5">Truk · Gol V</option></select><label><input id="log-cold" type="checkbox"> Pakai pendinginan/es</label><label>Harga BBM per liter (Rp)</label><input id="log-fuel" type="number" min="0" value="15950"><label>Uang jalan sopir/hari (Rp)</label><input id="log-driver" type="number" min="0" value="250000"><label>Uang makan sopir/hari (Rp)</label><input id="log-meal" type="number" min="0" value="100000"><label>Hari perjalanan</label><input id="log-days" type="number" min="1" value="1"><label>Golongan tol sesuai kendaraan</label><select id="log-toll-class"><option>Golongan I</option><option>Golongan II</option><option>Golongan III</option><option>Golongan IV</option><option>Golongan V</option><option>Tidak lewat tol</option></select><label>Total tol PP rute aktual (Rp)</label><input id="log-toll" type="number" min="0" value="0"><label>Total parkir PP (Rp)</label><input id="log-parking" type="number" min="0" value="0"><label>Sewa kendaraan per hari (Rp)</label><input id="log-rental" type="number" min="0" value="0"><label>Bongkar-muat/handling total (Rp)</label><input id="log-loading" type="number" min="0" value="0"><label>Servis/ban/penyusutan per km PP (Rp)</label><input id="log-maintenance" type="number" min="0" value="500"><label>Cadangan risiko opsional (Rp)</label><input id="log-risk" type="number" min="0" value="0"><label>Biaya pendinginan total (Rp)</label><input id="log-cold-fee" type="number" min="0" value="75000"><button class="btn btn-primary" onclick="calculateLogisticsUI()">Hitung biaya</button><div id="log-result"></div><button class="btn" onclick="showCommodityEconomics()">Kembali</button>';
+ const h='<h3>🚚 Kalkulator Distribusi</h3><p>Biaya BBM dan tol harus disesuaikan dengan tanggal, wilayah, kendaraan, dan rute. Tarif di bawah hanya nilai awal yang bisa diubah; konsumsi BBM adalah asumsi simulasi, bukan spesifikasi semua kendaraan.</p><label>Jumlah barang (kg/unit)</label><input id="log-qty" type="number" min="0" value="1000"><label>Segmen tol resmi (tarif satu segmen)</label><select id="log-route" onchange="updateLogisticsDefaults()">'+LOGISTICS_ROUTES.map(r=>'<option value="'+r.id+'">'+r.name+'</option>').join('')+'</select><small id="log-route-note">Tarif awal; sesuaikan bila gerbang berbeda.</small><label>Jarak satu arah (km)</label><input id="log-distance" type="number" min="0" value="20"><label>Kendaraan</label><select id="log-vehicle" onchange="updateLogisticsDefaults()"><option value="motor">Motor (di luar tol)</option><option value="pickup" selected>Pickup · Gol I</option><option value="truck2">Truk · Gol II</option><option value="truck3">Truk · Gol III</option><option value="truck4">Truk · Gol IV</option><option value="truck5">Truk · Gol V</option></select><label><input id="log-cold" type="checkbox"> Pakai pendinginan/es</label><label>Harga BBM per liter (Rp)</label><input id="log-fuel" type="number" min="0" value="15950"><label>Uang jalan sopir/hari (Rp)</label><input id="log-driver" type="number" min="0" value="250000"><label>Uang makan sopir/hari (Rp)</label><input id="log-meal" type="number" min="0" value="100000"><label>Hari perjalanan</label><input id="log-days" type="number" min="1" value="1"><label>Golongan tol sesuai kendaraan</label><select id="log-toll-class"><option>Golongan I</option><option>Golongan II</option><option>Golongan III</option><option>Golongan IV</option><option>Golongan V</option><option>Tidak lewat tol</option></select><label>Total tol PP rute aktual (Rp)</label><input id="log-toll" type="number" min="0" value="0"><label>Total parkir PP (Rp)</label><input id="log-parking" type="number" min="0" value="0"><label>Sewa kendaraan per hari (Rp)</label><input id="log-rental" type="number" min="0" value="0"><label>Bongkar-muat/handling total (Rp)</label><input id="log-loading" type="number" min="0" value="0"><label>Servis/ban/penyusutan per km PP (Rp)</label><input id="log-maintenance" type="number" min="0" value="500"><label>Cadangan risiko opsional (Rp)</label><input id="log-risk" type="number" min="0" value="0"><label>Biaya pendinginan total (Rp)</label><input id="log-cold-fee" type="number" min="0" value="75000"><button class="btn btn-primary" onclick="calculateLogisticsUI()">Hitung biaya</button><div id="log-result"></div><button class="btn" onclick="showCommodityEconomics()">Kembali</button>';
  showModal(h);
 }
 function calculateLogisticsUI(){
