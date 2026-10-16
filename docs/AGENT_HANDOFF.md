@@ -1,5 +1,5 @@
 # Agent Handoff — Agrotycoon
-Updated 2026-10-17. Canonical branch: `fix/core-auto-warung-accounting-ui`. HEAD at writing: `95e2a3be880ccbf75620e4bd42490489c010cac6`.
+Updated 2026-10-17 (tier taxonomy pass). Active work branch: `feat/production-tier-taxonomy`, based on `fix/core-auto-warung-accounting-ui`. Never modify `main`.
 Repo: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator
 
 ## Owner rules — mandatory
@@ -13,14 +13,14 @@ Repo: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Ec
 
 ## Direction
 Agrotycoon is intended as an Indonesia-focused micro-economic/agriculture/commodity-chain simulator. Core loop: land/regional suitability -> seeds/inputs/labor/capital -> crop/livestock stages -> harvest -> storage/spoilage -> processing/byproducts -> transport/routes -> producer/collector/wholesale/direct/retail/factory markets -> contracts/sales -> cashflow/profit/balance sheet -> progression/unlocks -> regional shocks and policy response.
-Longer-term: full Tier 1–4 commodity workflows (the owner's reference book is not in this repository; do NOT guess tier definitions), rule-based NPCs with budgets/inventory/goals/contracts, data-grounded AI mentors/consultants, and government policy/programs based on verified rules. AI advice must disclose calculations, assumptions and sources; NPCs should change simulation state, not be decorative chatbots.
+Longer-term: full Tier 1–4 commodity workflows. The owner's Library definitions have now been transcribed into `docs/PRODUCTION_TIERS.md` and implemented as metadata in `js/production_tiers.js`. Keep production-transformation tier separate from market channel/stage; rule-based NPCs with budgets/inventory/goals/contracts, data-grounded AI mentors/consultants, and government policy/programs based on verified rules. AI advice must disclose calculations, assumptions and sources; NPCs should change simulation state, not be decorative chatbots.
 
 ## Implemented (verified by repo inspection)
 - Static browser/local-save game; pages include game, stock, accounting, assets/staff, progression, credit, commodity market, world simulation, historical import, achievements, and separate BMKG alert page.
 - Core files: `js/state.js`, `data.js`, `economy.js`, `day.js`, `game.js`, `ui.js`, `land.js`, `progression.js`, `staff.js`, `finance.js`, `commodities.js`, `market_chain.js`, `market_prices.js`, `real_economic_data.js`, `world_simulation.js`.
 - Local staff hiring/payroll and unpaid wage liability; credit eligibility, disbursement, daily interest on remaining principal, partial/full repayment, overdue status.
 - Daily reports separate gross/expense and cashIn/cashOut/net cashflow. Accounting shows estimated assets and recorded liabilities.
-- Catalogue has 60 commodity entries, but many values are game balancing parameters, not verified historical data. Market chain has a few examples; missing stages remain null.
+- Production-tier metadata is now defined in `js/production_tiers.js` (Tier 1 raw, Tier 2 semi-processed, Tier 3 industrial, Tier 4 national specialization) with school buffs 0/10/15/20% as game-design values from the owner blueprint. `js/market_chain.js` remains a separate market-stage model. See `docs/PRODUCTION_TIERS.md`. Catalogue has 60 commodity entries, but many values are game balancing parameters, not verified historical data. Market chain has a few examples; missing stages remain null.
 - World simulation v0.1.0 covers 5 regions and 4 crops. Event odds/impacts/inventory/production/demand are experimental; its indices are not wired to all actual player transactions.
 - Local CSV/JSON import supports common delimiters and Indonesian numeric formats; it is not automated bulk ETL.
 - No Supabase.
@@ -41,7 +41,7 @@ Sources to ingest: Bapanas monthly producer https://data.badanpangan.go.id/datas
 - Causal world engine: 15–25%.
 - Historical data ingestion/coverage: 5–10% of target.
 - AI mentor/NPC/government: 0–5%.
-- Tier 1–4 detailed commodity workflows: 10–20%; exact tier taxonomy blocked until owner’s book is found.
+- Tier 1–4 detailed commodity workflows: still early/incomplete. Taxonomy is now transcribed and validated at metadata level; per-commodity recipes, sourcing, input/output ratios, prices and costs remain unimplemented.
 - Whole intended engine: roughly 20–30%. Do not present as nearly finished.
 
 ## Backlog, in order
@@ -56,7 +56,7 @@ P1 real data:
 6. Add provenance/freshness/quality UI; historical series must stay separated by market stage.
 
 P2 commodities:
-7. Retrieve owner's reference book for exact Tier 1–4 meanings. If unavailable, mark blocked and ask owner for the file.
+7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Next: map one commodity end-to-end using explicit source-backed inputs/outputs, while keeping production tier and market stage separate.
 8. Define canonical per-commodity schema: suitable region/soil/climate, seed/breed, input bill of materials, tasks, duration/stages, labor/equipment, yield/quality, loss/storage, processing/byproducts, capex/working capital, buyers, units/prices, transport, risk and source references.
 9. Complete one source-backed vertical slice end-to-end before expanding all commodities.
 
@@ -76,4 +76,4 @@ P5 product:
 18. Only after local engine acceptance, design backend/Supabase and monetization.
 
 ## Resume protocol
-Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's reference book for Tier 1–4 is missing from repo/context.
+Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's Tier 1–4 definitions are in Library `data game.docx` and have been transcribed to `docs/PRODUCTION_TIERS.md`; the Library's market-price table uses a separate market-stage axis.
