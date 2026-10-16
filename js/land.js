@@ -72,7 +72,8 @@ function harvestCommodity(landId,plotId){
  const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),riskLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),qty=Math.max(0,Math.floor(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss))),rev=qty*market;
  S.landSystem.market[c.id]=S.landSystem.market[c.id]||{sold:0,price:market};S.landSystem.market[c.id].sold+=qty;
  p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);
- S.gold+=rev;S.dayLog.gross+=rev;S.dayLog.sales.pasar=(S.dayLog.sales.pasar||0)+qty;S.dayLog.sales.pasarRev=(S.dayLog.sales.pasarRev||0)+rev;ledger("PENDAPATAN","Panen "+c.name+" "+qty+" unit",rev,"revenue",{commodity:c.id,marketPrice:market,riskLoss});
+ if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
+ S.gold+=rev;S.dayLog.gross+=rev;S.dayLog.commoditySales.push({commodity:c.id,name:c.name,quantity:qty,unitPrice:market,revenue:rev,riskLoss});ledger("PENDAPATAN","Panen "+c.name+" "+qty+" unit",rev,"revenue",{commodity:c.id,marketPrice:market,riskLoss});
  save();msg("Panen "+c.name+": "+qty+" unit × "+safeRp(market)+" = "+safeRp(rev)+(riskLoss?" (hasil berkurang karena risiko/cuaca)":""));showGarden();render();
 }
 function getCommodityPrice(id){
