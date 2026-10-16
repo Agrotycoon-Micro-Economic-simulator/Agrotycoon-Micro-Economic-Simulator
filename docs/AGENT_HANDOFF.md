@@ -34,7 +34,7 @@ Longer-term: full Tier 1–4 commodity workflows. The owner's Library definition
 Recent current-branch work:
 - `d0a88226c340304ed488d43ba5bd1f98c23231d5`: added 46 official annual coconut producer/consumer price observations.
 - `6c9c0482f4282ab36a2d6b4bf6ca5befdb8eddab`: separated stand and upstream fixed costs/capex in unit economics.
-- Latest: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/b4a61342102dd306475a8a0ab584eeb59de6262c
+- Latest status-ledger update at that point: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/b4a61342102dd306475a8a0ab584eeb59de6262c
 
 ## Real-data status — do not overstate
 The curated registry contains 8 food-price points (2026-03), 5 subsidized-fertilizer HET points (2025-10-22), 3 feed points (2026-09), 17 live-cattle producer prices (snapshot 2026-10-14), and 46 annual coconut producer/consumer price points (2002–2024). Total: 79 commodity/input price records plus 14 toll-segment entries. This is NOT thousands of historical observations. Verify registry before repeating counts.
