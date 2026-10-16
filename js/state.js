@@ -16,7 +16,7 @@ function defaultState(){
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
  };
 }
-function newDayLog(){return {gross:0,expense:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
+function newDayLog(){return {gross:0,expense:0,cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
  materials:{kelapa:0,ice:0,sugar:0,cup:0},
  sales:{es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0},lost:0,
  dailyExpenses:[],weather:'panas',buyerCount:0};}
