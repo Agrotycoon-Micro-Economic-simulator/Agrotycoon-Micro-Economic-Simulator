@@ -6,10 +6,10 @@
  "use strict";
  const RULES=[
   {id:"small_land",title:"Lahan kecil (100 m²)",level:3,wealth:10000000,description:"Pembelian lahan kecil di luar lahan warisan."},
-  {id:"staff",title:"Mempekerjakan karyawan",level:7,wealth:25000000,description:"Membuka modul perekrutan dan biaya tenaga kerja saat sistem payroll diaktifkan."},
+  {id:"staff",title:"Mempekerjakan karyawan",level:7,wealth:25000000,description:"Membuka perekrutan dan payroll harian lokal; upah belum terbayar dicatat sebagai kewajiban."},
   {id:"medium_land",title:"Lahan menengah (1.000 m²)",level:8,wealth:50000000,description:"Ekspansi budidaya dengan kebutuhan modal lebih besar."},
   {id:"expansion",title:"Ekspansi usaha",level:10,wealth:50000000,description:"Membuka rencana usaha multi-unit dan investasi tambahan."},
-  {id:"loan",title:"Pengajuan pinjaman",level:5,wealth:15000000,description:"Membuka akses kredit setelah tersedia modul tenor, bunga, cicilan, dan gagal bayar."},
+  {id:"loan",title:"Pengajuan pinjaman",level:5,wealth:15000000,description:"Membuka pengajuan pinjaman lokal dengan tenor, bunga harian model, pembayaran, dan status menunggak."},
   {id:"large_land",title:"Lahan besar (10.000 m²)",level:15,wealth:250000000,description:"Investasi lahan skala besar."},
   {id:"huge_land",title:"Lahan raksasa (100.000 m²)",level:25,wealth:1000000000,description:"Investasi lahan skala sangat besar."},
   {id:"consultants",title:"Konsultan bisnis",level:10,wealth:50000000,description:"Rencana biaya layanan 1–10 Gold per proyek; belum dapat dibeli sebelum dompet Gold terpisah tersedia."},
