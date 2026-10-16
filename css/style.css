@@ -68,3 +68,19 @@ th{background:#e8f5e9}
 .notif-icon { font-size: 2.5em; }
 .notif-title { font-size: 0.8em; color: #333; font-weight: bold; }
 .notif-name { font-size: 1.1em; color: #000; font-weight: bold; }
+
+/* UI polish and mobile accounting readability */
+body{background:radial-gradient(circle at top,#e6f4ea 0,#f4f7f6 48%,#eaf0ee 100%);padding:clamp(8px,2.5vw,15px)}
+.container{border:1px solid rgba(46,125,50,.12);box-shadow:0 8px 28px rgba(25,70,40,.09)}
+header h1{letter-spacing:.2px}
+.stat{border:1px solid rgba(46,125,50,.08);box-shadow:0 2px 7px rgba(0,0,0,.025)}
+.btn{min-height:44px;line-height:1.35}
+.btn-primary{background:linear-gradient(135deg,#1976d2,#2196f3)}
+.btn-success{background:linear-gradient(135deg,#2e7d32,#43a047)}
+.mode-hint{padding:10px 12px;background:#edf7ed;border-left:4px solid #43a047;border-radius:7px;color:#245b2b;font-size:13px}
+#acc{min-width:0}
+#acc .panel{margin:0 0 16px;padding:14px;border:1px solid #e3ebe5;border-radius:10px;background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.035);overflow:hidden}
+#acc table{display:block;max-width:100%;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.accounting-note{font-size:12px;color:#5b6470;background:#f5f7f6;border-radius:6px;padding:10px;margin-top:8px}
+@media(min-width:700px){.container{max-width:760px}}
+@media(max-width:420px){.container{padding:12px}.stats-bar{gap:6px}.stat{padding:8px 5px;font-size:12px}.modal-content{padding:14px;width:96%}}
