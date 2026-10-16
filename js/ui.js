@@ -367,3 +367,50 @@ if(typeof initGameState==='function'){ initGameState(); } else { loadSaved(); }
 if(S&&!S.storyDone){ initAvatars(); }
 else{ const ob=el('onboard'); if(ob)ob.remove(); startGame(); }
 console.log('=== UI.JS INIT END ===');
+// Tambahkan fungsi ini ke ui.js
+
+function upgradeWarungLocation(){
+ const currentLocation = S.warung.location || 'depanRumah';
+ const upgrades = {
+  depanRumah: {
+   next:'pinggirJalan',
+   sewaTahunan:10000000,
+   biayaBulanan:5833333,
+   name:'Ruko Pinggir Jalan (4x5m)'
+  },
+  pinggirJalan: {
+   next:'pasar',
+   sewaTahunan:20000000,
+   biayaBulanan:10000000,
+   name:'Dekat Pasar/Kampus/Pabrik'
+  }
+ };
+ const upgrade = upgrades[currentLocation];
+ if(!upgrade){msg('⚠️ Lokasi sudah maksimal.');return;}
+ 
+ const totalBiaya = upgrade.sewaTahunan + (upgrade.biayaBulanan * 3); // Sewa 1 tahun + operasional 3 bulan
+ if(S.gold<totalBiaya){
+  msg('⚠️ Uang tidak cukup. Butuh: '+safeRp(totalBiaya)+' (Sewa 1 tahun: '+safeRp(upgrade.sewaTahunan)+' + Operasional 3 bulan: '+safeRp(upgrade.biayaBulanan*3)+')');
+  return;
+ }
+ 
+ spend('CAPEX','Upgrade warung ke '+upgrade.name+' (Sewa 1 tahun)',upgrade.sewaTahunan,'capex');
+ spend('CAPEX','Biaya operasional 3 bulan pertama',upgrade.biayaBulanan*3,'capex');
+ S.warung.location = upgrade.next;
+ S.warung.biayaOperasionalBulanan = upgrade.biayaBulanan;
+ 
+ say('Mentor','🤖','Warung upgrade ke '+upgrade.name+'! Demand meningkat +'+((DATA.warungLocations[upgrade.next].minBuyersModifier-1)*100)+'%. Biaya operasional bulanan: '+safeRp(upgrade.biayaBulanan));
+ save();render();
+}
+
+// Tambahkan biaya operasional bulanan ke laporan harian
+function addWarungOperationalCost(){
+ if(!S.warung || !S.warung.open) return 0;
+ const location = S.warung.location || 'depanRumah';
+ const biayaBulanan = S.warung.biayaOperasionalBulanan || DATA.warungLocations[location].biayaOperasionalBulanan || 0;
+ if(biayaBulanan === 0) return 0;
+ 
+ const biayaHarian = Math.floor(biayaBulanan / 30);
+ spend('OPERASIONAL WARUNG','Biaya operasional warung (listrik, air, gaji, dll)',biayaHarian,'living');
+ return biayaHarian;
+}

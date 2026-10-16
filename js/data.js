@@ -21,11 +21,39 @@ const DATA={
   hemat:{name:'Paket Hemat (Rekomendasi)', items:[['Meja bekas',75000],['Golok warisan',0],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:160000},
   standar:{name:'Paket Standar (Baru Semua)', items:[['Meja kayu baru',200000],['Golok baru',50000],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:335000}
  },
- // LOKASI WARUNG (berpengaruh ke demand)
+ // LOKASI WARUNG - Data sesuai setting Saudara
  warungLocations:{
-  depanRumah:{name:'Depan Rumah',minBuyersModifier:1.0,desc:'Lokasi standar, demand normal'},
-  pinggirJalan:{name:'Ruko Pinggir Jalan',minBuyersModifier:1.5,desc:'Demand +50% dari depan rumah'},
-  pasar:{name:'Dekat Pasar/Kampus/Pabrik',minBuyersModifier:2.0,desc:'Demand +100% dari depan rumah'}
+  depanRumah:{
+   name:'Depan Rumah',
+   minBuyersModifier:1.0,
+   desc:'Lokasi standar, demand normal',
+   sewaTahunan:0,
+   biayaOperasionalBulanan:0
+  },
+  pinggirJalan:{
+   name:'Ruko Pinggir Jalan (4x5m)',
+   minBuyersModifier:1.5,
+   desc:'Demand +50%. Sewa Rp 10jt/tahun + operasional Rp 5.833.333/bulan',
+   sewaTahunan:10000000,
+   biayaOperasionalBulanan:5833333,
+   detailBiaya:{
+    sewa:10000000,
+    listrik:100000,
+    air:100000,
+    uangPasar:50000,
+    uangSampah:50000,
+    jatahReman:200000,
+    gajiKaryawan:3000000,
+    uangMakanKaryawan:1500000
+   }
+  },
+  pasar:{
+   name:'Dekat Pasar/Kampus/Pabrik',
+   minBuyersModifier:2.0,
+   desc:'Demand +100%. Sewa Rp 20jt/tahun + operasional Rp 10.000.000/bulan',
+   sewaTahunan:20000000,
+   biayaOperasionalBulanan:10000000
+  }
  },
  living:{
   rice:{name:'Beras 5 liter',price:65000,period:10},
@@ -45,7 +73,7 @@ const DATA={
  hours:{open:9,close:21,secPerHour:2500},
  weather:{
   panas:{name:'☀️ Panas',esMult:1.4,wholeMult:0.8,minBuyers:45},
-  berawan:{name:'⛅ Berawan',esMult:1.0,wholeMult:1.0,minBuyers:30},
+  berawan:{name:' Berawan',esMult:1.0,wholeMult:1.0,minBuyers:30},
   hujan:{name:'🌧️ Hujan',esMult:0.4,wholeMult:1.3,minBuyers:10}
  },
  paths:{
@@ -53,7 +81,6 @@ const DATA={
   tengkulak:{name:'Jual ke Tengkulak + Bertani',desc:'Cepat dapat uang, fokus tanam komoditas lain.'},
   mix:{name:'Kombinasi',desc:'Sebagian ke tengkulak, sebagian untuk warung.'}
  },
- // LEVEL 1-100 dengan XP DOUBLE
  levels:(function(){
   const levels={};
   let xp=500;
@@ -61,7 +88,6 @@ const DATA={
    levels[i]={name:'Level '+i,xpReq:xp,unlock:['Kelapa']};
    xp*=2;
   }
-  // Tambah nama khusus untuk level milestone
   levels[1].name='Pemula';
   levels[5].name='Pedagang Desa';
   levels[10].name='Juragan Kecil';
@@ -79,7 +105,7 @@ const STORY=[
  ['Narator','📜','Kakekmu wafat minggu lalu. Warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif (Aset Rp 250.000.000) + uang tunai Rp 5.000.000.'],
  ['Kakek','👴','"Nak, ingat hukum kakek: kelapa petik punya waktu. ≤14 hari: muda (enak untuk es). 15-25 hari: tua (jadi santan, harga jatuh). >25 hari: busuk (rugi total)."'],
  ['Kakek','👴','"Tengkulak borong siang hari. Warung ramai pagi sampai malam. Kalau kau berani olah sendiri, untung itu punyamu."'],
- ['Kamu','🧑‍🌾','"Aku tidak akan menjual tanah ini. Aku akan menjadi pengusaha dari tanah ini."'],
+ ['Kamu','‍🌾','"Aku tidak akan menjual tanah ini. Aku akan menjadi pengusaha dari tanah ini."'],
  ['Mentor','','"Selamat bekerja, Bos. Biaya hidup berjalan tiap hari. Kelola modal dengan bijak."']
 ];
 const LEARN=[
