@@ -8,13 +8,15 @@ const DATA={
  cycleDays:30,
  matureDays:1080,
  seedling:{price:50000,labor:10000},
- es:{price:5000},
+ es:{price:5000,glassesPerCoconut:4},
  buyFromFarmer:3500,
  buyFromTengkulak:5000,
  shop:{
   iceKarung:{name:'Es Batu 1 Karung',price:20000,portions:40,unit:'karung'},
-  sugarBloc:{name:'Gula Merah 1 Blok',price:20000,portions:50,unit:'blok'},
-  cupPack:{name:'Cup Plastik 1 Pak (20 pcs)',price:8000,pcs:20,unit:'pak'},
+  // Business benchmark: Rp20.000 per syrup batch, about 1 L, serving 50 glasses (Rp400/glass). Ingredient weight per batch is an estimate based on a Rp20.000/kg gula merah reference; water and cooking fuel are not included.
+  sugarBloc:{name:'Sirup Gula Merah 1 Tupperware (±1 L)',price:20000,portions:50,unit:'batch'},
+  // Align with the existing warung starter packs and current 16 oz marketplace comparables: Rp15.000 per 50 cups (Rp300/cup).
+  cupPack:{name:'Cup Plastik 1 Pak (50 pcs)',price:15000,pcs:50,unit:'pak'},
   fridge:{name:'Kulkas Mini 1 Unit',price:2000000,unit:'unit',capacity:200}
  },
  warungPackages:{
@@ -102,7 +104,7 @@ const STORY=[
 ];
 const LEARN=[
  '1 pohon biasa = 20 butir/bulan; super = 30 butir/bulan. Bibit super Rp50.000 + tanam Rp10.000 per pohon; 20 pohon membutuhkan Rp1.200.000, termasuk biaya tanam Rp200.000.',
- 'Es kelapa: Rp 5.000/gelas. 1 butir = 4 gelas. HPP per gelas ≈ Rp 1.525 (es, gula, cup).',
+ 'Es kelapa: Rp5.000/gelas; 1 butir = 4 gelas. Subtotal bahan non-kelapa ≈ Rp1.200/gelas (es Rp500 + sirup gula merah Rp400 + cup Rp300); belum termasuk kelapa, tenaga kerja, air/gas, susut, transportasi, dan biaya lokasi.',
  'Kelapa utuh muda laku Rp 13.000/butir. Kelapa tua (santan) laku Rp 3.500/butir.',
  'Tips: Gunakan "Paket Hemat" saat membuka warung untuk menekan modal awal. Beli bahan sesuai rekomendasi cuaca.'
 ];
