@@ -84,3 +84,20 @@ header h1{letter-spacing:.2px}
 .accounting-note{font-size:12px;color:#5b6470;background:#f5f7f6;border-radius:6px;padding:10px;margin-top:8px}
 @media(min-width:700px){.container{max-width:760px}}
 @media(max-width:420px){.container{padding:12px}.stats-bar{gap:6px}.stat{padding:8px 5px;font-size:12px}.modal-content{padding:14px;width:96%}}
+
+
+/* Warung scene polish: ringan, 2D, tanpa aset eksternal */
+.scene{isolation:isolate;background:linear-gradient(180deg,#8ed5f5 0%,#d7f0fb 48%,#9bcf72 49%,#5f9d4d 100%);border:3px solid #fff;box-shadow:inset 0 0 0 1px rgba(20,70,40,.18),0 8px 24px rgba(0,0,0,.18)}
+.scene:before{content:"";position:absolute;inset:0 0 43% 0;background:radial-gradient(circle at 16% 24%,rgba(255,255,255,.9) 0 18px,transparent 19px),radial-gradient(circle at 22% 24%,rgba(255,255,255,.7) 0 12px,transparent 13px),linear-gradient(90deg,transparent 0 7%,rgba(255,255,255,.14) 7% 8%,transparent 8% 100%);z-index:-1}
+.scene:after{content:"";position:absolute;left:0;right:0;bottom:0;height:28%;background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 28px,rgba(0,0,0,.04) 28px 30px),linear-gradient(#7ab85b,#4c873e);z-index:-1}
+.stall{filter:drop-shadow(0 4px 2px rgba(0,0,0,.18));transform-origin:bottom center;animation:stallIdle 3s ease-in-out infinite}
+.table{width:100px;height:12px;left:16%;bottom:70px;border-radius:3px;background:linear-gradient(#b77a42 0 28%,#8c542b 29% 100%);box-shadow:0 4px 0 #6d3e22,2px 7px 7px rgba(0,0,0,.2)}
+.table:before,.table:after{content:"";position:absolute;top:10px;width:8px;height:24px;background:#84502c;border-radius:0 0 2px 2px}.table:before{left:12px}.table:after{right:12px}
+.keeper{filter:drop-shadow(0 3px 2px rgba(0,0,0,.2));animation:keeperIdle 1.8s ease-in-out infinite}
+.customer{filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));will-change:left,transform}
+.customer.walk .human-figure{animation:walkBounce .28s infinite alternate}
+.customer .h-head:after{content:"";position:absolute;left:3px;top:6px;width:2px;height:2px;border-radius:50%;background:#333;box-shadow:6px 0 #333}
+.bubble{border:1px solid rgba(20,70,40,.14);font-weight:700;white-space:nowrap}
+@keyframes stallIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes keeperIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.stall,.keeper,.customer.walk .human-figure{animation:none!important;transition:none!important}}
