@@ -225,12 +225,11 @@ function buySeedling(n){
  save();render();showAccelOffer();
 }
 function accelIAP(){
- const im=S.trees.filter(t=>!isMature(t));
- if(!im.length){msg('Tidak ada pohon belum berbuah.');return;}
- if(!confirm('Simulasi: Bundle percepatan 5 pohon seharga Rp 1.000?'))return;
- im.sort((a,b)=>a.plantedDay-b.plantedDay).slice(0,5).forEach(t=>{t.mature=true;});
- S.realMoney+=1000;ledger('IAP','Bundle percepatan 5 pohon',0);
- save();render();
+ // Jangan mengaku menerima pembayaran tanpa verifikasi server dari penyedia pembayaran.
+ const im=(S.trees||[]).filter(t=>!isMature(t));
+ if(!im.length){msg('Tidak ada pohon yang membutuhkan percepatan.');return;}
+ msg('Speedy: harga rancangan US$1 per 20 pohon. Pembelian belum aktif karena backend pembayaran dan verifikasi transaksi belum terpasang. Tidak ada uang yang ditagih atau pertumbuhan yang diubah.');
+ showModal('<h3>⚡ Speedy — Percepatan Kebun</h3><p>Rancangan harga: <b>US$1 per 20 pohon</b>. Untuk melindungi pemain, fitur belum menerima pembayaran sampai tersedia backend pembayaran, validasi tanda tangan/webhook, pencegahan transaksi ganda, dan pencatatan pesanan.</p><p>Tidak ada pembayaran yang dilakukan pada layar ini. Setelah integrasi resmi selesai, pembelian akan diterapkan hanya pada pohon yang dipilih dan transaksi terverifikasi.</p><button class="btn" onclick="closeModal()">Tutup</button>');
 }
 function accelAd(){
  if(S.lastAdDay===S.day){msg('⚠️ Skip iklan sudah dipakai hari ini.');return;}
