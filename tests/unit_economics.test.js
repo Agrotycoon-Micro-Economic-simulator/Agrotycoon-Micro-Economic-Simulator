@@ -8,8 +8,11 @@ const scenario = {
   name: "Stand es kelapa membeli kelapa",
   currency: "IDR",
   sellPricePerUnit: 5000,
+  sellPriceEvidence: gameEvidence,
   plannedSalesUnitsPerMonth: 1000,
+  salesVolumeEvidence: gameEvidence,
   wasteRate: 0,
+  wasteEvidence: gameEvidence,
   inputs: [{
     id: "coconut",
     quantityPerOutput: 0.25,
@@ -69,6 +72,14 @@ const scenario = {
   assert.equal(result.complete, false);
   assert.equal(result.metrics, null, "unknown costs are not silently treated as zero");
   assert.ok(result.errors.some(error => error.includes("purchasePricePerUnit")));
+}
+
+{
+  const missingProvenance = structuredClone(scenario);
+  delete missingProvenance.sellPriceEvidence;
+  const result = economics.calculate(missingProvenance);
+  assert.equal(result.ok, true, "complete numeric inputs can be calculated");
+  assert.equal(result.evidenceStatus, "incomplete-provenance", "missing price provenance must be visible");
 }
 
 {
