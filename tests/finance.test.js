@@ -70,12 +70,20 @@ function setup() {
 
 {
   const { S, finance } = setup();
+  S.finance.debt = 1250000;
+  S.finance.payablesPayroll = 375000;
+  assert.equal(finance.totalDebt(), 1625000, "summary includes legacy debt and payroll payable");
   const result = finance.apply(2000000, 30);
   assert.equal(result.ok, true);
+  assert.equal(finance.totalDebt(), 3625000, "new loan is added without dropping legacy liabilities");
   S.day = result.loan.dueDay;
   finance.accrueDay();
   assert.equal(result.loan.status, "overdue", "loan becomes overdue on/after due day");
-  assert.equal(finance.totalDebt(), result.loan.principal + result.loan.interestDue, "overdue principal and interest remain liabilities");
+  assert.equal(
+    finance.totalDebt(),
+    result.loan.principal + result.loan.interestDue + 1625000,
+    "overdue principal and interest remain liabilities alongside legacy obligations"
+  );
 }
 
 {
@@ -88,4 +96,4 @@ function setup() {
   assert.equal(finance.repay(loan.id, loan.principal + 1).ok, false, "repayment above total due is rejected");
   assert.equal(finance.repay(loan.id, 1).ok, false, "zero/invalid repayment amount is rejected");
 }
-console.log("PASS: finance origination, daily accrual, idempotence, partial/full repayment, overdue and validation.");
+console.log("PASS: finance origination, daily accrual, idempotence, partial/full repayment, legacy liabilities, overdue and validation.");
