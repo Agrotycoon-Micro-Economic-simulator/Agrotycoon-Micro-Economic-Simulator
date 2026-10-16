@@ -21,8 +21,11 @@
   const land=(state.landSystem&&Array.isArray(state.landSystem.lands)?state.landSystem.lands:[]).reduce((sum,l)=>sum+Math.max(0,number(l.purchaseCost))+Math.max(0,number(l.improvements)),0);
   const data=typeof DATA!=="undefined"?DATA:(root.DATA||{});
   const equipment=state.warung&&state.warung.fridge?number((data.shop&&data.shop.fridge||{}).price):0;
-  const prices=data.priceTengkulak||{};\n  const stock=number(state.stock&&state.stock.biasa)*number(prices.biasa)+number(state.stock&&state.stock.super)*number(prices.super);
-  const finance=state.finance||{};\n  const loanDebt=(Array.isArray(finance.loans)?finance.loans:[]).filter(l=>["active","overdue"].includes(l.status)).reduce((sum,l)=>sum+number(l.principal)+number(l.interestDue),0);\n  const debt=number(finance.debt)+number(finance.payablesPayroll)+loanDebt;
+  const prices=data.priceTengkulak||{};
+  const stock=number(state.stock&&state.stock.biasa)*number(prices.biasa)+number(state.stock&&state.stock.super)*number(prices.super);
+  const finance=state.finance||{};
+  const loanDebt=(Array.isArray(finance.loans)?finance.loans:[]).filter(l=>["active","overdue"].includes(l.status)).reduce((sum,l)=>sum+number(l.principal)+number(l.interestDue),0);
+  const debt=number(finance.debt)+number(finance.payablesPayroll)+loanDebt;
   return Math.max(0,number(state.gold)+land+equipment+stock-debt);
  }
  function rule(id){return RULES.find(r=>r.id===id)||null}
