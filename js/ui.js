@@ -46,6 +46,8 @@ function render(){
     if(readyCount>0&&stockQty()===0)h+='<button class="btn btn-success" onclick="harvest()">🌾 Panen ('+readyCount+' pohon)</button>';
    }
    if(S.path==='warung'&&S.warung&&S.warung.open){
+    if((S.warung.successfulSales||0)>=3)h+='<button class="btn '+(S.warung.autoMode?'btn-success':'btn-primary')+'" onclick="toggleWarungMode()">'+(S.warung.autoMode?'🤖 Mode Otomatis AKTIF — Ubah ke Manual':'🧑‍🍳 Mode Manual — Aktifkan Otomatis')+'</button>';
+    else h+='<p class="mode-hint">Mode otomatis terbuka setelah 3 transaksi penjualan berhasil ('+(S.warung.successfulSales||0)+'/3).</p>';
     h+='<button class="btn btn-primary" onclick="shopMaterials()">🛒 Belanja Bahan (Smart Rec)</button>';
     if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas (Rp 2.000.000)</button>';
     // Upgrade lokasi warung
@@ -63,6 +65,8 @@ function render(){
    if(S.path==='warung'||S.path==='mix'){
     if(!S.warung||!S.warung.open){
      h+='<button class="btn btn-primary" onclick="openWarung()">🏪 Buka Warung (Pilih Paket)</button>';
+    }else if(S.warung.autoMode){
+     h+='<p class="mode-hint">🤖 Warung berjalan otomatis hari ini. Anda bisa lanjut mengelola usaha lain.</p>';
     }else if(!S.warung.operatedToday){
      h+='<button class="btn btn-success" onclick="openScene()">🏪 BUKA WARUNG (09-21)</button>';
     }
@@ -99,7 +103,7 @@ function stockClassSafe(){
  if(age<=DATA.degrade.tua)return 'tua';
  return 'busuk';
 }
-function setPhase(p){S.phase=p;save();render();}
+function setPhase(p){S.phase=p;if(p==='siang'&&S.warung&&S.warung.autoMode)runAutoWarungDay();save();render();}
 function goSore(){
  if(S.phase==='siang'&&S.warung&&S.warung.open&&!S.warung.operatedToday){
   if(!confirm('Warung belum dibuka hari ini. Lewati?'))return;
@@ -541,4 +545,36 @@ function completeAutoSell(qty, hargaPerButir){
  
  // Cek achievement
  if(typeof checkAllAchievements === 'function') checkAllAchievements();
+}
+
+
+// MODE WARUNG MANUAL / OTOMATIS
+function toggleWarungMode(){
+ if(!S.warung||!S.warung.open){msg('Buka warung terlebih dahulu.');return;}
+ if((S.warung.successfulSales||0)<3){msg('Mode otomatis terbuka setelah 3 penjualan berhasil.');return;}
+ S.warung.autoMode=!S.warung.autoMode;
+ save();render();
+ msg(S.warung.autoMode?'Mode otomatis aktif. Warung akan beroperasi saat fase siang.':'Mode manual aktif. Buka warung secara manual pada fase siang.');
+}
+function runAutoWarungDay(){
+ if(!S.warung||!S.warung.open||!S.warung.autoMode||S.warung.operatedToday)return;
+ S.warung.operatedToday=true;
+ const location=S.warung.location||'depanRumah';
+ const locData=DATA.warungLocations[location]||DATA.warungLocations.depanRumah;
+ const demand=Math.floor(demandToday()*(locData.minBuyersModifier||1));
+ const wholeDemand=wholeBuyersToday();
+ if(!S.dayLog.sales)S.dayLog.sales={es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0};
+ S.dayLog.buyerCount=(S.dayLog.buyerCount||0)+demand+wholeDemand;
+ for(let i=0;i<demand;i++){
+  if(trySellEs())continue;
+  S.dayLog.lost=(S.dayLog.lost||0)+1;
+  S.stats.lostSales=(S.stats.lostSales||0)+1;
+ }
+ for(let i=0;i<wholeDemand;i++){
+  if(trySellWhole())continue;
+  S.dayLog.lost=(S.dayLog.lost||0)+1;
+  S.stats.lostSales=(S.stats.lostSales||0)+1;
+ }
+ save();render();
+ say('Sistem Warung','🤖','Operasi otomatis selesai. Es terjual '+(S.dayLog.sales.es||0)+', kelapa utuh '+(S.dayLog.sales.whole||0)+'.');
 }
