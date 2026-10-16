@@ -23,6 +23,22 @@
     return "incomplete-provenance";
   }
 
+  function combineEvidenceStatuses(statuses) {
+    if (!statuses.length || statuses.some(status => status === "unknown" || status === "incomplete-provenance")) return "incomplete-provenance";
+    if (statuses.every(status => status === "source-backed")) return "source-backed";
+    return "assumption-containing";
+  }
+
+  function inputEvidenceStatuses(input) {
+    const statuses = [evidenceStatus(input.quantityEvidence)];
+    if (input.sourcingMode === "buy") statuses.push(evidenceStatus(input.purchasePriceEvidence));
+    if (input.sourcingMode === "own") {
+      statuses.push(evidenceStatus(input.ownProductionCostEvidence));
+      statuses.push(evidenceStatus(input.marketOpportunityPriceEvidence));
+    }
+    return statuses;
+  }
+
   function validateScenario(scenario) {
     const errors = [];
     if (!scenario || typeof scenario !== "object") return { ok: false, errors: ["scenario harus berupa objek"] };
@@ -100,7 +116,7 @@
         standCashCost: qty * standUnitCost,
         integratedChainCost: qty * integratedUnitCost,
         opportunityValue: qty * opportunityUnitCost,
-        evidenceStatus: evidenceStatus(input.evidence)
+        evidenceStatus: combineEvidenceStatuses(inputEvidenceStatuses(input))
       });
     }
 
@@ -116,7 +132,7 @@
     const accountingCosts = integratedInputCost + variableCost + fixedCost + depreciation;
     const capexCashOutflow = scenario.capex.reduce((sum, asset) => sum + asset.amount, 0);
     const evidence = [evidenceStatus(scenario.sellPriceEvidence), evidenceStatus(scenario.salesVolumeEvidence), evidenceStatus(scenario.wasteEvidence)];
-    for (const input of scenario.inputs) evidence.push(evidenceStatus(input.evidence));
+    for (const input of scenario.inputs) evidence.push(...inputEvidenceStatuses(input));
     for (const cost of scenario.variableCosts) evidence.push(evidenceStatus(cost.evidence));
     for (const cost of scenario.fixedCostsMonthly) evidence.push(evidenceStatus(cost.evidence));
     for (const asset of scenario.capex) evidence.push(evidenceStatus(asset.evidence));
@@ -164,6 +180,6 @@
     };
   }
 
-  root.AgroUnitEconomics = Object.freeze({ validateScenario, calculate, evidenceStatus });
+  root.AgroUnitEconomics = Object.freeze({ validateScenario, calculate, evidenceStatus, combineEvidenceStatuses });
   if (typeof module !== "undefined" && module.exports) module.exports = root.AgroUnitEconomics;
 })(typeof window !== "undefined" ? window : globalThis);
