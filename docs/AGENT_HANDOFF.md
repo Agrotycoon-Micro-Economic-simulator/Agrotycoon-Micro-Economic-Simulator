@@ -34,7 +34,7 @@ Longer-term: full Tier 1–4 commodity workflows. The owner's Library definition
 Latest: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/95e2a3be880ccbf75620e4bd42490489c010cac6
 
 ## Real-data status — do not overstate
-Existing status ledger counted 8 food-price points (2026-03), 5 subsidized-fertilizer HET points (2025-10-22), 3 feed points (2026-09), 17 live-cattle producer prices (snapshot 2026-10-14), and 14 toll segment tariffs. That is 33 food/input/animal price points plus 14 transport entries, NOT thousands of historical observations. Verify registry before repeating counts.
+The curated registry contains 8 food-price points (2026-03), 5 subsidized-fertilizer HET points (2025-10-22), 3 feed points (2026-09), 17 live-cattle producer prices (snapshot 2026-10-14), and 46 annual coconut producer/consumer price points (2002–2024). Total: 79 commodity/input price records plus 14 toll-segment entries. This is NOT thousands of historical observations. Verify registry before repeating counts.
 Sources to ingest: Bapanas monthly producer https://data.badanpangan.go.id/datasetpublications/5jb/rata-rata-harga-pangan-bulanan-produsen-provinsi ; consumer https://data.badanpangan.go.id/datasetpublications/sw6/rata-rata-harga-pangan-bulanan-konsumen-provinsi ; BPS agriculture producer price statistics; SIMPONI Ternak https://simponiternak-v1.pertanian.go.id/harga-komoditas.php ; SPORA https://simpakan.ditjenpkh.pertanian.go.id/spora/backend/web/site/data-harga ; BNPB https://data.bnpb.go.id/dataset/data-bencana-indonesia ; BMKG climate data. Preserve raw files, provenance, license, normalized records, checksum and row-level validation report.
 
 ## Completion estimate (planning estimate, not measured)
@@ -64,19 +64,19 @@ P2 commodities:
 10. Complete one source-backed vertical slice end-to-end before expanding all commodities.
 
 P3 world engine:
-10. Wire player harvest/purchases/storage/processing/sales to regional inventory, production, demand, shipments, spoilage and price.
-11. Test one route and 3–5 commodities with sourced costs/time. Unknown cost must be shown unknown, not silently zero.
-12. Add one disaster family with exposure + crop stage + damage + recovery + price response + causal audit; deterministic replay and stock-conservation tests.
-13. Expand regions/events only after calibration/held-out validation.
+11. Wire player harvest/purchases/storage/processing/sales to regional inventory, production, demand, shipments, spoilage and price.
+12. Test one route and 3–5 commodities with sourced costs/time. Unknown cost must be shown unknown, not silently zero.
+13. Add one disaster family with exposure + crop stage + damage + recovery + price response + causal audit; deterministic replay and stock-conservation tests.
+14. Expand regions/events only after calibration/held-out validation.
 
 P4 agents/government:
-14. Rule-based NPCs first (farmer, collector, wholesaler, retailer, processor, transporter, lender, extension officer, regulator) with budgets, inventory, goals, offers, contracts and deterministic decisions.
-15. Mentor/consultant advice from actual game state + sourced data, showing calculation and uncertainty.
-16. Government subsidies/procurement/extension/tax/permits/disaster response only from verified rules, otherwise clearly marked game scenarios.
+15. Rule-based NPCs first (farmer, collector, wholesaler, retailer, processor, transporter, lender, extension officer, regulator) with budgets, inventory, goals, offers, contracts and deterministic decisions.
+16. Mentor/consultant advice from actual game state + sourced data, showing calculation and uncertainty.
+17. Government subsidies/procurement/extension/tax/permits/disaster response only from verified rules, otherwise clearly marked game scenarios.
 
 P5 product:
-17. Audit every unlock/action path, navigation, mobile layout, local save/new game/migration, stock/accounting/assets/payroll/credit end-to-end.
-18. Only after local engine acceptance, design backend/Supabase and monetization.
+18. Audit every unlock/action path, navigation, mobile layout, local save/new game/migration, stock/accounting/assets/payroll/credit end-to-end.
+19. Only after local engine acceptance, design backend/Supabase and monetization.
 
 ## Latest unit-economics status\n- New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. The unit-economics test passed in a scratch Node v22.16.0 harness built from the authored module/test logic; it has not been run from a repository checkout. The committed real-economic-data test has not yet been executed against the full registry in a repository checkout. Do not claim full test-suite success.\n- The existing lesson says es-kelapa HPP ~Rp1,525 for ice/sugar/cup, while current configured component arithmetic is Rp500 + Rp400 + Rp400 = Rp1,300/glass. Difference Rp225 is unexplained. Coconut input, labor, spoilage, utilities, transport and fixed costs are additional. Do not call the current subtotal complete HPP.\n\n## Resume protocol
 Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's Tier 1–4 definitions are in Library `data game.docx` and have been transcribed to `docs/PRODUCTION_TIERS.md`; the Library's market-price table uses a separate market-stage axis.
