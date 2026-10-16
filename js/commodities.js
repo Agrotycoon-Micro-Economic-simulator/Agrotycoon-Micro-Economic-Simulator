@@ -26,7 +26,6 @@ const COMMODITIES=[
 ["kunyit","Kunyit","rempah",240,3500,9000,6500000,"tanaman"],
 ["lengkuas","Lengkuas","rempah",240,3000,7000,5500000,"tanaman"],
 ["serai","Serai","rempah",120,4000,5000,4000000,"tanaman"],
-["kacang_kedelai_edamame","Edamame","pangan",80,1800,18000,7000000,"tanaman"],
 ["tebu","Tebu","perkebunan",300,60000,1200,15000000,"tanaman"],
 ["kopi","Kopi","perkebunan",1095,900,45000,18000000,"pohon"],
 ["kakao","Kakao","perkebunan",900,1200,32000,14000000,"pohon"],
@@ -60,8 +59,7 @@ const COMMODITIES=[
 ["udang_vaname","Udang Vaname","perikanan",100,300,70000,12000000,"kolam"],
 ["patin","Patin","perikanan",180,300,28000,5500000,"kolam"],
 ["madu","Lebah Madu","peternakan",180,15,85000,3500000,"koloni"],
-["jamur_tiram","Jamur Tiram","hortikultura",45,800,16000,5000000,"rak"],
-["magot","Maggot BSF","peternakan",18,100,12000,1500000,"wadah"]
+["jamur_tiram","Jamur Tiram","hortikultura",45,800,16000,5000000,"rak"]
 ].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.35),careCost:Math.round(setupCost*.15),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
 if(COMMODITIES.length!==60)throw new Error("Katalog harus berisi tepat 60 komoditas; saat ini "+COMMODITIES.length);
 const COMMODITY_BY_ID=Object.fromEntries(COMMODITIES.map(c=>[c.id,c]));
