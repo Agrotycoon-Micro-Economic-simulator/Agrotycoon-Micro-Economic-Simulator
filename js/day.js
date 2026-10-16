@@ -64,6 +64,11 @@ function finishDay(){
  L.dailyExpenses=livingDetails;
  
  if(typeof tickAgricultureDay==='function')tickAgricultureDay();
+ // Advance the seeded world economy before incrementing the in-game clock.
+ if(typeof AgroWorldSim!=='undefined'){
+  const worldEvents=AgroWorldSim.updateDay(S.day);
+  worldEvents.forEach(ev=>ledger('DUNIA_SIMULASI',ev.headline+' — '+ev.region,0,{type:ev.type,classification:ev.classification,affected:ev.affected}));
+ }
  const mOld=monthOf(S.day);
  S.day++;
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
