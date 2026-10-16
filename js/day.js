@@ -86,7 +86,7 @@ function finishDay(){
  }
  S.cuaca=rollWeather();
  const net=-L.expense+L.gross;
- S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,net,
+ S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,net,cashIn:Number(L.cashIn)||0,cashOut:Number(L.cashOut)||0,cashflow:(Number(L.cashIn)||0)-(Number(L.cashOut)||0),
   es:L.sales.es,whole:L.sales.whole,lost:L.lost,
   mat:Object.assign({},L.materials),iceMelt:L.lossIcePortions,
   shopping:L.shopping,living:L.living,bills:L.bills,
