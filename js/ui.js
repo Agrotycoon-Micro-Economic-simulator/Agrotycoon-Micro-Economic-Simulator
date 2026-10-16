@@ -122,7 +122,7 @@ function showPathChoose(){
 }
 function showTokoPertanian(){
  let h='<h3>🌱 Toko Pertanian</h3>';
- h+='<p><strong>Bibit Kelapa Super:</strong> Rp 60.000/pohon. Hasil 30 butir/bulan.</p>';
+ h+='<p><strong>Bibit Kelapa Super:</strong> bibit Rp 50.000 + biaya tanam Rp 10.000/pohon. Total 20 pohon = Rp 1.200.000 (biaya tanam Rp 200.000). Hasil 30 butir/bulan saat matang.</p>';
  h+='<p>Slot kosong: '+emptySlots()+'</p>';
  h+='<input type="number" id="inp-seed" min="1" max="'+emptySlots()+'" value="1">';
  h+='<button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Beli & Tanam</button>';
@@ -140,7 +140,7 @@ function showSupplyShop(){
 }
 function showSeedShop(){
  const empty=emptySlots();
- showModal('<h3>🌱 Bibit Kelapa Super</h3><p>Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+empty+'</p><input type="number" id="inp-seed" min="1" max="'+empty+'" value="1"><button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Beli</button> <button class="btn" onclick="closeModal()">Batal</button>');
+ showModal('<h3>🌱 Bibit Kelapa Super</h3><p>Bibit Rp 50.000 + tanam Rp 10.000/pohon = Rp 60.000/pohon. Untuk 20 pohon: Rp 1.200.000 (biaya tanam Rp 200.000). Hasil 30 butir/bulan saat matang.</p><p>Slot kosong: '+empty+'</p><input type="number" id="inp-seed" min="1" max="'+empty+'" value="1"><button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Beli</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showAccelOffer(){
  showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
