@@ -111,7 +111,7 @@
     const opportunityCosts = opportunityInputCost + variableCost + fixedCost + depreciation;
     const accountingCosts = integratedInputCost + variableCost + fixedCost + depreciation;
     const capexCashOutflow = scenario.capex.reduce((sum, asset) => sum + asset.amount, 0);
-    const evidence = [];
+    const evidence = [evidenceStatus(scenario.sellPriceEvidence), evidenceStatus(scenario.salesVolumeEvidence), evidenceStatus(scenario.wasteEvidence)];
     for (const input of scenario.inputs) evidence.push(evidenceStatus(input.evidence));
     for (const cost of scenario.variableCosts) evidence.push(evidenceStatus(cost.evidence));
     for (const cost of scenario.fixedCostsMonthly) evidence.push(evidenceStatus(cost.evidence));
