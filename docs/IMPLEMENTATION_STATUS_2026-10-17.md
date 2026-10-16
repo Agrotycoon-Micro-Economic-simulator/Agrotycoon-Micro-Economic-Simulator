@@ -16,12 +16,20 @@ This ledger separates shipped code from incomplete work. No Supabase integration
 - Fixed the world simulation's state lookup: the save uses top-level lexical `let S`, so checking `window.S` prevented initialization.
 - Added `tests/world_simulation.test.js`.
 
+## Additional implementation in the latest pass
+
+- Added `kredit.html` and `js/finance.js`: local loan application, eligibility, capped principal, daily interest accrual, partial/full repayment, and overdue state.
+- Added `js/market_chain.js` and a market-chain table for producer, middleman, wholesale, direct-sale, and factory stages. Missing stages stay null; game-only values are labeled as parameters.
+- Added regional qualitative profiles for Banten, Central Java, East Java, Jambi, South Kalimantan, Central Kalimantan, South Sulawesi, NTB, and Riau, with farming/trade ideas and logistics risks. These are hypotheses, not official land suitability results.
+- Daily reports now separately track cash inflow, cash outflow, and net cash flow rather than conflating cash flow with profit. Accounting includes recorded loan/payroll liabilities and purchased land cost.
+- Importer now supports comma, semicolon, and tab-delimited CSV; Indonesian thousands/decimal separators; year/month periods; market-level field; and source URL provenance.
+
 ## Verification actually performed
 
 - JavaScript syntax compilation passed for the changed core JS modules and inline scripts in the principal frontend pages.
 - Runtime smoke test simulated 365 in-game days: nonnegative inventories, finite and bounded price indices, deterministic event sequence and price indices, and all generated bulletins marked `SIMULASI` passed.
 - Local module smoke test passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
-- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.
+- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.\n- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Runtime smoke tests passed for the 365-day world simulation, progression, staff payroll, loan origination/interest/repayment, and market/importer scripts.
 - A full browser end-to-end run was not performed. A local clone could not be obtained in the current runtime because network DNS resolution failed; this does not affect the GitHub commits but limits browser verification.
 
 ## Historical data coverage: honest count
