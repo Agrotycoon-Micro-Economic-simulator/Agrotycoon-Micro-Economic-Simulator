@@ -48,12 +48,17 @@ function render(){
    if(S.path==='warung'&&S.warung&&S.warung.open){
     h+='<button class="btn btn-primary" onclick="shopMaterials()">🛒 Belanja Bahan (Smart Rec)</button>';
     if(!S.warung.fridge)h+='<button class="btn btn-primary" onclick="buyFridge()">❄️ Beli Kulkas (Rp 2.000.000)</button>';
+    // Upgrade lokasi warung
+    if(S.warung.location==='depanRumah')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Ruko Pinggir Jalan (Rp 5.000.000)</button>';
+    if(S.warung.location==='pinggirJalan')h+='<button class="btn btn-warning" onclick="upgradeWarungLocation()">🏪 Upgrade ke Pasar/Kampus (Rp 15.000.000)</button>';
    }
    if(S.path==='tengkulak'||S.path==='mix'){
     h+='<button class="btn btn-primary" onclick="showTokoPertanian()">🌱 Toko Pertanian</button>';
    }
    if(!S.path)h+='<button class="btn btn-primary" onclick="showPathChoose()">🧭 Pilih Jalur Usaha</button>';
-   h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')"> Lanjut ke Siang</button>';
+   // Menu iklan
+   h+='<button class="btn btn-primary" onclick="showAdMenu()">📺 Nonton Iklan (Dapat Buff)</button>';
+   h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
   }else if(phase==='siang'){
    if(S.path==='warung'||S.path==='mix'){
     if(!S.warung||!S.warung.open){
@@ -64,15 +69,16 @@ function render(){
    }
    if(S.path==='tengkulak'||S.path==='mix'||!S.path){
     const sc=stockClassSafe();
-    if(sc==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()">💼 Jual ke Tengkulak</button>';
+    if(sc==='muda')h+='<button class="btn btn-warning" onclick="sellTengkulak()"> Jual ke Tengkulak</button>';
    }
    h+='<button class="btn btn-warning" onclick="goSore()">➡ Lanjut ke Sore</button>';
   }else{
    const sc=stockClassSafe();
-   if(sc==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()"> Jual kelapa TUA ke pasar</button>';
-   // FIX: Tombol beli dari luar HANYA muncul jika hari >= 15 DAN warung sudah buka
-   if(S.day >= 15 && S.warung && S.warung.open){
-    h+='<button class="btn btn-primary" onclick="showSupplyShop()">🥥 Beli Kelapa dari Luar (Stok Menipis)</button>';
+   if(sc==='tua')h+='<button class="btn btn-warning" onclick="sellPasar()">🛒 Jual kelapa TUA ke pasar</button>';
+   // Menu beli dari luar HANYA tgl 15-16
+   const dayOfMonth = ((S.day - 1) % 30) + 1;
+   if(dayOfMonth >= 15 && dayOfMonth <= 16 && S.warung && S.warung.open){
+    h+='<button class="btn btn-primary" onclick="showSupplyShop()">🥥 Beli Kelapa dari Luar (Hari '+dayOfMonth+' saja!)</button>';
    }
    if((S.day||0)>30)h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Bibit Kelapa Super</button>';
    h+='<button class="btn btn-danger" onclick="startSleep()">😴 Tidur (Ganti Hari)</button>';
@@ -123,7 +129,7 @@ function showTokoPertanian(){
 }
 function showSupplyShop(){
  showModal('<h3>🥥 Beli Kelapa dari Luar</h3>'+
- '<p style="font-size:13px;color:#666">Stok kelapa muda Anda mulai menipis. Beli dari luar untuk tetap jualan!</p>'+
+ '<p style="font-size:13px;color:#666">⚠️ HANYA tersedia tanggal 15-16 setiap bulan! Besok menu ini tidak muncul lagi.</p>'+
  '<div style="background:#e8f5e9;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 1: Petani Lain</strong><br>Harga: Rp 3.500/butir (murah)</p><button class="btn btn-primary" onclick="buyKelapaLuar(\'petani\')">Beli</button></div>'+
  '<div style="background:#fff3cd;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 2: Tengkulak</strong><br>Harga: Rp 5.000/butir (siap pakai)</p><button class="btn btn-warning" onclick="buyKelapaLuar(\'tengkulak\')">Beli</button></div>'+
  '<button class="btn" onclick="closeModal()">Tutup</button>');
@@ -133,7 +139,7 @@ function showSeedShop(){
  showModal('<h3>🌱 Bibit Kelapa Super</h3><p>Rp 60.000/pohon. Hasil 30 butir/bulan.</p><p>Slot kosong: '+empty+'</p><input type="number" id="inp-seed" min="1" max="'+empty+'" value="1"><button class="btn btn-primary" onclick="buySeedling(parseInt(el(\'inp-seed\').value)||1);closeModal()">Beli</button> <button class="btn" onclick="closeModal()">Batal</button>');
 }
 function showAccelOffer(){
- showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()"> Tunggu</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
+ showModal('<h3>⏳ Bibit Tertanam</h3><p>Berbuah setelah <b>1.080 hari</b>.</p><button class="btn btn-primary" onclick="closeModal()">🕰 Tunggu</button><button class="btn btn-warning" onclick="accelIAP();closeModal()">💎 Bundle Rp 1.000 / 5 pohon</button><button class="btn btn-success" onclick="accelAd();closeModal()">📺 Iklan (skip 30 hari)</button>');
 }
 function showReport(L,net){
  if(!L)L={sales:{},materials:{},dailyExpenses:[]};
@@ -147,14 +153,14 @@ function showReport(L,net){
  if(L.sales.tengkulak)h+='<tr><td>💼 Tengkulak</td><td class="pos">'+safeRp(L.sales.tengkulakRev||0)+'</td></tr>';
  if(L.sales.pasar)h+='<tr><td>🛒 Pasar</td><td class="pos">'+safeRp(L.sales.pasarRev||0)+'</td></tr>';
  h+='<tr><td><b>Total Kotor</b></td><td class="pos"><b>'+safeRp(L.gross||0)+'</b></td></tr></table>';
- h+='<h4> Pengeluaran Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
+ h+='<h4>📤 Pengeluaran Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
  L.dailyExpenses.forEach(d=>{h+='<tr><td>'+(d.item||'-')+'</td><td class="neg">-'+safeRp(d.amt||0)+'</td></tr>';});
  h+='<tr><td>🛒 Belanja bahan</td><td class="neg">-'+safeRp(L.shopping||0)+'</td></tr>';
  h+='<tr><td>👷 Kuli panen</td><td class="neg">-'+safeRp(L.labor||0)+'</td></tr>';
  h+='<tr><td>🏪 CAPEX</td><td class="neg">-'+safeRp(L.capex||0)+'</td></tr>';
  h+='<tr><td><b>Total Pengeluaran</b></td><td class="neg"><b>'+safeRp(L.expense||0)+'</b></td></tr></table>';
  h+='<h4>📦 Bahan Terpakai</h4><p>🥥 '+(L.materials.kelapa||0)+' |  '+(L.materials.ice||0)+' | 🍯 '+(L.materials.sugar||0)+' | 🥤 '+(L.materials.cup||0)+'</p>';
- if(L.lossIcePortions)h+='<p class="neg"> Es mencair '+L.lossIcePortions+' porsi</p>';
+ if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi</p>';
  const netNum=net||0;
  h+='<h3 style="margin-top:15px">NET PROFIT: <span class="'+(netNum<0?'neg':'pos')+'">'+safeRp(netNum)+'</span></h3>';
  h+='<p><b>🤖 AI:</b> "Kamu hari ini '+(netNum>=0?'untung':'rugi')+' bersih '+safeRp(Math.abs(netNum))+'. '+(netNum>=0?'Pertahankan.':'Evaluasi belanja & cuaca.')+'"</p>';
@@ -166,14 +172,18 @@ function openScene(){
  if(!S.warung)S.warung={};
  S.warung.operatedToday=true;
  SCENE.hour=DATA.hours.open;SCENE.done=false;SCENE.idx=0;
- const D=demandToday(),W=wholeBuyersToday();
+ // Hitung demand berdasarkan lokasi warung
+ const location = S.warung.location || 'depanRumah';
+ const locationMod = DATA.warungLocations[location].minBuyersModifier;
+ const D=Math.floor(demandToday()*locationMod);
+ const W=wholeBuyersToday();
  if(!S.dayLog)S.dayLog={};
  S.dayLog.buyerCount=D+W;
  SCENE.events=[];
  for(let i=0;i<D;i++)SCENE.events.push({h:DATA.hours.open+Math.floor(Math.random()*12),t:'es'});
  for(let i=0;i<W;i++)SCENE.events.push({h:DATA.hours.open+Math.floor(Math.random()*12),t:'whole'});
  SCENE.events.sort((a,b)=>a.h-b.h);
- safeText('sc-day','Hari '+(S.day||1)+' | '+((S.cuaca&&DATA.weather[S.cuaca])?DATA.weather[S.cuaca].name:'-'));
+ safeText('sc-day','Hari '+(S.day||1)+' | '+((S.cuaca&&DATA.weather[S.cuaca])?DATA.weather[S.cuaca].name:'-')+' | '+DATA.warungLocations[location].name);
  const keeperEl=el('keeper');
  if(keeperEl)keeperEl.textContent='👨‍🍳';
  updScene();
@@ -199,8 +209,6 @@ function spawnForHour(h){
  const list=SCENE.events.filter(e=>e.h===h);
  list.forEach((e,i)=>setTimeout(()=>spawnCustomer(e.t),i*500));
 }
-
-// FIX: Visual konsumen manusiawi (bukan jeruk)
 function spawnCustomer(t){
  const ws=el('warung-scene');
  if(ws&&ws.classList.contains('hidden'))return;
@@ -208,7 +216,6 @@ function spawnCustomer(t){
  if(!sc)return;
  const c=document.createElement('div');
  c.className='customer';
- // Variasi warna baju dan kulit untuk diversifikasi
  const skinColors=['#FFCC80','#D7A86E','#8D5524','#F1C27D','#E0AC69'];
  const shirtColors=['#2196F3','#E91E63','#4CAF50','#FF9800','#9C27B0','#00BCD4'];
  const skin=skinColors[Math.floor(Math.random()*skinColors.length)];
@@ -220,7 +227,7 @@ function spawnCustomer(t){
   let ok=false;
   try{ if(t==='es')ok=trySellEs(); else ok=trySellWhole(); }catch(e){ok=false;}
   if(ok){
-   c.innerHTML+='<span class="bubble">'+(t==='es'?'':'🥥')+'</span>';
+   c.innerHTML+='<span class="bubble">'+(t==='es'?'🍹':'')+'</span>';
    floatText(t==='es'?'+Rp5.000':'+Rp13.000');
   }else{
    c.innerHTML+='<span class="bubble">💢</span>';
@@ -266,7 +273,7 @@ function closeScene(silent){
   const esSold=(S.dayLog&&S.dayLog.sales)?(S.dayLog.sales.es||0):0;
   const wholeSold=(S.dayLog&&S.dayLog.sales)?(S.dayLog.sales.whole||0):0;
   const fridgeMsg=(S.warung&&S.warung.fridge)?' Sisa es aman di kulkas.':' Sisa es mencair malam ini.';
-  say('Mentor','','Warung tutup. Es '+esSold+', utuh '+wholeSold+'.'+fridgeMsg);
+  say('Mentor','🤖','Warung tutup. Es '+esSold+', utuh '+wholeSold+'.'+fridgeMsg);
  }
  save();render();
 }
@@ -285,8 +292,8 @@ OB.showSlide=function(){
  const portraitEl=el('st-portrait');
  if(portraitEl){
   if(s[0]==='Kamu'){
-   const avatars=PORTR.pemain||['🧑‍'];
-   portraitEl.textContent=avatars[S.avatar||0]||'🧑‍';
+   const avatars=PORTR.pemain||['🧑‍🌾'];
+   portraitEl.textContent=avatars[S.avatar||0]||'🧑‍🌾';
   }else{
    portraitEl.textContent=s[1]||'';
   }
@@ -320,6 +327,41 @@ function initAvatars(){
  const avatars=PORTR.pemain||['🧑‍🌾'];
  pick.innerHTML=avatars.map((p,i)=>'<button class="avatar-btn'+(i===0?' sel':'')+'" onclick="OB.av='+i+';initAvatars()">'+p+'</button>').join('');
 }
+
+// MENU IKLAN
+function showAdMenu(){
+ const adsWatched = S.adSeason ? S.adSeason.adsWatchedThisSeason : 0;
+ const currentBuff = calculateAdAchievementBuffs();
+ let h='<h3>📺 Nonton Iklan (Dapat Buff)</h3>';
+ h+='<p>Season saat ini: <b>'+adsWatched+' video ditonton</b></p>';
+ h+='<p>Buff aktif: <b>-'+((currentBuff.discount_rate||0)*100).toFixed(1)+'% harga beli</b></p>';
+ h+='<p style="font-size:12px;color:#666">Buff reset setiap 3 bulan. Nonton lagi untuk restore!</p>';
+ h+='<div style="background:#e3f2fd;padding:12px;margin:10px 0;border-radius:8px">';
+ h+='<p><strong>Milestone:</strong></p>';
+ h+='<p>10 video → -1% | 50 video → -3% | 100 video → -5%</p>';
+ h+='<p>500 video → -10% | 1000 video → -15% | 2500 video → -25%</p>';
+ h+='</div>';
+ h+='<button class="btn btn-primary" onclick="watchAd(\'discount_rate\',0.01)"> Tonton Iklan (+1% discount)</button>';
+ h+='<button class="btn" onclick="closeModal()">Tutup</button>';
+ showModal(h);
+}
+
+// UPGRADE LOKASI WARUNG
+function upgradeWarungLocation(){
+ const currentLocation = S.warung.location || 'depanRumah';
+ const upgrades = {
+  depanRumah: {next:'pinggirJalan',cost:5000000,name:'Ruko Pinggir Jalan'},
+  pinggirJalan: {next:'pasar',cost:15000000,name:'Pasar/Kampus/Pabrik'}
+ };
+ const upgrade = upgrades[currentLocation];
+ if(!upgrade){msg('⚠️ Lokasi sudah maksimal.');return;}
+ if(S.gold<upgrade.cost){msg('⚠️ Uang tidak cukup.');return;}
+ spend('CAPEX','Upgrade warung ke '+upgrade.name,upgrade.cost,'capex');
+ S.warung.location = upgrade.next;
+ say('Mentor','🤖','Warung upgrade ke '+upgrade.name+'! Demand meningkat!');
+ save();render();
+}
+
 console.log('=== UI.JS INIT ===');
 if(typeof initGameState==='function'){ initGameState(); } else { loadSaved(); }
 if(S&&!S.storyDone){ initAvatars(); }

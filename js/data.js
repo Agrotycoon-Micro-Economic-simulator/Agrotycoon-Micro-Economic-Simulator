@@ -17,10 +17,15 @@ const DATA={
   cupPack:{name:'Cup Plastik 1 Pak (20 pcs)',price:8000,pcs:20,unit:'pak'},
   fridge:{name:'Kulkas Mini 1 Unit',price:2000000,unit:'unit',capacity:200}
  },
- // PAKET PERLENGKAPAN WARUNG
  warungPackages:{
   hemat:{name:'Paket Hemat (Rekomendasi)', items:[['Meja bekas',75000],['Golok warisan',0],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:160000},
   standar:{name:'Paket Standar (Baru Semua)', items:[['Meja kayu baru',200000],['Golok baru',50000],['Tupperware baru',70000],['Cup plastik 50pcs',15000]], total:335000}
+ },
+ // LOKASI WARUNG (berpengaruh ke demand)
+ warungLocations:{
+  depanRumah:{name:'Depan Rumah',minBuyersModifier:1.0,desc:'Lokasi standar, demand normal'},
+  pinggirJalan:{name:'Ruko Pinggir Jalan',minBuyersModifier:1.5,desc:'Demand +50% dari depan rumah'},
+  pasar:{name:'Dekat Pasar/Kampus/Pabrik',minBuyersModifier:2.0,desc:'Demand +100% dari depan rumah'}
  },
  living:{
   rice:{name:'Beras 5 liter',price:65000,period:10},
@@ -48,21 +53,34 @@ const DATA={
   tengkulak:{name:'Jual ke Tengkulak + Bertani',desc:'Cepat dapat uang, fokus tanam komoditas lain.'},
   mix:{name:'Kombinasi',desc:'Sebagian ke tengkulak, sebagian untuk warung.'}
  },
- // SISTEM LEVEL & KOMODITAS
- levels:{
-  1:{name:'Pemula', xpReq:0, unlock:['Kelapa']},
-  2:{name:'Pedagang Desa', xpReq:100, unlock:['Kelapa','Toge']},
-  3:{name:'Juragan Kecil', xpReq:300, unlock:['Kelapa','Toge','Cabai Rawit']}
- },
- futureCommodities:['Jagung','Tomat','Ayam Pedaging','Lele','Bawang Merah']
+ // LEVEL 1-100 dengan XP DOUBLE
+ levels:(function(){
+  const levels={};
+  let xp=500;
+  for(let i=1;i<=100;i++){
+   levels[i]={name:'Level '+i,xpReq:xp,unlock:['Kelapa']};
+   xp*=2;
+  }
+  // Tambah nama khusus untuk level milestone
+  levels[1].name='Pemula';
+  levels[5].name='Pedagang Desa';
+  levels[10].name='Juragan Kecil';
+  levels[20].name='Pengusaha Sukses';
+  levels[30].name='Tuan Tanah';
+  levels[50].name='Konglomerat Desa';
+  levels[75].name='Miliarder';
+  levels[100].name='Legenda Agribisnis';
+  return levels;
+ })(),
+ futureCommodities:['Jagung','Tomat','Ayam Pedaging','Lele','Bawang Merah','Kentang','Sapi','Udang','Kopi','Teh','Coklat','Karet','Sawit']
 };
-const PORTR={kakek:'👴',tengkulak:'🧑‍💼',pedagang:'👩‍🌾',mentor:'🤖',pemain:['🧑‍🌾','👩‍🌾','🧔🏻','👨🏻']};
+const PORTR={kakek:'👴',tengkulak:'🧑‍',pedagang:'👩‍',mentor:'🤖',pemain:['🧑‍🌾','👩‍🌾','🧔','👨🏻']};
 const STORY=[
  ['Narator','📜','Kakekmu wafat minggu lalu. Warisan: lahan 2.430 m² dengan 10 pohon kelapa produktif (Aset Rp 250.000.000) + uang tunai Rp 5.000.000.'],
  ['Kakek','👴','"Nak, ingat hukum kakek: kelapa petik punya waktu. ≤14 hari: muda (enak untuk es). 15-25 hari: tua (jadi santan, harga jatuh). >25 hari: busuk (rugi total)."'],
  ['Kakek','👴','"Tengkulak borong siang hari. Warung ramai pagi sampai malam. Kalau kau berani olah sendiri, untung itu punyamu."'],
  ['Kamu','🧑‍🌾','"Aku tidak akan menjual tanah ini. Aku akan menjadi pengusaha dari tanah ini."'],
- ['Mentor','🤖','"Selamat bekerja, Bos. Biaya hidup berjalan tiap hari. Kelola modal dengan bijak."']
+ ['Mentor','','"Selamat bekerja, Bos. Biaya hidup berjalan tiap hari. Kelola modal dengan bijak."']
 ];
 const LEARN=[
  '1 pohon biasa = 20 butir/bulan; super = 30 butir/bulan. Upah kuli = Rp 500/butir.',
