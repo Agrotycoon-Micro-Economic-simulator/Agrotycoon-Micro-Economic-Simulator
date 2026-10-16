@@ -24,7 +24,7 @@ function initGameState(){
  const hasSave = localStorage.getItem(SAVE_KEY) !== null;
  if(hasSave){ loadSaved(); } else { loadFresh(); }
 }
-function loadFresh(){ S=defaultState(); save(); }
+function loadFresh(){ S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
 function loadSaved(){
  try{
   const r=localStorage.getItem(SAVE_KEY);
@@ -41,10 +41,12 @@ function loadSaved(){
    if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
    if(!S.xp)S.xp=0; if(!S.level)S.level=1;
    if(!S.unlockedAchievements)S.unlockedAchievements=[];
+   if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
+   if(!S.landSystem)S.landSystem=null;
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); }
 }
-function save(){ localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
+function save(){ if(S&&typeof ensureAgriState==='function')ensureAgriState(); localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
 function gainXP(amount){
  S.xp += amount;
  const nextLevel = S.level + 1;
