@@ -60,7 +60,8 @@ function updateDay(day){
    rs.inventory[c]=Math.max(0,rs.inventory[c]+produced-rs.demand[c]);
    const coverage=rs.demand[c]>0?rs.inventory[c]/rs.demand[c]:1;
    const disruption=rs.routeDisruption||0;
-   const raw=1+(1-Math.min(2,coverage))*CROPS[c].elasticity+disruption*0.35;
+   const targetStockDays=10;
+   const raw=1+(1-Math.min(2,coverage/targetStockDays))*CROPS[c].elasticity+disruption*0.35;
    indices[c]=Math.max(EXPERIMENTAL.priceClamp[0],Math.min(EXPERIMENTAL.priceClamp[1],raw));
   });
   rs.routeDisruption=Math.max(0,rs.routeDisruption-0.015);
