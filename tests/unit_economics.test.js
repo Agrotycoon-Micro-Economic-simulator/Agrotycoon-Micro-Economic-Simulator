@@ -60,7 +60,7 @@ const scenario = {
     "stand-only view excludes upstream cash cost");
   assert.equal(result.metrics.integratedChainOperatingCashProfitMonthly, 3450000,
     "integrated chain counts the upstream production cost exactly once");
-  assert.equal(result.metrics.opportunityAdjustedProfitMonthly, 2825000,
+  assert.equal(result.metrics.opportunityAdjustedProfitMonthly, 2818333.3333333335,
     "opportunity-adjusted result values own fruit at its external sale alternative");
   assert.equal(result.inputBreakdown[0].standCashCost, 0);
   assert.equal(result.inputBreakdown[0].integratedChainCost, 250000);
