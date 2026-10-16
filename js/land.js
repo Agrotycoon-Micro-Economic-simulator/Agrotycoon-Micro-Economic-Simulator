@@ -107,28 +107,39 @@ function showCommodityEconomics(focusId){
  if(qty>0){h+='<button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'b2b\')">Jual semua ke tengkulak/B2B</button> <button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'retail\')">Jual langsung/B2C</button> <button class="btn btn-success" onclick="processCommodity(\''+id+'\')">Olah produk jadi</button>';}
  h+='<details><summary>Catatan model</summary><p>'+e.notes+'</p></details></section>';
  });
- h+='<button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
+ h+='<button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
 function sellCommodity(id,channel){
  ensureAgriState();const e=COMMODITY_ECONOMICS[id];if(!e||id==="kelapa"){msg("Penjualan kelapa warisan tetap memakai sistem warung/tengkulak lama.");return;}
  const qty=S.landSystem.inventory[id]||0;if(qty<=0){msg("Persediaan kosong.");return;}
  const price=channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice,rev=Math.round(qty*price);
+ const distance=Number(prompt("Jarak pengiriman satu arah (km). Default 10 km:", "10"));if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; penjualan dibatalkan.");return;}
+ const vehicle=(prompt("Kendaraan: ketik motor atau pickup. Default pickup untuk volume besar:",qty>=20?"pickup":"motor")||"motor").toLowerCase();
+ const cold=/^(y|ya|yes|1)$/i.test(prompt("Gunakan box pendingin? Ketik ya atau tidak. Untuk cabai segar, sesuaikan kebutuhan rute/mutu.","tidak")||"tidak");
+ const logistics=estimateLogistics(qty,distance,vehicle,cold),net=rev-logistics.total;
+ if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+"\nOmzet: "+safeRp(rev)+"\nBBM: "+safeRp(logistics.fuel)+"\nUang jalan: "+safeRp(logistics.driver)+"\nBox pendingin: "+safeRp(logistics.coldBox)+"\nKemasan: "+safeRp(logistics.packaging)+"\nBiaya distribusi total: "+safeRp(logistics.total)+"\nKas bersih sebelum biaya budidaya: "+safeRp(net)))return;
  S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
- S.landSystem.inventory[id]=0;S.gold+=rev;S.dayLog.gross+=rev;
+ S.landSystem.inventory[id]=0;S.gold+=net;S.dayLog.gross+=rev;S.dayLog.expense+=logistics.total;
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
- S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,channel});
+ S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,channel,logisticsCost:logistics.total,netAfterLogistics:net});
  ledger("PENDAPATAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,"revenue",{commodity:id,quantity:qty,unitPrice:price});
- save();msg("Penjualan "+qty.toFixed(2)+" "+e.unit+" menghasilkan omzet "+safeRp(rev)+". Laba usaha harus mengurangi biaya produksi yang sudah dibukukan saat penanaman dan biaya distribusi yang relevan.");showCommodityEconomics(id);render();
+ if(logistics.total)ledger("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold});
+ save();msg("Omzet "+safeRp(rev)+"; biaya distribusi "+safeRp(logistics.total)+"; kas bersih sebelum biaya budidaya "+safeRp(net)+".");showCommodityEconomics(id);render();
 }
 function processCommodity(id){
  ensureAgriState();const e=COMMODITY_ECONOMICS[id];if(!e||id==="kelapa"){msg("Produk olahan komoditas ini belum diaktifkan di mode uji.");return;}
  const stock=S.landSystem.inventory[id]||0,p=e.processed,units=Math.floor(stock/p.inputKg);
  if(units<1){msg("Persediaan belum cukup untuk membuat satu unit "+p.name+".");return;}
  const input=units*p.inputKg,rev=units*p.price,cost=units*p.otherCost;
- if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet potensial "+safeRp(rev)+", biaya tambahan "+safeRp(cost)+". Produk dianggap langsung terjual dalam simulasi uji."))return;
- S.landSystem.inventory[id]=Math.round((stock-input)*100)/100;S.gold+=rev-cost;S.dayLog.gross+=rev;S.dayLog.expense+=cost;
+ const distance=Number(prompt("Jarak pengiriman produk jadi satu arah (km). Default 10 km:", "10"));if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; pengolahan dibatalkan.");return;}
+ const vehicle=(prompt("Kendaraan distribusi: motor atau pickup.","motor")||"motor").toLowerCase();
+ const cold=/^(y|ya|yes|1)$/i.test(prompt("Perlu box pendingin? Ketik ya/tidak.","tidak")||"tidak");
+ const logistics=estimateLogistics(units,distance,vehicle,cold);
+ if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet "+safeRp(rev)+", biaya bahan tambahan "+safeRp(cost)+", distribusi "+safeRp(logistics.total)+", kas bersih sebelum budidaya "+safeRp(rev-cost-logistics.total)+". Produk diasumsikan langsung terjual."))return;
+ S.landSystem.inventory[id]=Math.round((stock-input)*100)/100;S.gold+=rev-cost-logistics.total;S.dayLog.gross+=rev;S.dayLog.expense+=cost+logistics.total;
  ledger("PENDAPATAN","Penjualan produk jadi "+p.name,rev,"revenue",{commodity:id,units});
  ledger("OPEX","Biaya bahan tambahan "+p.name,cost,"expense",{commodity:id,units});
+ if(logistics.total)ledger("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:p.name,quantity:units,unitPrice:p.price,revenue:rev,processingCost:cost});
  save();msg("Produk jadi terjual: omzet "+safeRp(rev)+", biaya tambahan "+safeRp(cost)+", margin kas sebelum alokasi biaya budidaya "+safeRp(rev-cost)+".");showCommodityEconomics(id);render();
@@ -139,4 +150,20 @@ function resetTestCrops(){
  S.landSystem.lands.forEach(l=>{l.plots=(l.plots||[]).filter(p=>p.commodity==="kelapa");});
  S.landSystem.inventory={};S.landSystem.market={};S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
  save();showGarden();render();msg("Mode uji komoditas direset. Kelapa warisan dan progres utama tetap ada.");
+}
+
+function estimateLogistics(quantity,distanceKm,vehicle,coldBox){
+ const v=vehicle==="pickup"?"pickup":"motor",roundTrip=distanceKm*2,fuelPerLiter=13000,efficiency=v==="pickup"?8:35;
+ const fuel=Math.ceil(roundTrip/efficiency*fuelPerLiter),driver=v==="pickup"?150000:25000,cooling=coldBox?75000:0,packaging=Math.ceil(Math.max(0,quantity)*500);
+ return {distanceKm,vehicle:v,fuel,driver,coldBox:cooling,packaging,total:fuel+driver+cooling+packaging,assumptions:{fuelPerLiter,efficiency}};
+}
+function showLogisticsCalculator(){
+ const h='<h3>🚚 Kalkulator Distribusi</h3><p>Angka di bawah adalah parameter uji game, bukan tarif angkutan aktual. Biaya BBM diasumsikan Rp13.000/liter; konsumsi motor 35 km/l, pickup 8 km/l; uang jalan motor Rp25.000/trip, pickup Rp150.000/trip; box pendingin Rp75.000/trip; kemasan Rp500/kg/unit.</p><label>Jumlah barang (kg/unit)</label><input id="log-qty" type="number" min="0" value="20"><label>Jarak satu arah (km)</label><input id="log-distance" type="number" min="0" value="10"><label>Kendaraan</label><select id="log-vehicle"><option value="motor">Motor</option><option value="pickup">Pickup</option></select><label><input id="log-cold" type="checkbox"> Pakai box pendingin (+Rp75.000/trip)</label><button class="btn btn-primary" onclick="calculateLogisticsUI()">Hitung biaya</button><div id="log-result"></div><button class="btn" onclick="showCommodityEconomics()">Kembali</button>';
+ showModal(h);
+}
+function calculateLogisticsUI(){
+ const qty=Math.max(0,Number(el("log-qty").value)||0),distance=Number(el("log-distance").value),vehicle=el("log-vehicle").value,cold=el("log-cold").checked;
+ if(!Number.isFinite(distance)||distance<0){msg("Jarak harus nol atau lebih.");return;}
+ const r=estimateLogistics(qty,distance,vehicle,cold);
+ el("log-result").innerHTML='<section class="agri-card"><p>Jarak pulang-pergi: '+(distance*2)+' km</p><p>BBM: '+safeRp(r.fuel)+' ('+r.assumptions.efficiency+' km/liter)</p><p>Uang jalan: '+safeRp(r.driver)+'</p><p>Box pendingin: '+safeRp(r.coldBox)+'</p><p>Kemasan: '+safeRp(r.packaging)+'</p><h4>Total distribusi: '+safeRp(r.total)+'</h4><small>Belum termasuk tol, parkir, bongkar-muat, waktu tunggu, susut/kerusakan dan biaya izin bila berlaku.</small></section>';
 }
