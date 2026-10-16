@@ -102,3 +102,9 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Updated lesson to call Rp1,200/glass the listed **non-coconut consumables subtotal**, not full HPP: ice Rp500 + syrup Rp400 + cup Rp300. It excludes coconut, labor, water/gas, spoilage, transport and fixed costs.
 - Derived comparison: four glasses gross Rp20,000; whole coconut direct sale Rp13,000; four glasses' listed consumables Rp4,800; processing route's advantage over whole-fruit sale is Rp2,200/coconut before omitted costs. This is not net profit.
 - Added `docs/ES_KELAPA_OWNER_BENCHMARK.md` and `tests/es_kelapa_benchmark.test.js`. Run the new test before claiming it passes. No national producer price is substituted for the owner's direct customer price. No milk added.
+
+## Credit identifier integrity fix — 2026-10-17
+
+- Fixed `js/finance.js` loan ID generation: IDs now combine the timestamp with a module-local sequence and check existing loan records, preventing collisions when two applications occur during the same millisecond.
+- Added a deterministic regression case to `tests/finance.test.js` that freezes `Date.now()`, originates two loans, and asserts unique IDs plus correct combined liabilities.
+- Verification boundary: the GitHub repository could not be cloned in the current runtime because DNS resolution for github.com failed. The committed test has not yet been run with Node against a repository checkout. Do not report the repository test suite as passing until run in a real checkout.
