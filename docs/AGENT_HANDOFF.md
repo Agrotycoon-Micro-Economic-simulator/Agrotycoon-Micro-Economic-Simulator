@@ -61,7 +61,7 @@ P1 real data:
 6. Add provenance/freshness/quality UI; historical series must stay separated by market stage.
 
 P2 commodities:
-7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Unit economics contract is in `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`. Next: reconcile the es-kelapa HPP discrepancy (listed ice+sugar+cup arithmetic = Rp1,300/glass vs lesson text Rp1,525), then map buy-from-farmer, buy-from-collector, own-orchard and mixed strategies using sourced data and explicitly unknown values.
+7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Unit economics contract is in `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`. Es-kelapa owner benchmark is documented in `docs/ES_KELAPA_OWNER_BENCHMARK.md`. The listed non-coconut consumables subtotal is now Rp1,200/glass (ice 500 + syrup allowance 400 + cup 300), not full HPP. Preserve owner direct whole-coconut price Rp13,000, glass price Rp5,000, four glasses per coconut, no milk. Next: confirm actual gula merah grams used per 1 L Tupperware, then map buy-from-farmer, buy-from-collector, own-orchard and mixed strategies using sourced data and explicitly unknown values.
 8. Wire the new calculator to actual es-kelapa model state and business UI only after reconciling costs and sales-volume semantics; test that monthly profit/cashflow and internal transfer accounting agree.
 9. Define canonical per-commodity schema: suitable region/soil/climate, seed/breed, input bill of materials, tasks, duration/stages, labor/equipment, yield/quality, loss/storage, processing/byproducts, capex/working capital, buyers, units/prices, transport, risk and source references.
 10. Complete one source-backed vertical slice end-to-end before expanding all commodities.
@@ -84,7 +84,13 @@ P5 product:
 ## Latest unit-economics status
 - New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. Both committed tests passed when executed against fetched committed sources in an isolated V8 harness with Node API stubs; the unit-economics test also passed in a scratch Node v22.16.0 harness using equivalent local copies. Neither test was run from a repository checkout. Existing finance/world-simulation tests and browser E2E were not run; do not claim full test-suite success.
 - Static inspection of the committed coconut series found 46 unique year/stage rows (23 producer + 23 consumer), 2002–2024, with 2024 values Rp3,422 and Rp6,061 per coconut.
-- The existing lesson says es-kelapa HPP ~Rp1,525 for ice/sugar/cup, while current configured component arithmetic is Rp500 + Rp400 + Rp400 = Rp1,300/glass. Difference Rp225 is unexplained. Coconut input, labor, spoilage, utilities, transport and fixed costs are additional. Do not call the current subtotal complete HPP.
+- Es-kelapa benchmark correction: `js/data.js` now uses cup price Rp15,000/50 (Rp300 each), aligned with the existing starter-pack configuration and current marketplace comparisons. Listed non-coconut subtotal = Rp500 ice + Rp400 syrup allowance + Rp300 cup = Rp1,200/glass. It excludes coconut and other operating costs; do not call it complete HPP. See `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
 
 ## Resume protocol
 Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's Tier 1–4 definitions are in Library `data game.docx` and have been transcribed to `docs/PRODUCTION_TIERS.md`; the Library's market-price table uses a separate market-stage axis.
+
+## Latest owner benchmark correction
+- Added `docs/ES_KELAPA_OWNER_BENCHMARK.md` and `tests/es_kelapa_benchmark.test.js`.
+- `js/data.js` now preserves owner standards: direct whole coconut Rp13,000, es kelapa Rp5,000/glass, four glasses/coconut, no milk; syrup batch allowance Rp20,000/50 glasses; cup pack Rp15,000/50.
+- Corrected listed non-coconut consumables subtotal = Rp1,200/glass. Online cup prices are comparison evidence only, not a verified owner supplier invoice. Sugar batch cost remains provisional until actual gula merah grams per 1 L Tupperware are known. Water and cooking fuel remain excluded.
+- New regression test is committed but has not yet been executed. Run `node tests/es_kelapa_benchmark.test.js` against the checked-out branch; also rerun unit economics and core tests before further integration.
