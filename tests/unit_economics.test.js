@@ -65,6 +65,26 @@ const scenario = {
 }
 
 {
+  const integrated = structuredClone(scenario);
+  integrated.id = "coconut-chain-scope-test";
+  integrated.inputs[0] = {
+    id: "coconut", quantityPerOutput: 0.25, sourcingMode: "own",
+    ownProductionCostPerUnit: 1000, marketOpportunityPricePerUnit: 3500, evidence: gameEvidence
+  };
+  integrated.fixedCostsMonthly.push({ id: "orchard-maintenance", amountPerMonth: 100000, scope: "upstream", evidence: gameEvidence });
+  integrated.capex.push({ id: "orchard-assets", amount: 1200000, usefulLifeMonths: 12, scope: "upstream", evidence: gameEvidence });
+  const result = economics.calculate(integrated);
+  assert.equal(result.metrics.standOnlyOperatingCashProfitMonthly, 3700000, "stand-only cash result excludes upstream fixed costs");
+  assert.equal(result.metrics.integratedChainOperatingCashProfitMonthly, 3350000, "integrated result includes upstream fixed costs");
+  assert.equal(result.metrics.fixedCostMonthly, 100000);
+  assert.equal(result.metrics.standFixedCostMonthly, 0);
+  assert.equal(result.metrics.depreciationMonthly, 106666.66666666667);
+  assert.equal(result.metrics.standDepreciationMonthly, 6666.666666666667);
+  assert.equal(result.metrics.standCapexInitialCashOutflow, 160000);
+  assert.equal(result.metrics.capexInitialCashOutflow, 1360000);
+}
+
+{
   const incomplete = structuredClone(scenario);
   incomplete.inputs[0].purchasePricePerUnit = null;
   const result = economics.calculate(incomplete);
