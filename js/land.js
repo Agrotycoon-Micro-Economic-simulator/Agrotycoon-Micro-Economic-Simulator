@@ -124,7 +124,7 @@ function tickAgricultureDay(){
  ensureAgriState();
  const world=typeof AgroWorldSim!=="undefined"?AgroWorldSim.ensure():null;
  const regionIds={ "Banten":"banten","Jambi":"jambi","Jawa Timur":"jatim","Sulawesi Selatan":"sulsel","Nusa Tenggara Barat":"ntb" };
- const cropIds={ padi:"padi",jagung:"jagung",bawang_merah:"bawang_merah",kelapa:"kelapa",cabai_merah:"bawang_merah" };
+ const cropIds={ padi:"padi",jagung:"jagung",bawang_merah:"bawang_merah",kelapa:"kelapa" };
  S.landSystem.lands.forEach(l=>(l.plots||[]).forEach(p=>{
   const c=COMMODITY_BY_ID[p.commodity];if(!c)return;
   const daysSince=S.day-(p.lastCareDay||p.plantedDay);
