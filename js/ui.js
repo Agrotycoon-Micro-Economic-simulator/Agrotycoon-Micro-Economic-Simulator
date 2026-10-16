@@ -84,7 +84,7 @@ function render(){
    if(dayOfMonth >= 15 && dayOfMonth <= 16 && S.warung && S.warung.open){
     h+='<button class="btn btn-primary" onclick="showSupplyShop()">🥥 Beli Kelapa dari Luar (Hari '+dayOfMonth+' saja!)</button>';
    }
-   if((S.day||0)>30)h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Bibit Kelapa Super</button>';
+   h+='<button class="btn btn-primary" onclick="showSeedShop()">🌱 Bibit Kelapa Super (Rp 50.000 + tanam Rp 10.000/pohon)</button>';
    h+='<button class="btn btn-danger" onclick="startSleep()">😴 Tidur (Ganti Hari)</button>';
   }
   if(A)A.innerHTML=h;
