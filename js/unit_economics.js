@@ -50,11 +50,13 @@
     if (Array.isArray(scenario.fixedCostsMonthly)) scenario.fixedCostsMonthly.forEach((cost, i) => {
       if (!cost || typeof cost.id !== "string" || !cost.id.trim()) errors.push("fixedCostsMonthly[" + i + "].id wajib diisi");
       if (!finiteNonNegative(cost.amountPerMonth)) errors.push("fixedCostsMonthly[" + i + "].amountPerMonth belum diketahui");
+      if (cost.scope && !["stand", "upstream", "chain"].includes(cost.scope)) errors.push("fixedCostsMonthly[" + i + "].scope tidak dikenal");
     });
     if (Array.isArray(scenario.capex)) scenario.capex.forEach((asset, i) => {
       if (!asset || typeof asset.id !== "string" || !asset.id.trim()) errors.push("capex[" + i + "].id wajib diisi");
       if (!finiteNonNegative(asset.amount)) errors.push("capex[" + i + "].amount belum diketahui");
       if (!Number.isInteger(asset.usefulLifeMonths) || asset.usefulLifeMonths <= 0) errors.push("capex[" + i + "].usefulLifeMonths wajib integer > 0");
+      if (asset.scope && !["stand", "upstream", "chain"].includes(asset.scope)) errors.push("capex[" + i + "].scope tidak dikenal");
     });
     return { ok: errors.length === 0, errors };
   }
@@ -105,8 +107,10 @@
     const variableCostPerProducedUnit = scenario.variableCosts.reduce((sum, item) => sum + item.costPerProducedUnit, 0);
     const variableCost = variableCostPerProducedUnit * productionUnits;
     const fixedCost = scenario.fixedCostsMonthly.reduce((sum, item) => sum + item.amountPerMonth, 0);
+    const standFixedCost = scenario.fixedCostsMonthly.reduce((sum, item) => sum + (item.scope === "upstream" ? 0 : item.amountPerMonth), 0);
     const depreciation = scenario.capex.reduce((sum, asset) => sum + asset.amount / asset.usefulLifeMonths, 0);
-    const standCashCosts = standInputCost + variableCost + fixedCost;
+    const standDepreciation = scenario.capex.reduce((sum, asset) => sum + (asset.scope === "upstream" ? 0 : asset.amount / asset.usefulLifeMonths), 0);
+    const standCashCosts = standInputCost + variableCost + standFixedCost;
     const integratedCashCosts = integratedInputCost + variableCost + fixedCost;
     const opportunityCosts = opportunityInputCost + variableCost + fixedCost + depreciation;
     const accountingCosts = integratedInputCost + variableCost + fixedCost + depreciation;
@@ -133,8 +137,11 @@
         opportunityCostOfInputsMonthly: opportunityInputCost,
         otherVariableCostMonthly: variableCost,
         fixedCostMonthly: fixedCost,
+        standFixedCostMonthly: standFixedCost,
         depreciationMonthly: depreciation,
+        standDepreciationMonthly: standDepreciation,
         capexInitialCashOutflow: capexCashOutflow,
+        standCapexInitialCashOutflow: scenario.capex.reduce((sum, asset) => sum + (asset.scope === "upstream" ? 0 : asset.amount), 0),
         standOnlyOperatingCashProfitMonthly: revenue - standCashCosts,
         integratedChainOperatingCashProfitMonthly: revenue - integratedCashCosts,
         integratedChainAccountingProfitMonthly: revenue - accountingCosts,
