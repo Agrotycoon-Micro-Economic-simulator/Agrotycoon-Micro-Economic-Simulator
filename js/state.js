@@ -48,11 +48,15 @@ function loadSaved(){
 }
 function save(){ if(S&&typeof ensureAgriState==='function')ensureAgriState(); localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
 function gainXP(amount){
- S.xp += amount;
- const nextLevel = S.level + 1;
- if(DATA.levels[nextLevel] && S.xp >= DATA.levels[nextLevel].xpReq){
-  S.level = nextLevel;
-  msg('🎉 NAIK LEVEL! Anda sekarang: ' + DATA.levels[S.level].name + ' (Komoditas baru terbuka!)');
+ S.xp = Math.max(0,Number(S.xp)||0) + Math.max(0,Number(amount)||0);
+ const gained=[];
+ while(DATA.levels[S.level+1] && S.xp >= DATA.levels[S.level+1].xpReq){
+  S.level++;
+  gained.push(S.level);
+ }
+ if(gained.length){
+  const names=gained.map(l=>DATA.levels[l].name).join(', ');
+  if(typeof msg==='function')msg('🎉 NAIK LEVEL! Level baru: '+names+'. Periksa menu Level & Pembukaan Fitur untuk syarat akses.');
  }
  save();
 }
