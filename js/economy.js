@@ -1,7 +1,7 @@
 function isMature(t){return t.mature||S.day>=t.plantedDay+DATA.matureDays;}
 function readyTrees(){return S.trees.filter(t=>isMature(t)&&(t.lastHarvest===null||S.day-t.lastHarvest>=DATA.cycleDays));}
-function spend(cat,desc,amt,field,detail){S.gold-=amt;ledger(cat,desc,-amt,detail);S.dayLog.expense+=amt;if(field)S.dayLog[field]+=amt;}
-function earn(cat,desc,amt,detail){S.gold+=amt;ledger(cat,desc,amt,detail);S.dayLog.gross+=amt;gainXP(5);} // +5 XP per transaksi
+function spend(cat,desc,amt,field,detail){S.gold-=amt;ledger(cat,desc,-amt,detail);S.dayLog.expense+=amt;S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+amt;if(field)S.dayLog[field]+=amt;}
+function earn(cat,desc,amt,detail){S.gold+=amt;ledger(cat,desc,amt,detail);S.dayLog.gross+=amt;S.dayLog.cashIn=(Number(S.dayLog.cashIn)||0)+amt;gainXP(5);} // +5 XP per transaksi
 function harvest(){
  if(stockQty()>0){msg('⚠️ Gudang masih berisi. Jual/olah dulu stok lama.');return;}
  const rt=readyTrees();if(!rt.length){msg('⚠️ Belum ada pohon siap panen.');return;}
