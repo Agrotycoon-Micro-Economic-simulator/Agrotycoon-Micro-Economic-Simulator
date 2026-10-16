@@ -57,7 +57,7 @@ function plantCommodity(){
  const cost=count*(c.seedCost+c.careCost);
  if(!Number.isFinite(cost)||S.gold<cost){msg("Kas tidak cukup. Biaya awal: "+safeRp(cost));return;}
  if(!confirm("Mulai "+c.name+" × "+count+"? Biaya awal simulasi "+safeRp(cost)+". Umur produksi "+c.growDays+" hari."))return;
- spend("CAPEX","Mulai produksi "+c.name+" × "+count,cost,"capex",{commodity:c.id,count});
+ spend("OPEX","Biaya budidaya "+c.name+" × "+count,cost,"expense",{commodity:c.id,count});
  if(!land.plots)land.plots=[];
  land.plots.push({id:"plot-"+Date.now()+"-"+Math.floor(Math.random()*100000),commodity:c.id,count,plantedDay:S.day,health:100,risk:"normal",lastCareDay:S.day});
  save();showGarden();render();
@@ -112,7 +112,8 @@ function showCommodityEconomics(focusId){
 function sellCommodity(id,channel){
  ensureAgriState();const e=COMMODITY_ECONOMICS[id];if(!e||id==="kelapa"){msg("Penjualan kelapa warisan tetap memakai sistem warung/tengkulak lama.");return;}
  const qty=S.landSystem.inventory[id]||0;if(qty<=0){msg("Persediaan kosong.");return;}
- const price=channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice,rev=Math.round(qty*price),cost=COMMODITY_BY_ID[id].setupCost;
+ const price=channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice,rev=Math.round(qty*price);
+ S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
  S.landSystem.inventory[id]=0;S.gold+=rev;S.dayLog.gross+=rev;
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,channel});
