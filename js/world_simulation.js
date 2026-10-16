@@ -23,7 +23,7 @@ const EXPERIMENTAL={monthlyEventChance:0.16,monthlyRecovery:0.22,transportShock:
 function hashSeed(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function rng(seed){let a=seed>>>0;return function(){a+=0x6D2B79F5;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function ensure(){
- if(!window.S||!S)return null;
+ if(typeof S==="undefined"||!S)return null;
  if(!S.worldSim||S.worldSim.version!==VERSION){
   S.worldSim={version:VERSION,seed:hashSeed((S.name||"pemain")+"|agrotycoon-world-v1"),dayProcessed:0,regions:{},events:[],bulletins:[],parameterStatus:"EXPERIMENTAL",priceIndex:{},shipments:[]};
   REGIONS.forEach(r=>{S.worldSim.regions[r.id]={inventory:{padi:1000,jagung:800,bawang_merah:300,kelapa:500},production:{padi:100,jagung:80,bawang_merah:30,kelapa:50},demand:{padi:100,jagung:75,bawang_merah:28,kelapa:45},routeDisruption:0,activeEffects:{}};S.worldSim.priceIndex[r.id]={padi:1,jagung:1,bawang_merah:1,kelapa:1};});
