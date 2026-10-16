@@ -5,7 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "js", "finance.js"), "utf8");
-function setup() {
+function setup(now) {
   const S = {
     level: 5, gold: 30000000, day: 1,
     finance: { debt: 0, payablesPayroll: 0, loans: [] },
@@ -14,7 +14,7 @@ function setup() {
   };
   const window = {};
   const context = {
-    window, S, Math, Number, String, Array, Date,
+    window, S, Math, Number, String, Array, Date: now === undefined ? Date : { now: () => now },
     ledger(cat, desc, amt, detail) { S.ledgerRows.push({ day: S.day, cat, desc, amt, detail }); },
     save() {}
   };
@@ -95,5 +95,15 @@ function setup() {
   const loan = S.finance.loans[0];
   assert.equal(finance.repay(loan.id, loan.principal + 1).ok, false, "repayment above total due is rejected");
   assert.equal(finance.repay(loan.id, 1).ok, false, "zero/invalid repayment amount is rejected");
+}
+{
+  const { S, finance } = setup(12345);
+  const first = finance.apply(1000000, 30);
+  const second = finance.apply(1000000, 30);
+  assert.equal(first.ok, true, "first same-timestamp loan succeeds");
+  assert.equal(second.ok, true, "second same-timestamp loan succeeds");
+  assert.notEqual(first.loan.id, second.loan.id, "loan IDs remain unique when Date.now is identical");
+  assert.equal(new Set(S.finance.loans.map(loan => loan.id)).size, 2, "loan records have unique identifiers");
+  assert.equal(finance.totalDebt(), 2000000, "both distinct loans are represented in liabilities");
 }
 console.log("PASS: finance origination, daily accrual, idempotence, partial/full repayment, legacy liabilities, overdue and validation.");
