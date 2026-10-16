@@ -14,11 +14,11 @@ function normKey(obj,patterns){const keys=Object.keys(obj);for(const p of patter
 function num(v){if(v===null||v===undefined||String(v).trim()==="")return null;let s=String(v).trim().replace(/\s/g,"").replace(/^(Rp|IDR)/i,"").replace(/[^0-9,.-]/g,"");if(!s||s==="-"||s===",")return null;const comma=s.lastIndexOf(","),dot=s.lastIndexOf(".");if(comma>=0&&dot>=0){if(comma>dot)s=s.replace(/\./g,"").replace(",",".");else s=s.replace(/,/g,"");}else if(comma>=0){const decimals=s.length-comma-1;if(decimals===1||decimals===2)s=s.replace(",",".");else s=s.replace(/,/g,"");}else if(dot>=0){const decimals=s.length-dot-1;if(decimals!==1&&decimals!==2)s=s.replace(/\./g,"");}const n=Number(s);return Number.isFinite(n)?n:null;}
 function normalize(rows,kind,source){
  const out=[],bad=[];rows.forEach((raw,i)=>{
-  const date=normKey(raw,["observedat","tanggal","periode","tahunbulan","date","bulan"]);
+  let date=normKey(raw,["observedat","tanggal","periode","tahunbulan","date"]);if(!date){const year=normKey(raw,["tahun","year"]),month=normKey(raw,["bulan","month"]);if(year&&month){const m=String(month).trim(),map={januari:"01",jan:"01",februari:"02",feb:"02",maret:"03",mar:"03",april:"04",apr:"04",mei:"05",may:"05",juni:"06",jun:"06",juli:"07",jul:"07",agustus:"08",agu:"08",aug:"08",september:"09",sep:"09",oktober:"10",okt:"10",oct:"10",november:"11",nov:"11",desember:"12",des:"12",dec:"12"},monthCode=/^\d{1,2}$/.test(m)?m.padStart(2,"0"):(map[m.toLowerCase()]||map[m.toLowerCase().slice(0,3)]);date=monthCode?String(year)+"-"+monthCode:null;}else date=normKey(raw,["bulan"]);}
   const region=normKey(raw,["geographyname","provinsi","kabupaten","wilayah","region","lokasi"]);
   const commodity=normKey(raw,["commodity","komoditas","namaindikator","indikator","jenisbencana","kejadian"]);
   const rawValue=normKey(raw,["value","harga","nilai","jumlah","produksi","curahhujan"]);
-  const unit=normKey(raw,["unit","satuan"]);
+  const unit=normKey(raw,["unit","satuan"]);const marketLevel=normKey(raw,["marketlevel","tingkatpasar","levelpasar","jenispasar","saluranpemasaran","rantainilai"]);
   const val=num(rawValue);
   const issue=[];
   if(!date)issue.push("periode/tanggal kosong");
@@ -26,7 +26,7 @@ function normalize(rows,kind,source){
   if(!commodity)issue.push("komoditas/indikator kosong");
   if(val===null)issue.push("nilai bukan angka/kolom nilai tidak ditemukan");
   if(val!==null&&val<0)issue.push("nilai negatif perlu review");
-  const rec={observation_id:"obs-"+(i+1),source_name:source||"Sumber tidak diisi",source_row:i+2,kind,observed_at:date||null,geography_name:region||null,indicator_or_commodity:commodity||null,value:val,unit:unit||null,raw_fields:raw,quality_status:issue.length?"needs_review":"verified",issues:issue};
+  const sourceMatch=String(source||"").match(/https?:\/\/\S+/i);const rec={observation_id:"obs-"+(i+1),source_name:source||"Sumber tidak diisi",source_url:sourceMatch?sourceMatch[0]:null,source_row:i+2,kind,observed_at:date||null,geography_name:region||null,indicator_or_commodity:commodity||null,market_level:marketLevel||"unknown",value:val,unit:unit||null,raw_fields:raw,quality_status:issue.length?"needs_review":"verified",issues:issue};
   if(issue.length)bad.push(rec);else out.push(rec);
  });
  return {out,bad};
