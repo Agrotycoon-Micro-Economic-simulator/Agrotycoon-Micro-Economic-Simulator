@@ -132,8 +132,9 @@ function showTokoPertanian(){
  showModal(h);
 }
 function showSupplyShop(){
- showModal('<h3>🥥 Beli Kelapa dari Luar</h3>'+
- '<p style="font-size:13px;color:#666">⚠️ HANYA tersedia tanggal 15-16 setiap bulan! Besok menu ini tidak muncul lagi.</p>'+
+ showModal('<h3>🥥 Pelajaran: Membeli Kelapa dari Luar</h3>'+
+ '<p><b>Fungsi:</b> menambah bahan baku ketika panen sendiri belum cukup. Ini keputusan modal kerja, bukan keuntungan otomatis.</p><p><b>Risiko:</b> hitung biaya beli, sisa umur kesegaran, kapasitas olah, dan peluang penjualan. Jangan membeli lebih banyak daripada kemampuan menjual.</p>'+
+ '<p style="font-size:13px;color:#666">⚠️ Tersedia tanggal 15–16 setiap bulan simulasi, dan hanya satu transaksi pembelian luar per bulan.</p>'
  '<div style="background:#e8f5e9;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 1: Petani Lain</strong><br>Harga: Rp 3.500/butir (murah)</p><button class="btn btn-primary" onclick="buyKelapaLuar(\'petani\')">Beli</button></div>'+
  '<div style="background:#fff3cd;padding:12px;margin:10px 0;border-radius:8px"><p><strong>Opsi 2: Tengkulak</strong><br>Harga: Rp 5.000/butir (siap pakai)</p><button class="btn btn-warning" onclick="buyKelapaLuar(\'tengkulak\')">Beli</button></div>'+
  '<button class="btn" onclick="closeModal()">Tutup</button>');
@@ -404,6 +405,10 @@ console.log('=== UI.JS INIT END ===');
 function toggleWarungMode(){
  if(!S.warung||!S.warung.open){msg('Buka warung terlebih dahulu.');return;}
  if((S.warung.successfulSales||0)<3){msg('Mode otomatis terbuka setelah 3 penjualan berhasil.');return;}
+ if(!S.warung.autoMode&&(!S.tutorialSeen||!S.tutorialSeen.autoMode)){
+  if(!S.tutorialSeen)S.tutorialSeen={};S.tutorialSeen.autoMode=true;save();
+  showModal('<h3>🤖 Pelajaran: Operasi Warung Otomatis</h3><p>Sistem akan memproses perkiraan pembeli saat fase siang dan menjual hanya jika bahan tersedia. Anda menghemat waktu pengelolaan, tetapi tetap harus mengawasi persediaan, kas, permintaan, dan laporan laba-rugi.</p><p>Otomatisasi tidak menghilangkan risiko: stok habis berarti penjualan hilang; stok berlebih mengikat modal dan es tanpa kulkas dapat mencair.</p><button class="btn btn-success" onclick="closeModal();toggleWarungMode()">Pahami & Aktifkan</button> <button class="btn" onclick="closeModal()">Nanti</button>');return;
+ }
  S.warung.autoMode=!S.warung.autoMode;
  if(S.warung.autoMode)playGameSound('purchase');
  save();render();
