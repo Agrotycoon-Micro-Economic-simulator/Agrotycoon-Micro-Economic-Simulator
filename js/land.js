@@ -74,7 +74,7 @@ function showGarden(){
  h+='</div><p>Terpakai '+used.toLocaleString("id-ID")+' m² · tersedia '+free.toLocaleString("id-ID")+' m² · unit tambahan '+Math.floor(free/4)+' petak tanaman standar (indikasi awal; kebutuhan tiap komoditas berbeda).</p>';if(!(l.plots||[]).length)h+='<p>Belum ada petak komoditas baru.</p>';});
  h+='<button class="btn btn-primary" onclick="showCommodityEconomics()">📊 Ekonomi 3 Komoditas Uji</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset Komoditas Uji</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);updatePlantingPlan();
 }
-function agriAreaPerUnit(c){if(!c)return 4;return c.unitType==="pohon"?25:c.unitType==="ternak"?10:c.unitType==="kolam"?20:c.unitType==="koloni"?5:c.unitType==="rak"?2:4;}
+function agriAreaPerUnit(c){if(!c)return 4;return Number(c.areaM2)||(c.unitType==="pohon"?36:c.unitType==="ternak"?10:c.unitType==="kolam"?20:c.unitType==="koloni"?5:c.unitType==="rak"?2:4);}
 function cropEmoji(c){return c.category==="perkebunan"||c.unitType==="pohon"?"🌴":c.category==="hortikultura"?"🌶️":c.category==="peternakan"?"🐓":c.category==="perikanan"?"🐟":"🌱";}
 function updatePlantingPlan(){
  const out=el("planting-plan"),landEl=el("garden-land"),cropEl=el("garden-crop"),countEl=el("garden-count");if(!out||!landEl||!cropEl||!countEl)return;
@@ -87,8 +87,8 @@ function updatePlantingPlan(){
 function plantCommodity(){
  ensureAgriState();const land=S.landSystem.lands.find(l=>l.id===el("garden-land").value),c=COMMODITY_BY_ID[el("garden-crop").value],count=Math.max(1,Math.min(10000,Math.floor(Number(el("garden-count").value)||1)));
  if(!land||!c){msg("Lahan atau komoditas tidak valid.");return;}
- const areaPerUnit=c.unitType==="pohon"?25:c.unitType==="ternak"?10:c.unitType==="kolam"?20:c.unitType==="koloni"?5:c.unitType==="rak"?2:4;
- const used=(land.plots||[]).reduce((sum,p)=>sum+p.count*(COMMODITY_BY_ID[p.commodity]?.unitType==="pohon"?25:COMMODITY_BY_ID[p.commodity]?.unitType==="ternak"?10:COMMODITY_BY_ID[p.commodity]?.unitType==="kolam"?20:COMMODITY_BY_ID[p.commodity]?.unitType==="koloni"?5:COMMODITY_BY_ID[p.commodity]?.unitType==="rak"?2:4),0);
+ const areaPerUnit=agriAreaPerUnit(c);
+ const used=(land.plots||[]).reduce((sum,p)=>sum+p.count*(agriAreaPerUnit(COMMODITY_BY_ID[p.commodity])),0);
  if(used+count*areaPerUnit>land.areaM2){msg("Lahan tidak cukup. Kebutuhan "+(count*areaPerUnit)+" m²; tersedia "+(land.areaM2-used)+" m².");return;}
  const cost=count*(c.seedCost+c.careCost);
  if(!Number.isFinite(cost)||S.gold<cost){msg("Kas tidak cukup. Biaya awal: "+safeRp(cost));return;}
