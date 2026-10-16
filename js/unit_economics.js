@@ -116,8 +116,8 @@
     for (const cost of scenario.variableCosts) evidence.push(evidenceStatus(cost.evidence));
     for (const cost of scenario.fixedCostsMonthly) evidence.push(evidenceStatus(cost.evidence));
     for (const asset of scenario.capex) evidence.push(evidenceStatus(asset.evidence));
-    const evidenceComplete = evidence.every(status => status === "source-backed");
-    const evidenceUnknown = evidence.some(status => status === "unknown" || status === "incomplete-provenance");
+    const evidenceComplete = evidence.length > 0 && evidence.every(status => status === "source-backed");
+    const evidenceUnknown = evidence.length === 0 || evidence.some(status => status === "unknown" || status === "incomplete-provenance");
 
     return {
       ok: true,
@@ -151,7 +151,7 @@
       assumptions: {
         currency: scenario.currency || "IDR",
         wasteRate: scenario.wasteRate,
-        evidenceKinds,
+        evidenceKinds: Array.from(evidenceKinds),
         note: "Model tidak membuktikan harga/biaya sebagai data riil. Status provenance berasal dari evidence setiap input."
       }
     };
