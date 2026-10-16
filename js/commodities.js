@@ -63,14 +63,14 @@ const COMMODITIES=[
 ].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
 // Agronomi: luas dan hasil spesifik, bukan satu luas generik untuk semua komoditas.
 const AGRONOMY_PROFILES={
- kelapa:{areaM2:64,spacing:"8 × 8 m",yieldQty:20,yieldUnit:"buah/pohon/siklus",note:"Kelapa tahunan; sekitar 156 pohon/ha pada jarak 8 × 8 m."},
- jagung:{areaM2:4,spacing:"70–80 × 20 cm; modul lahan 4 m²",yieldQty:1.72,yieldUnit:"kg pipilan kering/modul 4 m²"},
- bawang_merah:{areaM2:4,spacing:"15–20 × 15–20 cm; modul 4 m²",yieldQty:3.2,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 8 t/ha; perlu kalibrasi varietas dan musim."},
- bawang_putih:{areaM2:4,spacing:"sekitar 15 × 10 cm; modul 4 m²",yieldQty:2.4,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 6 t/ha; perlu validasi lokal."},
- ubi_jalar:{areaM2:4,spacing:"sekitar 100 × 25–30 cm; modul 4 m²",yieldQty:12,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 30 t/ha; perlu validasi varietas."},
- ubi_kayu:{areaM2:4,spacing:"sekitar 100 × 80 cm; modul 4 m²",yieldQty:16,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 40 t/ha; perlu validasi varietas."},
- cabai_merah:{areaM2:4,spacing:"sekitar 60–70 × 50–60 cm; modul 4 m²",yieldQty:2.36,yieldUnit:"kg/modul 4 m²"},
- cabai_rawit:{areaM2:4,spacing:"sekitar 60–70 × 50–60 cm; modul 4 m²",yieldQty:2,yieldUnit:"kg/modul 4 m²"},
+ kelapa:{areaM2:64,plantsPerUnit:1,spacing:"8 × 8 m",yieldQty:20,yieldUnit:"buah/pohon/siklus",note:"Kelapa tahunan; sekitar 156 pohon/ha pada jarak 8 × 8 m."},
+ jagung:{areaM2:4,plantsPerUnit:26,spacing:"70–80 × 20 cm; modul lahan 4 m²",yieldQty:1.72,yieldUnit:"kg pipilan kering/modul 4 m²"},
+ bawang_merah:{areaM2:4,plantsPerUnit:100,spacing:"15–20 × 15–20 cm; modul 4 m²",yieldQty:3.2,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 8 t/ha; perlu kalibrasi varietas dan musim."},
+ bawang_putih:{areaM2:4,plantsPerUnit:180,spacing:"sekitar 15 × 10 cm; modul 4 m²",yieldQty:2.4,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 6 t/ha; perlu validasi lokal."},
+ ubi_jalar:{areaM2:4,plantsPerUnit:13,spacing:"sekitar 100 × 25–30 cm; modul 4 m²",yieldQty:12,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 30 t/ha; perlu validasi varietas."},
+ ubi_kayu:{areaM2:4,plantsPerUnit:5,spacing:"sekitar 100 × 80 cm; modul 4 m²",yieldQty:16,yieldUnit:"kg umbi/modul 4 m²",note:"Hasil model awal 40 t/ha; perlu validasi varietas."},
+ cabai_merah:{areaM2:4,plantsPerUnit:12,spacing:"sekitar 60–70 × 50–60 cm; modul 4 m²",yieldQty:2.36,yieldUnit:"kg/modul 4 m²"},
+ cabai_rawit:{areaM2:4,plantsPerUnit:12,spacing:"sekitar 60–70 × 50–60 cm; modul 4 m²",yieldQty:2,yieldUnit:"kg/modul 4 m²"},
  durian:{areaM2:100,spacing:"10 × 10 m",yieldQty:100,yieldUnit:"buah/pohon/tahun"},
  mangga:{areaM2:64,spacing:"8 × 8 m",yieldQty:250,yieldUnit:"buah/pohon/tahun"},
  alpukat:{areaM2:64,spacing:"8 × 8 m",yieldQty:250,yieldUnit:"buah/pohon/tahun"},
@@ -110,12 +110,12 @@ const AGRONOMY_PROFILES={
 for(const c of COMMODITIES){
  const a=AGRONOMY_PROFILES[c.id];
  if(a){Object.assign(c,a);}
- else if(c.unitType==="pohon"){c.areaM2=36;c.spacing="6 × 6 m (asumsi awal; sesuaikan spesies)";c.yieldUnit="hasil/pohon/siklus";}
+ else if(c.unitType==="pohon"){c.areaM2=36;c.plantsPerUnit=1;c.spacing="6 × 6 m (asumsi awal; sesuaikan spesies)";c.yieldUnit="hasil/pohon/siklus";}
  else if(c.unitType==="ternak"){c.areaM2=10;c.spacing="alokasi kandang 10 m²/ekor (asumsi awal)";c.yieldUnit="ekor/kelompok";}
  else if(c.unitType==="kolam"){c.areaM2=20;c.spacing="20 m²/kolam";c.yieldUnit="ekor/kolam";}
  else if(c.unitType==="koloni"){c.areaM2=5;c.spacing="5 m²/koloni";c.yieldUnit="kg/koloni";}
  else if(c.unitType==="rak"){c.areaM2=2;c.spacing="2 m²/rak";c.yieldUnit="kg/rak";}
- else {c.areaM2=4;c.spacing="modul lahan 4 m² (estimasi awal)";c.yieldUnit="unit hasil/modul";}
+ else {c.areaM2=4;c.plantsPerUnit=10;c.spacing="modul lahan 4 m² (estimasi awal)";c.yieldUnit="unit hasil/modul";}
 }
 if(COMMODITIES.length!==60)throw new Error("Katalog harus berisi tepat 60 komoditas; saat ini "+COMMODITIES.length);
 const COMMODITY_BY_ID=Object.fromEntries(COMMODITIES.map(c=>[c.id,c]));
