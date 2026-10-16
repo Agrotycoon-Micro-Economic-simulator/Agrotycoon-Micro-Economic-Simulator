@@ -30,6 +30,7 @@ function confirmBuyKelapa(sumber){
  const total=qty*harga;
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
  spend('BELANJA','Beli '+qty+' butir dari '+(sumber==='petani'?'petani':'tengkulak'),total,'shopping',{sumber,butir:qty});
+ if(typeof playGameSound==='function')playGameSound('purchase');
  if(!S.purchases)S.purchases={};S.purchases.externalCoconutMonth=currentMonth;
  S.stock.biasa=(S.stock.biasa||0)+qty; S.harvestDay=S.day;
  say('Mentor','🤖',qty+' butir kelapa muda masuk gudang.');
@@ -104,6 +105,7 @@ function buyRecommended(k,g,c){
  S.warung.ice=(S.warung.ice||0)+(k*40);
  S.warung.sugar=(S.warung.sugar||0)+(g*50);
  S.warung.cups=(S.warung.cups||0)+(c*20);
+ if(typeof playGameSound==='function')playGameSound('purchase');
  say('Mentor','🤖','Bahan masuk gudang sesuai rekomendasi.');
  save();closeModal();render();
 }
@@ -129,6 +131,7 @@ function buyManual(){
  S.warung.ice=(S.warung.ice||0)+(k*40);
  S.warung.sugar=(S.warung.sugar||0)+(g*50);
  S.warung.cups=(S.warung.cups||0)+(c*20);
+ if(typeof playGameSound==='function')playGameSound('purchase');
  save();closeModal();render();
 }
 function buyFridge(){
@@ -136,6 +139,7 @@ function buyFridge(){
  if(S.gold<DATA.shop.fridge.price){msg('⚠️ Uang tidak cukup.');return;}
  spend('CAPEX','Beli Kulkas Mini',DATA.shop.fridge.price,'capex');
  S.warung.fridge=true;S.warung.fridgeCap=DATA.shop.fridge.capacity;
+ if(typeof playGameSound==='function')playGameSound('purchase');
  say('Mentor','🤖','Kulkas terpasang! Es sisa tidak akan mencair malam ini.');
  save();render();
 }
@@ -182,6 +186,7 @@ function trySellEs(){
  S.dayLog.materials.ice++;S.dayLog.materials.sugar++;S.dayLog.materials.cup++;
  earn('PENJUALAN','Es kelapa 1 gelas',DATA.es.price);
  S.dayLog.sales.es++;S.dayLog.sales.esRev+=DATA.es.price;S.stats.es++;
+ if(typeof playGameSound==='function')playGameSound('sale');
  if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
  return true;
 }
@@ -193,6 +198,7 @@ function trySellWhole(){
  S.dayLog.materials.kelapa++;
  earn('PENJUALAN','Kelapa utuh 1 butir',DATA.wholePrice);
  S.dayLog.sales.whole++;S.dayLog.sales.wholeRev+=DATA.wholePrice;S.stats.whole++;
+ if(typeof playGameSound==='function')playGameSound('sale');
  if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
  return true;
 }
@@ -212,6 +218,7 @@ function buySeedling(n){
  const cost=n*(DATA.seedling.price+DATA.seedling.labor);
  if(S.gold<cost){msg('⚠️ Uang tidak cukup: '+rp(cost)+'.');return;}
  spend('CAPEX','Bibit super '+n+' pohon',cost,'capex',{pohon:n});
+ if(typeof playGameSound==='function')playGameSound('purchase');
  for(let i=0;i<n;i++)S.trees.push({slot:S.trees.length,type:'super',plantedDay:S.day,mature:false,lastHarvest:null});
  if(!S.purchases)S.purchases={};S.purchases.seedlingMonth=currentMonth;
  save();render();showAccelOffer();
