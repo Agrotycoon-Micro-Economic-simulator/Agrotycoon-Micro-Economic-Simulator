@@ -59,6 +59,7 @@ function render(){
    }
    if(!S.path)h+='<button class="btn btn-primary" onclick="showPathChoose()">🧭 Pilih Jalur Usaha</button>';
    // Menu iklan
+   h+='<button class="btn btn-primary" onclick="showMentorQuestions()">🤖 Tanya Mentor (Pilihan A/B/C)</button>';
    h+='<button class="btn btn-primary" onclick="showAdMenu()">📺 Nonton Iklan (Dapat Buff)</button>';
    h+='<button class="btn btn-warning" onclick="setPhase(\'siang\')">➡ Lanjut ke Siang</button>';
   }else if(phase==='siang'){
@@ -373,6 +374,34 @@ function upgradeWarungLocation(){
  save();render();
 }
 
+function showMentorQuestions(){
+ const topics=[
+  {q:'A. Bagaimana cara merawat kelapa muda?',a:'Pilih bibit sehat dan sesuai tujuan, siapkan lubang serta bahan organik, siram saat kurang hujan, jaga area sekitar tanaman dari gulma, dan pantau hama. Kebutuhan nyata bergantung pada jenis kelapa, umur, tanah, dan iklim.',b:'Kelapa tidak perlu air dan bisa dibiarkan tanpa pemeriksaan.',c:'Semua pohon harus diberi pestisida setiap hari.',correct:'a',why:'Perawatan dilakukan berdasarkan kondisi tanaman dan pengamatan; pestisida bukan tindakan rutin tanpa diagnosis.'},
+  {q:'B. Apa keputusan yang tepat saat stok warung berlebih?',a:'Belanja sebanyak mungkin agar gudang penuh.',b:'Bandingkan stok dengan target permintaan, hentikan pembelian saat batas tercapai, lalu gunakan stok yang ada.',c:'Abaikan modal yang tertahan di persediaan.',correct:'b',why:'Stok berlebih mengikat modal dan meningkatkan risiko bahan rusak atau tidak terpakai.'},
+  {q:'C. Apa yang harus diperiksa sebelum menanam jagung?',a:'Kesesuaian benih, sinar matahari, ketersediaan air, drainase, kesuburan tanah, dan rencana pemupukan.',b:'Hanya warna kemasan benih.',c:'Tanam di lahan tergenang selama mungkin.',correct:'a',why:'Jagung membutuhkan cahaya cukup dan air yang memadai; genangan berkepanjangan dapat merusak akar.'},
+  {q:'D. Bagaimana mengurangi risiko budidaya bawang merah?',a:'Gunakan benih bermutu, pantau tanaman, kelola air dan nutrisi, serta kendalikan hama sesuai hasil pengamatan.',b:'Semprot pestisida kimia setiap hari tanpa melihat kondisi.',c:'Gunakan umbi bibit yang rusak agar hemat.',correct:'a',why:'Benih bermutu dan pengamatan rutin membantu mengurangi risiko penyakit serta penggunaan input yang tidak perlu.'},
+  {q:'E. Bagaimana membedakan omzet dan laba?',a:'Omzet adalah seluruh penerimaan penjualan; laba memperhitungkan biaya yang relevan.',b:'Omzet dan laba selalu sama.',c:'Laba hanya dihitung dari uang tunai yang terlihat di meja.',correct:'a',why:'Laba harus dihitung setelah biaya produksi, operasional, tenaga kerja, dan kerugian diperhitungkan.'}
+ ];
+ showModal('<h3>🤖 Tanya Mentor — Pilih Topik</h3><p>Pilih pertanyaan yang sudah disediakan. Sistem ini tidak memakai kolom pertanyaan bebas atau AI eksternal, sehingga ringan untuk game.</p>'+
+ topics.map((t,i)=>'<button class="btn btn-primary" style="display:block;width:100%;margin:7px 0;text-align:left" onclick="showMentorAnswer('+i+')">'+t.q+'</button>').join('')+
+ '<button class="btn" onclick="closeModal()">Tutup</button>');
+ window._mentorQuestionBank=topics;
+}
+function showMentorAnswer(index){
+ const topics=window._mentorQuestionBank||[];
+ const t=topics[index];if(!t)return;
+ showModal('<h3>'+t.q+'</h3>'+
+ '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>A.</b> '+t.a+'</div>'+
+ '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>B.</b> '+t.b+'</div>'+
+ '<div style="padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0"><b>C.</b> '+t.c+'</div>'+
+ '<button class="btn btn-success" onclick="showMentorExplanation('+index+')">Lihat jawaban dan penjelasan</button> <button class="btn" onclick="showMentorQuestions()">Kembali</button>');
+}
+function showMentorExplanation(index){
+ const topics=window._mentorQuestionBank||[];const t=topics[index];if(!t)return;
+ const correct=t.correct.toUpperCase();
+ showModal('<h3>📘 Penjelasan Mentor</h3><p><b>Jawaban yang benar: '+correct+'.</b></p><p>'+t.why+'</p>'+
+ '<button class="btn btn-primary" onclick="showMentorQuestions()">Pilih topik lain</button> <button class="btn" onclick="closeModal()">Selesai</button>');
+}
 function getDailyLesson(){
  const lessons=[
   {speaker:'Mentor',portrait:'🤖',text:'Konsep hari ini: modal kerja adalah uang untuk membeli bahan dan membayar biaya operasi. Jangan habiskan seluruh kas untuk aset tetap.'},
