@@ -7,6 +7,7 @@ function defaultState(){
   stock:{biasa:0,super:0},harvestDay:-99,trees,quarterUsed:0,
   cuaca:'panas',
   warung:{open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
+  purchases:{seedlingMonth:0,externalCoconutMonth:0},tutorialSeen:{},soundEnabled:true,
   path:null,
   dayLog:newDayLog(),
   reports:[],ledger:[],realMoney:0,lastAdDay:0,storyDone:false,
@@ -30,6 +31,9 @@ function loadSaved(){
   if(r){
    S=JSON.parse(r);
    if(!S.dayLog)S.dayLog=newDayLog();
+   if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
+   if(!S.tutorialSeen)S.tutorialSeen={};
+   if(typeof S.soundEnabled!=='boolean')S.soundEnabled=true;
    if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0};
    if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0};
    if(typeof S.warung.autoMode!=='boolean')S.warung.autoMode=false;
