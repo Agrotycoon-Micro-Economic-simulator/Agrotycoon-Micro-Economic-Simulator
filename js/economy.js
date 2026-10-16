@@ -22,12 +22,15 @@ function buyKelapaLuar(sumber){
  '<button class="btn" onclick="closeModal()">Batal</button>');
 }
 function confirmBuyKelapa(sumber){
+ const currentMonth=monthOf(S.day);
+ if(S.purchases&&S.purchases.externalCoconutMonth===currentMonth){msg('Pembelian kelapa luar bulan ini sudah digunakan. Menu dibuka lagi pada tanggal 15 bulan berikutnya.');return;}
  const inp=el('inp-buy'); const qty=inp?(parseInt(inp.value)||0):0;
  if(qty<=0){msg('⚠️ Jumlah tidak valid.');return;}
  const harga=sumber==='petani'?DATA.buyFromFarmer:DATA.buyFromTengkulak;
  const total=qty*harga;
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
  spend('BELANJA','Beli '+qty+' butir dari '+(sumber==='petani'?'petani':'tengkulak'),total,'shopping',{sumber,butir:qty});
+ if(!S.purchases)S.purchases={};S.purchases.externalCoconutMonth=currentMonth;
  S.stock.biasa=(S.stock.biasa||0)+qty; S.harvestDay=S.day;
  say('Mentor','🤖',qty+' butir kelapa muda masuk gudang.');
  save();closeModal();render();
@@ -56,28 +59,42 @@ function buyWarungPackage(pkgKey){
  say('Mentor','🤖','Warung berdiri! Mode manual aktif. Setelah 3 transaksi berhasil, mode otomatis dapat dipilih.');
  save();closeModal();render();
 }
+function materialPlan(){
+ const w=DATA.weather[S.cuaca]||DATA.weather.panas;
+ const location=(S.warung&&S.warung.location)||'depanRumah';
+ const demand=demandToday(location);
+ const target=Math.ceil(demand*1.5);
+ const current={ice:S.warung.ice||0,sugar:S.warung.sugar||0,cups:S.warung.cups||0};
+ const need={
+  ice:current.ice>=target?0:Math.ceil((target-current.ice)/40),
+  sugar:current.sugar>=target?0:Math.ceil((target-current.sugar)/50),
+  cups:current.cups>=target?0:Math.ceil((target-current.cups)/20)
+ };
+ return {w,demand,target,current,need};
+}
 function shopMaterials(){
- const w=DATA.weather[S.cuaca];
- const estDemand = Math.floor((w.minBuyers + (w.minBuyers+30)) / 2); // Rata-rata
- const recKarung = Math.min(2, Math.ceil(estDemand / 40)); // MAKSIMAL 2 KARUNG!
- const recGula = 1;
- const recCup = Math.ceil(estDemand / 20);
- 
+ const p=materialPlan(),k=p.need.ice,g=p.need.sugar,c=p.need.cups;
+ const total=k*20000+g*20000+c*8000;
  showModal('<h3>🛒 Belanja Bahan Warung</h3>'+
- '<p>Cuaca: <b>'+w.name+'</b> | Estimasi permintaan: <b>'+estDemand+' gelas</b></p>'+
+ '<p>Cuaca: <b>'+p.w.name+'</b> | Target permintaan hari ini: <b>'+p.demand+' gelas</b></p>'+
+ '<p>Aturan stok: batas rencana 150% target = <b>'+p.target+' unit</b> per bahan. Jika stok sudah mencapai/melewati batas, rekomendasi pembelian menjadi nol.</p>'+
  '<div style="background:#e3f2fd;padding:10px;border-radius:6px;margin:10px 0">'+
- '<p><strong>🤖 Rekomendasi Cerdas:</strong></p>'+
- '<p>🧊 Es: '+recKarung+' karung ('+(recKarung*40)+' porsi) = '+rp(recKarung*20000)+'</p>'+
- '<p>🍯 Gula: '+recGula+' blok ('+(recGula*50)+' porsi) = '+rp(recGula*20000)+'</p>'+
- '<p>🥤 Cup: '+recCup+' pak ('+(recCup*20)+' pcs) = '+rp(recCup*8000)+'</p>'+
- '<p><b>Total Rekomendasi: '+rp((recKarung*20000)+(recGula*20000)+(recCup*8000))+'</b></p></div>'+
- '<p>Stok saat ini: 🧊 '+(S.warung.ice||0)+' | 🍯 '+(S.warung.sugar||0)+' | 🥤 '+(S.warung.cups||0)+'</p>'+
- '<button class="btn btn-success" onclick="buyRecommended('+recKarung+','+recGula+','+recCup+')">✅ Beli Sesuai Rekomendasi</button> '+
- '<button class="btn btn-primary" onclick="showManualShop()">⚙️ Atur Manual</button> '+
- '<button class="btn" onclick="closeModal()">Batal</button>');
+ '<p><strong>🤖 Rekomendasi berbasis kekurangan stok:</strong></p>'+
+ '<p>🧊 Es: stok '+p.current.ice+' porsi; beli '+k+' karung ('+(k*40)+' porsi).</p>'+
+ '<p>🍯 Gula: stok '+p.current.sugar+' porsi; beli '+g+' blok ('+(g*50)+' porsi).</p>'+
+ '<p>🥤 Cup: stok '+p.current.cups+' pcs; beli '+c+' pak ('+(c*20)+' pcs).</p>'+
+ '<p><b>Total: '+rp(total)+'</b></p></div>'+
+ '<button class="btn btn-success" '+(total===0?'disabled ':'')+'onclick="buyRecommended('+k+','+g+','+c+')">✅ '+(total===0?'Tidak perlu belanja':'Beli sesuai rekomendasi')+'</button> '+
+ '<button class="btn btn-primary" onclick="showManualShop()">⚙️ Atur Manual (tetap dibatasi)</button> '+
+ '<button class="btn" onclick="closeModal()">Tutup</button>');
 }
 function buyRecommended(k,g,c){
+ const p=materialPlan();
+ k=Math.min(Math.max(0,Math.floor(k)),p.need.ice);
+ g=Math.min(Math.max(0,Math.floor(g)),p.need.sugar);
+ c=Math.min(Math.max(0,Math.floor(c)),p.need.cups);
  const total = (k*20000)+(g*20000)+(c*8000);
+ if(total===0){msg('Stok sudah mencapai batas 150% target hari ini. Tidak ada pembelian yang diperlukan.');return;}
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
  spend('BELANJA','Belanja bahan (rekomendasi)',total,'shopping',[
   {name:'Es Batu '+k+' karung',qty:k,subtotal:k*20000},
@@ -98,8 +115,10 @@ function showManualShop(){
  '<button class="btn btn-success" onclick="buyManual()">Beli</button> <button class="btn" onclick="shopMaterials()">Kembali</button>');
 }
 function buyManual(){
- const k=parseInt(el('m-ice').value)||0, g=parseInt(el('m-sugar').value)||0, c=parseInt(el('m-cup').value)||0;
+ const p=materialPlan();
+ const k=Math.min(Math.max(0,parseInt(el('m-ice').value)||0),p.need.ice), g=Math.min(Math.max(0,parseInt(el('m-sugar').value)||0),p.need.sugar), c=Math.min(Math.max(0,parseInt(el('m-cup').value)||0),p.need.cups);
  const total=(k*20000)+(g*20000)+(c*8000);
+ if(k===0&&g===0&&c===0){msg('Pembelian ditolak: stok sudah mencapai batas 150% target harian.');return;}
  if(total===0){msg('⚠️ Tidak ada yang dibeli.');return;}
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
  spend('BELANJA','Belanja bahan (manual)',total,'shopping',[
@@ -186,12 +205,15 @@ function buyLivingItem(key){
 }
 function emptySlots(){return DATA.slots-S.trees.length;}
 function buySeedling(n){
+ const currentMonth=monthOf(S.day);
+ if(S.purchases&&S.purchases.seedlingMonth===currentMonth){msg('Pembelian bibit bulan ini sudah digunakan. Mentor akan membuka kembali menu pada bulan berikutnya.');return;}
  n=Math.max(1,Math.floor(n));
  if(n>emptySlots()){msg('⚠️ Slot kosong tinggal '+emptySlots()+'.');return;}
  const cost=n*(DATA.seedling.price+DATA.seedling.labor);
  if(S.gold<cost){msg('⚠️ Uang tidak cukup: '+rp(cost)+'.');return;}
  spend('CAPEX','Bibit super '+n+' pohon',cost,'capex',{pohon:n});
  for(let i=0;i<n;i++)S.trees.push({slot:S.trees.length,type:'super',plantedDay:S.day,mature:false,lastHarvest:null});
+ if(!S.purchases)S.purchases={};S.purchases.seedlingMonth=currentMonth;
  save();render();showAccelOffer();
 }
 function accelIAP(){
