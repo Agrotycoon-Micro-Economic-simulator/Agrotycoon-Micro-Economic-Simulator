@@ -103,3 +103,12 @@ header h1{letter-spacing:.2px}
 @media(prefers-reduced-motion:reduce){.stall,.keeper,.customer.walk .human-figure{animation:none!important;transition:none!important}}
 
 .agri-card{background:#10251f;border:1px solid #285548;border-radius:10px;padding:12px;margin:10px 0;color:#e6fff5}.agri-card p{margin:6px 0;font-size:13px}.agri-card input,.agri-card select,#modal-body select,#modal-body input{max-width:100%;padding:8px;margin:6px 0}.agri-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0}.agri-progress{height:8px;background:#243b35;border-radius:8px;overflow:hidden;margin:8px 0}.agri-progress span{display:block;height:100%;background:#10b981}.agri-card h4{margin-bottom:6px}#modal-body label{display:block;margin-top:8px;color:#a7f3d0}
+
+/* Peta kebun 2D: kelompok petak, bukan sprite untuk setiap tanaman */
+.agri-2d-grove{background:linear-gradient(#b9e5f5 0 38%,#b7d88b 38% 100%);border:2px solid #4d8c52;border-radius:12px;padding:12px;color:#173b27}
+.grove-canopy{font-size:clamp(1.5rem,5vw,2.4rem);letter-spacing:.15em;text-align:center;padding:14px 0;border-bottom:2px dashed rgba(25,90,35,.35)}
+.grove-label{text-align:center;font-weight:700;padding:8px}
+.agri-land-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;padding:10px;background:repeating-linear-gradient(0deg,#d5e8bd 0 34px,#c7dfaa 34px 36px);border:2px solid #5e8b4d;border-radius:10px}
+.agri-land-plot{min-width:0;background:rgba(255,255,255,.9);border:1px solid #7aa56a;border-radius:8px;padding:9px;color:#183b25;display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere}
+.agri-land-plot small{font-size:11px}.agri-land-plot .btn{font-size:12px;padding:6px}
+.agri-warning{padding:10px;background:#fff0d9;border-left:4px solid #c77b18;color:#713e06}
