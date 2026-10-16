@@ -65,6 +65,7 @@ function finishDay(){
  
  const mOld=monthOf(S.day);
  S.day++;
+ if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
  if(stockClass()==='busuk'&&stockQty()>0){
   const q=stockQty();S.stats.rotten+=q;
