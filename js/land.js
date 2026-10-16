@@ -9,6 +9,7 @@ function ensureAgriState(){
  if(!S.landSystem)S.landSystem={lands:[{id:"warisan-2430",name:"Lahan Warisan",areaM2:2430,location:"warisan",purchaseCost:0,improvements:0,plots:[]}],nextId:1,market:{},quiz:{correct:0,attempts:0,mastery:{}}};
  if(!Array.isArray(S.landSystem.lands))S.landSystem.lands=[];
  if(!S.landSystem.market)S.landSystem.market={};
+ if(!S.landSystem.inventory)S.landSystem.inventory={};
  if(!S.landSystem.quiz)S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
  if(!S.landSystem.quiz.mastery)S.landSystem.quiz.mastery={};
  // Hubungkan kebun kelapa warisan yang sudah ada tanpa menghapus save lama.
@@ -25,7 +26,7 @@ function showLandMarket(){
  let h='<h3>🗺️ Bursa Lahan Pertanian</h3><p>Harga, pajak, notaris, izin dan pembukaan lahan di bawah adalah <b>parameter simulasi</b>, bukan penawaran atau tarif hukum nyata. Lahan besar lebih murah per m², tetapi totalnya jauh lebih tinggi.</p>';
  LAND_TIERS.forEach(t=>{const f=landFeeBreakdown(t),total=totalLandCost(t);h+='<section class="agri-card"><h4>'+t.name+' — '+t.areaM2.toLocaleString("id-ID")+' m²</h4><p>Harga lahan: '+safeRp(f.land)+' ('+safeRp(t.pricePerM2)+'/m²)</p><p>Notaris 1,5%: '+safeRp(f.notary)+' · Pajak simulasi 0,5%: '+safeRp(f.tax)+'</p><p>Izin 1%: '+safeRp(f.permit)+' · Persiapan lahan 2%: '+safeRp(f.prep)+'</p><b>Total: '+safeRp(total)+'</b><br><button class="btn btn-primary" onclick="buyLandTier(\''+t.id+'\')">Beli lahan</button></section>';});
  h+='<h4>Lahan yang dimiliki</h4>'+S.landSystem.lands.map(l=>'<p>🌱 '+l.name+' — '+l.areaM2.toLocaleString("id-ID")+' m²; komoditas: '+(l.plots||[]).length+' petak</p>').join('');
- h+='<button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
+ h+='<button class="btn btn-primary" onclick="showCommodityEconomics()">📊 Ekonomi 3 Komoditas Uji</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset Komoditas Uji</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
 function buyLandTier(id){
  ensureAgriState();const t=LAND_TIERS.find(x=>x.id===id);if(!t)return;
@@ -69,12 +70,12 @@ function careCommodity(landId,plotId){
 function harvestCommodity(landId,plotId){
  ensureAgriState();const l=S.landSystem.lands.find(x=>x.id===landId),idx=l&&l.plots.findIndex(x=>x.id===plotId);if(!l||idx<0)return;
  const p=l.plots[idx],c=COMMODITY_BY_ID[p.commodity];if(S.day-p.plantedDay<c.growDays){msg("Belum matang.");return;}
- const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),riskLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),qty=Math.max(0,Math.floor(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss))),rev=qty*market;
- S.landSystem.market[c.id]=S.landSystem.market[c.id]||{sold:0,price:market};S.landSystem.market[c.id].sold+=qty;
+ const weather=S.cuaca||"berawan",market=getCommodityPrice(c.id),riskLoss=(p.health||100)<40?.5:(weather==="hujan"&&["hortikultura","pangan"].includes(c.category)?.2:0),qty=Math.max(0,Math.round(c.yieldQty*p.count*(p.health||100)/100*(1-riskLoss)*100)/100);
+ S.landSystem.inventory[c.id]=(S.landSystem.inventory[c.id]||0)+qty;
  p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);
- if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
- S.gold+=rev;S.dayLog.gross+=rev;S.dayLog.commoditySales.push({commodity:c.id,name:c.name,quantity:qty,unitPrice:market,revenue:rev,riskLoss});ledger("PENDAPATAN","Panen "+c.name+" "+qty+" unit",rev,"revenue",{commodity:c.id,marketPrice:market,riskLoss});
- save();msg("Panen "+c.name+": "+qty+" unit × "+safeRp(market)+" = "+safeRp(rev)+(riskLoss?" (hasil berkurang karena risiko/cuaca)":""));showGarden();render();
+ if(!S.dayLog.commodityHarvests)S.dayLog.commodityHarvests=[];
+ S.dayLog.commodityHarvests.push({commodity:c.id,name:c.name,quantity:qty,riskLoss});
+ save();msg("Panen "+c.name+": "+qty+" "+(COMMODITY_ECONOMICS[c.id]?.unit||"unit")+" masuk persediaan. Pilih jual ke tengkulak, jual langsung, atau olah menjadi produk.");showCommodityEconomics(c.id);render();
 }
 function getCommodityPrice(id){
  ensureAgriState();const c=COMMODITY_BY_ID[id];if(!c)return 0;
@@ -91,4 +92,50 @@ function tickAgricultureDay(){
   let loss=0;if(S.cuaca==="hujan"&&["hortikultura","pangan"].includes(c.category))loss=.5;else if(S.cuaca==="panas"&&daysSince>10)loss=.7;
   if(loss){p.health=Math.max(0,(p.health||100)-loss);p.risk=loss===.5?"kelebihan air":"stres kekeringan";}
  }));
+}
+
+function showCommodityEconomics(focusId){
+ ensureAgriState();
+ const ids=["kelapa","cabai_merah","jagung"],labels={kelapa:"Kelapa warisan",cabai_merah:"Cabai merah",jagung:"Jagung"};
+ let h='<h3>📊 Ekonomi Komoditas — Mode Uji</h3><p>Harga pasar dan biaya bervariasi menurut daerah, mutu, musim, ukuran panen dan kontrak. Harga berikut adalah acuan/parameter simulasi; bukan jaminan transaksi nyata.</p>';
+ ids.forEach(id=>{const e=COMMODITY_ECONOMICS[id],stock=S.landSystem.inventory[id]||0;
+ if(id==="kelapa"){h+='<section class="agri-card"><h4>🥥 '+labels[id]+'</h4><p>Warisan: '+(S.trees||[]).length+' pohon · siklus game '+DATA.cycleDays+' hari · hasil normal '+DATA.yieldBiasa+' buah/pohon per siklus.</p><p>Tengkulak: '+safeRp(e.farmerPrice)+'/buah. Jual langsung/produk es kelapa: harga game '+safeRp(e.retailPrice)+'/gelas, tetapi harus memperhitungkan es, gula, gelas, tenaga kerja, dan permintaan.</p></section>';return;}
+ const c=COMMODITY_BY_ID[id],yieldQty=e.yieldPer4m2||c.yieldQty,cost=e.costPer4m2||c.setupCost,b2b=e.tengkulakPrice||e.farmerPrice,retail=e.retailPrice,qty=stock;
+ const rawProfitB2B=yieldQty*b2b-cost,rawProfitRetail=yieldQty*retail-cost;
+ const p=e.processed,units=Math.floor(yieldQty/p.inputKg),processedRevenue=units*p.price,processedOther=units*p.otherCost,processedProfit=processedRevenue-processedOther-cost;
+ h+='<section class="agri-card"><h4>'+(id==="cabai_merah"?"🌶️ ":"🌽 ")+labels[id]+' — basis 4 m²</h4><p>Umur panen: '+c.growDays+' hari · estimasi hasil '+yieldQty+' '+e.unit+'/siklus · biaya awal '+safeRp(cost)+'</p><p>Tengkulak/B2B: '+safeRp(b2b)+'/'+e.unit+' → omzet '+safeRp(yieldQty*b2b)+' → <b>laba indikatif '+safeRp(rawProfitB2B)+'</b>.</p><p>Jual langsung/B2C: '+safeRp(retail)+'/'+e.unit+' → omzet '+safeRp(yieldQty*retail)+' → <b>laba indikatif '+safeRp(rawProfitRetail)+'</b>.</p><p>Produk jadi: '+p.name+'; kebutuhan bahan '+p.inputKg+' kg/unit; '+units+' unit; harga jual '+safeRp(p.price)+'/unit; biaya bahan tambahan '+safeRp(p.otherCost)+'/unit. Omzet '+safeRp(processedRevenue),h+='';h+='; laba indikatif setelah biaya awal dan bahan tambahan <b>'+safeRp(processedProfit)+'</b>. Perhitungan belum memasukkan kemasan tambahan, penyusutan alat, tenaga kerja pengolahan, distribusi, produk gagal, pajak, dan barang tidak terjual.</p><p>Persediaan siap jual: '+qty.toFixed(2)+' '+e.unit+'</p>';
+ if(qty>0){h+='<button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'b2b\')">Jual semua ke tengkulak/B2B</button> <button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'retail\')">Jual langsung/B2C</button> <button class="btn btn-success" onclick="processCommodity(\''+id+'\')">Olah produk jadi</button>';}
+ h+='<details><summary>Catatan model</summary><p>'+e.notes+'</p></details></section>';
+ });
+ h+='<button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
+}
+function sellCommodity(id,channel){
+ ensureAgriState();const e=COMMODITY_ECONOMICS[id];if(!e||id==="kelapa"){msg("Penjualan kelapa warisan tetap memakai sistem warung/tengkulak lama.");return;}
+ const qty=S.landSystem.inventory[id]||0;if(qty<=0){msg("Persediaan kosong.");return;}
+ const price=channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice,rev=Math.round(qty*price),cost=COMMODITY_BY_ID[id].setupCost;
+ S.landSystem.inventory[id]=0;S.gold+=rev;S.dayLog.gross+=rev;
+ if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
+ S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,channel});
+ ledger("PENDAPATAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,"revenue",{commodity:id,quantity:qty,unitPrice:price});
+ save();msg("Penjualan "+qty.toFixed(2)+" "+e.unit+" menghasilkan omzet "+safeRp(rev)+". Laba usaha harus mengurangi biaya produksi yang sudah dibukukan saat penanaman dan biaya distribusi yang relevan.");showCommodityEconomics(id);render();
+}
+function processCommodity(id){
+ ensureAgriState();const e=COMMODITY_ECONOMICS[id];if(!e||id==="kelapa"){msg("Produk olahan komoditas ini belum diaktifkan di mode uji.");return;}
+ const stock=S.landSystem.inventory[id]||0,p=e.processed,units=Math.floor(stock/p.inputKg);
+ if(units<1){msg("Persediaan belum cukup untuk membuat satu unit "+p.name+".");return;}
+ const input=units*p.inputKg,rev=units*p.price,cost=units*p.otherCost;
+ if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet potensial "+safeRp(rev)+", biaya tambahan "+safeRp(cost)+". Produk dianggap langsung terjual dalam simulasi uji."))return;
+ S.landSystem.inventory[id]=Math.round((stock-input)*100)/100;S.gold+=rev-cost;S.dayLog.gross+=rev;S.dayLog.expense+=cost;
+ ledger("PENDAPATAN","Penjualan produk jadi "+p.name,rev,"revenue",{commodity:id,units});
+ ledger("OPEX","Biaya bahan tambahan "+p.name,cost,"expense",{commodity:id,units});
+ if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
+ S.dayLog.commoditySales.push({commodity:id,name:p.name,quantity:units,unitPrice:p.price,revenue:rev,processingCost:cost});
+ save();msg("Produk jadi terjual: omzet "+safeRp(rev)+", biaya tambahan "+safeRp(cost)+", margin kas sebelum alokasi biaya budidaya "+safeRp(rev-cost)+".");showCommodityEconomics(id);render();
+}
+function resetTestCrops(){
+ ensureAgriState();
+ if(!confirm("Reset mode uji? Ini menghapus petak komoditas non-kelapa, stok cabai/jagung, dan statistik pasar uji. Kebun kelapa warisan, uang, bangunan, dan progres utama tidak dihapus."))return;
+ S.landSystem.lands.forEach(l=>{l.plots=(l.plots||[]).filter(p=>p.commodity==="kelapa");});
+ S.landSystem.inventory={};S.landSystem.market={};S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
+ save();showGarden();render();msg("Mode uji komoditas direset. Kelapa warisan dan progres utama tetap ada.");
 }
