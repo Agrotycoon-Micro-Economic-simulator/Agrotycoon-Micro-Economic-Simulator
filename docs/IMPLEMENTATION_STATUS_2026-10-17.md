@@ -1,5 +1,16 @@
 # Agrotycoon implementation ledger — 2026-10-17
 
+## Latest verified continuation checkpoint — payroll accounting + household-stock audit (2026-10-17)
+
+- Work branch: `feat/production-tier-taxonomy`; prior verified HEAD `5dc48a2ab815d0f514f37911895f981424f817c2`. Keep `main` untouched and do not change owner-validated coconut data/prices.
+- Payroll accounting: `js/economy.js` now classifies paid wages as debit Beban Gaji / credit Kas. `js/staff.js` records unpaid wages as debit Beban Gaji / credit Utang Gaji on a noncash basis, and arrears repayments as debit Utang Gaji / credit Kas. Unpaid wage ledger amounts now carry the expense value while `basis: noncash` keeps them out of cash reconciliation.
+- Added `tests/payroll_accounting.test.js` for paid wages, accrued unpaid wages and partial arrears repayment. Actual fetched runtime modules passed these scenarios in an isolated V8 harness; the new test source and modified modules were syntax-parsed. This is not a repository-checkout Node test run.
+- `livingStock` audit across `js/state.js`, `js/day.js`, `js/economy.js`, `js/ui.js`, `js/data.js`, `js/akuntansi.js`, and `stock.html`: the field is initialized/migrated in state; automatic purchases increment it; `buyLivingItem()` increments it; no decrement/consumption reference was found in the audited files. `DATA.living` declares periods (rice 10, egg 5, oil 30, mie 3, tempe 2, sayur 1, lauk 2 days), but `finishDay()` hardcodes intervals for most items and rice checks only stock <= 0. Consequently the counter is not a validated inventory balance; rice can fail to restock after the initial stock, while other scheduled purchases can accumulate without consumption. Purchases are booked as cash expenses when bought, not when consumed.
+- No living-stock behavior was changed in this pass because legacy saves contain counters that have never been decremented; silently interpreting/resetting them would invent a migration/consumption rule. Next: define backward-compatible stock consumption semantics using the existing `period` contract and test legacy saves before modifying the behavior. Full Node suite/browser E2E still need a real checkout; clone previously failed due DNS.
+
+
+---
+
 ## Latest verified continuation checkpoint — financing journal metadata (2026-10-17)
 
 - Work branch: `feat/production-tier-taxonomy`; starting HEAD was `eedb7db27315c1dcd87a4dfb7affa4e10648031e`. No branch was created, `main` was not modified, and validated coconut-price/benchmark data was not changed.
