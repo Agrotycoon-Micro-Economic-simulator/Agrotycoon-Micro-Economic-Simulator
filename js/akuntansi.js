@@ -1,6 +1,22 @@
 function accEscape(value){
  return String(value===undefined||value===null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
 }
+function accAccounting(entry){
+ if(entry&&entry.accounting)return entry.accounting;
+ const cat=String(entry&&entry.cat||'');
+ const desc=String(entry&&entry.desc||'').toLowerCase();
+ const amount=Number(entry&&entry.amt)||0;
+ if(amount>0&&cat==='PENJUALAN')return {classification:'business_revenue',debitAccount:'Kas',creditAccount:'Penjualan',debit:amount,credit:amount,legacy:true};
+ if(amount<0&&cat==='HIDUP'){
+  const keys=['rice','egg','oil','mie','tempe','sayur','lauk'];
+  const kitchen=keys.some(key=>DATA.living&&DATA.living[key]&&desc.includes(String(DATA.living[key].name).toLowerCase()));
+  return {classification:kitchen?'household_kitchen':'household_personal',debitAccount:kitchen?'Beban Dapur':'Beban Pribadi',creditAccount:'Kas',debit:Math.abs(amount),credit:Math.abs(amount),legacy:true};
+ }
+ if(amount<0&&cat==='BELANJA')return {classification:'business_purchase',debitAccount:'Pembelian Bahan Baku',creditAccount:'Kas',debit:Math.abs(amount),credit:Math.abs(amount),legacy:true};
+ if(amount<0&&cat==='TENAGA')return {classification:'business_expense',debitAccount:'Beban Tenaga Kerja',creditAccount:'Kas',debit:Math.abs(amount),credit:Math.abs(amount),legacy:true};
+ if(amount<0&&cat==='CAPEX')return {classification:'asset_purchase',debitAccount:'Aset Tetap/Modal',creditAccount:'Kas',debit:Math.abs(amount),credit:Math.abs(amount),legacy:true};
+ return {classification:'legacy_unclassified',debitAccount:'Belum diklasifikasi',creditAccount:'Belum diklasifikasi',debit:0,credit:0,legacy:true};
+}
 
 loadSaved();
 const accDiv = document.getElementById('acc');
@@ -10,9 +26,19 @@ if(!S || S.ledger.length === 0){
  h='<div class="panel"><p>Belum ada data sesi ini. Mainkan dulu di index.html.</p></div>';
 }else{
  const curMonth=monthOf(S.day);
- const monthReports=S.reports.filter(r=>monthOf(r.day)===curMonth);
- const monthGross=monthReports.reduce((a,r)=>a+r.gross,0);
- const monthExpense=monthReports.reduce((a,r)=>a+r.expense,0);
+ const monthLedger=(Array.isArray(S.ledger)?S.ledger:[]).filter(entry=>monthOf(Number(entry.day)||S.day)===curMonth);
+ const classifiedMonth=monthLedger.map(entry=>({entry,accounting:accAccounting(entry),amount:Math.abs(Number(entry.amt)||0)}));
+ const sumClass=key=>classifiedMonth.filter(row=>row.accounting.classification===key).reduce((sum,row)=>sum+row.amount,0);
+ const monthGross=sumClass('business_revenue');
+ const monthPurchases=sumClass('business_purchase');
+ const monthBusinessExpense=sumClass('business_expense');
+ const monthKitchen=sumClass('household_kitchen');
+ const monthPersonal=sumClass('household_personal');
+ const monthBusinessResult=monthGross-monthPurchases-monthBusinessExpense;
+ const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,Number(entry.amt)||0),0);
+ const monthCashOut=monthLedger.reduce((sum,entry)=>sum+Math.max(0,-(Number(entry.amt)||0)),0);
+ const monthNetCash=monthCashIn-monthCashOut;
+ const monthOpeningCash=(Number(S.gold)||0)-monthNetCash;
  
  // HITUNG ASET
  const stockValue = stockQty() * 3500;
@@ -34,11 +60,22 @@ if(!S || S.ledger.length === 0){
  const totalLiabilities = loanLiabilities + payrollLiabilities + Math.max(0,Number(finance.debt)||0);
  const equity = totalAset - totalLiabilities;
 
- h+='<div class="panel"><h3>📊 Laba Rugi Bulan '+curMonth+'</h3>';
+ h+='<div class="panel"><h3>📊 Laporan Usaha dan Rumah Tangga — Bulan '+curMonth+'</h3>';
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
- h+='<tr><td>Pendapatan Kotor</td><td class="pos">'+rp(monthGross)+'</td></tr>';
- h+='<tr><td>Beban Operasional</td><td class="neg">-'+rp(monthExpense)+'</td></tr>';
- h+='<tr><td><b>Laba Bersih Bulan Ini</b></td><td class="'+(monthGross-monthExpense<0?'neg':'pos')+'"><b>'+rp(monthGross-monthExpense)+'</b></td></tr></table></div>';
+ h+='<tr><td>Penjualan (kredit: Penjualan)</td><td class="pos">'+rp(monthGross)+'</td></tr>';
+ h+='<tr><td>Pembelian bahan baku</td><td class="neg">-'+rp(monthPurchases)+'</td></tr>';
+ h+='<tr><td>Beban usaha lain</td><td class="neg">-'+rp(monthBusinessExpense)+'</td></tr>';
+ h+='<tr><td><b>Hasil usaha sebelum biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
+ h+='<tr><td>Belanja dapur / kebutuhan makanan</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
+ h+='<tr><td>Pengeluaran pribadi/rumah tangga lainnya</td><td class="neg">-'+rp(monthPersonal)+'</td></tr>';
+ h+='<tr><td><b>Hasil setelah pengeluaran rumah tangga</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
+ h+='<h4>Rekonsiliasi kas bulan berjalan</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
+ h+='<tr><td>Kas awal bulan (hasil rekonsiliasi)</td><td>'+rp(monthOpeningCash)+'</td></tr>';
+ h+='<tr><td>Kas masuk</td><td class="pos">'+rp(monthCashIn)+'</td></tr>';
+ h+='<tr><td>Kas keluar</td><td class="neg">-'+rp(monthCashOut)+'</td></tr>';
+ h+='<tr><td><b>Kas akhir hasil rekonsiliasi</b></td><td><b>'+rp(monthOpeningCash+monthCashIn-monthCashOut)+'</b></td></tr>';
+ h+='<tr><td><b>Saldo kas aktual (S.gold)</b></td><td><b>'+rp(S.gold)+'</b></td></tr></table>';
+ h+='<p class="accounting-note">Transaksi lama tanpa metadata diklasifikasikan secara terbatas berdasarkan kategori/uraian; transaksi yang tidak dapat dipastikan tidak dimasukkan ke kelompok usaha/rumah tangga. Pembelian bahan baku dipisahkan dari beban tenaga kerja. Hasil usaha ini belum otomatis merupakan laba akuntansi penuh/HPP karena pemakaian persediaan, depresiasi, dan transaksi nonkas belum seluruhnya terintegrasi.</p></div>';
  
  h+='<div class="panel"><h3>⚖️ Neraca Posisi Keuangan</h3>';
  h+='<h4 style="color:#2E7D32;margin:10px 0">A. ASET LANCAR (Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
@@ -65,19 +102,21 @@ if(!S || S.ledger.length === 0){
  S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+(DATA.weather[r.weather]?.name||r.weather||'—')+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+rp(r.cashIn||0)+'</td><td>'+rp(r.cashOut||0)+'</td><td class="'+((r.cashflow||0)<0?'neg':'pos')+'">'+rp(r.cashflow!==undefined?r.cashflow:((r.cashIn||0)-(r.cashOut||0)))+'</td></tr>';});
  h+='</table></div>';
 
- // Jurnal transaksi: tampilkan pengeluaran HIDUP dan semua transaksi lain, bukan hanya total harian.
+ // Jurnal berpasangan: setiap transaksi kas baru memiliki debit dan kredit yang seimbang.
  const ledgerRows=(Array.isArray(S.ledger)?S.ledger:[]).slice(-200).reverse();
- h+='<div class="panel"><h3>📒 Jurnal Transaksi (maksimal 200 terbaru)</h3>';
+ h+='<div class="panel"><h3>📒 Jurnal Umum — maksimal 200 transaksi terbaru</h3>';
  if(!ledgerRows.length){
   h+='<p>Belum ada transaksi tercatat.</p>';
  }else{
-  h+='<table><tr><th>Hari</th><th>Kategori</th><th>Uraian</th><th>Nilai</th><th>Rincian</th></tr>';
+  h+='<table><tr><th>Hari</th><th>Keterangan</th><th>Akun debit</th><th>Debit</th><th>Akun kredit</th><th>Kredit</th><th>Rincian</th></tr>';
   ledgerRows.forEach(function(entry){
    const detail=entry.detail===undefined||entry.detail===null?'—':(typeof entry.detail==='string'?entry.detail:JSON.stringify(entry.detail));
-   const amount=Number(entry.amt)||0;
-   h+='<tr><td>'+accEscape(entry.day)+'</td><td>'+accEscape(entry.cat)+'</td><td>'+accEscape(entry.desc)+'</td><td class="'+(amount<0?'neg':'pos')+'">'+rp(amount)+'</td><td>'+accEscape(detail)+'</td></tr>';
+   const amount=Math.abs(Number(entry.amt)||0);
+   const posting=accAccounting(entry);
+   const known=posting.classification!=='legacy_unclassified';
+   h+='<tr><td>'+accEscape(entry.day)+'</td><td>'+accEscape(entry.desc)+'<br><small>'+accEscape(entry.cat)+(posting.legacy?' · rekonstruksi transaksi lama':'')+'</small></td><td>'+accEscape(posting.debitAccount)+'</td><td>'+rp(known?posting.debit:0)+'</td><td>'+accEscape(posting.creditAccount)+'</td><td>'+rp(known?posting.credit:0)+'</td><td>'+accEscape(detail)+'</td></tr>';
   });
-  h+='</table><p class="accounting-note">Jurnal menampilkan maksimal 200 transaksi terbaru. Pengeluaran rumah tangga dengan kategori HIDUP tetap terlihat sebagai transaksi terpisah.</p>';
+  h+='</table><p class="accounting-note">Jurnal menampilkan maksimal 200 transaksi terbaru. Transaksi kas baru mencatat debit dan kredit dengan nilai sama. Transaksi lama yang tidak dapat diklasifikasikan ditandai belum diklasifikasi, bukan dipaksakan ke akun tertentu.</p>';
  }
  h+='</div>';
 }
