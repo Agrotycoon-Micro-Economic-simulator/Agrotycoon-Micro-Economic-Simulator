@@ -31,16 +31,19 @@ const context = {
   gainXP() {},
   checkAllAchievements() {},
   el() { return null; },
+  save() {},
+  render() {},
   console
 };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(__dirname, "..", "js", "economy.js"), "utf8"), context, { filename: "js/economy.js" });
 vm.runInContext(fs.readFileSync(path.join(__dirname, "..", "js", "day.js"), "utf8"), context, { filename: "js/day.js" });
 
-context.spend("HIDUP", "Beli Beras 5 liter", 65000, "living");
+context.buyLivingItem("rice");
 assert.equal(S.gold, 935000, "purchase reduces cash");
 assert.equal(S.dayLog.cashOut, 65000, "purchase records cash outflow");
 assert.equal(S.dayLog.expense, 0, "inventory purchase is not expensed immediately");
+assert.equal(S.livingStock.rice, 1, "purchase adds one package to household stock");
 assert.equal(S.ledger[0].accounting.classification, "household_inventory_purchase");
 assert.equal(S.ledger[0].accounting.debitAccount, "Persediaan Rumah Tangga");
 assert.equal(S.ledger[0].accounting.creditAccount, "Kas");
@@ -48,7 +51,7 @@ assert.equal(S.ledger[0].accounting.debit, S.ledger[0].accounting.credit);
 
 const consumed = context.consumeLivingStockForDay();
 assert.deepEqual(Array.from(consumed), ["rice"], "one rice package is consumed after its configured period");
-assert.equal(S.livingStock.rice, 0, "consumption reduces package stock once");
+assert.equal(S.livingStock.rice, 0, "consumption reduces the purchased package stock once");
 context.recordLivingStockConsumption(consumed);
 assert.equal(S.dayLog.expense, 65000, "consumption recognizes kitchen expense");
 assert.equal(S.dayLog.cashOut, 65000, "consumption does not create a second cash outflow");
