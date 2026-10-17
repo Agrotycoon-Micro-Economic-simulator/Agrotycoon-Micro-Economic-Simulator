@@ -24,6 +24,7 @@ function consumeLivingStockForDay(){
   const item=DATA.living&&DATA.living[key];
   const period=Number(item&&item.period);
   const stock=Math.max(0,Math.floor(Number(S.livingStock[key])||0));
+  S.livingStock[key]=stock;
   if(!Number.isFinite(period)||period<1){S.livingUseDays[key]=0;return;}
   if(stock<=0){S.livingUseDays[key]=0;return;}
   const elapsed=Math.max(0,Number(S.livingUseDays[key])||0)+1;
