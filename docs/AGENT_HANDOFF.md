@@ -207,3 +207,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Current verified test matrix from previous HEAD `7dd6d4511922f17497f777af82bbdd2537cbf2be`: 9/9 committed test files passed in isolated V8 with mocked Node APIs/polyfilled `structuredClone`; this is not checkout-based execution.
 - Latest branch audit: exactly 3 branches: `main` at `612451c03be59dd8cacd3b13adb8a79a46e51be2`, `fix/core-auto-warung-accounting-ui` at `c6c035f86320299629bdc2916f9478ff3c6a770a`, and this branch. Other branch's recent commits through `c6c035f` cover credit liabilities, payroll, cash-flow reports, and price-stage chain; it is 59 commits behind this feature branch and contains no unique changes according to the compare result.
 - Next: run the harvest regression test; audit other calls to `spend()` for missing affordability checks vs intentional debt/mandatory expense semantics; then design and test canonical inventory migration before transaction integration.
+
+
+## Next agent: cash affordability and inventory migration — 2026-10-17
+
+- Before any edits, fetch the live branch head and compare it with the SHA recorded here. Active branch is still `feat/production-tier-taxonomy`; exactly three branches were observed in the latest audit. Never create another branch or modify `main` without explicit owner approval.
+- Harvest bug is fixed and isolated-scenario-tested: `2d0ed8ed580e99db9cdb00cfb99221441f00b51b`; the regression test is `tests/economy_harvest.test.js`; harness fix/mock is in `699de05b986a189344d1579c9cf0399d4fa7d8ba`.
+- Cash audit found `js/day.js::finishDay()` can spend automatic household/utility/monthly costs even when cash is insufficient. Do not decide unilaterally whether this means skip purchase, negative cash, or accrued household payable. Inspect the UI/accounting contract and ask owner only if the intended rule cannot be established from existing project records.
+- Do not add a parallel inventory balance. Legacy `S.stock` and `S.warung` remain the current source of truth. Define migration semantics for quantity, units, quality/age, acquired day, cost basis, and provenance before connecting Tier 4 processing.
+- Verification so far: nine existing test files passed in isolated V8 on parent HEAD `7dd6d4511922f17497f777af82bbdd2537cbf2be`; harvest scenarios passed in an isolated V8 harness on fetched committed source. These are not repository checkout tests or browser E2E. Clone failed earlier due DNS. Run `node tests/economy_harvest.test.js` and the full test suite in a real checkout when possible.

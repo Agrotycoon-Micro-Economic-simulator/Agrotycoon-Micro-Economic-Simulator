@@ -204,3 +204,20 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Updated `js/economy.js` to calculate yield/cost first, reject non-finite/non-positive yield or invalid labor cost, reject insufficient cash, and only then mark trees harvested and post labor expense/stock.
 - Added `tests/economy_harvest.test.js` covering insufficient cash (no state mutation), exact-affordability harvest, and invalid yield.
 - Verification: the harvest scenario passed in an isolated V8 execution of fetched state/economy source (insufficient cash, exact affordability, invalid yield). The committed Node test harness was also reviewed and its localStorage mock added; repository checkout execution remains pending. No repository checkout or browser E2E is claimed.
+
+
+## Cash-affordability call-site audit — 2026-10-17
+
+Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkpoint immediately after the harvest fix).
+
+- `js/economy.js::harvest()`: fixed in `2d0ed8ed580e99db9cdb00cfb99221441f00b51b`; validates yield/cost/cash before mutating harvest dates or posting labor cost.
+- Player-initiated purchase paths in `js/economy.js` (external coconut, warung package/materials, fridge, living item, seedling) contain cash checks before calling `spend()`. Land acquisition/cultivation/care in `js/land.js` and loan repayment in `js/finance.js` also check available cash.
+- `js/staff.js::payroll()` explicitly pays wages only when cash is available and records unpaid wages as `S.finance.payablesPayroll`; prior arrears are paid from available cash before current wages.
+- **Unresolved policy risk:** `js/day.js::finishDay()` calls `spend()` for automatic household purchases, recurring utilities and monthly bills without checking cash. This can make `S.gold` negative, and the save schema does not record a separate household-payables liability. Do not silently change this to skipped purchases or new debt: those are different gameplay/economic rules. Decide and document the intended policy before patching.
+- The shared `spend()` helper itself does not enforce affordability. That is currently needed for mandatory expense paths, so adding a global guard without first resolving household-expense policy could break day progression or hide unpaid obligations.
+
+## Harvest regression verification — 2026-10-17
+
+- The isolated V8 harness executed fetched `js/state.js` + `js/economy.js` with three scenarios: (1) insufficient cash leaves cash, inventory, harvest dates, ledger and expense unchanged; (2) exact cash covers labor and adds stock once; (3) invalid zero yield changes nothing. All three passed.
+- `tests/economy_harvest.test.js` was syntax-checked and its VM context includes a mock `localStorage`. It has not been run by Node in a repository checkout.
+- Latest code commits in this unit: `2d0ed8ed580e99db9cdb00cfb99221441f00b51b` (fix), `699de05b986a189344d1579c9cf0399d4fa7d8ba` (test harness + documentation), `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (authoritative checkpoint docs).
