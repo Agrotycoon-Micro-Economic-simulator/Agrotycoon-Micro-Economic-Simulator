@@ -175,3 +175,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added generic transformation planner foundation and then hardened inventory/provenance checks. Isolated V8 execution of its fetched committed test passed; no repository checkout or browser E2E is claimed.
 - A path audit found that the four files `docs/AGENT_HANDOFF.md`, `docs/COMMODITY_CHAIN_TIER_STANDARD.md`, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, and `tests/commodity_tier_chain.test.js` had their contents shifted into the wrong paths. Their existing content is being restored to the correct paths; run the Tier-chain test after repair.
 - Inventory integration is not complete: `S.stock` and `S.warung` are still separate legacy stock stores. Design a single-source-of-truth migration before routing live transactions through the generic engine.
+
+
+## Finance test follow-up — 2026-10-17
+
+- The isolated finance test revealed an incorrect assertion, not yet a confirmed code defect: it expected a Rp1 partial payment to fail, although the finance API rejects only non-positive or over-due amounts and allows small positive partial payments.
+- The test now asserts rejection for zero and negative amounts. Do not add an arbitrary minimum repayment without an owner-approved game rule. Re-run finance test after this commit.

@@ -94,7 +94,8 @@ function setup(now) {
   assert.equal(finance.apply(1000000, 30).ok, true, "eligible borrower can borrow");
   const loan = S.finance.loans[0];
   assert.equal(finance.repay(loan.id, loan.principal + 1).ok, false, "repayment above total due is rejected");
-  assert.equal(finance.repay(loan.id, 1).ok, false, "zero/invalid repayment amount is rejected");
+  assert.equal(finance.repay(loan.id, 0).ok, false, "zero repayment amount is rejected");
+  assert.equal(finance.repay(loan.id, -1).ok, false, "negative repayment amount is rejected");
 }
 {
   const { S, finance } = setup(12345);

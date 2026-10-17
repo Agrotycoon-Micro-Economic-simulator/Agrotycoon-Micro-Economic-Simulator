@@ -175,3 +175,10 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - The branch audit found four content/path mismatches: the owner chain-standard document was stored in `docs/AGENT_HANDOFF.md`; the Tier-chain test code was stored in `docs/COMMODITY_CHAIN_TIER_STANDARD.md`; the implementation ledger was stored in `tests/commodity_tier_chain.test.js`; and the handoff text was stored in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
 - Restored each document/test to its intended path using the content already present in the branch. No gameplay price or owner benchmark was changed by this repair.
 - Re-run the Tier-chain test and check these paths before relying on earlier status statements.
+
+
+## Finance test-contract correction — 2026-10-17
+
+- Isolated execution exposed a test-contract mismatch: `tests/finance.test.js` expected a repayment of Rp1 to be rejected while `js/finance.js` intentionally permits any positive partial repayment up to the amount due. This did not establish a production-code defect.
+- Corrected the regression assertion to reject zero and negative repayment amounts instead. A positive Rp1 partial repayment remains permitted by the current contract; no minimum installment rule was invented.
+- Re-run result is pending after this correction. All reported tests are isolated fetched-source executions, not a local checkout suite.
