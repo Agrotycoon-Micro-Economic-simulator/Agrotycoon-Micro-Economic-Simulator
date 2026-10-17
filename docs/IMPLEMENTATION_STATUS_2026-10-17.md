@@ -1,3 +1,11 @@
+## Latest continuation checkpoint — Node CI fixture correction (2026-10-17)
+
+- Added the targeted regression workflow in commit `8f0a914d247d2027ee9f6dd0a5eae230e7ddb33c`. First real CI run failed in `tests/household_inventory_accounting.test.js` because its starting fixture already contained one rice package while the test expected a purchase to add one package and leave the total at one.
+- Corrected the fixture to start with zero rice stock in commit `9ff852adf89d86a1fdce077ad4ffe109fa703eef`. The new Actions run is pending/in progress at this checkpoint; suite status remains unverified until logs show all seven commands completed successfully.
+- The local checkout is unavailable because this environment cannot resolve `github.com`; CI now provides a real repository checkout. Browser E2E is not run. Keep `main` and owner-validated coconut data untouched.
+
+---
+
 ## Latest continuation checkpoint — targeted regression CI setup (2026-10-17)
 
 - Added `.github/workflows/targeted-regression.yml` on `feat/production-tier-taxonomy`, configured for Node.js 22. It executes seven standalone regression scripts: household inventory accounting, double-entry transactions, accounting ledger rendering, household stock consumption, finance, payroll accounting and harvest validation.
