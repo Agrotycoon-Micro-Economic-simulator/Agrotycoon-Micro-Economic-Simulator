@@ -34,6 +34,30 @@ function consumeLivingStockForDay(){
  return consumed;
 }
 
+function recordLivingStockConsumption(consumed){
+ if(!Array.isArray(consumed)||!S.dayLog)return;
+ consumed.forEach(key=>{
+  const item=DATA.living&&DATA.living[key];
+  const cost=Number(item&&item.price);
+  if(!Number.isFinite(cost)||cost<=0)return;
+  const lines=[
+   {account:'Beban Dapur',debit:cost,credit:0},
+   {account:'Persediaan Rumah Tangga',debit:0,credit:cost}
+  ];
+  ledger('KONSUMSI_RUMAH_TANGGA','Konsumsi '+item.name+' (1 paket)',-cost,{key,quantity:1,valuation:'current_configured_price'},{
+   classification:'household_kitchen',
+   debitAccount:'Beban Dapur',
+   creditAccount:'Persediaan Rumah Tangga',
+   debit:cost,
+   credit:cost,
+   basis:'noncash',
+   lines
+  });
+  // Consumption is an expense but not a second cash outflow.
+  S.dayLog.expense=(Number(S.dayLog.expense)||0)+cost;
+ });
+}
+
 function finishDay(){
  console.log('finishDay dipanggil');
  const ov=el('progress');
@@ -53,7 +77,8 @@ function finishDay(){
  S.warung.operatedToday=false;
  
  // Konsumsi paket mengikuti periode daya pakai DATA.living.period.
- consumeLivingStockForDay();
+ const consumedLiving=consumeLivingStockForDay();
+ recordLivingStockConsumption(consumedLiving);
  // Restock otomatis hanya jika stok paket habis.
  const livingDetails=[];
  const autoBuy=[
