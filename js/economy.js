@@ -6,7 +6,7 @@ function classifySpend(cat,desc){
   const kitchenKeys=['rice','egg','oil','mie','tempe','sayur','lauk'];
   const isKitchen=kitchenKeys.some(key=>DATA.living&&DATA.living[key]&&text.includes(String(DATA.living[key].name).toLowerCase()));
   return isKitchen
-   ? {classification:'household_kitchen',account:'Beban Dapur'}
+   ? {classification:'household_inventory_purchase',account:'Persediaan Rumah Tangga'}
    : {classification:'household_personal',account:'Beban Pribadi'};
  }
  if(cat==='BELANJA')return {classification:'business_purchase',account:'Pembelian Bahan Baku'};
@@ -28,7 +28,8 @@ function spend(cat,desc,amt,field,detail){
   credit:value,
   basis:'cash'
  });
- S.dayLog.expense+=value;
+ // Food packages are capitalized into household inventory; recognize kitchen expense on consumption.
+ if(mapping.classification!=='household_inventory_purchase')S.dayLog.expense+=value;
  S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+value;
  if(field)S.dayLog[field]+=value;
 }
