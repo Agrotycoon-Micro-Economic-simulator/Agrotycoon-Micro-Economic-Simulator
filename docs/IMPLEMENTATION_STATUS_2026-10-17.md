@@ -1,170 +1,177 @@
-# Agent Handoff — Agrotycoon
-Updated 2026-10-17 (tier taxonomy pass). Active work branch: `feat/production-tier-taxonomy`, based on `fix/core-auto-warung-accounting-ui`. Never modify `main`.
-Repo: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator
+# Agrotycoon implementation ledger — 2026-10-17
 
-## Owner rules — mandatory
-- Work ONLY on the feature branch. Do not change default/main. Inspect branch head and files before edits; update branch with expected-SHA guard; verify commit/files after every change.
-- Simulation engine first. No Supabase/backend until local frontend, data pipeline, accounting and tests are accepted.
-- Never fabricate historical prices, production/yield, input costs, freight, land suitability, disaster statistics or policy. Unknown values remain null/unknown.
-- Label sourced observations, derived/calibrated parameters, game-only assumptions, and simulated events separately. Preserve source, period/date, geography, commodity, market stage, value/unit, retrieval metadata, quality status and licensing.
-- Do not combine producer/wholesale/retail/factory prices or incompatible units. Never call stale snapshots “live”.
-- In-game events are simulation, not real news. Live alerts may be shown separately and must not automatically become game events.
-- Responses to owner: Indonesian, direct, precise, detailed; report changed files, commit SHA, tests actually run, failures/limitations, and next task. Never claim tests pass without executing them.
+This ledger separates shipped code from incomplete work. No Supabase integration has been started.
 
-## Direction
-Agrotycoon is intended as an Indonesia-focused micro-economic/agriculture/commodity-chain simulator. Core loop: land/regional suitability -> seeds/inputs/labor/capital -> crop/livestock stages -> harvest -> storage/spoilage -> processing/byproducts -> transport/routes -> producer/collector/wholesale/direct/retail/factory markets -> contracts/sales -> cashflow/profit/balance sheet -> progression/unlocks -> regional shocks and policy response.
-Longer-term: full Tier 1–4 commodity workflows. The owner's Library definitions have now been transcribed into `docs/PRODUCTION_TIERS.md` and implemented as metadata in `js/production_tiers.js`. Keep production-transformation tier separate from market channel/stage; rule-based NPCs with budgets/inventory/goals/contracts, data-grounded AI mentors/consultants, and government policy/programs based on verified rules. AI advice must disclose calculations, assumptions and sources; NPCs should change simulation state, not be decorative chatbots.
+## Frontend and local simulation changes in this branch
 
-## Implemented (verified by repo inspection)
-- Static browser/local-save game; pages include game, stock, accounting, assets/staff, progression, credit, commodity market, world simulation, historical import, achievements, and separate BMKG alert page.
-- Core files: `js/state.js`, `data.js`, `economy.js`, `day.js`, `game.js`, `ui.js`, `land.js`, `progression.js`, `staff.js`, `finance.js`, `commodities.js`, `market_chain.js`, `market_prices.js`, `real_economic_data.js`, `world_simulation.js`.
-- Local staff hiring/payroll and unpaid wage liability; credit eligibility, disbursement, daily interest on remaining principal, partial/full repayment, overdue status.
-- Daily reports separate gross/expense and cashIn/cashOut/net cashflow. Accounting shows estimated assets and recorded liabilities.
-- Production-tier metadata is defined in `js/production_tiers.js` (Tier 1 raw, Tier 2 semi-processed, Tier 3 industrial, Tier 4 national specialization); school buffs 0/10/15/20% are blueprint design values. `js/market_chain.js` remains a separate market-stage model. See `docs/PRODUCTION_TIERS.md`.
-- `js/unit_economics.js` now provides a provenance-aware unit-economics calculator. It distinguishes bought inputs, own production cost, integrated-chain accounting and opportunity-adjusted value; provenance is tracked for recipe quantity and relevant prices, and fixed costs/assets support `stand`, `upstream`, or `chain` scope. Missing required numeric inputs block a result. It is not yet integrated into every UI or transaction path. Contract and benchmark: `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`.
-- `js/real_economic_data.js` now includes 46 official annual coconut producer/consumer price observations for 2002–2024 (23 years × 2 market stages), sourced from the Ministry of Agriculture Pusdatin coconut outlook and attributed there to BPS/Susenas. These are national historical prices for unhusked coconut in Rp/butir, not current local quotes. The rest of the catalogue still contains game balancing parameters and the registry is nowhere near thousands of observations.
-- World simulation v0.1.0 covers 5 regions and 4 crops. Event odds/impacts/inventory/production/demand are experimental; its indices are not wired to all actual player transactions.
-- Local CSV/JSON import supports common delimiters and Indonesian numeric formats; it is not automated bulk ETL.
-- No Supabase.
+- Main player navigation is hamburger-based; pages include game, stock, accounting, assets/staff, market, world simulation, historical import, achievements, progression, and credit.
+- Added `stock.html` and `assets.html`.
+- Added `kemajuan.html` + `js/progression.js`: level/wealth thresholds for land, staff, expansion, loans, consultants, and government. Land purchases and crop planting check progression.
+- Fixed `gainXP` to advance through multiple levels if one reward crosses multiple thresholds.
+- Added `js/staff.js`: local staff hiring/dismissal and daily payroll; unpaid wages accrue as a liability. Wage rates are explicitly experimental assumptions.
+- Added `kredit.html` + `js/finance.js`: local-only loans, eligibility, daily interest accrual, partial/full repayment, and overdue status. Interest rate and loan limits are experimental game rules, not real-world offers.
+- Accounting now includes recorded loan and payroll liabilities and purchased land book costs.
+- Added regional qualitative land-use/logistics profiles. They are labeled hypotheses, not official suitability classifications or appraisals.
+- Improved historical CSV import for comma/semicolon/tab delimiters, Indonesian number formats, year/month periods, and market-level provenance.
+- Fixed the world simulation's state lookup: the save uses top-level lexical `let S`, so checking `window.S` prevented initialization.
+- Added `tests/world_simulation.test.js` and `tests/finance.test.js`.
 
-## Recent commits
-- `b508b8dc6fe06834b0f4806cf97278bff94b5949`: payroll settlement change.
-- `78066f60487056475afd23448dad049e36f013bf`: accrued interest enters daily expense and ledger as non-cash.
-- `95e2a3be880ccbf75620e4bd42490489c010cac6`: credit UI no longer calls interest “flat”; says 1.5% per 30 days on remaining principal, accrued daily.
-Recent current-branch work:
-- `d0a88226c340304ed488d43ba5bd1f98c23231d5`: added 46 official annual coconut producer/consumer price observations.
-- `6c9c0482f4282ab36a2d6b4bf6ca5befdb8eddab`: separated stand and upstream fixed costs/capex in unit economics.
-- Latest status-ledger update at that point: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/b4a61342102dd306475a8a0ab584eeb59de6262c
+## Additional implementation in the latest pass
 
-## Real-data status — do not overstate
-The curated registry contains 8 food-price points (2026-03), 5 subsidized-fertilizer HET points (2025-10-22), 3 feed points (2026-09), 17 live-cattle producer prices (snapshot 2026-10-14), and 46 annual coconut producer/consumer price points (2002–2024). Total: 79 commodity/input price records plus 14 toll-segment entries. This is NOT thousands of historical observations. Verify registry before repeating counts.
-Sources to ingest: Bapanas monthly producer https://data.badanpangan.go.id/datasetpublications/5jb/rata-rata-harga-pangan-bulanan-produsen-provinsi ; consumer https://data.badanpangan.go.id/datasetpublications/sw6/rata-rata-harga-pangan-bulanan-konsumen-provinsi ; BPS agriculture producer price statistics; SIMPONI Ternak https://simponiternak-v1.pertanian.go.id/harga-komoditas.php ; SPORA https://simpakan.ditjenpkh.pertanian.go.id/spora/backend/web/site/data-harga ; BNPB https://data.bnpb.go.id/dataset/data-bencana-indonesia ; BMKG climate data. Preserve raw files, provenance, license, normalized records, checksum and row-level validation report.
+- Added `kredit.html` and `js/finance.js`: local loan application, eligibility, capped principal, daily interest accrual, partial/full repayment, and overdue state.
+- Added `js/market_chain.js` and a market-chain table for producer, middleman, wholesale, direct-sale, and factory stages. Missing stages stay null; game-only values are labeled as parameters.
+- Added regional qualitative profiles for Banten, Central Java, East Java, Jambi, South Kalimantan, Central Kalimantan, South Sulawesi, NTB, and Riau, with farming/trade ideas and logistics risks. These are hypotheses, not official land suitability results.
+- Daily reports now separately track cash inflow, cash outflow, and net cash flow rather than conflating cash flow with profit. Accounting includes recorded loan/payroll liabilities and purchased land cost.
+- Importer now supports comma, semicolon, and tab-delimited CSV; Indonesian thousands/decimal separators; year/month periods; market-level field; and source URL provenance.
+- Audited liability aggregation across credit summary and accounting. `AgroFinance.totalDebt()` now includes active/overdue loans, payroll payable, and legacy `finance.debt`, matching the three liability components shown by accounting.
+- Extended `tests/finance.test.js` to cover legacy debt and payroll aggregation, and ensure new loan liabilities do not mask existing obligations.
 
-## Completion estimate (planning estimate, not measured)
-- Local frontend/basic playable loop: 55–65% of MVP.
-- Finance/accounting/progression integration: 35–45%.
-- Causal world engine: 15–25%.
-- Historical data ingestion/coverage: 5–10% of target.
-- AI mentor/NPC/government: 0–5%.
-- Tier 1–4 detailed commodity workflows: still early/incomplete. Taxonomy is now transcribed and validated at metadata level; per-commodity recipes, sourcing, input/output ratios, prices and costs remain unimplemented.
-- Whole intended engine: roughly 20–30%. Do not present as nearly finished.
+## Verification actually performed
 
-## Backlog, in order
-P0 correctness:
-1. Rerun tests on current HEAD. Add finance tests: disbursement -> accrual -> partial repayment -> full repayment -> overdue; assert ledger, day expense, cashflow, liabilities and balance sheet; include small principal rounding and due-date boundaries.
-2. Audit payroll arrears, legacy `finance.debt`, wealth/progression and liabilities for double-counting.
-3. Test reports/save migrations/mobile/browser workflows; don't claim browser E2E without running it.
+- JavaScript syntax compilation passed for the changed core JS modules and inline scripts in the principal frontend pages.
+- Runtime smoke test simulated 365 in-game days: nonnegative inventories, finite and bounded price indices, deterministic event sequence and price indices, and all generated bulletins marked `SIMULASI` passed.
+- Earlier local module smoke tests passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
+- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.
+- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Historical smoke-test results are recorded above; they do not mean every current test file was run against the latest commit.
+- `tests/finance.test.js` now contains focused assertions for loan lifecycle and liability aggregation, but **this latest version has not been executed in a Node runtime during this pass**. Do not report it as passing until `node tests/finance.test.js` is run.
+- A full browser end-to-end run was not performed. A local clone could not be obtained in the current runtime because network DNS resolution failed; this does not affect the GitHub commits but limits browser verification.
 
-P1 real data:
-4. Implement reproducible bulk ETL for Bapanas producer/consumer, BPS price/production, SIMPONI cattle history, SPORA feed history, fertilizer prices, BNPB disaster data and relevant BMKG climate data.
-5. Measure accepted/rejected/duplicate/missing counts and coverage by period, region, commodity, market level and unit. Never invent missing values.
-6. Add provenance/freshness/quality UI; historical series must stay separated by market stage.
+## Historical data coverage: honest count
 
-P2 commodities:
-7. Production-tier taxonomy is documented in `docs/PRODUCTION_TIERS.md`; do not repeat the old claim that the reference book is missing. Unit economics contract is in `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md`. Es-kelapa owner benchmark is documented in `docs/ES_KELAPA_OWNER_BENCHMARK.md`. The listed non-coconut consumables subtotal is now Rp1,200/glass (ice 500 + syrup allowance 400 + cup 300), not full HPP. Preserve owner direct whole-coconut price Rp13,000, glass price Rp5,000, four glasses per coconut, no milk. Next: confirm actual gula merah grams used per 1 L Tupperware, then map buy-from-farmer, buy-from-collector, own-orchard and mixed strategies using sourced data and explicitly unknown values.
-8. Wire the new calculator to actual es-kelapa model state and business UI only after reconciling costs and sales-volume semantics; test that monthly profit/cashflow and internal transfer accounting agree.
-9. Define canonical per-commodity schema: suitable region/soil/climate, seed/breed, input bill of materials, tasks, duration/stages, labor/equipment, yield/quality, loss/storage, processing/byproducts, capex/working capital, buyers, units/prices, transport, risk and source references.
-10. Complete one source-backed vertical slice end-to-end before expanding all commodities.
+The current curated registry in `js/real_economic_data.js` contains:
+- 8 food-price points for national consumer/producer-labelled series for period 2026-03 (one observation per listed commodity; not a time series).
+- 5 subsidized-fertilizer HET points, dated 2025-10-22.
+- 3 feed-price points, dated 2026-09.
+- 17 provincial live-cattle producer price points, snapshot 2026-10-14.
+- 46 coconut price points: annual producer and consumer prices for 2002–2024 (23 observations per market stage), Rp/butir, national.
+- 14 official toll segment tariff entries.
 
-P3 world engine:
-11. Wire player harvest/purchases/storage/processing/sales to regional inventory, production, demand, shipments, spoilage and price.
-12. Test one route and 3–5 commodities with sourced costs/time. Unknown cost must be shown unknown, not silently zero.
-13. Add one disaster family with exposure + crop stage + damage + recovery + price response + causal audit; deterministic replay and stock-conservation tests.
-14. Expand regions/events only after calibration/held-out validation.
+That is 79 food/input/animal/coconut price records plus 14 toll-segment entries; it is **not thousands of historical price observations**. The toll entries are transport parameters, not commodity observations. No bulk BPS monthly tables, Bapanas provincial producer/consumer time series, SPORA feed history, or BNPB raw event workbook has yet been committed as normalized observations.
 
-P4 agents/government:
-15. Rule-based NPCs first (farmer, collector, wholesaler, retailer, processor, transporter, lender, extension officer, regulator) with budgets, inventory, goals, offers, contracts and deterministic decisions.
-16. Mentor/consultant advice from actual game state + sourced data, showing calculation and uncertainty.
-17. Government subsidies/procurement/extension/tax/permits/disaster response only from verified rules, otherwise clearly marked game scenarios.
+## Official sources to ingest next
 
-P5 product:
-18. Audit every unlock/action path, navigation, mobile layout, local save/new game/migration, stock/accounting/assets/payroll/credit end-to-end.
-19. Only after local engine acceptance, design backend/Supabase and monetization.
+- BPS agriculture producer prices 2025: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html
+- BPS livestock and fisheries producer prices 2025: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html
+- Bapanas producer prices by province: https://data.badanpangan.go.id/datasetpublications/5jb/rata-rata-harga-pangan-bulanan-produsen-provinsi
+- Bapanas consumer prices by province: https://data.badanpangan.go.id/datasetpublications/sw6/rata-rata-harga-pangan-bulanan-konsumen-provinsi
+- SPORA feed prices: https://simpakan.ditjenpkh.pertanian.go.id/spora/backend/web/site/data-harga
+- BNPB disaster dataset: https://data.bnpb.go.id/dataset/data-bencana-indonesia
+- SIMPONI Ternak daily history: https://simponiternak-v1.pertanian.go.id/harga-komoditas.php
 
-## Latest unit-economics status
-- New test files: `tests/unit_economics.test.js` and `tests/real_economic_data.test.js`. Both committed tests passed when executed against fetched committed sources in an isolated V8 harness with Node API stubs; the unit-economics test also passed in a scratch Node v22.16.0 harness using equivalent local copies. Neither test was run from a repository checkout. Existing finance/world-simulation tests and browser E2E were not run; do not claim full test-suite success.
-- Static inspection of the committed coconut series found 46 unique year/stage rows (23 producer + 23 consumer), 2002–2024, with 2024 values Rp3,422 and Rp6,061 per coconut.
-- Es-kelapa benchmark correction: `js/data.js` now uses cup price Rp15,000/50 (Rp300 each), aligned with the existing starter-pack configuration and current marketplace comparisons. Listed non-coconut subtotal = Rp500 ice + Rp400 syrup allowance + Rp300 cup = Rp1,200/glass. It excludes coconut and other operating costs; do not call it complete HPP. See `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+Bulk import acceptance rule: retain raw file and source metadata, normalize with market stage and units, count accepted/rejected/duplicates/missing values, and do not write estimated values into the historical observation store.
 
-## Resume protocol
-Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's Tier 1–4 definitions are in Library `data game.docx` and have been transcribed to `docs/PRODUCTION_TIERS.md`; the Library's market-price table uses a separate market-stage axis.
+## Remaining requested work
 
-## Latest owner benchmark correction
-- Added `docs/ES_KELAPA_OWNER_BENCHMARK.md` and `tests/es_kelapa_benchmark.test.js`.
-- `js/data.js` now preserves owner standards: direct whole coconut Rp13,000, es kelapa Rp5,000/glass, four glasses/coconut, no milk; syrup batch allowance Rp20,000/50 glasses; cup pack Rp15,000/50.
-- Corrected listed non-coconut consumables subtotal = Rp1,200/glass. Online cup prices are comparison evidence only, not a verified owner supplier invoice. Sugar batch cost remains provisional until actual gula merah grams per 1 L Tupperware are known. Water and cooking fuel remain excluded.
-- `tests/es_kelapa_benchmark.test.js` passed when the committed test and `js/data.js` were fetched from GitHub and executed in an isolated V8 harness with Node API stubs. This is not a checked-out repository run. Before further integration, run `node tests/es_kelapa_benchmark.test.js` plus unit economics and core tests in a real checkout.
-
-## Latest P0 correctness work — 2026-10-17
-
-- `js/finance.js` now creates collision-resistant loan IDs using a timestamp plus a monotonic sequence, and checks existing loan records before accepting an ID.
-- `tests/finance.test.js` includes a same-timestamp regression test verifying two loans receive distinct IDs and both liabilities remain counted.
-- Latest status note is in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
-- Validation limitation: cloning the branch into the runtime failed because github.com DNS resolution was unavailable. The committed Node test has not been executed from a repository checkout. A reviewer/next agent must run `node tests/finance.test.js` and `node tests/world_simulation.test.js` from a checkout before claiming these tests pass.
-- Continue with P0 finance correctness audit (rounding and due-day boundaries), then stock/transaction integration. Do not switch focus to es-kelapa recipe tuning. Never modify `main`.
+1. Complete historical bulk ingestion and validation; the importer UI is only a local CSV/JSON validation path, not an automated downloader or bulk ETL pipeline.
+2. Expand the engine beyond five simulated regions and four tracked crops; currently simulated indices are experimental and are not yet wired into all actual sale transactions.
+3. Add regional commodity chains (producer, middleman, wholesale market, direct sale, factory) only where sourced data exists; unknown stage prices must remain null.
+4. Connect generic commodity inventory to every purchase, harvest, processing, and sale transaction.
+5. Finish stock/accounting/assets UI integration, audit valuation and daily cash-flow semantics, and run browser end-to-end tests.
+6. Implement and test level unlocks for all action paths, not only land acquisition and crop planting.
+7. Add consultant/mentor/government gameplay only after simulation/data validation. Consultant price plan (1–10 Gold/project) and US$5/100 Gold remain design notes; premium Gold wallet and real payments are not active.
+8. No Supabase until frontend workflows and local simulation are complete and tested.
 
 
-## Branch audit — 2026-10-17 follow-up
+## Production tier taxonomy pass — 2026-10-17
 
-- Repository branches observed: `main` at `612451c03be59dd8cacd3b13adb8a79a46e51be2`, `fix/core-auto-warung-accounting-ui` at `c6c035f86320299629bdc2916f9478ff3c6a770a`, and `feat/production-tier-taxonomy` at `b360ba966c8455f99f6bf9e095d404cf8be4d00b`. Do not modify `main`.
-- The Tier branch is the active continuation branch; it contains the prior credit/UI work plus later production-tier, unit-economics, coconut historical-price, es-kelapa benchmark, and loan-ID collision fixes. Confirm branch HEAD again before any future write.
-- GitHub reports the same repository bot account/name/email as author for the inspected commit history. Commit messages and SHAs can be audited, but the actual human/agent behind that shared identity cannot be reliably inferred from Git metadata.
-- Library inconsistency: `data game.docx` page 192 lists Tier 4 examples as technology, electronics, and weapons; page 199 lists technology, heavy equipment, and clean energy, and puts electronics under Tier 3. Current code follows the page-199 national-production table as a provisional canonical list. Do not silently resolve this contradiction; request owner confirmation before classifying disputed examples.
-- `docs/PRODUCTION_TIERS.md` now records the conflict. The metadata/test remain definition-level only; recipes, yield, input/output ratios, costs and empirical profitability are still not implemented.
-- Audit scope: three extant branches and 228 visible commits in the Tier branch history were inspected through GitHub API pagination; repository API author attribution is shared, not per-agent. No pull requests were returned by the connected PR search. Test execution limits remain as documented above.
+- Read the owner's Library blueprint documents, including `data game.docx`, `harga komoditi.docx`, and `data peternakan dan pertanian.docx`; Tier definitions were found in `data game.docx`.
+- Added `docs/PRODUCTION_TIERS.md` to preserve the exact production taxonomy and explicitly distinguish it from the market-stage columns used in `harga komoditi.docx`.
+- Added `js/production_tiers.js`: dependency-free metadata for Tier 1 raw (0% school buff), Tier 2 semi-processed (+10%), Tier 3 industrial (+15%), Tier 4 national specialization (+20%); normalizer, lookup, upward-transition check, and minimal definition validation.
+- Added `tests/production_tiers.test.js` for tier metadata, normalization, invalid input, upward transitions and product-definition validation.
+- Important: school buffs are design values from the blueprint, not verified empirical productivity effects. This does not create commodity prices, recipe ratios, yields, costs, or historical observations.
+- Verification: `node tests/production_tiers.test.js` passed against byte-identical scratch copies of the newly committed module and test file (PASS: taxonomy, normalization, transition checks and validation). The test has **not** been run from a checked-out repository working tree. Existing finance/world-simulation tests and browser E2E were not run in this pass.
+- Next: run the new test and current finance/world-simulation tests in a real Node environment, then select one commodity for a source-backed end-to-end production chain. Keep `productionTier` separate from `marketStage`. No backend/Supabase work.
+
+## Unit economics + coconut historical prices — 2026-10-17
+
+- Added `js/unit_economics.js`: scenario validator and calculator for revenue, required production after waste, purchased vs self-produced input costs, stand-only cash result, integrated-chain operating cash result, accounting profit after depreciation, opportunity-adjusted profit, HPP per saleable unit, contribution margin, break-even volume, and startup capex.
+- Provenance is tracked separately for selling price, planned sales volume, waste, recipe quantity, each relevant input price, variable costs, fixed costs, and capex. Fixed costs and assets can be scoped to stand, upstream, or the whole chain. Numeric completeness does not mean real-data validation. Missing required cost inputs block the calculation; missing evidence marks the result as incomplete-provenance.
+- Added `tests/unit_economics.test.js` for es-kelapa-shaped buy-vs-own scenarios, internal-chain cost counted once, opportunity cost, depreciation, invalid waste and missing costs/provenance.
+- Added `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md` with the canonical business schema, accounting rules, es-kelapa benchmark, extension to fertilizer/feed/pellets/processing and acceptance criteria.
+- Added 46 official historical coconut-price observations to `js/real_economic_data.js`: annual 2002–2024 producer and consumer prices (23 each), Rp/butir, national, source: Kementerian Pertanian Pusdatin's *Outlook Komoditas Perkebunan Kelapa Tahun 2025*, Lampiran 27; underlying price series attributed to BPS/Susenas. Official source: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_KELAPA_2025_sign.pdf. 2024: producer Rp3,422/butir; consumer Rp6,061/butir.
+- Added `tests/real_economic_data.test.js` for row count, source URL, 2024 values, unit and stage separation.
+- Benchmark correction (2026-10-17): owner standards preserved — direct whole coconut Rp13,000, es kelapa Rp5,000/glass, 4 glasses/coconut, no milk. Cup pack was inconsistent (Rp8,000/20 in shop input versus Rp15,000/50 in both starter packs); shop input is now aligned to Rp15,000/50 (Rp300/cup), within current online 16 oz/50-piece comparables. Ice is Rp500/glass; syrup allowance Rp400/glass; corrected listed non-coconut consumables subtotal is Rp1,200/glass. Old Rp1,525 lesson figure was unsupported by its stated component arithmetic. This subtotal excludes coconut, labor, water/gas, spoilage, transport, utilities and fixed costs.
+- Verification: the committed `tests/unit_economics.test.js` and `tests/real_economic_data.test.js` were both executed against the fetched committed module/registry and test sources in an isolated V8 harness with Node API stubs; both passed. The unit-economics test also passed in a scratch Node v22.16.0 harness using equivalent local copies. These are not repository-checkout runs. Existing finance/world-simulation tests and browser E2E were not run in this pass.
+- This work does not yet wire the calculator into all business UIs/transactions, provide real es-kelapa recipe inputs or local stand demand, or deliver thousands of observations. The new 46-point coconut price series is a first source-backed slice, not the target dataset volume.
+
+## Owner es-kelapa benchmark correction — 2026-10-17
+
+- Preserved the owner-provided direct-customer price Rp13,000/whole coconut, es price Rp5,000/glass, 4 glasses per coconut, no-milk recipe, and syrup batch serving 50 glasses.
+- Corrected `js/data.js` cup pack to Rp15,000/50 (Rp300/cup), consistent with the existing starter-pack price and online 16 oz cup comparisons (roughly Rp12,100–Rp18,246 per 50 pieces; marketplace references, not an owner supplier invoice).
+- Kept the Rp20,000 syrup batch allowance for 50 portions (Rp400/glass), but documented that this is provisional: online reference is Rp20,000/kg gula merah; actual grams of gula merah used per 1 L Tupperware and cooking fuel/water costs are unverified.
+- Updated lesson to call Rp1,200/glass the listed **non-coconut consumables subtotal**, not full HPP: ice Rp500 + syrup Rp400 + cup Rp300. It excludes coconut, labor, water/gas, spoilage, transport and fixed costs.
+- Derived comparison: four glasses gross Rp20,000; whole coconut direct sale Rp13,000; four glasses' listed consumables Rp4,800; processing route's advantage over whole-fruit sale is Rp2,200/coconut before omitted costs. This is not net profit.
+- Added `docs/ES_KELAPA_OWNER_BENCHMARK.md` and `tests/es_kelapa_benchmark.test.js`. Run the new test before claiming it passes. No national producer price is substituted for the owner's direct customer price. No milk added.
+
+## Credit identifier integrity fix — 2026-10-17
+
+- Fixed `js/finance.js` loan ID generation: IDs now combine the timestamp with a module-local sequence and check existing loan records, preventing collisions when two applications occur during the same millisecond.
+- Added a deterministic regression case to `tests/finance.test.js` that freezes `Date.now()`, originates two loans, and asserts unique IDs plus correct combined liabilities.
+- Verification boundary: the GitHub repository could not be cloned in the current runtime because DNS resolution for github.com failed. The committed test has not yet been run with Node against a repository checkout. Do not report the repository test suite as passing until run in a real checkout.
 
 
-## Owner market-stage rule — 2026-10-17 follow-up
+## Repository-wide branch and commit audit — 2026-10-17
 
-- Owner-provided field prices are authoritative and immutable. In the coconut market-chain reference, farmer-to-tengkulak is now recorded as Rp3,400/butir with evidence type `owner_verified_field_price`; direct sale of a whole coconut to the customer remains Rp13,000/butir.
-- Preserved the existing Rp5,000 collector sourcing price as a `game_parameter` from `js/data.js`; it is not relabeled as a verified field observation.
-- Added separate `processorPurchase` and `retailConsumer` stages. The collector-to-es-kelapa/santan purchase price stays null until supported by a matching transaction observation. National final-consumer data must not be substituted for a business's raw-material purchase price.
-- Added `tests/market_chain_contract.test.js` to protect these rules. It has been committed but not executed in a real Node checkout; do not claim it passed.
-- Latest market-chain changes are on `feat/production-tier-taxonomy`; verify branch HEAD before the next write. Continue P0 finance rounding/due-day audit after this market-stage contract, then transaction/inventory integration. Never modify `main`.
+- Branches observed: `main` (`612451c0`), `fix/core-auto-warung-accounting-ui` (`c6c035f8`), and `feat/production-tier-taxonomy` (latest audit commit `b360ba96`). Main remains untouched.
+- The Tier branch includes prior UI/accounting/credit work plus Tier taxonomy, provenance-aware unit economics, 46 annual coconut producer/consumer price observations (2002–2024), owner es-kelapa benchmark correction, and collision-resistant loan identifiers.
+- GitHub commit metadata for inspected history uses the same bot identity for author/committer, so commit ownership by individual AI agent cannot be established from the repository metadata. Commit messages are useful for task chronology but do not prove which agent performed each task.
+- Source discrepancy found in `data game.docx`: around page 192, Tier 4 examples include technology/electronics/weapons; around page 199, Tier 4 examples include technology/heavy equipment/clean energy while electronics is Tier 3. `docs/PRODUCTION_TIERS.md` now documents the conflict rather than silently selecting across both sections. Current module uses the page-199 national-production table as provisional canonical examples.
+- No pull requests were returned by the connected PR search. The branch comparison reports `feat/production-tier-taxonomy` 204 commits ahead and 2 behind `main`; `fix/core-auto-warung-accounting-ui` 160 ahead and 2 behind. These are Git history counts, not completed-feature percentages.
+- Do not treat this audit as test validation: finance and browser E2E still require execution in a real checkout as documented.
+
+
+## Owner market-stage contract — 2026-10-17 follow-up
+
+- Updated `js/market_chain.js`: owner-verified farmer-to-tengkulak field price is Rp3,400/butir; owner direct-to-customer whole-coconut price remains Rp13,000/butir. The existing Rp5,000 collector sourcing value remains unchanged and is explicitly labeled a game parameter.
+- Added separate `processorPurchase` and `retailConsumer` fields for kelapa. Collector-to-es-kelapa/santan purchase price remains unknown (`null`) until a matching transaction source is available. National household consumer data is comparison data only, not a proxy for business input purchases.
+- Added `tests/market_chain_contract.test.js` for owner-price immutability and market-stage separation. Test source is committed but has not been executed in a real repository checkout.
+- No official dataset was used to overwrite any owner-provided price. No claims are made that the new test passes until executed.
 
 
 ## Finance rounding hardening — 2026-10-17
-- Current change on `feat/production-tier-taxonomy`: daily loan-interest accrual carries fractional rounding remainder instead of independently rounding every day's fraction. Newly originated loans initialize `interestRemainder`; legacy saved loans without the field default to zero at calculation time.
-- Added a focused small-principal/30-day/due-date/idempotence regression test in `tests/finance.test.js`. This is a code change only to credit calculation and its tests; no coconut prices or commodity data are modified.
-- Verification status for this change: tests have not yet been executed in a repository checkout. Run `node tests/finance.test.js` and the full available test suite before treating this as verified. Review accounting treatment of fractional interest if loan repayment/closure semantics are changed later.
+- Changed `js/finance.js` to carry daily fractional-interest rounding remainder per loan; the prior implementation rounded each day's interest independently and could systematically overstate small-principal loans.
+- Extended `tests/finance.test.js` with a small-principal 30-day accrual case, ledger total assertion, due-day overdue assertion, and same-day idempotence check.
+- No coconut/commodity prices, market-chain data, or user-validated field data were changed.
+- Test execution: not run in this change pass because no repository checkout/Node test runner was available through the connected GitHub workflow. Do not mark as passing until executed against the branch.
 
 
-## Owner instruction — coconut market-stage protection (2026-10-17)
+## Coconut price-stage protection — 2026-10-17
 
-- Never edit or overwrite the owner's coconut business price data without explicit owner approval.
-- Rp13,000/butir is the owner's final-consumer lapak price for the whole-coconut product packaged in plastic for the stated medicinal-use context. It is not a farmer, collector, wholesale, or national survey price.
-- Keep the stages separate: farmer → collector; collector → market (owner-described ~Rp5,000); market → consumer (owner-described Rp6,000+); owner's direct lapak → consumer (Rp13,000).
-- National market surveys may observe consumer-market prices. They must not substitute for farmer-to-collector purchases, processor input costs, or the owner's direct business price.
-- Compare prepared es-kelapa against prepared drinks sold by comparable lapak/food-service businesses, not farmgate/raw-coconut commodity prices.
-- Owner-verified prices are immutable in code and ETL; external observations must be separate records with explicit period, geography, unit and market stage.
-
-
-## Owner chain tier standard (2026-10-17)
-- `js/commodity_tier_chain.js` is the owner's commercial chain model: Tier 1 producer/raw; Tier 2 collector/first distributor/market; Tier 3 retail/Warung Madura/lapak and santan; Tier 4 finished dishes/manufactures including rendang, cakes, coconut oil, coconut-milk dishes and finished bath soap.
-- Keep this separate from `js/production_tiers.js` school/major taxonomy. Never copy prices between stages; numeric prices require source, period, geography and unit. Unknown values remain null.
-- Preserve owner coconut price Rp13,000/butir; public data is contextual only. Details and references: `docs/COMMODITY_CHAIN_TIER_STANDARD.md`.
+- Clarified the owner-locked Rp13,000/butir lapak price in `js/market_chain.js` and `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+- The value means the owner's direct-to-final-consumer whole-coconut product, packaged in plastic for the stated medicinal-use context. It is not a farmgate, collector, wholesale, or national consumer-survey observation.
+- Documented the distinct chain context supplied by the owner: farmer → collector; collector → market about Rp5,000; sampled market → consumer Rp6,000+; owner's lapak → consumer Rp13,000.
+- No coconut numeric values in `js/data.js` were changed. This pass updates semantic notes and documentation only; no price was recalibrated.
+- Validation: content/diff review only; repository Node tests were not executable in this tool environment.
 
 
-## Tier 4 residue recovery and coconut routes — 2026-10-17
-- Owner defines two additional Tier 4 coconut routes: (1) santan heated for hours to produce coconut-only oil; (2) viable unsaleable-for-consumption coconut nuts raised as seedlings in pots. These are different outputs with different recipes, yields, safety/viability checks and cost ledgers.
-- Owner land constraint: 37 tree capacity, 30 occupied, 7 free tree slots; seedling pots about 0.5 m apart. Treat as owner design input, not agronomic validation or proof of pot capacity.
-- Apply a residue-recovery schema across all commodities, but only monetize safe, feasible by-products with evidence of demand. Record Tier 1 input IDs, yield, process labor/energy, losses, packaging, transport, capacity and provenance; unknowns stay null. Waste input is not automatically free.
-- Docs and mapping updated in `docs/COMMODITY_CHAIN_TIER_STANDARD.md` and `js/commodity_tier_chain.js`. Tests updated/added; not executed in this environment. No coconut prices or `js/data.js` values changed. No Supabase; `main` untouched.
+## Owner chain tier standard — 2026-10-17
+- Added `js/commodity_tier_chain.js` for Tier 1 producer/raw, Tier 2 distributor/market, Tier 3 retail/lapak/santan, Tier 4 finished foods/manufactures (rendang, cakes, coconut oil, coconut-milk dishes, bath soap).
+- Added `tests/commodity_tier_chain.test.js` and `docs/COMMODITY_CHAIN_TIER_STANDARD.md` with provenance rules and internet benchmark sources.
+- Separate from `js/production_tiers.js`; no coconut numeric values changed, and owner Rp13,000 remains locked.
+- Node tests not run in this environment; buy/sell flows are not yet fully wired to the schema.
 
+
+## Tier 4 coconut expansion and residue recovery — 2026-10-17
+- Expanded Tier 4 definition to include coconut oil made by heating santan for several hours and viable coconut seedling production from nuts unsaleable for consumption.
+- Owner land inputs documented: 37-tree capacity, 30 occupied, 7 free slots, seedling pots at approximately 0.5 m spacing. These are design assumptions supplied by owner, not agronomic validation.
+- Generalized residue-recovery policy to all commodities: validate safety and feasibility, record alternate output, inputs, yield, process costs, packaging, transport and market evidence; do not invent residual value or assume residue is free.
+- Updated taxonomy metadata and standard documentation. Tests not executed; live production/inventory/sales/accounting integration remains pending. No coconut numerical prices or `js/data.js` values changed.
 
 ## Generic commodity transformation engine — 2026-10-17
 
 - Added `js/commodity_transformation.js`, a dependency-free planner for multi-input recipes, primary outputs, by-products, explicit waste outputs, process-cost lines, batch capacity and inventory-shortage checks.
-- Physical quantities, saleable output prices and required process costs may remain unknown (`null`). Unknown quantities block execution; unknown costs/prices block a complete economic result. No missing cost, yield or residual sale value is silently converted to zero.
-- By-products do not generate revenue unless explicitly marked saleable and accompanied by price evidence (source, period, geography and evidence kind). Waste is represented separately from recoverable by-products. Owner-verified values, sourced observations and game parameters must remain explicitly identified in evidence.
-- Added `tests/commodity_transformation.test.js` with synthetic-only fixture values. These are unit-test values, not commodity prices, recipes or real-world yields.
-- Loaded the engine in `index.html` for future use. This pass does not yet wire the planner to player purchase/harvest/processing/sale transactions, mutate save inventory, or post ledger entries. Integration remains the next task after transaction interfaces are mapped.
-- Verification must distinguish isolated execution of fetched source from a repository checkout; no full browser E2E claim is made.
+- Unknown physical quantities, saleable output prices, and required process costs remain null and block execution or complete economics. By-products do not generate revenue unless explicitly saleable and backed by price provenance. Waste cannot be declared saleable.
+- Added `tests/commodity_transformation.test.js` with synthetic-only fixture values. These are not real-world commodity prices, recipes, yields or costs. The test passed when the fetched committed source and test were executed in an isolated V8 harness; this is not a repository checkout or browser E2E.
+- The planner is loaded by `index.html` but is not connected to live player transactions or save inventory yet.
 
+## Transaction-boundary audit — 2026-10-17
 
-## Transaction-boundary audit and transformation safety hardening — 2026-10-17
+- Current gameplay uses legacy `S.stock` for coconut quantity/quality/age and `S.warung` for ice/syrup/cup stock. Purchase, harvest, and sales functions directly mutate those fields and write cash/ledger entries through `spend()` / `earn()`.
+- A generic inventory map does not exist. Do not mirror legacy stock into a second inventory map without a migration and single source of truth; that would risk double counting and save-state divergence.
+- Next: define canonical commodity lots (commodity ID, quantity, unit, quality/state, acquired day, cost basis/source), migrate old saves once, then route purchases, harvest, processing and sales through one transaction API with rollback-safe validation.
 
-- Inspected current transaction functions in `js/economy.js`: harvest and external coconut purchase update legacy `S.stock`; es-kelapa sales decrement `S.stock` and separate `S.warung` consumables; tengkulak/market sales clear `S.stock`. These flows write directly to the ledger/cash totals and do not yet use a canonical generic commodity inventory.
-- The current save has no generic commodity inventory map. A direct retrofit that duplicates `S.stock` or `S.warung` would risk double counting and save-state divergence; do not wire transformation execution into these paths until inventory lots, quality/age, and migration semantics are defined.
-- Hardened the planner: execution eligibility now requires an explicit inventory snapshot, and waste cannot be marked as a saleable output. Known optional cost lines are included when calculating the total; unknown required costs still block the result.
-- Isolated V8 execution of fetched `js/commodity_transformation.js` and its committed test passed. This is not a repository checkout, full test-suite run, or browser E2E.
+## Repository file-path integrity repair — 2026-10-17
+
+- The branch audit found four content/path mismatches: the owner chain-standard document was stored in `docs/AGENT_HANDOFF.md`; the Tier-chain test code was stored in `docs/COMMODITY_CHAIN_TIER_STANDARD.md`; the implementation ledger was stored in `tests/commodity_tier_chain.test.js`; and the handoff text was stored in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
+- Restored each document/test to its intended path using the content already present in the branch. No gameplay price or owner benchmark was changed by this repair.
+- Re-run the Tier-chain test and check these paths before relying on earlier status statements.
