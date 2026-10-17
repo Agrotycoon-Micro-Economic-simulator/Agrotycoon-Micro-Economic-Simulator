@@ -2,6 +2,20 @@
 
 This ledger separates shipped code from incomplete work. No Supabase integration has been started.
 
+
+> **CURRENT CHECKPOINT (2026-10-17; authoritative resume point)**
+>
+> - Repository: `Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator`.
+> - Active branch: `feat/production-tier-taxonomy`; HEAD: `699de05b986a189344d1579c9cf0399d4fa7d8ba` — [commit](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/699de05b986a189344d1579c9cf0399d4fa7d8ba). Do not create another branch unless the owner explicitly requests it. Never modify `main`.
+> - Branches observed during this audit: `main` = `612451c03be59dd8cacd3b13adb8a79a46e51be2`; `fix/core-auto-warung-accounting-ui` = `c6c035f86320299629bdc2916f9478ff3c6a770a`; `feat/production-tier-taxonomy` = `699de05b986a189344d1579c9cf0399d4fa7d8ba`. The other feature branch was reviewed through its recent credit/payroll/liability/cashflow/market-stage commits; comparison reported it 59 commits behind this branch, 0 ahead. Do not merge/reset it without inspecting new commits first.
+> - Latest code fix: `js/economy.js` now validates finite positive harvest yield, non-negative finite labor cost, and sufficient cash before marking trees harvested or charging labor. Regression file: `tests/economy_harvest.test.js`.
+> - Regression scenarios executed against fetched source in an isolated V8 harness: insufficient cash leaves cash/stock/tree dates/ledger unchanged; exact cash affordability succeeds and records one labor expense; invalid zero yield leaves state unchanged. All passed. The test file syntax was checked. **The committed test file has not been run by Node from a repository checkout.**
+> - At parent HEAD `7dd6d4511922f17497f777af82bbdd2537cbf2be`, 9 existing test files passed in an isolated V8 harness with mocked Node APIs and a `structuredClone` polyfill. That is not a full repository test run. GitHub clone previously failed due DNS; checkout-based suite and browser E2E remain unverified.
+> - Known architecture gap: `S.stock` (coconut counts/age) and `S.warung` (ice/sugar/cups and business flags) are separate legacy stores; purchases, harvest, and sales mutate them directly. `js/commodity_transformation.js` is planning-only and not wired to live transactions. Do not add a second inventory map before designing one canonical source of truth and a backward-compatible save migration.
+> - Next work: (1) audit every `spend()` call for missing affordability checks, distinguishing player purchases from mandatory expenses/intentional arrears; (2) create tests for any confirmed bug; (3) design a migration/transaction contract before inventory refactor; (4) wire a single source-backed Tier 4 path only after cost/yield/source data are known.
+> - After each work unit, update this checkpoint and the implementation ledger with exact files, commit SHA, test command or isolated-harness method, result, caveats, and next task. Never claim unrun tests passed.
+
+
 ## Frontend and local simulation changes in this branch
 
 - Main player navigation is hamburger-based; pages include game, stock, accounting, assets/staff, market, world simulation, historical import, achievements, progression, and credit.
