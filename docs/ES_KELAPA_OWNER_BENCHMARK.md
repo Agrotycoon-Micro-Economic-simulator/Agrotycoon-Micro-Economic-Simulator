@@ -61,3 +61,17 @@ node tests/es_kelapa_benchmark.test.js
 ```
 
 This test locks the owner-entered Rp13,000 whole-coconut price, Rp5,000 glass price, four-glass yield, no-milk rule, 50-serving syrup batch and corrected Rp1,200 listed consumables subtotal. Do not change these standards without explicit owner approval. Keep actual cost, external price comparison, and unverified assumption as separate fields/labels.
+
+
+## Owner-locked market-stage clarification (2026-10-17)
+
+The owner explicitly distinguishes these transactions:
+
+1. **Farmer → collector (tengkulak):** producer/farmgate purchase; not the same stage as a price surveyed at consumer markets.
+2. **Collector → market:** owner describes about **Rp5,000/butir** in this chain context. This is contextual owner-provided information, not an independently sourced national observation.
+3. **Market → final consumer:** owner describes the national market observation as **Rp6,000+/butir**. Government market surveys may record this consumer-market stage; do not reinterpret it as a farmgate or processor input price.
+4. **Owner's lapak → final consumer:** **Rp13,000/butir**, the owner's validated whole-coconut product packaged in plastic for the stated medicinal-use context. This is immutable unless the owner explicitly authorizes a change.
+
+The Rp13,000 price is not a national market quote or a general agricultural raw-material benchmark. Keep it distinct from producer, collector, wholesale, retail-survey, and processed-product prices. Do not edit it merely because a national dataset reports a lower consumer-market price. For prepared es-kelapa comparisons, use comparable prepared-drink/lapak prices, not farmgate coconut prices.
+
+**Agent safety rule:** inspect source, type, market stage and note before editing a coconut record. National price ingestion must never overwrite `owner_verified_field_price`; external observations must be separate records with period, geography, unit and market stage.

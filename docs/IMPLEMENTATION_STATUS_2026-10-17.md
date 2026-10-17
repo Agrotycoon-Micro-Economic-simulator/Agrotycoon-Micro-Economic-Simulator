@@ -133,3 +133,12 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Extended `tests/finance.test.js` with a small-principal 30-day accrual case, ledger total assertion, due-day overdue assertion, and same-day idempotence check.
 - No coconut/commodity prices, market-chain data, or user-validated field data were changed.
 - Test execution: not run in this change pass because no repository checkout/Node test runner was available through the connected GitHub workflow. Do not mark as passing until executed against the branch.
+
+
+## Coconut price-stage protection — 2026-10-17
+
+- Clarified the owner-locked Rp13,000/butir lapak price in `js/market_chain.js` and `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+- The value means the owner's direct-to-final-consumer whole-coconut product, packaged in plastic for the stated medicinal-use context. It is not a farmgate, collector, wholesale, or national consumer-survey observation.
+- Documented the distinct chain context supplied by the owner: farmer → collector; collector → market about Rp5,000; sampled market → consumer Rp6,000+; owner's lapak → consumer Rp13,000.
+- No coconut numeric values in `js/data.js` were changed. This pass updates semantic notes and documentation only; no price was recalibrated.
+- Validation: content/diff review only; repository Node tests were not executable in this tool environment.

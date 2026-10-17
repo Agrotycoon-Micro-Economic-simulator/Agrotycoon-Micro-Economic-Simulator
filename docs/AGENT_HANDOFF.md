@@ -127,3 +127,13 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Current change on `feat/production-tier-taxonomy`: daily loan-interest accrual carries fractional rounding remainder instead of independently rounding every day's fraction. Newly originated loans initialize `interestRemainder`; legacy saved loans without the field default to zero at calculation time.
 - Added a focused small-principal/30-day/due-date/idempotence regression test in `tests/finance.test.js`. This is a code change only to credit calculation and its tests; no coconut prices or commodity data are modified.
 - Verification status for this change: tests have not yet been executed in a repository checkout. Run `node tests/finance.test.js` and the full available test suite before treating this as verified. Review accounting treatment of fractional interest if loan repayment/closure semantics are changed later.
+
+
+## Owner instruction — coconut market-stage protection (2026-10-17)
+
+- Never edit or overwrite the owner's coconut business price data without explicit owner approval.
+- Rp13,000/butir is the owner's final-consumer lapak price for the whole-coconut product packaged in plastic for the stated medicinal-use context. It is not a farmer, collector, wholesale, or national survey price.
+- Keep the stages separate: farmer → collector; collector → market (owner-described ~Rp5,000); market → consumer (owner-described Rp6,000+); owner's direct lapak → consumer (Rp13,000).
+- National market surveys may observe consumer-market prices. They must not substitute for farmer-to-collector purchases, processor input costs, or the owner's direct business price.
+- Compare prepared es-kelapa against prepared drinks sold by comparable lapak/food-service businesses, not farmgate/raw-coconut commodity prices.
+- Owner-verified prices are immutable in code and ETL; external observations must be separate records with explicit period, geography, unit and market stage.
