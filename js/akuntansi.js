@@ -1,6 +1,14 @@
 function accEscape(value){
  return String(value===undefined||value===null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
 }
+function accCashMovement(entry){
+ const amount=Number(entry&&entry.amt)||0;
+ const accounting=entry&&entry.accounting;
+ if(accounting)return accounting.basis==='cash'?amount:0;
+ const cat=String(entry&&entry.cat||'');
+ if(['BUNGA','SDM','RUGI','INFO','DUNIA_SIMULASI','IKLAN'].includes(cat))return 0;
+ return amount;
+}
 function accAccounting(entry){
  if(entry&&entry.accounting)return entry.accounting;
  const cat=String(entry&&entry.cat||'');
@@ -35,8 +43,8 @@ if(!S || S.ledger.length === 0){
  const monthKitchen=sumClass('household_kitchen');
  const monthPersonal=sumClass('household_personal');
  const monthBusinessResult=monthGross-monthPurchases-monthBusinessExpense;
- const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,Number(entry.amt)||0),0);
- const monthCashOut=monthLedger.reduce((sum,entry)=>sum+Math.max(0,-(Number(entry.amt)||0)),0);
+ const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,accCashMovement(entry)),0);
+ const monthCashOut=monthLedger.reduce((sum,entry)=>sum+Math.max(0,-accCashMovement(entry)),0);
  const monthNetCash=monthCashIn-monthCashOut;
  const monthOpeningCash=(Number(S.gold)||0)-monthNetCash;
  
