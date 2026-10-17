@@ -118,3 +118,11 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Source discrepancy found in `data game.docx`: around page 192, Tier 4 examples include technology/electronics/weapons; around page 199, Tier 4 examples include technology/heavy equipment/clean energy while electronics is Tier 3. `docs/PRODUCTION_TIERS.md` now documents the conflict rather than silently selecting across both sections. Current module uses the page-199 national-production table as provisional canonical examples.
 - No pull requests were returned by the connected PR search. The branch comparison reports `feat/production-tier-taxonomy` 204 commits ahead and 2 behind `main`; `fix/core-auto-warung-accounting-ui` 160 ahead and 2 behind. These are Git history counts, not completed-feature percentages.
 - Do not treat this audit as test validation: finance and browser E2E still require execution in a real checkout as documented.
+
+
+## Owner market-stage contract — 2026-10-17 follow-up
+
+- Updated `js/market_chain.js`: owner-verified farmer-to-tengkulak field price is Rp3,400/butir; owner direct-to-customer whole-coconut price remains Rp13,000/butir. The existing Rp5,000 collector sourcing value remains unchanged and is explicitly labeled a game parameter.
+- Added separate `processorPurchase` and `retailConsumer` fields for kelapa. Collector-to-es-kelapa/santan purchase price remains unknown (`null`) until a matching transaction source is available. National household consumer data is comparison data only, not a proxy for business input purchases.
+- Added `tests/market_chain_contract.test.js` for owner-price immutability and market-stage separation. Test source is committed but has not been executed in a real repository checkout.
+- No official dataset was used to overwrite any owner-provided price. No claims are made that the new test passes until executed.
