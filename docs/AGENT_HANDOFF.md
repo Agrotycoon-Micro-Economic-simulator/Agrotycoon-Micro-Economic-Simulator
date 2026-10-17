@@ -1,3 +1,11 @@
+## Latest continuation — executable regression CI setup (2026-10-17)
+
+- Added `.github/workflows/targeted-regression.yml` on `feat/production-tier-taxonomy`. It runs the committed Node regression scripts for household inventory accounting, double-entry transactions, accounting ledger rendering, household stock consumption, finance, payroll accounting and harvest validation under Node.js 22.
+- Workflow commit: `8f0a914d247d2027ee9f6dd0a5eae230e7ddb33c`. The local checkout attempt still fails because this environment cannot resolve `github.com`; therefore the test scripts have not been executed locally from a real checkout.
+- Next: check whether GitHub Actions starts for this commit; report the actual workflow conclusion before treating the test suite as passed. Browser E2E is still not run. Keep `main` untouched and do not change owner-validated coconut values.
+
+---
+
 # Agent Handoff — Agrotycoon
 
 ## Latest verified continuation checkpoint — household package-stock consumption (2026-10-17)
