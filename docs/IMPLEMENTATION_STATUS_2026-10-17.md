@@ -1,5 +1,22 @@
 # Agrotycoon implementation ledger — 2026-10-17
 
+## Latest owner-requested accounting implementation checkpoint (2026-10-17)
+
+- Code branch was re-fetched before edits: `feat/production-tier-taxonomy`; prior HEAD was `a80e8cafb30be7958b31c2402d1fdc3e6b50ed1d`. No branch was created and `main` was not modified.
+- Code commits:
+  - `3051b5b32131a948e88c888fbe915a9bbe2c31bf`: `js/state.js` now permits optional accounting metadata on each ledger row without changing old save rows.
+  - `a6d2de9b14fc00d0dac02747cf595ce70bd682dc`: `js/economy.js` posts balanced cash entries. Sales: debit Kas / credit Penjualan. Household kitchen purchases: debit Beban Dapur / credit Kas. Other household spending: debit Beban Pribadi / credit Kas. `BELANJA`: debit Pembelian Bahan Baku / credit Kas. `TENAGA`: debit Beban Tenaga Kerja / credit Kas. `CAPEX`: debit Aset Tetap/Modal / credit Kas.
+  - `86e1f949332f298de46f0c30b72b3e7774e789be` and `0f171ae5342f6297f067c9538ac3a5c8179d62ec`: `js/akuntansi.js` now displays debit/credit columns and monthly business vs household totals, plus a cash reconciliation; known non-cash event categories are excluded from cash movement.
+  - `7b52b02a72347f8192f8a2d117c1a686a8804872`: revised `tests/accounting_ledger.test.js` for a sample Rp400,000 sale, Rp50,000 material purchase, Rp62,000 kitchen purchase and expected Rp1,288,000 closing cash from Rp1,000,000 opening cash.
+  - `ad804fff71710b6405918ce3c6f3859e9993acb8`: added `tests/double_entry_transactions.test.js` for live `earn()`/`spend()` posting behavior.
+- Current observed branch HEAD after code/test commits: `ad804fff71710b6405918ce3c6f3859e9993acb8`. GitHub combined commit status returned no status checks. **The tests above have not been executed** because no checkout-based Node runtime was available in this session; do not describe them as passing.
+- Important accounting boundary: the ledger now stores balanced debit/credit metadata for new cash transactions, but purchases are currently classified as `Pembelian Bahan Baku` at purchase time. Actual consumption-based COGS, inventory cost layers, spoilage write-offs, depreciation, complete non-cash journal entries and a full trial-balance/financial-statement engine are not implemented. Therefore the displayed “hasil usaha” is a cash-transaction subtotal, not yet a fully reconciled accrual-accounting net profit.
+- Household food names configured in `DATA.living` (rice, egg, oil, mie, tempe, sayur, lauk) are classified to `Beban Dapur`; household electricity, pulsa, personal fuel and bath/laundry are classified to `Beban Pribadi`. Business-unit utilities still need explicit business-unit attribution; do not infer that household utility values are business utilities.
+- Existing ledger rows without accounting metadata are reconstructed only for known legacy categories/food descriptions. Unrecognized legacy rows remain unclassified. New rows are recorded in real time when `spend()`/`earn()` is called. The cash reconciliation derives opening cash from the current cash balance minus the month’s recognized cash movement; verify loan/disbursement/repayment paths and non-cash events before treating all financing flows as fully classified.
+- Dividend/investment payment flows remain unimplemented. If implemented later, the owner’s rate is 0.001% (= 0.00001), not 0.1%; eligible base, period, payment verification, timing and rounding must be specified first.
+- Next: execute both accounting tests in a real checkout; fix failures; add regression tests for non-cash interest and loan cash movements; then implement consumption-based raw-material inventory/COGS and business-unit utility attribution without double-counting cash or profit.
+
+
 This ledger separates shipped code from incomplete work. No Supabase integration has been started.
 
 
