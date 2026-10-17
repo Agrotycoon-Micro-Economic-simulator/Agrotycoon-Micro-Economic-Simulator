@@ -1,8 +1,8 @@
-## Latest continuation — first real Node CI run and fixture correction (2026-10-17)
+## Latest continuation — targeted Node regressions passing (2026-10-17)
 
-- GitHub Actions run [39031033605](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39031033605) successfully checked out the branch and used Node.js 22, but failed immediately in `tests/household_inventory_accounting.test.js`: fixture began with one rice package while the assertion expected a purchase to leave one package. This was a test-fixture contradiction, not a production-code failure.
-- Fixed the fixture to begin with zero rice stock so `buyLivingItem("rice")` must add exactly one package. Fix commit: `9ff852adf89d86a1fdce077ad4ffe109fa703eef`.
-- A second workflow run is pending/in progress; do not claim the suite passes until its conclusion and per-test output are inspected. Local clone remains blocked by DNS in this environment. Browser E2E remains outstanding. Keep `main` and owner-validated coconut values untouched.
+- GitHub Actions run [39031115000](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39031115000) completed with **success** on commit `9ff852adf89d86a1fdce077ad4ffe109fa703eef`, using a real GitHub checkout and Node.js 22.
+- All seven commands passed: `household_inventory_accounting.test.js`, `double_entry_transactions.test.js`, `accounting_ledger.test.js`, `living_stock.test.js`, `finance.test.js`, `payroll_accounting.test.js`, and `economy_harvest.test.js`. The first run exposed a test-fixture contradiction; the fixture was corrected to start with zero rice stock before purchase, and the rerun passed all seven scripts.
+- Browser E2E remains unrun. This validates the targeted Node regression set only, not every repository test. Keep `main` untouched and do not change owner-validated coconut values.
 
 ---
 
