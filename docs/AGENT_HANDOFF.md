@@ -137,3 +137,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - National market surveys may observe consumer-market prices. They must not substitute for farmer-to-collector purchases, processor input costs, or the owner's direct business price.
 - Compare prepared es-kelapa against prepared drinks sold by comparable lapak/food-service businesses, not farmgate/raw-coconut commodity prices.
 - Owner-verified prices are immutable in code and ETL; external observations must be separate records with explicit period, geography, unit and market stage.
+
+
+## Owner chain tier standard (2026-10-17)
+- `js/commodity_tier_chain.js` is the owner's commercial chain model: Tier 1 producer/raw; Tier 2 collector/first distributor/market; Tier 3 retail/Warung Madura/lapak and santan; Tier 4 finished dishes/manufactures including rendang, cakes, coconut oil, coconut-milk dishes and finished bath soap.
+- Keep this separate from `js/production_tiers.js` school/major taxonomy. Never copy prices between stages; numeric prices require source, period, geography and unit. Unknown values remain null.
+- Preserve owner coconut price Rp13,000/butir; public data is contextual only. Details and references: `docs/COMMODITY_CHAIN_TIER_STANDARD.md`.

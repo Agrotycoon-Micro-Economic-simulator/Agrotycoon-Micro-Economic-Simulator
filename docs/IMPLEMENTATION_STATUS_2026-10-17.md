@@ -142,3 +142,10 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Documented the distinct chain context supplied by the owner: farmer → collector; collector → market about Rp5,000; sampled market → consumer Rp6,000+; owner's lapak → consumer Rp13,000.
 - No coconut numeric values in `js/data.js` were changed. This pass updates semantic notes and documentation only; no price was recalibrated.
 - Validation: content/diff review only; repository Node tests were not executable in this tool environment.
+
+
+## Owner chain tier standard — 2026-10-17
+- Added `js/commodity_tier_chain.js` for Tier 1 producer/raw, Tier 2 distributor/market, Tier 3 retail/lapak/santan, Tier 4 finished foods/manufactures (rendang, cakes, coconut oil, coconut-milk dishes, bath soap).
+- Added `tests/commodity_tier_chain.test.js` and `docs/COMMODITY_CHAIN_TIER_STANDARD.md` with provenance rules and internet benchmark sources.
+- Separate from `js/production_tiers.js`; no coconut numeric values changed, and owner Rp13,000 remains locked.
+- Node tests not run in this environment; buy/sell flows are not yet fully wired to the schema.
