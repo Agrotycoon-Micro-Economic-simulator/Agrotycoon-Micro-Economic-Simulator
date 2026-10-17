@@ -301,3 +301,8 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Commits: `4b8dcd23acb768c718e11da7722d3380da4f1170`, `e44a238159b4c6fc5baca801579451ecf12f830b`, `c1d0c5445f4277fb09b02ab7a3e9261fa8e5cadb`, `d20e18acde7dde3905feade6fcbba4d6116a0ac1`, followed by handoff/status documentation commits.
 - Known limitation: historical purchases without the new classification remain in their original legacy kitchen-expense category; no retroactive reclassification is attempted. Mandatory auto-purchases may still make cash negative; unpaid household necessities policy remains unresolved.
 - Next: execute `node tests/household_inventory_accounting.test.js`, `tests/accounting_ledger.test.js`, `tests/double_entry_transactions.test.js`, `tests/living_stock.test.js`, and relevant finance/harvest tests from a real checkout; then browser E2E and review full balance-sheet reconciliation.
+
+
+- Follow-up validation on 2026-10-17: corrected the new household inventory test to call the real `buyLivingItem('rice')` path, including stock addition, then consumption. Updated `tests/double_entry_transactions.test.js` to expect food purchases to debit Persediaan Rumah Tangga (consumption is tested separately).
+- Rechecked syntax parsing for `js/economy.js`, `js/day.js`, `js/akuntansi.js`, and the three relevant test files. Isolated V8 scenarios passed for purchase/consumption, balanced noncash posting, cash reconciliation, and legacy stock period consumption.
+- GitHub reported no commit status checks and no workflow runs for the checkpoint commit; `.github/workflows` was not found at the feature branch. These checks are not substitutes for running the Node test files in a repository checkout. Browser E2E remains unrun.
