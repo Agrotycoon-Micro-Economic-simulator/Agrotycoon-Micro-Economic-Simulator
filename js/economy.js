@@ -1,7 +1,51 @@
 function isMature(t){return t.mature||S.day>=t.plantedDay+DATA.matureDays;}
 function readyTrees(){return S.trees.filter(t=>isMature(t)&&(t.lastHarvest===null||S.day-t.lastHarvest>=DATA.cycleDays));}
-function spend(cat,desc,amt,field,detail){S.gold-=amt;ledger(cat,desc,-amt,detail);S.dayLog.expense+=amt;S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+amt;if(field)S.dayLog[field]+=amt;}
-function earn(cat,desc,amt,detail){S.gold+=amt;ledger(cat,desc,amt,detail);S.dayLog.gross+=amt;S.dayLog.cashIn=(Number(S.dayLog.cashIn)||0)+amt;gainXP(5);} // +5 XP per transaksi
+function classifySpend(cat,desc){
+ const text=String(desc||'').toLowerCase();
+ if(cat==='HIDUP'){
+  const kitchenKeys=['rice','egg','oil','mie','tempe','sayur','lauk'];
+  const isKitchen=kitchenKeys.some(key=>DATA.living&&DATA.living[key]&&text.includes(String(DATA.living[key].name).toLowerCase()));
+  return isKitchen
+   ? {classification:'household_kitchen',account:'Beban Dapur'}
+   : {classification:'household_personal',account:'Beban Pribadi'};
+ }
+ if(cat==='BELANJA')return {classification:'business_purchase',account:'Pembelian Bahan Baku'};
+ if(cat==='TENAGA')return {classification:'business_expense',account:'Beban Tenaga Kerja'};
+ if(cat==='CAPEX')return {classification:'asset_purchase',account:'Aset Tetap/Modal'};
+ if(cat==='PENJUALAN')return {classification:'business_revenue',account:'Penjualan'};
+ return {classification:'unclassified_expense',account:'Beban Belum Diklasifikasi'};
+}
+function spend(cat,desc,amt,field,detail){
+ const value=Number(amt)||0;
+ const mapping=classifySpend(cat,desc);
+ S.gold-=value;
+ ledger(cat,desc,-value,detail,{
+  classification:mapping.classification,
+  debitAccount:mapping.account,
+  creditAccount:'Kas',
+  debit:value,
+  credit:value,
+  basis:'cash'
+ });
+ S.dayLog.expense+=value;
+ S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+value;
+ if(field)S.dayLog[field]+=value;
+}
+function earn(cat,desc,amt,detail){
+ const value=Number(amt)||0;
+ S.gold+=value;
+ ledger(cat,desc,value,detail,{
+  classification:'business_revenue',
+  debitAccount:'Kas',
+  creditAccount:'Penjualan',
+  debit:value,
+  credit:value,
+  basis:'cash'
+ });
+ S.dayLog.gross+=value;
+ S.dayLog.cashIn=(Number(S.dayLog.cashIn)||0)+value;
+ gainXP(5);
+} // +5 XP per transaksi
 function harvest(){
  if(stockQty()>0){msg('⚠️ Gudang masih berisi. Jual/olah dulu stok lama.');return;}
  const rt=readyTrees();if(!rt.length){msg('⚠️ Belum ada pohon siap panen.');return;}
