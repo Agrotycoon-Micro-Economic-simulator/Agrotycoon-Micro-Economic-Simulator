@@ -2,6 +2,22 @@
 
 Status: calculator and focused tests added on `feat/production-tier-taxonomy`. This is a foundation; it is not yet wired into every business UI or transaction path.
 
+## Owner requirement: separate business result from household cost (2026-10-17)
+
+The accounting UI must teach the player to distinguish the business's gross/operating result from the cash left after household living costs. Do not combine every cash outflow into a single undifferentiated business-expense figure.
+
+Required monthly views:
+1. **Business income and direct operating expenses**: report revenue by business unit/commodity, direct inputs, harvest labor (Rp500 per harvested coconut), processing consumables, business labor, transport, spoilage/losses and business utilities. Calculate the business result before household costs.
+2. **Household / kitchen costs**: book food and side-dish purchases in a dedicated `DAPUR`/kitchen expense group. Show the monthly itemized total. Household electricity, water, phone credit, personal fuel and bathing/laundry items should be separately identifiable; do not silently classify household utilities as business utilities.
+3. **Business utilities**: costs attributable to an operating unit should be assigned to that unit or marked as an explicit allocation, not double-counted in household costs.
+4. **Monthly cash movement**: show opening cash + cash inflows − business cash outflows − household/kitchen outflows − other outflows = closing cash. Show loans, developer special-investment deposits, and operating income separately; financing/investment inflows are not sales revenue.
+5. **Player-facing result**: show business gross result, business costs, household/kitchen costs, other personal costs, and resulting residual/real cash result as separate rows. Rp4,000,000 gross business result minus Rp100,000–Rp500,000 business costs and Rp1,500,000 kitchen costs is an illustrative scenario only, never current game data.
+6. Preserve transaction-level details and monthly rollups; each expense is counted once in the correct category. Avoid calling revenue profit, and label whether a figure is gross, operating, or after-household cash result.
+
+Special developer investment rule: when real-money game-currency purchases are implemented and payment-verified, classify the deposit as a distinct developer-to-player-account investment/financing event, not business sales revenue and not a loan. The owner-defined dividend rate is **0.001%** (decimal fraction `0.00001`) of the explicitly defined eligible investment base per applicable distribution period. Do not implement or calculate dividends until the eligible base, period, event timing, and rounding policy are defined and payment verification exists. Never interpret 0.001% as 0.001 (=0.1%).
+
+Implementation caution: current `js/day.js` books household food, electricity, phone credit, fuel, and bathing/laundry items under generic `HIDUP`; `js/economy.js::spend()` directly reduces cash and aggregates costs into `dayLog.expense/cashOut`. The accounting redesign must add explicit classifications and preserve backward-compatible history. Renaming a label alone is insufficient if the ledger and monthly reports still mix household and business costs. `S.livingStock` consumption semantics also need a separate audit before claiming the household consumption simulation is complete.
+
 ## Goal
 
 Every business is described as a reproducible unit-economics scenario, then linked to upstream and downstream businesses. A 2D presentation does not limit simulation depth: production, inventory, cash, costs, prices, and supply-chain events should be modeled as data and deterministic rules.
