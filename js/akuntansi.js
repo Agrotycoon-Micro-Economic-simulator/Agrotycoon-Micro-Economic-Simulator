@@ -1,3 +1,7 @@
+function accEscape(value){
+ return String(value===undefined||value===null?'':value).replace(/[&<>\"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[ch];});
+}
+
 loadSaved();
 const accDiv = document.getElementById('acc');
 let h='';
@@ -60,5 +64,21 @@ if(!S || S.ledger.length === 0){
  h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Pendapatan</th><th>Beban</th><th>Laba/rugi</th><th>Kas masuk</th><th>Kas keluar</th><th>Arus kas bersih</th></tr>';
  S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+(DATA.weather[r.weather]?.name||r.weather||'—')+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+rp(r.cashIn||0)+'</td><td>'+rp(r.cashOut||0)+'</td><td class="'+((r.cashflow||0)<0?'neg':'pos')+'">'+rp(r.cashflow!==undefined?r.cashflow:((r.cashIn||0)-(r.cashOut||0)))+'</td></tr>';});
  h+='</table></div>';
+
+ // Jurnal transaksi: tampilkan pengeluaran HIDUP dan semua transaksi lain, bukan hanya total harian.
+ const ledgerRows=(Array.isArray(S.ledger)?S.ledger:[]).slice(-200).reverse();
+ h+='<div class="panel"><h3>📒 Jurnal Transaksi (maksimal 200 terbaru)</h3>';
+ if(!ledgerRows.length){
+  h+='<p>Belum ada transaksi tercatat.</p>';
+ }else{
+  h+='<table><tr><th>Hari</th><th>Kategori</th><th>Uraian</th><th>Nilai</th><th>Rincian</th></tr>';
+  ledgerRows.forEach(function(entry){
+   const detail=entry.detail===undefined||entry.detail===null?'—':(typeof entry.detail==='string'?entry.detail:JSON.stringify(entry.detail));
+   const amount=Number(entry.amt)||0;
+   h+='<tr><td>'+accEscape(entry.day)+'</td><td>'+accEscape(entry.cat)+'</td><td>'+accEscape(entry.desc)+'</td><td class="'+(amount<0?'neg':'pos')+'">'+rp(amount)+'</td><td>'+accEscape(detail)+'</td></tr>';
+  });
+  h+='</table><p class="accounting-note">Jurnal menampilkan maksimal 200 transaksi terbaru. Pengeluaran rumah tangga dengan kategori HIDUP tetap terlihat sebagai transaksi terpisah.</p>';
+ }
+ h+='</div>';
 }
 accDiv.innerHTML=h;
