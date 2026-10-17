@@ -11,6 +11,7 @@ function classifySpend(cat,desc){
  }
  if(cat==='BELANJA')return {classification:'business_purchase',account:'Pembelian Bahan Baku'};
  if(cat==='TENAGA')return {classification:'business_expense',account:'Beban Tenaga Kerja'};
+ if(cat==='GAJI')return {classification:'business_expense',account:'Beban Gaji'};
  if(cat==='CAPEX')return {classification:'asset_purchase',account:'Aset Tetap/Modal'};
  if(cat==='PENJUALAN')return {classification:'business_revenue',account:'Penjualan'};
  return {classification:'unclassified_expense',account:'Beban Belum Diklasifikasi'};
