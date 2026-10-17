@@ -29,6 +29,14 @@ Repo: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Ec
 Agrotycoon is intended as an Indonesia-focused micro-economic/agriculture/commodity-chain simulator. Core loop: land/regional suitability -> seeds/inputs/labor/capital -> crop/livestock stages -> harvest -> storage/spoilage -> processing/byproducts -> transport/routes -> producer/collector/wholesale/direct/retail/factory markets -> contracts/sales -> cashflow/profit/balance sheet -> progression/unlocks -> regional shocks and policy response.
 Longer-term: full Tier 1–4 commodity workflows. The owner's Library definitions have now been transcribed into `docs/PRODUCTION_TIERS.md` and implemented as metadata in `js/production_tiers.js`. Keep production-transformation tier separate from market channel/stage; rule-based NPCs with budgets/inventory/goals/contracts, data-grounded AI mentors/consultants, and government policy/programs based on verified rules. AI advice must disclose calculations, assumptions and sources; NPCs should change simulation state, not be decorative chatbots.
 
+
+## Owner accounting requirements (2026-10-17)
+
+- Separate business gross/operating result from household living costs. Food and side-dish spending belongs in a dedicated `DAPUR`/kitchen expense category and must be rolled up monthly; household electricity, water, phone, personal fuel, and bath/laundry costs must remain distinguishable from utilities attributable to a business unit.
+- Monthly report must show revenue, direct/business costs, business result before household expenses, itemized household/kitchen costs, other personal costs, and final residual/after-household cash result. Monthly cash movement must reconcile opening cash + cash inflows − all cash outflows = closing cash. Loans and developer special-investment deposits are financing, not sales revenue. Example figures Rp4m gross, Rp100k–Rp500k business costs, Rp1.5m kitchen costs are illustrative only.
+- Owner clarified developer special-investment dividend rate is 0.001% (= decimal 0.00001), not 0.1%. This is a future design requirement only. Before implementation, define eligible investment base, distribution period, payment verification, timing, and rounding.
+- Current `day.js` records food and personal utility-like items under `HIDUP`; `spend()` aggregates all costs in `dayLog.expense/cashOut`. A label change alone will not fix accounting. Add explicit expense classification and monthly rollups without double-counting or breaking existing saves.
+
 ## Owner clarification and accounting constraints (2026-10-17)
 
 - Harvest labor: Rp500 per harvested coconut (`DATA.laborPerFruit` already equals 500). Record total labor once as harvested quantity × Rp500.
