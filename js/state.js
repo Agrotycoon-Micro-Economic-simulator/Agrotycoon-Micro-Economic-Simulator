@@ -13,6 +13,7 @@ function defaultState(){
   reports:[],ledger:[],realMoney:0,lastAdDay:0,storyDone:false,
   stats:{es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0},
   livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
+  livingUseDays:{rice:0,egg:0,oil:0,mie:0,tempe:0,sayur:0,lauk:0},
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
  };
 }
@@ -35,6 +36,8 @@ function loadSaved(){
    if(!S.tutorialSeen)S.tutorialSeen={};
    if(typeof S.soundEnabled!=='boolean')S.soundEnabled=true;
    if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0};
+   if(!S.livingUseDays||typeof S.livingUseDays!=='object')S.livingUseDays={};
+   ['rice','egg','oil','mie','tempe','sayur','lauk'].forEach(k=>{if(!Number.isFinite(S.livingUseDays[k])||S.livingUseDays[k]<0)S.livingUseDays[k]=0;});
    if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0};
    if(typeof S.warung.autoMode!=='boolean')S.warung.autoMode=false;
    if(!Number.isFinite(S.warung.successfulSales))S.warung.successfulSales=0;
