@@ -121,3 +121,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added separate `processorPurchase` and `retailConsumer` stages. The collector-to-es-kelapa/santan purchase price stays null until supported by a matching transaction observation. National final-consumer data must not be substituted for a business's raw-material purchase price.
 - Added `tests/market_chain_contract.test.js` to protect these rules. It has been committed but not executed in a real Node checkout; do not claim it passed.
 - Latest market-chain changes are on `feat/production-tier-taxonomy`; verify branch HEAD before the next write. Continue P0 finance rounding/due-day audit after this market-stage contract, then transaction/inventory integration. Never modify `main`.
+
+
+## Finance rounding hardening — 2026-10-17
+- Current change on `feat/production-tier-taxonomy`: daily loan-interest accrual carries fractional rounding remainder instead of independently rounding every day's fraction. Newly originated loans initialize `interestRemainder`; legacy saved loans without the field default to zero at calculation time.
+- Added a focused small-principal/30-day/due-date/idempotence regression test in `tests/finance.test.js`. This is a code change only to credit calculation and its tests; no coconut prices or commodity data are modified.
+- Verification status for this change: tests have not yet been executed in a repository checkout. Run `node tests/finance.test.js` and the full available test suite before treating this as verified. Review accounting treatment of fractional interest if loan repayment/closure semantics are changed later.

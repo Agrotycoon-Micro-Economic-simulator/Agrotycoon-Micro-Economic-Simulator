@@ -126,3 +126,10 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Added separate `processorPurchase` and `retailConsumer` fields for kelapa. Collector-to-es-kelapa/santan purchase price remains unknown (`null`) until a matching transaction source is available. National household consumer data is comparison data only, not a proxy for business input purchases.
 - Added `tests/market_chain_contract.test.js` for owner-price immutability and market-stage separation. Test source is committed but has not been executed in a real repository checkout.
 - No official dataset was used to overwrite any owner-provided price. No claims are made that the new test passes until executed.
+
+
+## Finance rounding hardening — 2026-10-17
+- Changed `js/finance.js` to carry daily fractional-interest rounding remainder per loan; the prior implementation rounded each day's interest independently and could systematically overstate small-principal loans.
+- Extended `tests/finance.test.js` with a small-principal 30-day accrual case, ledger total assertion, due-day overdue assertion, and same-day idempotence check.
+- No coconut/commodity prices, market-chain data, or user-validated field data were changed.
+- Test execution: not run in this change pass because no repository checkout/Node test runner was available through the connected GitHub workflow. Do not mark as passing until executed against the branch.

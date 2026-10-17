@@ -106,4 +106,23 @@ function setup(now) {
   assert.equal(new Set(S.finance.loans.map(loan => loan.id)).size, 2, "loan records have unique identifiers");
   assert.equal(finance.totalDebt(), 2000000, "both distinct loans are represented in liabilities");
 }
+
+{
+  const { S, finance } = setup();
+  const result = finance.apply(1001, 30);
+  assert.equal(result.ok, true, "small eligible loan can be originated");
+  const loan = result.loan;
+  for (let day = 2; day <= 31; day++) {
+    S.day = day;
+    finance.accrueDay();
+  }
+  assert.equal(loan.interestDue, 15, "daily rounding carries fractions so 30 days approximate 1.5% monthly interest");
+  assert.ok(Math.abs(loan.interestRemainder) < 0.5, "fractional rounding remainder stays bounded");
+  assert.equal(S.ledgerRows.filter(x => x.cat === "BEBAN_BUNGA").reduce((sum, row) => sum + Math.abs(row.amt), 0), 15,
+    "ledger interest equals the loan's accrued whole-rupiah interest");
+  assert.equal(loan.status, "overdue", "loan becomes overdue on its due day");
+  finance.accrueDay();
+  assert.equal(loan.interestDue, 15, "repeated accrual on the same day does not double count");
+}
+
 console.log("PASS: finance origination, daily accrual, idempotence, partial/full repayment, legacy liabilities, overdue and validation.");
