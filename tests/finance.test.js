@@ -15,7 +15,7 @@ function setup(now) {
   const window = {};
   const context = {
     window, S, Math, Number, String, Array, Date: now === undefined ? Date : { now: () => now },
-    ledger(cat, desc, amt, detail) { S.ledgerRows.push({ day: S.day, cat, desc, amt, detail }); },
+    ledger(cat, desc, amt, detail, accounting) { S.ledgerRows.push({ day: S.day, cat, desc, amt, detail, accounting: accounting || null }); },
     save() {}
   };
   vm.runInNewContext(source, context);
@@ -33,13 +33,29 @@ function setup(now) {
   assert.equal(loan.interestDue, 0, "no interest at origination");
   assert.equal(finance.totalDebt(), 5000000, "principal is a liability");
   assert.equal(S.dayLog.gross, 0, "loan proceeds are not operating revenue");
+  const origination = S.ledgerRows.find(x => x.cat === "PINJAMAN");
+  assert.equal(origination.accounting.classification, "financing_inflow");
+  assert.equal(origination.accounting.basis, "cash");
+  assert.equal(origination.accounting.debitAccount, "Kas");
+  assert.equal(origination.accounting.creditAccount, "Utang Pinjaman");
+  assert.equal(origination.accounting.debit, 5000000);
+  assert.equal(origination.accounting.credit, 5000000);
+  assert.equal(origination.accounting.lines.reduce((sum, line) => sum + line.debit, 0), 5000000);
+  assert.equal(origination.accounting.lines.reduce((sum, line) => sum + line.credit, 0), 5000000);
 
   S.day = 2;
   finance.accrueDay();
   assert.equal(loan.interestDue, 2500, "one day accrual is 1.5%/30 on remaining principal");
   assert.equal(S.dayLog.expense, 2500, "interest accrual enters daily expense");
   assert.equal(S.ledgerRows.filter(x => x.cat === "BEBAN_BUNGA").length, 1, "interest is recorded in ledger");
-  assert.equal(S.ledgerRows.find(x => x.cat === "BEBAN_BUNGA").detail.nonCash, true, "accrual is explicitly non-cash");
+  const interestEntry = S.ledgerRows.find(x => x.cat === "BEBAN_BUNGA");
+  assert.equal(interestEntry.detail.nonCash, true, "accrual is explicitly non-cash");
+  assert.equal(interestEntry.accounting.classification, "business_expense");
+  assert.equal(interestEntry.accounting.basis, "noncash", "accrued interest is excluded from cash movement");
+  assert.equal(interestEntry.accounting.debitAccount, "Beban Bunga");
+  assert.equal(interestEntry.accounting.creditAccount, "Utang Bunga");
+  assert.equal(interestEntry.accounting.debit, 2500);
+  assert.equal(interestEntry.accounting.credit, 2500);
   finance.accrueDay();
   assert.equal(loan.interestDue, 2500, "calling accrual twice for same day does not double count");
 
@@ -65,6 +81,15 @@ function setup(now) {
   assert.equal(loan.status, "paid", "fully repaid loan closes");
   assert.equal(finance.totalDebt(), 0, "closed loan no longer counts as liability");
   assert.equal(S.ledgerRows.filter(x => x.cat === "CICILAN").length, 2, "both repayments recorded");
+  const repayment = S.ledgerRows.find(x => x.cat === "CICILAN");
+  assert.equal(repayment.accounting.classification, "financing_repayment");
+  assert.equal(repayment.accounting.basis, "cash");
+  assert.equal(repayment.accounting.debit, 100000);
+  assert.equal(repayment.accounting.credit, 100000);
+  assert.equal(repayment.accounting.lines.reduce((sum, line) => sum + line.debit, 0), 100000);
+  assert.equal(repayment.accounting.lines.reduce((sum, line) => sum + line.credit, 0), 100000);
+  assert.ok(repayment.accounting.lines.some(line => line.account === "Utang Bunga" && line.debit === 2500));
+  assert.ok(repayment.accounting.lines.some(line => line.account === "Utang Pinjaman" && line.debit === 97500));
   assert.equal(finance.repay(loan.id, 1).ok, false, "paid loan cannot be repaid again");
 }
 
