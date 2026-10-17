@@ -8,7 +8,7 @@ const S = {
   day: 1,
   gold: 1000000,
   ledger: [],
-  livingStock: { rice: 1, egg: 0, oil: 0, mie: 0, tempe: 0, sayur: 0, lauk: 0 },
+  livingStock: { rice: 0, egg: 0, oil: 0, mie: 0, tempe: 0, sayur: 0, lauk: 0 },
   livingUseDays: { rice: 0, egg: 0, oil: 0, mie: 0, tempe: 0, sayur: 0, lauk: 0 },
   dayLog: { expense: 0, cashOut: 0, cashIn: 0, gross: 0, living: 0 }
 };
