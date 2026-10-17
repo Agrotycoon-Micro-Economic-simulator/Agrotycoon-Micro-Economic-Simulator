@@ -1,5 +1,18 @@
 # Agrotycoon implementation ledger — 2026-10-17
 
+## Latest verified continuation checkpoint — financing journal metadata (2026-10-17)
+
+- Work branch: `feat/production-tier-taxonomy`; starting HEAD was `eedb7db27315c1dcd87a4dfb7affa4e10648031e`. No branch was created, `main` was not modified, and validated coconut-price/benchmark data was not changed.
+- Updated `js/finance.js`: loan disbursement posts debit Kas / credit Utang Pinjaman; accrued interest posts debit Beban Bunga / credit Utang Bunga with `basis: noncash`; repayments split debits between Utang Bunga and Utang Pinjaman and credit Kas. Multi-line debit/credit totals are equal.
+- Updated `js/akuntansi.js` to render multi-line posting accounts and line-level debit/credit details. Noncash interest remains excluded from cash reconciliation while still classified as an expense.
+- Updated `tests/finance.test.js` to assert balanced loan origination, interest accrual, and repayment postings. The test source was syntax-parsed and the corresponding runtime scenarios were executed in an isolated V8 harness using the fetched module. This is **not** a run of `node tests/finance.test.js` in a repository checkout.
+- Isolated runtime checks passed: Rp5,000,000 disbursement increases cash without increasing operating revenue; Rp2,500 interest accrual is noncash and does not alter cash movement; Rp100,000 repayment reduces cash and splits Rp2,500 interest plus Rp97,500 principal into balanced debits against Kas credit. Accounting renderer showed Utang Pinjaman, Beban Bunga, Utang Bunga, and cash reconciliation (opening Rp30,000,000, closing Rp34,900,000).
+- Limitations: full checkout-based Node suite and browser E2E remain unrun because the previous clone attempt failed on DNS. Other legacy finance/payroll ledger rows may still lack explicit posting metadata; inventory consumption/COGS and household stock-consumption behavior remain separate unfinished tasks.
+- Next: run the finance and accounting test files in a real Node checkout when available; then continue the `livingStock` audit (purchase cadence vs consumption) without inventing a meal schedule. Keep owner-validated coconut data locked.
+
+
+---
+
 ## Latest owner-requested accounting implementation checkpoint (2026-10-17)
 
 - Code branch was re-fetched before edits: `feat/production-tier-taxonomy`; prior HEAD was `a80e8cafb30be7958b31c2402d1fdc3e6b50ed1d`. No branch was created and `main` was not modified.
