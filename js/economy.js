@@ -252,7 +252,9 @@ function buyLivingItem(key){
  const item=DATA.living[key];if(!item)return;
  if(S.gold<item.price){msg('⚠️ Uang tidak cukup.');return;}
  spend('HIDUP','Beli '+item.name,item.price,'living');
- S.livingStock[key]=(S.livingStock[key]||0)+1;
+ const oldStock=Math.max(0,Number(S.livingStock[key])||0);
+ S.livingStock[key]=oldStock+1;
+ if(oldStock===0){if(!S.livingUseDays)S.livingUseDays={};S.livingUseDays[key]=0;}
  save();render();
 }
 function emptySlots(){return DATA.slots-S.trees.length;}
