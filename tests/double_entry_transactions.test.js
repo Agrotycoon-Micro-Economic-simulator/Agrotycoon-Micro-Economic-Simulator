@@ -42,8 +42,8 @@ assert.deepEqual(
   [
     { classification: "business_revenue", debitAccount: "Kas", creditAccount: "Penjualan", debit: 400000, credit: 400000 },
     { classification: "business_purchase", debitAccount: "Pembelian Bahan Baku", creditAccount: "Kas", debit: 50000, credit: 50000 },
-    { classification: "household_kitchen", debitAccount: "Beban Dapur", creditAccount: "Kas", debit: 62000, credit: 62000 }
+    { classification: "household_inventory_purchase", debitAccount: "Persediaan Rumah Tangga", creditAccount: "Kas", debit: 62000, credit: 62000 }
   ],
   "each transaction has the expected debit/credit accounts and equal amounts"
 );
-console.log("PASS: sales, raw-material purchases, and kitchen purchases post balanced entries and reconcile cash.");
+console.log("PASS: sales, raw-material purchases, and household inventory purchases post balanced entries and reconcile cash.");
