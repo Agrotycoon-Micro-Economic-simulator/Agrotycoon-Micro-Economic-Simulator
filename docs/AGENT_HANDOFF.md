@@ -1,4 +1,36 @@
 # Agent Handoff — Agrotycoon
+
+## Latest verified continuation checkpoint — double-entry accounting (2026-10-17)
+
+**Re-fetch branch HEAD before further edits.** The branch was verified as `feat/production-tier-taxonomy`, with no branch creation and no changes to `main`. Code/test sequence ended at `ad804fff71710b6405918ce3c6f3859e9993acb8`; the implementation-status documentation update then committed as `ebd4419c6ae6a41dab255129df3f41599d2dae18`. This handoff update itself creates another commit, so never assume this is still the live HEAD.
+
+Owner's required daily accounting pattern:
+- Cash sale: debit **Kas**, credit **Penjualan**.
+- Business raw-material purchase (ice/sugar/plastic or coconut bought for resale): debit **Pembelian Bahan Baku**, credit **Kas**.
+- Household food/kitchen purchase: debit **Beban Dapur**, credit **Kas**.
+- Other personal/household purchase: debit **Beban Pribadi**, credit **Kas**.
+- Every new cash posting should have equal debit and credit; `S.gold`, cash-in and cash-out must update at transaction time.
+- Example acceptance case: opening cash Rp1,000,000 + sale Rp400,000 − business purchase Rp50,000 − kitchen spending Rp62,000 = closing cash Rp1,288,000. Business transaction subtotal before household expense = Rp350,000; kitchen cost is displayed separately as Rp62,000.
+
+Code changes made:
+- `js/state.js`: ledger supports optional `accounting` metadata; old entries remain loadable.
+- `js/economy.js`: `spend()` and `earn()` now attach balanced debit/credit records and classifications. Food keys from `DATA.living` map to kitchen; electricity/pulsa/personal fuel/bath-laundry map to personal. `BELANJA` maps to raw-material purchases, `TENAGA` to labor expense, and `CAPEX` to an asset/capital account.
+- `js/akuntansi.js`: journal exposes debit/credit accounts and amounts; monthly view separates sales, raw-material purchases, other business expenses, kitchen, other personal costs, business subtotal before household costs, after-household subtotal, and cash reconciliation. Known noncash event categories are excluded from cash movement.
+- `tests/accounting_ledger.test.js`: updated to assert the worked example, separated kitchen costs, balanced entries and closing cash.
+- `tests/double_entry_transactions.test.js`: added to exercise `earn()`/`spend()` and assert cash + postings.
+- `docs/IMPLEMENTATION_STATUS_2026-10-17.md`: updated in commit `ebd4419c6ae6a41dab255129df3f41599d2dae18`.
+
+**Test status:** tests were authored/updated but **not executed**. GitHub combined status for code/test commit `ad804fff71710b6405918ce3c6f3859e9993acb8` returned no status checks. Do not claim passing tests until they are actually run.
+
+Known limitations that must remain visible:
+1. This is a first double-entry transaction layer, not a complete accrual accounting engine. Purchases are currently recorded in the purchase account at purchase time; actual inventory consumption, cost layers, consumption-based COGS, spoilage write-offs, depreciation and complete noncash postings are not yet integrated. The “hasil usaha” subtotal is therefore not a fully reconciled accrual net profit.
+2. Legacy transactions without accounting metadata are inferred only for recognizable categories/food descriptions; uncertain entries stay unclassified.
+3. Cash reconciliation uses recognized ledger cash movements and needs regression tests against loan disbursement/repayment and noncash interest.
+4. Business utility costs still need explicit attribution to each business unit; household electricity/pulsa/fuel/bath-laundry must not be reclassified as business utility without evidence.
+5. No developer-investment payment or dividend flow is implemented. If added later, the owner specified 0.001% = 0.00001, not 0.1%; eligible base, distribution period, payment verification, timing and rounding are unresolved.
+
+**Next task, in order:** re-fetch branch HEAD and docs; obtain a checkout/Node runtime; run `node tests/accounting_ledger.test.js` and `node tests/double_entry_transactions.test.js`; fix any failures and document exact results. Then test noncash interest and loan cash movements. After those pass, design consumption-based inventory/COGS and business-unit utility attribution. Do not touch `main`, do not create branches without permission, and update both status/handoff docs after each work unit.
+
 Updated 2026-10-17 (tier taxonomy pass). Active work branch: `feat/production-tier-taxonomy`, based on `fix/core-auto-warung-accounting-ui`. Never modify `main`.
 Repo: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator
 
