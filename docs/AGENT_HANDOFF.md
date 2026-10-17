@@ -1,3 +1,11 @@
+## Latest continuation — first real Node CI run and fixture correction (2026-10-17)
+
+- GitHub Actions run [39031033605](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39031033605) successfully checked out the branch and used Node.js 22, but failed immediately in `tests/household_inventory_accounting.test.js`: fixture began with one rice package while the assertion expected a purchase to leave one package. This was a test-fixture contradiction, not a production-code failure.
+- Fixed the fixture to begin with zero rice stock so `buyLivingItem("rice")` must add exactly one package. Fix commit: `9ff852adf89d86a1fdce077ad4ffe109fa703eef`.
+- A second workflow run is pending/in progress; do not claim the suite passes until its conclusion and per-test output are inspected. Local clone remains blocked by DNS in this environment. Browser E2E remains outstanding. Keep `main` and owner-validated coconut values untouched.
+
+---
+
 ## Latest continuation — executable regression CI setup (2026-10-17)
 
 - Added `.github/workflows/targeted-regression.yml` on `feat/production-tier-taxonomy`. It runs the committed Node regression scripts for household inventory accounting, double-entry transactions, accounting ledger rendering, household stock consumption, finance, payroll accounting and harvest validation under Node.js 22.
