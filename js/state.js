@@ -64,7 +64,11 @@ function gainXP(amount){
  }
  save();
 }
-function ledger(cat,desc,amt,detail){S.ledger.push({day:S.day,cat,desc,amt,detail:detail||null});}
+function ledger(cat,desc,amt,detail,accounting){
+ const entry={day:S.day,cat,desc,amt,detail:detail||null};
+ if(accounting&&typeof accounting==='object')entry.accounting=accounting;
+ S.ledger.push(entry);
+}
 function rp(n){return 'Rp '+Math.round(n).toLocaleString('id-ID');}
 function monthOf(d){return Math.floor((d-1)/30)+1;}
 function stockQty(){return (S.stock.biasa||0)+(S.stock.super||0);}
