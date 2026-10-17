@@ -6,8 +6,16 @@ function harvest(){
  if(stockQty()>0){msg('⚠️ Gudang masih berisi. Jual/olah dulu stok lama.');return;}
  const rt=readyTrees();if(!rt.length){msg('⚠️ Belum ada pohon siap panen.');return;}
  let b=0,su=0;
- rt.forEach(t=>{if(t.type==='super')su+=DATA.yieldSuper;else b+=DATA.yieldBiasa;t.lastHarvest=S.day;});
+ rt.forEach(t=>{if(t.type==='super')su+=DATA.yieldSuper;else b+=DATA.yieldBiasa;});
  const total=b+su,cost=total*DATA.laborPerFruit;
+ if(!Number.isFinite(total)||total<=0||!Number.isFinite(cost)||cost<0){
+  msg('⚠️ Data hasil panen atau upah tidak valid. Panen dibatalkan.');return;
+ }
+ if(!Number.isFinite(S.gold)||S.gold<cost){
+  msg('⚠️ Uang tidak cukup untuk membayar upah panen '+rp(cost)+'. Panen dibatalkan.');return;
+ }
+ // Validate yield and cash before mutating tree harvest dates or recording expenses.
+ rt.forEach(t=>{t.lastHarvest=S.day;});
  spend('TENAGA','Upah kuli panen '+total+' butir',cost,'labor',{butir:total});
  S.stock.biasa=b;S.stock.super=su;S.harvestDay=S.day;
  say('Mentor','🤖','Panen '+total+' butir masuk gudang.');

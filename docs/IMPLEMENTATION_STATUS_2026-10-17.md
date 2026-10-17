@@ -182,3 +182,11 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Isolated execution exposed a test-contract mismatch: `tests/finance.test.js` expected a repayment of Rp1 to be rejected while `js/finance.js` intentionally permits any positive partial repayment up to the amount due. This did not establish a production-code defect.
 - Corrected the regression assertion to reject zero and negative repayment amounts instead. A positive Rp1 partial repayment remains permitted by the current contract; no minimum installment rule was invented.
 - Re-run result is pending after this correction. All reported tests are isolated fetched-source executions, not a local checkout suite.
+
+
+## Harvest affordability and mutation-order fix — 2026-10-17
+
+- Source audit found `harvest()` marked every ready tree as harvested before checking whether the player could afford labor. It also called `spend()` without checking available cash, so an otherwise valid harvest could create negative cash and consume a harvest cycle without a valid payment.
+- Updated `js/economy.js` to calculate yield/cost first, reject non-finite/non-positive yield or invalid labor cost, reject insufficient cash, and only then mark trees harvested and post labor expense/stock.
+- Added `tests/economy_harvest.test.js` covering insufficient cash (no state mutation), exact-affordability harvest, and invalid yield.
+- Verification result: pending isolated execution against the new commit. No repository checkout or browser E2E is claimed.
