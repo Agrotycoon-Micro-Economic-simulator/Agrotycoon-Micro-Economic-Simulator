@@ -112,3 +112,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Library inconsistency: `data game.docx` page 192 lists Tier 4 examples as technology, electronics, and weapons; page 199 lists technology, heavy equipment, and clean energy, and puts electronics under Tier 3. Current code follows the page-199 national-production table as a provisional canonical list. Do not silently resolve this contradiction; request owner confirmation before classifying disputed examples.
 - `docs/PRODUCTION_TIERS.md` now records the conflict. The metadata/test remain definition-level only; recipes, yield, input/output ratios, costs and empirical profitability are still not implemented.
 - Audit scope: three extant branches and 228 visible commits in the Tier branch history were inspected through GitHub API pagination; repository API author attribution is shared, not per-agent. No pull requests were returned by the connected PR search. Test execution limits remain as documented above.
+
+
+## Owner market-stage rule — 2026-10-17 follow-up
+
+- Owner-provided field prices are authoritative and immutable. In the coconut market-chain reference, farmer-to-tengkulak is now recorded as Rp3,400/butir with evidence type `owner_verified_field_price`; direct sale of a whole coconut to the customer remains Rp13,000/butir.
+- Preserved the existing Rp5,000 collector sourcing price as a `game_parameter` from `js/data.js`; it is not relabeled as a verified field observation.
+- Added separate `processorPurchase` and `retailConsumer` stages. The collector-to-es-kelapa/santan purchase price stays null until supported by a matching transaction observation. National final-consumer data must not be substituted for a business's raw-material purchase price.
+- Added `tests/market_chain_contract.test.js` to protect these rules. It has been committed but not executed in a real Node checkout; do not claim it passed.
+- Latest market-chain changes are on `feat/production-tier-taxonomy`; verify branch HEAD before the next write. Continue P0 finance rounding/due-day audit after this market-stage contract, then transaction/inventory integration. Never modify `main`.
