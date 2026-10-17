@@ -41,6 +41,7 @@ if(!S || S.ledger.length === 0){
  const monthPurchases=sumClass('business_purchase');
  const monthBusinessExpense=sumClass('business_expense');
  const monthKitchen=sumClass('household_kitchen');
+ const monthInventoryPurchases=sumClass('household_inventory_purchase');
  const monthPersonal=sumClass('household_personal');
  const monthBusinessResult=monthGross-monthPurchases-monthBusinessExpense;
  const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,accCashMovement(entry)),0);
@@ -51,6 +52,11 @@ if(!S || S.ledger.length === 0){
  // HITUNG ASET
  const stockValue = stockQty() * 3500;
  const bahanWarung = ((S.warung.ice||0)*500) + ((S.warung.sugar||0)*400) + ((S.warung.cups||0)*400);
+ const livingStockValue = ['rice','egg','oil','mie','tempe','sayur','lauk'].reduce((sum,key)=>{
+  const qty=Math.max(0,Math.floor(Number(S.livingStock&&S.livingStock[key])||0));
+  const price=Math.max(0,Number(DATA.living&&DATA.living[key]&&DATA.living[key].price)||0);
+  return sum+(qty*price);
+ },0);
  const pohonMuda = S.trees.filter(t => !(t.mature || S.day >= t.plantedDay + DATA.matureDays)).length;
  const nilaiAsetBiologis = pohonMuda * 60000;
  const kulkasValue = S.warung.fridge ? 2000000 : 0;
@@ -59,7 +65,7 @@ if(!S || S.ledger.length === 0){
  const nilaiAsetTetapWarung = Math.floor(capexTotal * 0.5); 
  
  const purchasedLandBook = ((S.landSystem&&S.landSystem.lands)||[]).filter(l=>l.id!=="warisan-2430").reduce((sum,l)=>sum+Math.max(0,Number(l.purchaseCost)||0)+Math.max(0,Number(l.improvements)||0),0);
- const totalAsetLancar = S.gold + stockValue + bahanWarung;
+ const totalAsetLancar = S.gold + stockValue + bahanWarung + livingStockValue;
  const totalAsetTetap = nilaiAsetBiologis + kulkasValue + nilaiAsetTetapWarung + 250000000 + purchasedLandBook; // lahan warisan Rp250jt adalah asumsi narasi game
  const totalAset = totalAsetLancar + totalAsetTetap;
  const finance = S.finance || {};
@@ -74,7 +80,8 @@ if(!S || S.ledger.length === 0){
  h+='<tr><td>Pembelian bahan baku</td><td class="neg">-'+rp(monthPurchases)+'</td></tr>';
  h+='<tr><td>Beban usaha lain</td><td class="neg">-'+rp(monthBusinessExpense)+'</td></tr>';
  h+='<tr><td><b>Hasil usaha sebelum biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
- h+='<tr><td>Belanja dapur / kebutuhan makanan</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
+ h+='<tr><td>Beban dapur (persediaan yang dikonsumsi, termasuk transaksi lama)</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
+ h+='<tr><td>Pembelian persediaan rumah tangga (arus kas; bukan beban saat pembelian)</td><td>'+rp(monthInventoryPurchases)+'</td></tr>';
  h+='<tr><td>Pengeluaran pribadi/rumah tangga lainnya</td><td class="neg">-'+rp(monthPersonal)+'</td></tr>';
  h+='<tr><td><b>Hasil setelah pengeluaran rumah tangga</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
  h+='<h4>Rekonsiliasi kas bulan berjalan</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
@@ -90,6 +97,7 @@ if(!S || S.ledger.length === 0){
  h+='<tr><td>💰 Kas / Uang Tunai</td><td>'+rp(S.gold)+'</td></tr>';
  h+='<tr><td>🥥 Stok Kelapa ('+stockQty()+' butir)</td><td>'+rp(stockValue)+'</td></tr>';
  h+='<tr><td>🧊 Stok Bahan Warung (Es, Gula, Cup)</td><td>'+rp(bahanWarung)+'</td></tr>';
+ h+='<tr><td>🍚 Persediaan Rumah Tangga (nilai harga paket saat ini)</td><td>'+rp(livingStockValue)+'</td></tr>';
  h+='<tr><td><b>Total Aset Lancar</b></td><td><b>'+rp(totalAsetLancar)+'</b></td></tr></table>';
  
  h+='<h4 style="color:#1565C0;margin:15px 0 10px 0">B. ASET TETAP (Non-Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
@@ -104,7 +112,7 @@ if(!S || S.ledger.length === 0){
  h+='<tr><td>Utang gaji</td><td>'+rp(payrollLiabilities)+'</td></tr>';
  h+='<tr><td>Liabilitas lain tercatat</td><td>'+rp(Math.max(0,Number(finance.debt)||0))+'</td></tr>';
  h+='<tr><td><b>Total liabilitas</b></td><td><b>'+rp(totalLiabilities)+'</b></td></tr>';
- h+='<tr><td><b>Ekuitas (Aset − Liabilitas)</b></td><td><b>'+rp(equity)+'</b></td></tr></table><p class="accounting-note">Catatan: nilai lahan warisan Rp250 juta berasal dari narasi game, bukan appraisal; nilai pohon dan perlengkapan masih estimasi. Lahan tambahan dicatat berdasarkan biaya perolehan. Bunga pinjaman dan utang gaji berasal dari simulasi lokal.</p></div>';
+ h+='<tr><td><b>Ekuitas (Aset − Liabilitas)</b></td><td><b>'+rp(equity)+'</b></td></tr></table><p class="accounting-note">Catatan: nilai lahan warisan Rp250 juta berasal dari narasi game, bukan appraisal; nilai pohon dan perlengkapan masih estimasi. Persediaan rumah tangga memakai harga paket konfigurasi saat ini sebagai proksi, bukan biaya historis tiap lot. Lahan tambahan dicatat berdasarkan biaya perolehan. Bunga pinjaman dan utang gaji berasal dari simulasi lokal.</p></div>';
  
  h+='<div class="panel"><h3>📅 Ringkasan Harian</h3><table><tr><th>Hari</th><th>Cuaca</th><th>Pembeli</th><th>Pendapatan</th><th>Beban</th><th>Laba/rugi</th><th>Kas masuk</th><th>Kas keluar</th><th>Arus kas bersih</th></tr>';
  S.reports.forEach(r=>{h+='<tr><td>'+r.day+'</td><td>'+(DATA.weather[r.weather]?.name||r.weather||'—')+'</td><td>'+r.buyers+'</td><td class="pos">'+rp(r.gross)+'</td><td class="neg">'+rp(r.expense)+'</td><td class="'+(r.net<0?'neg':'pos')+'">'+rp(r.net)+'</td><td>'+rp(r.cashIn||0)+'</td><td>'+rp(r.cashOut||0)+'</td><td class="'+((r.cashflow||0)<0?'neg':'pos')+'">'+rp(r.cashflow!==undefined?r.cashflow:((r.cashIn||0)-(r.cashOut||0)))+'</td></tr>';});
