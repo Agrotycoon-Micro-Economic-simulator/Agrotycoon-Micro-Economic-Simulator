@@ -32,6 +32,7 @@
       const prefix = "outputs[" + index + "]";
       if (!output || !output.commodityId || !output.unit) errors.push(prefix + " requires commodityId and unit");
       if (output && !["primary", "byproduct", "waste"].includes(output.role)) errors.push(prefix + ".role must be primary, byproduct, or waste");
+      if (output && output.role === "waste" && output.saleable === true) errors.push(prefix + " waste cannot be marked saleable; classify recoverable material as byproduct");
       if (output && output.qtyPerBatch !== null && !isNonNegativeNumber(output.qtyPerBatch)) errors.push(prefix + ".qtyPerBatch must be a non-negative number or null");
       if (output && output.qtyPerBatch == null) missing.push(prefix + ".qtyPerBatch");
       if (output && output.saleable === true) {
@@ -80,7 +81,8 @@
       quantity: output.qtyPerBatch == null ? null : output.qtyPerBatch * batchCount
     }));
     const shortages = [];
-    if (inventory && typeof inventory === "object") {
+    const inventoryChecked = Boolean(inventory && typeof inventory === "object");
+    if (inventoryChecked) {
       inputRequirements.forEach((required) => {
         if (required.quantity == null) {
           shortages.push({ commodityId: required.commodityId, required: null, available: null, shortage: null, unknown: true });
@@ -102,7 +104,8 @@
       isNonNegativeNumber(cost.amountPerBatch) && hasEvidence(cost.evidence)
     );
     const totalCost = costComplete
-      ? requiredCosts.reduce((sum, cost) => sum + cost.amountPerBatch * batchCount, 0)
+      ? recipe.costs.filter((cost) => isNonNegativeNumber(cost.amountPerBatch) && hasEvidence(cost.evidence))
+        .reduce((sum, cost) => sum + cost.amountPerBatch * batchCount, 0)
       : null;
     return {
       ok: true,
@@ -113,6 +116,7 @@
       inputRequirements,
       outputs: outputPlan,
       shortages,
+      inventoryChecked,
       costLines: recipe.costs.map((cost) => ({
         id: cost.id,
         category: cost.category,
@@ -121,7 +125,7 @@
         required: cost.required !== false
       })),
       totalCost,
-      canExecute: shortages.length === 0 && inputRequirements.every((x) => x.quantity != null) &&
+      canExecute: inventoryChecked && shortages.length === 0 && inputRequirements.every((x) => x.quantity != null) &&
         outputPlan.every((x) => x.quantity != null) && costComplete
     };
   }

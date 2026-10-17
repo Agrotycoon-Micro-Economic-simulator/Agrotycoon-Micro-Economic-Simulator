@@ -51,3 +51,12 @@ Terapkan ke semua komoditas dengan alur: (a) identifikasi sisa/produk afkir; (b)
 - Do not confuse test fixtures with economic data. No real commodity recipe, yield, selling price, residue value or process cost was added.
 - The planner is loaded by `index.html` but is not yet connected to actual purchase, harvest, processing, sale, stock, cash-flow or accounting flows. Next, inspect those transaction functions, define safe transaction boundaries, and integrate one source-backed commodity path before generalizing.
 - Required verification: run `node tests/commodity_transformation.test.js` and the existing test suite from a real checkout. If only isolated source execution is available, report that limitation accurately.
+
+
+## Transaction-boundary audit and next step — 2026-10-17
+
+- Current branch HEAD before this audit fix was `0344c2698b0e7aa018a95a55e92807ad37f3366d`; continue only on `feat/production-tier-taxonomy`. No new branch; never touch `main`.
+- Current live gameplay transactions use legacy fields: coconut quantity/quality/age in `S.stock`, warung consumables in `S.warung`, and cash/ledger writes through `spend()` / `earn()`. There is no generic inventory map or lot/provenance ledger yet.
+- Do not mirror legacy stock into a second inventory map without a migration and single source of truth. Next P0/P2 unit should define canonical commodity lots (commodity ID, quantity, unit, quality/state, acquired day, cost basis/source), migrate old saves once, and route purchase/harvest/processing/sales through one transaction API with rollback-safe validation.
+- Planner safety: a production plan without an explicit inventory snapshot is never executable; waste cannot be declared saleable. Test fixture values are synthetic only.
+- Verification completed for the transformation module/test only via isolated V8 execution of fetched GitHub source. Repository checkout test run and browser E2E remain unverified.

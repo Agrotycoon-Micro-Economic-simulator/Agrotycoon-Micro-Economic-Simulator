@@ -160,3 +160,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added `tests/commodity_transformation.test.js` with synthetic-only fixture values. These are unit-test values, not commodity prices, recipes or real-world yields.
 - Loaded the engine in `index.html` for future use. This pass does not yet wire the planner to player purchase/harvest/processing/sale transactions, mutate save inventory, or post ledger entries. Integration remains the next task after transaction interfaces are mapped.
 - Verification must distinguish isolated execution of fetched source from a repository checkout; no full browser E2E claim is made.
+
+
+## Transaction-boundary audit and transformation safety hardening — 2026-10-17
+
+- Inspected current transaction functions in `js/economy.js`: harvest and external coconut purchase update legacy `S.stock`; es-kelapa sales decrement `S.stock` and separate `S.warung` consumables; tengkulak/market sales clear `S.stock`. These flows write directly to the ledger/cash totals and do not yet use a canonical generic commodity inventory.
+- The current save has no generic commodity inventory map. A direct retrofit that duplicates `S.stock` or `S.warung` would risk double counting and save-state divergence; do not wire transformation execution into these paths until inventory lots, quality/age, and migration semantics are defined.
+- Hardened the planner: execution eligibility now requires an explicit inventory snapshot, and waste cannot be marked as a saleable output. Known optional cost lines are included when calculating the total; unknown required costs still block the result.
+- Isolated V8 execution of fetched `js/commodity_transformation.js` and its committed test passed. This is not a repository checkout, full test-suite run, or browser E2E.

@@ -25,6 +25,9 @@ assert.equal(plan.outputs[2].quantity, 1);
 assert.deepEqual(plan.shortages[0], { commodityId: "raw_a", required: 4, available: 3, shortage: 1, unknown: false });
 assert.equal(plan.totalCost, 200);
 assert.equal(plan.canExecute, false);
+assert.equal(plan.inventoryChecked, true);
+assert.equal(engine.planProduction(recipe, 2).canExecute, false, "execution must require an inventory snapshot");
+assert.equal(engine.planProduction(recipe, 2, { raw_a: 10 }).canExecute, true, "execution may proceed when inventory, outputs and costs are complete");
 
 const economics = engine.calculateEconomics(recipe, 2);
 assert.equal(economics.revenue, 600);
@@ -51,4 +54,6 @@ assert.equal(engine.calculateEconomics(unknownRecipe, 1).operatingResult, null);
 
 const invalid = engine.validateRecipe({ id: "broken", inputs: [], outputs: [], costs: [] });
 assert.equal(invalid.ok, false);
+const unsafeWaste = { ...recipe, outputs: [{ commodityId: "waste_a", qtyPerBatch: 1, unit: "unit", role: "waste", saleable: true, salePricePerUnit: 1, priceEvidence: evidence }] };
+assert.equal(engine.validateRecipe(unsafeWaste).ok, false, "waste cannot be monetized as a saleable output");
 console.log("PASS: generic transformation schema, input/output quantities, stock shortage, cost/provenance gating, and no invented revenue.");
