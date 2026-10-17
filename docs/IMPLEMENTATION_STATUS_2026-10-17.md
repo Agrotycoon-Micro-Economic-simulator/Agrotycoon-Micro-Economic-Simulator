@@ -1,3 +1,11 @@
+## Latest continuation checkpoint — targeted regression CI setup (2026-10-17)
+
+- Added `.github/workflows/targeted-regression.yml` on `feat/production-tier-taxonomy`, configured for Node.js 22. It executes seven standalone regression scripts: household inventory accounting, double-entry transactions, accounting ledger rendering, household stock consumption, finance, payroll accounting and harvest validation.
+- Workflow commit: `8f0a914d247d2027ee9f6dd0a5eae230e7ddb33c`. GitHub commit status and PR-associated workflow-run lookup currently return no checks/runs for the preceding checkpoint. A real local checkout could not be obtained because DNS resolution for `github.com` fails in this environment.
+- Do not mark tests passed until an actual Actions run or a checkout-based Node execution confirms it. Browser E2E remains outstanding. `main` and owner-validated coconut data remain untouched.
+
+---
+
 # Agrotycoon implementation ledger — 2026-10-17
 
 ## Latest verified continuation checkpoint — household package-stock consumption (2026-10-17)
