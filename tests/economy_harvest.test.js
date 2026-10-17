@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const sourceRoot = path.join(__dirname, "..");
 const context = {
   console: { log() {}, error() {} },
+  localStorage: { getItem() { return null; }, setItem() {} },
   DATA: {
     matureDays: 0,
     cycleDays: 1,
