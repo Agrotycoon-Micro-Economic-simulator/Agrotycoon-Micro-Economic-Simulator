@@ -118,11 +118,16 @@ if(!S || S.ledger.length === 0){
  }else{
   h+='<table><tr><th>Hari</th><th>Keterangan</th><th>Akun debit</th><th>Debit</th><th>Akun kredit</th><th>Kredit</th><th>Rincian</th></tr>';
   ledgerRows.forEach(function(entry){
-   const detail=entry.detail===undefined||entry.detail===null?'—':(typeof entry.detail==='string'?entry.detail:JSON.stringify(entry.detail));
-   const amount=Math.abs(Number(entry.amt)||0);
    const posting=accAccounting(entry);
    const known=posting.classification!=='legacy_unclassified';
-   h+='<tr><td>'+accEscape(entry.day)+'</td><td>'+accEscape(entry.desc)+'<br><small>'+accEscape(entry.cat)+(posting.legacy?' · rekonstruksi transaksi lama':'')+'</small></td><td>'+accEscape(posting.debitAccount)+'</td><td>'+rp(known?posting.debit:0)+'</td><td>'+accEscape(posting.creditAccount)+'</td><td>'+rp(known?posting.credit:0)+'</td><td>'+accEscape(detail)+'</td></tr>';
+   const lines=Array.isArray(posting.lines)?posting.lines:[];
+   const debitAccounts=lines.filter(line=>(Number(line.debit)||0)>0).map(line=>line.account).join(' / ')||posting.debitAccount;
+   const creditAccounts=lines.filter(line=>(Number(line.credit)||0)>0).map(line=>line.account).join(' / ')||posting.creditAccount;
+   const detailParts=[];
+   if(entry.detail!==undefined&&entry.detail!==null)detailParts.push(typeof entry.detail==='string'?entry.detail:JSON.stringify(entry.detail));
+   if(lines.length)detailParts.push(lines.map(line=>line.account+': Dr '+rp(Number(line.debit)||0)+' / Cr '+rp(Number(line.credit)||0)).join('; '));
+   const detail=detailParts.join(' | ')||'—';
+   h+='<tr><td>'+accEscape(entry.day)+'</td><td>'+accEscape(entry.desc)+'<br><small>'+accEscape(entry.cat)+(posting.legacy?' · rekonstruksi transaksi lama':'')+'</small></td><td>'+accEscape(debitAccounts)+'</td><td>'+rp(known?posting.debit:0)+'</td><td>'+accEscape(creditAccounts)+'</td><td>'+rp(known?posting.credit:0)+'</td><td>'+accEscape(detail)+'</td></tr>';
   });
   h+='</table><p class="accounting-note">Jurnal menampilkan maksimal 200 transaksi terbaru. Transaksi kas baru mencatat debit dan kredit dengan nilai sama. Transaksi lama yang tidak dapat diklasifikasikan ditandai belum diklasifikasi, bukan dipaksakan ke akun tertentu.</p>';
  }
