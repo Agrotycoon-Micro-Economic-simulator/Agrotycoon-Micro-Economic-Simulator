@@ -102,3 +102,13 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Latest status note is in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
 - Validation limitation: cloning the branch into the runtime failed because github.com DNS resolution was unavailable. The committed Node test has not been executed from a repository checkout. A reviewer/next agent must run `node tests/finance.test.js` and `node tests/world_simulation.test.js` from a checkout before claiming these tests pass.
 - Continue with P0 finance correctness audit (rounding and due-day boundaries), then stock/transaction integration. Do not switch focus to es-kelapa recipe tuning. Never modify `main`.
+
+
+## Branch audit — 2026-10-17 follow-up
+
+- Repository branches observed: `main` at `612451c03be59dd8cacd3b13adb8a79a46e51be2`, `fix/core-auto-warung-accounting-ui` at `c6c035f86320299629bdc2916f9478ff3c6a770a`, and `feat/production-tier-taxonomy` at `b360ba966c8455f99f6bf9e095d404cf8be4d00b`. Do not modify `main`.
+- The Tier branch is the active continuation branch; it contains the prior credit/UI work plus later production-tier, unit-economics, coconut historical-price, es-kelapa benchmark, and loan-ID collision fixes. Confirm branch HEAD again before any future write.
+- GitHub reports the same repository bot account/name/email as author for the inspected commit history. Commit messages and SHAs can be audited, but the actual human/agent behind that shared identity cannot be reliably inferred from Git metadata.
+- Library inconsistency: `data game.docx` page 192 lists Tier 4 examples as technology, electronics, and weapons; page 199 lists technology, heavy equipment, and clean energy, and puts electronics under Tier 3. Current code follows the page-199 national-production table as a provisional canonical list. Do not silently resolve this contradiction; request owner confirmation before classifying disputed examples.
+- `docs/PRODUCTION_TIERS.md` now records the conflict. The metadata/test remain definition-level only; recipes, yield, input/output ratios, costs and empirical profitability are still not implemented.
+- Audit scope: three extant branches and 228 visible commits in the Tier branch history were inspected through GitHub API pagination; repository API author attribution is shared, not per-agent. No pull requests were returned by the connected PR search. Test execution limits remain as documented above.

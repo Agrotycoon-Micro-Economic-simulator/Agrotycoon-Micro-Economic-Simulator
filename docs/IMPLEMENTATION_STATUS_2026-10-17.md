@@ -108,3 +108,13 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Fixed `js/finance.js` loan ID generation: IDs now combine the timestamp with a module-local sequence and check existing loan records, preventing collisions when two applications occur during the same millisecond.
 - Added a deterministic regression case to `tests/finance.test.js` that freezes `Date.now()`, originates two loans, and asserts unique IDs plus correct combined liabilities.
 - Verification boundary: the GitHub repository could not be cloned in the current runtime because DNS resolution for github.com failed. The committed test has not yet been run with Node against a repository checkout. Do not report the repository test suite as passing until run in a real checkout.
+
+
+## Repository-wide branch and commit audit — 2026-10-17
+
+- Branches observed: `main` (`612451c0`), `fix/core-auto-warung-accounting-ui` (`c6c035f8`), and `feat/production-tier-taxonomy` (latest audit commit `b360ba96`). Main remains untouched.
+- The Tier branch includes prior UI/accounting/credit work plus Tier taxonomy, provenance-aware unit economics, 46 annual coconut producer/consumer price observations (2002–2024), owner es-kelapa benchmark correction, and collision-resistant loan identifiers.
+- GitHub commit metadata for inspected history uses the same bot identity for author/committer, so commit ownership by individual AI agent cannot be established from the repository metadata. Commit messages are useful for task chronology but do not prove which agent performed each task.
+- Source discrepancy found in `data game.docx`: around page 192, Tier 4 examples include technology/electronics/weapons; around page 199, Tier 4 examples include technology/heavy equipment/clean energy while electronics is Tier 3. `docs/PRODUCTION_TIERS.md` now documents the conflict rather than silently selecting across both sections. Current module uses the page-199 national-production table as provisional canonical examples.
+- No pull requests were returned by the connected PR search. The branch comparison reports `feat/production-tier-taxonomy` 204 commits ahead and 2 behind `main`; `fix/core-auto-warung-accounting-ui` 160 ahead and 2 behind. These are Git history counts, not completed-feature percentages.
+- Do not treat this audit as test validation: finance and browser E2E still require execution in a real checkout as documented.
