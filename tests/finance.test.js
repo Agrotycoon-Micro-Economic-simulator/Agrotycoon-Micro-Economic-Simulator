@@ -109,9 +109,11 @@ function setup(now) {
 
 {
   const { S, finance } = setup();
-  const result = finance.apply(1001, 30);
-  assert.equal(result.ok, true, "small eligible loan can be originated");
+  const result = finance.apply(1000000, 30);
+  assert.equal(result.ok, true, "eligible loan can be originated for the rounding fixture");
   const loan = result.loan;
+  loan.principal = 1001;
+  loan.originalPrincipal = 1001; // Simulate a small remaining principal to exercise sub-rupiah daily interest.
   for (let day = 2; day <= 31; day++) {
     S.day = day;
     finance.accrueDay();
