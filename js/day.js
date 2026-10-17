@@ -15,6 +15,24 @@ function startSleep(){
  },1000);
 }
 
+function consumeLivingStockForDay(){
+ const keys=['rice','egg','oil','mie','tempe','sayur','lauk'];
+ if(!S.livingStock||typeof S.livingStock!=='object')S.livingStock={};
+ if(!S.livingUseDays||typeof S.livingUseDays!=='object')S.livingUseDays={};
+ const consumed=[];
+ keys.forEach(key=>{
+  const item=DATA.living&&DATA.living[key];
+  const period=Number(item&&item.period);
+  const stock=Math.max(0,Math.floor(Number(S.livingStock[key])||0));
+  if(!Number.isFinite(period)||period<1){S.livingUseDays[key]=0;return;}
+  if(stock<=0){S.livingUseDays[key]=0;return;}
+  const elapsed=Math.max(0,Number(S.livingUseDays[key])||0)+1;
+  if(elapsed>=period){S.livingStock[key]=stock-1;S.livingUseDays[key]=0;consumed.push(key);}
+  else{S.livingStock[key]=stock;S.livingUseDays[key]=elapsed;}
+ });
+ return consumed;
+}
+
 function finishDay(){
  console.log('finishDay dipanggil');
  const ov=el('progress');
@@ -33,16 +51,18 @@ function finishDay(){
  }
  S.warung.operatedToday=false;
  
- // BELANJA HARIAN OTOMATIS
+ // Konsumsi paket mengikuti periode daya pakai DATA.living.period.
+ consumeLivingStockForDay();
+ // Restock otomatis hanya jika stok paket habis.
  const livingDetails=[];
  const autoBuy=[
   {key:'rice',check:()=>(S.livingStock.rice||0)<=0},
-  {key:'egg',check:()=>(S.day%5===1||(S.livingStock.egg||0)<=0)},
-  {key:'oil',check:()=>(S.day%30===1||(S.livingStock.oil||0)<=0)},
-  {key:'mie',check:()=>(S.day%3===1||(S.livingStock.mie||0)<=0)},
-  {key:'tempe',check:()=>(S.day%2===1||(S.livingStock.tempe||0)<=0)},
-  {key:'sayur',check:()=>true},
-  {key:'lauk',check:()=>(S.day%2===0||(S.livingStock.lauk||0)<=0)}
+  {key:'egg',check:()=>(S.livingStock.egg||0)<=0},
+  {key:'oil',check:()=>(S.livingStock.oil||0)<=0},
+  {key:'mie',check:()=>(S.livingStock.mie||0)<=0},
+  {key:'tempe',check:()=>(S.livingStock.tempe||0)<=0},
+  {key:'sayur',check:()=>(S.livingStock.sayur||0)<=0},
+  {key:'lauk',check:()=>(S.livingStock.lauk||0)<=0}
  ];
  autoBuy.forEach(ab=>{
   const item=DATA.living[ab.key];
@@ -51,7 +71,9 @@ function finishDay(){
    spend('HIDUP','Beli '+item.name+' (otomatis)',item.price,'living');
    livingDetails.push({item:item.name,amt:item.price});
    if(!S.livingStock)S.livingStock={};
-   S.livingStock[ab.key]=(S.livingStock[ab.key]||0)+1;
+   const oldStock=Math.max(0,Number(S.livingStock[ab.key])||0);
+   S.livingStock[ab.key]=oldStock+1;
+   if(oldStock===0){if(!S.livingUseDays)S.livingUseDays={};S.livingUseDays[ab.key]=0;}
   }
  });
  ['electric','pulsa','bensin','mandi'].forEach(k=>{
