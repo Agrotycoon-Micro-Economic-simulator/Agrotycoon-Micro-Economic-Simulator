@@ -1,5 +1,18 @@
 # Agent Handoff — Agrotycoon
 
+## Latest verified continuation checkpoint — household package-stock consumption (2026-10-17)
+
+- Active branch `feat/production-tier-taxonomy`; starting HEAD `be279efaed2270f57bad3d1721c1cd51d7fe08f9`. Never modify `main`; its HEAD at start was `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut prices/yield data remain untouched.
+- Implemented package-stock consumption in `js/day.js`: rice, egg, oil, mie, tempe, sayur and lauk consume one package after the existing `DATA.living[key].period` number of use-days. Progress resets after consumption; empty stock does not become negative or accumulate a fake consumption timer. Automatic shopping now buys only when the corresponding package stock reaches zero, preventing scheduled purchases from piling up while stock remains.
+- Added `livingUseDays` to fresh saves and backward-compatible initialization for older saves in `js/state.js`. Existing `livingStock` quantities are preserved; no stock is reset or inferred from past purchases. Manual and automatic restocking reset the use timer only when stock was empty (`js/economy.js`, `js/day.js`).
+- Added `tests/living_stock.test.js` for legacy saves without progress maps, rice/egg package duration, repeat consumption, empty stock, non-stock utilities and negative legacy quantities.
+- Verification: syntax parsing passed for changed modules and test source; helper runtime scenarios passed in an isolated V8 harness. This is not a checkout-based `node tests/living_stock.test.js` run or browser E2E.
+- Accounting limitation: household purchases are still posted as cash expenses at purchase time. This change adds stock quantities/consumption but does not yet switch household journal entries to debit household inventory and recognize kitchen expense on consumption. Cash-flow policy when mandatory auto-purchases exceed available cash also remains unresolved.
+- Next: obtain a repository checkout/Node runtime and run `node tests/living_stock.test.js`, payroll/finance tests and the existing accounting/harvest suite; then align household inventory valuation and expense recognition with the owner's double-entry rules. Do not change coconut values or create branches.
+
+
+---
+
 ## Latest verified continuation checkpoint — payroll accounting + household-stock audit (2026-10-17)
 
 - Work branch: `feat/production-tier-taxonomy`; prior verified HEAD `5dc48a2ab815d0f514f37911895f981424f817c2`. Keep `main` untouched and do not change owner-validated coconut data/prices.
