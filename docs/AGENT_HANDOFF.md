@@ -42,3 +42,12 @@ Terapkan ke semua komoditas dengan alur: (a) identifikasi sisa/produk afkir; (b)
 - Tier 3: lapak/ritel/food-service; resep/kemasan langsung dan harga jual.
 - Tier 4: semua hasil olahan utama **serta** pemanfaatan residu yang aman (pakan, kompos, bibit, minyak, bahan manufaktur, atau penggunaan lain hanya jika sesuai komoditas dan ada bukti kelayakan).
 - Untuk tiap node: input IDs/tiers, formula kuantitas, yield, biaya proses, susut, transport, kapasitas, harga sumber, dan provenance. Harga/biaya/yield yang belum diketahui tetap null; jangan isi dengan perkiraan yang disamarkan sebagai data.
+
+
+## Next implementation unit — generic transformation foundation (2026-10-17)
+
+- Current feature branch: `feat/production-tier-taxonomy`; do not create another branch and never modify `main`. Parent before this unit: `3259e8cee96e4682cf608734242fe3e1e8ebd566`.
+- Added the generic transformation planner and synthetic regression tests. It calculates required input quantities, output/by-product/waste quantities, inventory shortages, process-cost totals, revenue and operating result only when required data and provenance exist.
+- Do not confuse test fixtures with economic data. No real commodity recipe, yield, selling price, residue value or process cost was added.
+- The planner is loaded by `index.html` but is not yet connected to actual purchase, harvest, processing, sale, stock, cash-flow or accounting flows. Next, inspect those transaction functions, define safe transaction boundaries, and integrate one source-backed commodity path before generalizing.
+- Required verification: run `node tests/commodity_transformation.test.js` and the existing test suite from a real checkout. If only isolated source execution is available, report that limitation accurately.

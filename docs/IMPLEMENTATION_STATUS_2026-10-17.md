@@ -150,3 +150,13 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Owner land constraint: 37 tree capacity, 30 occupied, 7 free tree slots; seedling pots about 0.5 m apart. Treat as owner design input, not agronomic validation or proof of pot capacity.
 - Apply a residue-recovery schema across all commodities, but only monetize safe, feasible by-products with evidence of demand. Record Tier 1 input IDs, yield, process labor/energy, losses, packaging, transport, capacity and provenance; unknowns stay null. Waste input is not automatically free.
 - Docs and mapping updated in `docs/COMMODITY_CHAIN_TIER_STANDARD.md` and `js/commodity_tier_chain.js`. Tests updated/added; not executed in this environment. No coconut prices or `js/data.js` values changed. No Supabase; `main` untouched.
+
+
+## Generic commodity transformation engine — 2026-10-17
+
+- Added `js/commodity_transformation.js`, a dependency-free planner for multi-input recipes, primary outputs, by-products, explicit waste outputs, process-cost lines, batch capacity and inventory-shortage checks.
+- Physical quantities, saleable output prices and required process costs may remain unknown (`null`). Unknown quantities block execution; unknown costs/prices block a complete economic result. No missing cost, yield or residual sale value is silently converted to zero.
+- By-products do not generate revenue unless explicitly marked saleable and accompanied by price evidence (source, period, geography and evidence kind). Waste is represented separately from recoverable by-products. Owner-verified values, sourced observations and game parameters must remain explicitly identified in evidence.
+- Added `tests/commodity_transformation.test.js` with synthetic-only fixture values. These are unit-test values, not commodity prices, recipes or real-world yields.
+- Loaded the engine in `index.html` for future use. This pass does not yet wire the planner to player purchase/harvest/processing/sale transactions, mutate save inventory, or post ledger entries. Integration remains the next task after transaction interfaces are mapped.
+- Verification must distinguish isolated execution of fetched source from a repository checkout; no full browser E2E claim is made.
