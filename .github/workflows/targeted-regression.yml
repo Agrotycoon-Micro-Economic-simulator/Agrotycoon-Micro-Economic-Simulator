@@ -30,13 +30,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run accounting, household-stock, finance, payroll and harvest regressions
+      - name: Run all standalone Node regression tests
         run: |
           set -e
-          node tests/household_inventory_accounting.test.js
-          node tests/double_entry_transactions.test.js
           node tests/accounting_ledger.test.js
-          node tests/living_stock.test.js
-          node tests/finance.test.js
-          node tests/payroll_accounting.test.js
+          node tests/commodity_tier_chain.test.js
+          node tests/commodity_transformation.test.js
+          node tests/double_entry_transactions.test.js
           node tests/economy_harvest.test.js
+          node tests/es_kelapa_benchmark.test.js
+          node tests/finance.test.js
+          node tests/household_inventory_accounting.test.js
+          node tests/living_stock.test.js
+          node tests/market_chain_contract.test.js
+          node tests/payroll_accounting.test.js
+          node tests/production_tiers.test.js
+          node tests/real_economic_data.test.js
+          node tests/unit_economics.test.js
+          node tests/world_simulation.test.js
