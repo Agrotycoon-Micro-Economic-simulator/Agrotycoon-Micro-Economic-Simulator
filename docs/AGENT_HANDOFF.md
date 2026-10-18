@@ -399,3 +399,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - First run [39132561554](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132561554) failed at the accounting-page assertion because the Playwright `addInitScript` re-seeded the fresh save on every navigation, overwriting the persisted gameplay state before `akuntansi.html` loaded. The harvest, sale, day transition, and previous test assertions had progressed before this failure.
 - Corrected the test fixture to seed only when `agrotycoon_save_v15` is absent. Test fix commit: `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`. Await the next Actions run before marking the new E2E passing.
+
+
+## Gameplay E2E passed (2026-10-18)
+
+- GitHub Actions run [39132650359](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132650359) succeeded on test commit `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`. The logs confirm all 15 standalone Node regressions, all-menu browser smoke, and the new gameplay E2E passed.
+- The E2E uses the actual Chromium UI to harvest mature trees, sell the harvested stock to the tengkulak, advance through the real sleep/day-transition flow, and open the accounting page. Assertions confirm labor cost and sale revenue are posted, sold stock is depleted, the day-1 report persists into day 2, and the accounting journal displays the sale and harvest labor descriptions.
+- The first E2E run exposed a test-fixture issue: save seeding was repeated on every navigation. The fixture now seeds only when the save key is absent; rerun passed. Runtime game source and owner-validated coconut values were not changed. `main` remains untouched.
+- Remaining browser coverage: credit/loan interactions, payroll UI, and legacy-save migration. This test does not establish those flows as passing.
