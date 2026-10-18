@@ -316,3 +316,35 @@ This audit is an important ingestion gate: the raw row label takes precedence ov
 - A KKP journal report on PT Semeru Teknik, Bangka Selatan, documents a contrasting unsuccessful grow-out cycle: FCR ranged 1.02–3.23, survival 23–72%, vibriosis was identified, and the financial analysis reported a loss of Rp278,619,417 with R/C ratio 0.65. The report identifies contaminated seawater, missing written SOPs and insufficient water-quality instruments as problems. This is an important negative case; do not assume a profitable cycle merely because shrimp has a high selling price. Source: https://jurnal.kkp.go.id/JSJ/id/article/view/14183
 - A separate 2026 KKP conference paper on a commercial farm in West Sumatra reports investment Rp2.7655bn, fixed costs Rp822.54m, variable costs Rp4.026bn, revenue Rp6.6145bn and reported profit Rp1.70835bn, R/C 1.36, payback 1.56 years. Before using these totals, the paper's cycle/period, production scale, revenue definition, currency basis and reconciliation between reported total costs and profit need review. It is a company-specific financial case, not a sector average. Source: https://jurnal.kkp.go.id/psnp/id/article/view/18371
 - These cases must not be averaged. They represent different farms, dates, biosecurity conditions, stocking systems and financial scopes. Tier 1 for shrimp requires per-cycle PL/seed cost, stocking density, feed type/price and FCR, survival, aeration electricity, water treatment/salinity, disease response, labor, pond depreciation, harvest size/grade, buyer price, harvest losses and financing costs.
+
+
+## Research tranche — carrots, Cavendish bananas, tuna landing/first-sale, and goat farmgate risk (2026-10-19)
+
+### Wortel — direct farmer/producer-cost observation, Banjarnegara (historical)
+- Kementan's report dated 16 November 2024 describes a local glut: farmer-reported market prices were Rp500–1,000/kg; reported average production cost was Rp2,000–2,500/kg. A facilitated purchase by cooperatives took around 15 tonnes at Rp3,000/kg. A local village head was quoted on the farmer price; this is direct local producer context carried by an official report, but it is a dated distress-market episode, not a national average or current quote.
+- Source: https://pertanian.go.id/news/view/6428
+- Model implication: preserve the downside case where farmgate price falls below unit production cost; do not treat the Rp3,000/kg facilitated purchase as the ordinary market-clearing price. Missing: farm-level yield, crop duration, seed, fertilizer, crop-protection, irrigation, labor, grading and spoilage ledger for the same growers/season.
+
+### Pisang Cavendish — farm study plus contract price source; economics quarantined pending arithmetic audit
+- A 2024 journal article using primary data from Mekarjaya, Indramayu reports output of 54,400 kg/ha for drip irrigation and 42,800 kg/ha for conventional cultivation, with reported sale prices Rp14,000/kg and Rp12,000/kg respectively. It also gives cost, revenue and income tables, but the reported cost/profit figures are internally inconsistent with some revenue and per-hectare entries in the displayed excerpt. Therefore only the yield and stated sale-price observations are retained provisionally; reported profit/margin is not accepted until the original tables are audited.
+- Source: https://www.researchgate.net/publication/392245302_Analisis_Komparatif_Usahatani_Pisang_Cavendish_Menggunakan_Sistem_Irigasi_Tetes_Dan_Konvesional_Kasus_di_Desa_Mekarjaya_Kecamatan_Kabupaten_Indramayu
+- Separate contract/partnership evidence is indexed in a public copy of a GGP–farmer partnership document for Karo, with quality-specific Cavendish purchase-price provisions for 2024 onward. Treat the copy as secondary access to a contract, not as an independently verified current price sheet; inspect the actual quality table before ingestion.
+- Source: https://id.scribd.com/document/963660646/FINAL-GGP-Petani-Karo-PKS-Kemitraan-Pisang-Cavendish-Program-CSV-Legagri-100325-R2-1-Cththrt
+- Model implication: Cavendish must be a distinct production system with planting material, spacing, irrigation, fertilizer, bunch protection, cycle duration, grading/packing rejection, contract quality and buyer deductions; do not copy ordinary banana yield or margin.
+
+### Tuna — local first-sale and landing-market observations, with intermediary margin context
+- KKP's report on the Nizam Zachman fishing port gives December 2024 landing prices of Rp21,000/kg for yellowfin tuna (madidihang) and Rp20,000/kg for bigeye tuna; these are landing-port prices for named species and month, not a generic tuna national average.
+- Source: https://www.kkp.go.id/news/news-detail/kkp-pastikan-harga-dan-pasokan-ikan-aman-hadapi-nataru-x6vq.html
+- A separate KKP fisher-cooperative case from Biak describes first-sale purchases at Rp14,000/kg for baby tuna and Rp9,000/kg for skipjack, versus local market prices Rp21,000–25,000/kg for skipjack; it also reports cold-storage electricity of about Rp350,000/day, staff of 3–8 people and logistics not included in that electricity figure. Species, date, location and stage differ from the Nizam Zachman observations; these figures must not be averaged or treated as one chain.
+- Source: https://www.kkp.go.id/storage/Materi/korporasi-nelayan67b595827ede8/materi-67b5958283d59.pdf
+- Model implication: tuna requires species/grade/size, landing point, ice, fuel, trip duration, crew share, spoilage, cold storage, freight, and buyer-stage price. “Tuna” cannot be one price across baby tuna, yellowfin, bigeye and processed loin.
+
+### Kambing — operator-reported downside price and cost pressure (Pangandaran)
+- A local report quotes a goat farmer, Yanto, saying liveweight sale prices had fallen to around Rp35,000/kg from reported earlier levels of Rp60,000 and occasionally Rp100,000/kg, while feed, housing maintenance and labor costs had risen. Transactions can be per kg liveweight, per head, or visual estimate (“jogrog”), so units are not interchangeable. The article is a dated anecdotal downside case; it does not provide a complete audited farm ledger or current quotation.
+- Source: https://www.detik.com/jabar/bisnis/d-8329313/harga-kambing-di-pangandaran-anjlok-peternak-mengeluh-rugi-biaya-pakan
+- Model implication: goat economics must include feed source (own forage vs purchased), ration, housing depreciation, medicine, mortality, labor and liveweight/transaction basis; do not infer net profit from the sale price alone.
+
+### Quality gates retained
+- These observations broaden direct/local producer and first-sale evidence but do not complete Tier 1 for all 60 blueprint commodities.
+- No current price is inferred from historical cases; different species, irrigation systems, product grades, dates and market stages are not averaged.
+- No gameplay parameters, production recipes, yields, costs, margins or owner-locked coconut benchmark values were changed. Tier 2/3/4 remain gated until Tier 1 evidence is reconciled.
