@@ -471,3 +471,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Extended `tests/finance_payroll_e2e.test.js` to attempt paying one rupiah above the current obligation before the valid partial/full repayments. The browser test expects a user-facing rejection, unchanged active-loan balance, and no repayment ledger entry for the rejected attempt. Test commit: `6adb3c87a9e053965ea5b6ea3bf5108934080424`.
 - Fresh Actions validation is pending. The preceding full suite, including partial/full repayment and malformed-save recovery, passed in [run 39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970), but it predates this overpayment assertion.
 - No runtime game code, coconut benchmark values, or `main` changed.
+
+
+## Browser-test diagnostic — invalid-overpayment assertion had a dialog-listener race (2026-10-18)
+
+- Run [39137517616](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137517616) failed in `tests/finance_payroll_e2e.test.js` before it could finish the remaining assertions. The first prompt event was received by both `page.once("dialog")` listeners because both were registered before the click; the alert assertion incorrectly saw the prompt.
+- Fixed the test harness by registering the alert listener from inside the prompt handler before accepting the prompt. Test fix commit: `6e1f012d029a6b0ac73e6b24fe7db40769fbac34`. This was a test synchronization defect; no runtime loan logic was changed. Fresh CI validation pending.
