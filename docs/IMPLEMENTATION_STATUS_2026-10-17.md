@@ -577,3 +577,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Product-direction constraint: Sim Companies-style business-chain expansion is deferred until the existing technical and commodity research tasks are complete. Current near-term focus remains core stability, shop manual/automatic behavior, accounting/reports, and gameplay visuals per the existing update board; automatic shop unlock condition remains three successful sales.
 - No gameplay/runtime parameters, recipes, yields, costs, margins, or coconut values changed in this audit tranche. Handoff updated in commit `3d51186c88d112fb2da820cfe70b5a6ec4a481b2`.
 - Remaining audit work: finish Library review, independently inspect the coconut benchmark contract/implementation, verify every branch HEAD and unique commit range, read branch-specific notes/contracts deeply, and reconcile the handoff chronology before further implementation.
+
+
+## 2026-10-19 audit tranche 2 — coconut and branch-specific contracts
+
+- Reviewed the coconut benchmark, commercial Tier 1–4 standard, unit-economics contract, historical-data contract, production-tier taxonomy, world-simulation contract, coconut data registry, transformation validator, and coconut regression test. Owner-locked values and their exclusions are now explicitly recorded in `docs/AGENT_HANDOFF.md`.
+- Important architecture distinction: commercial market-chain Tier 1–4 is not the same taxonomy as `js/production_tiers.js`; keep production transformation tier separate from market stage and do not use tier as a profit multiplier.
+- Branch audit: repository currently exposes `main`, `feat/production-tier-taxonomy`, and `fix/core-auto-warung-accounting-ui`. The feature branch is two commits beyond `7c9527f` due to this session's documentation records. The fix branch is five commits beyond the SHA recorded in its handoff; identities/diffs of those five commits still require individual audit. No branch merge/rebase performed.
+- Library review is still IN PROGRESS: `data game.docx` contains 223 pages/119 tables; full sequential review is not yet complete. No gameplay values or coconut benchmark values changed.
