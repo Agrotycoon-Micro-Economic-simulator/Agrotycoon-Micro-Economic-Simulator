@@ -577,3 +577,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added three KKP-linked shrimp-farm cases to `docs/REAL_COMMODITY_TIER1_RESEARCH.md` commit `13fca31e150512e6aac92402d5f45ab1ea2e4489`; research-program log updated in `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` commit `ec492e882878e3eb4b6318cc4022603c0e58dd59`.
 - Captured Cianjur 2025 observation (99% SR, FCR 1.53; costs still need extraction), Bangka Selatan downside case (loss Rp278.6m, R/C 0.65, disease/water/SOP issues), and a West Sumatra company-scale abstract whose totals/period need reconciliation. Cases are not averaged; each has separate farm/system context.
 - No gameplay parameters or coconut benchmark changed. Tier 1 remains incomplete; main/runtime unchanged. Latest technical baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373).
+
+
+## 2026-10-19 — Tier 1 evidence tranche: carrots, Cavendish, tuna, goat
+
+- Extended `docs/REAL_COMMODITY_TIER1_RESEARCH.md` with dated/local source evidence for Banjarnegara carrots (farmgate glut below reported unit cost), Cavendish (farm study yields/prices; profit table quarantined for arithmetic inconsistency), named tuna species at landing ports plus a separate Biak cooperative first-sale/cold-chain case, and a Pangandaran goat farmer's liveweight-price downside report.
+- Research ledger commit: `fd508d1df30291664dbf834725926999cd53ed1a`; program log commit: `21972ac0a26a136a19e7763944625c17c1300120`.
+- Evidence is dated and stage-specific; no values were promoted into game configuration. No runtime source, recipe, yield/cost/margin parameter, owner-locked coconut benchmark, or `main` branch changed.
+- Technical baseline: [Actions run 39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) passed all 15 standalone Node regressions plus browser smoke, gameplay harvest/sale/day/accounting, finance/payroll, legacy-save migration, and corrupt-save recovery E2E suites.
+- Tier 1 for all 60 commodities is still incomplete. Next: audit Cavendish source-table arithmetic and continue row-level source research; Tier 2, 3 and 4 remain gated behind Tier 1 reconciliation.
