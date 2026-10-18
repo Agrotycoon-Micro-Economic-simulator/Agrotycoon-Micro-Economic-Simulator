@@ -54,6 +54,7 @@ async function main() {
     const baseUrl = `http://127.0.0.1:${server.address().port}`;
 
     await page.addInitScript(({ key }) => {
+      if (localStorage.getItem(key) !== null) return;
       const trees = Array.from({ length: 10 }, (_, slot) => ({
         slot, type: "biasa", plantedDay: 0, mature: true, lastHarvest: -30
       }));
