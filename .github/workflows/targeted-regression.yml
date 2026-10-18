@@ -60,3 +60,4 @@ jobs:
           node tests/browser_smoke.test.js
           node tests/gameplay_e2e.test.js
           node tests/finance_payroll_e2e.test.js
+          node tests/legacy_save_migration_e2e.test.js
