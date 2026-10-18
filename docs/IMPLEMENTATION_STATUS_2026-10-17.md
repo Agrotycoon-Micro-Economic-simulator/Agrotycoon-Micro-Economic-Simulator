@@ -559,3 +559,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Added Cianjur commercial farm performance observations, a Bangka Selatan failed-cycle case, and a West Sumatra company-scale financial abstract to the Tier 1 research ledger. Ledger commit `13fca31e150512e6aac92402d5f45ab1ea2e4489`; program log commit `ec492e882878e3eb4b6318cc4022603c0e58dd59`.
 - Evidence highlights wide variation: FCR/survival differ by farm, and disease, contaminated water and inadequate SOP/monitoring can turn a high-value crop into a loss. Financial scopes are not reconciled enough to produce a universal margin. No game parameters changed; Tier 1 remains in progress; main and coconut benchmark unchanged.
+
+
+## 2026-10-19 progress report — additional Tier 1 producer/operator evidence
+
+- Added local/direct-source cases for carrots, Cavendish bananas, tuna and goats in `docs/REAL_COMMODITY_TIER1_RESEARCH.md`; research-program log also updated. Commits: ledger `fd508d1df30291664dbf834725926999cd53ed1a`; program `21972ac0a26a136a19e7763944625c17c1300120`.
+- Important caveats: carrot prices reflect a dated glut episode; Cavendish study yield/price observations are provisional because its visible cost/profit figures need arithmetic audit; tuna observations refer to different species, ports and market stages; goat liveweight quotes are anecdotal/date-specific and not a complete farm ledger.
+- No gameplay parameter, recipe, yield, cost, margin or coconut benchmark changed. Tier 1 across the 60-item blueprint remains incomplete; Tier 2/3/4 are not finalized.
+- Latest technical validation: [Actions run 39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) passed 15 Node regression tests and five Chromium browser suites, including gameplay, finance/payroll and save-recovery/migration. `main` remains unchanged.
