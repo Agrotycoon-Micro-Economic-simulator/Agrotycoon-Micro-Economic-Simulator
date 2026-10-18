@@ -295,3 +295,15 @@ ESDM's 29 June 2026 announcement describes policy action to lower LNG industrial
 
 ### Mining/energy evidence rule
 For every mining/energy observation, record benchmark type, commodity form, quality/grade, unit, currency, period, location/delivery point, source URL, whether regulated/market/transaction price, and all relevant deductions. Do not treat a global benchmark as a mine-gate invoice or a price observation as production-cost evidence.
+
+
+## Data-source audit — Bapanas published table metadata versus row-level units (2026-10-19)
+
+The Bapanas producer-price landing page was reopened and checked against its visible table and metadata:
+- Metadata says units are Rp/kg and Rp/kg live weight for cattle and broiler chicken.
+- The row-level table instead labels the chicken series **“Ayam Ras (Rp/Ekor Hidup)”** and gives January 2026 as Rp22,971 per live bird. That conflicts with the metadata's kg-live-weight description. Keep the source observation quarantined from a canonical price-per-kg registry until the original CSV/XLSX schema and source calculation are verified. Do not convert per bird to per kg without a documented average liveweight and a matching series.
+- The table currently exposes observations through January 2026 despite the page title “Angka Januari 2026”; it must not be presented as an October 2026 current quote. For January 2026, visible producer series include GKP farmer Rp6,884/kg, dry paddy at mill Rp7,980/kg, medium rice at mill Rp13,012/kg, premium rice at mill Rp14,370/kg, dry shelled maize farmer Rp5,810/kg, dry soybean farmer Rp9,418/kg, shallot farmer Rp23,915/kg, curly red chili farmer Rp24,578/kg, large red chili farmer Rp21,445/kg, bird's-eye chili farmer Rp34,122/kg, live cattle Rp52,883/kg live weight, chicken Rp22,971/bird (unit conflict above), eggs Rp26,027/kg, and sugar Rp15,213/kg.
+- Dataset method says national producer price is the average of commodity producer prices across provinces using selected representative respondents; it is not a farm invoice and does not establish farm cost/yield/profit. Metadata says the dataset was published 10 February 2026 and valid through 28 February 2026.
+- Source: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional
+
+This audit is an important ingestion gate: the raw row label takes precedence over an inconsistent generic unit description for interpretation, but the conflict itself remains unresolved pending the downloadable source file. No chicken price is normalized or inserted into the game registry from this observation.
