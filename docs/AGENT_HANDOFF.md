@@ -455,3 +455,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added `tests/corrupt_save_recovery_e2e.test.js`, which seeds malformed JSON and checks that the app returns to onboarding with a valid schema-v15 default save, configured starting cash/orchard, and stable reload behavior. This exposed a state-recovery weakness: `loadSaved()` reset in-memory state but left malformed JSON in localStorage. Fixed `js/state.js` to initialize migration-managed state and persist the replacement save in the catch path (commit `eb6b4ea67e7342773bd8e98872cab41af6e52629`). Added the test to CI (workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`).
 - Latest relevant workflow run is pending. The prior full suite passed in [run 39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39133117116), but does not validate these newer assertions or the recovery fix.
 - No coconut benchmark values changed; `main` remains untouched. Treat partial repayment and malformed-save recovery as pending until Actions confirms success.
+
+
+## Continuation — partial repayment and corrupt-save recovery E2Es passed (2026-10-18)
+
+- GitHub Actions run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) completed successfully on workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`. It ran all 15 standalone Node regressions and all five browser suites.
+- Finance/payroll browser E2E now proves partial repayment leaves the loan active and reduces the obligation exactly, writes a repayment ledger row, then final settlement clears principal and interest and marks the loan paid. Corrupt-save E2E proves malformed JSON is replaced with a valid schema-v15 default save and remains valid after reload.
+- The recovery fix in `js/state.js` persists the fresh default state in the `loadSaved()` parse-failure path. This fix and the new test are now covered by the successful workflow run.
+- Current feature branch HEAD: `0737a982b56aa4b3e5d7a746c76a9ee6793d200f`; `main` unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut benchmark values unchanged.
+- Coverage is broader but not exhaustive: corrupt JSON and one representative v12 save are tested; all historic save schemas and quota/storage write failures are not yet covered.
