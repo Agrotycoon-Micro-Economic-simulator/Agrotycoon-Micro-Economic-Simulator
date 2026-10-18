@@ -407,3 +407,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - The E2E uses the actual Chromium UI to harvest mature trees, sell the harvested stock to the tengkulak, advance through the real sleep/day-transition flow, and open the accounting page. Assertions confirm labor cost and sale revenue are posted, sold stock is depleted, the day-1 report persists into day 2, and the accounting journal displays the sale and harvest labor descriptions.
 - The first E2E run exposed a test-fixture issue: save seeding was repeated on every navigation. The fixture now seeds only when the save key is absent; rerun passed. Runtime game source and owner-validated coconut values were not changed. `main` remains untouched.
 - Remaining browser coverage: credit/loan interactions, payroll UI, and legacy-save migration. This test does not establish those flows as passing.
+
+
+## Continuation — payroll/credit browser E2E added; CI pending (2026-10-18)
+
+- Added `tests/finance_payroll_e2e.test.js` and wired it into CI. It seeds a qualifying level-7 save, hires a farmer through the Assets & Employees UI, advances a game day through the real sleep flow, verifies paid wages and ledger posting, applies a local game loan through `kredit.html`, then fully repays through the UI prompt and verifies loan status/liability clearing plus financing ledger entries.
+- Test commit: `38fd732b5f917feb655c28192a6bd970f66d65d3`; workflow commit: `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Await GitHub Actions before claiming the new E2E passes.
+- This test covers the game’s local simulation only; its interest/eligibility rules are not real lending offers. No runtime source or owner-validated coconut data changed; `main` untouched.
