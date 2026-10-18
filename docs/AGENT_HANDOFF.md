@@ -367,3 +367,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Expanded `tests/browser_smoke.test.js` to open every page linked from the hamburger menu and assert HTTP 200 plus no uncaught browser exceptions on each page. Browser test commit: `2dba8ffd06ab67afd56e4c8152b3a1a132a3154d`.
 - The preceding browser smoke run passed only the home/onboarding/save-load flow. The new multi-page checks require a fresh GitHub Actions result before claiming all menu pages pass. No runtime source, owner-validated coconut parameters, or `main` branch changed.
+
+
+## Continuation — fixed market page temporal-dead-zone error; browser recheck pending (2026-10-18)
+
+- Multi-page browser run `39131604320` exposed a real JavaScript error in `pasar-komoditas.html`: `stageCell()` invoked `rupiah()` before the `const rupiah` declaration initialized. Moved the formatter declaration before the first table render. Fix commit: `eec6231783013285feac5e1e266a81f14370a08a`.
+- The multi-page browser suite must rerun to confirm this page and the remaining menu pages are clean. The prior run failed on this first detected page, so it did not establish the status of later pages. No coconut benchmark parameters or `main` changed.
