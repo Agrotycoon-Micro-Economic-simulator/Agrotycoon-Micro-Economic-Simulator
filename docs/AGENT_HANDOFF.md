@@ -427,3 +427,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Added `tests/legacy_save_migration_e2e.test.js` and wired it into CI. It seeds a representative older v12-shaped save with core player state intact but migration-managed fields absent, then verifies preservation of name/cash/day, initialization of daily log, purchase counters, household stock/use counters, finance/payroll state, employee list and warung progression defaults, and successful rendering of game/assets/credit/accounting pages without uncaught exceptions.
 - Test commit: `5d2a77707a809440917f8a085a193519fb665848`; workflow commit: `e268402b7f4d2bb2d5f852ffc5bde0722757669d`. Await Actions before claiming the migration scenario passes. This tests backward-compatible loading, not every historical save version or corrupt-save recovery.
+
+
+## Legacy-save E2E first run exposed a browser-page lifecycle issue (2026-10-18)
+
+- Multi-page migration run [39132999377](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132999377) failed when querying the credit page after navigating through multiple routes in one Playwright page; the locator reported that its page/context had closed. The earlier 15 Node tests and three gameplay/browser E2Es passed in that run.
+- Isolated assets, credit, and accounting checks into separate pages within the same browser context, with explicit HTTP status and page readiness assertions. Test fix commit: `05cd03ec988892c1cec911f7ece808cbe72058b0`. Await the next workflow run before marking migration coverage green.
