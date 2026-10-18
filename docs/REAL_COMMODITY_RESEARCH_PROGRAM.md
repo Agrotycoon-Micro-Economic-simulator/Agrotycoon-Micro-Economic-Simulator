@@ -189,3 +189,11 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added commodity-specific source notes for shallot: Brebes producer price vs Jakarta wholesale-market observation and seed-grown vs bulb-seed yield comparison; red bird's-eye chili: direct farmer-reported glut/grade-sensitive farmgate price plus a distinct one-hectare rainy-season input budget and a separate PM-999 contract-budget example; potato: reported 120-day yield/cost/farmgate-price range; porang: literature-review yield/price/cost ranges with a primary-study traceability warning.
 - Key quality flags: the onion prices are dated and stage-specific; the chili price crash was for mixed unsorted grade; the two chili budgets are not comparable; porang review values must be traced to original studies and its profit claims recalculated. None is treated as a current universal game price or verified net margin.
 - Research-only documentation update; no game data, recipes, costs, yields or owner-locked coconut parameters changed. Tier 1 across all 60 commodities remains incomplete. Continue primary source extraction and reconcile all cost/yield/grade/stage dimensions before Tier 2/3/4.
+
+
+## Work log update — soybean, cassava, ginger and animal/aquaculture dependencies (2026-10-19)
+
+- Added a supervised soybean technology package (79 farmers/24 ha, specific variety/season, 2.7 t/ha average and Rp7.726m/ha modeled cost) and separately recorded a 2026 farmgate price policy context; they are not merged into one observed margin.
+- Added cassava price/discount evidence: a 2025 industrial purchase reference alongside reported factory deductions of 15–38%, plus a September 2026 Lampung-centre price report. Added a red-ginger grower-reported cost/yield/assumed-price scenario and explicitly flagged a second repository cost table for visual verification because extracted rows are garbled.
+- Added dairy-farm feed/forage/water/labor/infrastructure dependency evidence and a KKP milkfish operator cost/output case with explicit missing cycle/capex/land context.
+- No game balance values or coconut benchmark changed. Tier 1 remains incomplete; do not infer current prices, complete net profit, or move to Tier 2/3/4 final values from partial evidence.
