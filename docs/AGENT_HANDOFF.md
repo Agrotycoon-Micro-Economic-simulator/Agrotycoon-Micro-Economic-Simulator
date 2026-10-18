@@ -447,3 +447,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Extended `tests/finance_payroll_e2e.test.js` to repay a loan partially first, verify the loan remains active and total obligation drops by the exact payment, verify the partial repayment ledger row, then pay the remaining balance and verify status becomes `paid`, principal/interest are zero, and both repayment entries persist.
 - Test commit: `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`. GitHub Actions must pass before this additional scenario is marked green. Latest prior full suite was successful at run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116), but that run predates the partial-repayment assertions.
 - No production game code or owner-validated coconut benchmark values changed. `main` remains untouched.
+
+
+## Continuation — loan partial repayment and corrupt-save recovery hardened (2026-10-18; latest CI pending)
+
+- Extended `tests/finance_payroll_e2e.test.js` to test partial repayment first, exact outstanding-balance reduction, active status, a dedicated ledger row, then final repayment clearing principal/interest and persisting both repayment rows. Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`.
+- Added `tests/corrupt_save_recovery_e2e.test.js`, which seeds malformed JSON and checks that the app returns to onboarding with a valid schema-v15 default save, configured starting cash/orchard, and stable reload behavior. This exposed a state-recovery weakness: `loadSaved()` reset in-memory state but left malformed JSON in localStorage. Fixed `js/state.js` to initialize migration-managed state and persist the replacement save in the catch path (commit `eb6b4ea67e7342773bd8e98872cab41af6e52629`). Added the test to CI (workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`).
+- Latest relevant workflow run is pending. The prior full suite passed in [run 39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39133117116), but does not validate these newer assertions or the recovery fix.
+- No coconut benchmark values changed; `main` remains untouched. Treat partial repayment and malformed-save recovery as pending until Actions confirms success.
