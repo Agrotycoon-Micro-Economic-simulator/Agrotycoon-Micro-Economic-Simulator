@@ -483,3 +483,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Inspection of `js/ui.js` confirmed the game's `msg()` helper renders feedback in `#msg`; it does not call native `alert()`. Updated the invalid-overpayment browser test to assert the visible toast text `Jumlah pembayaran tidak valid`, while retaining balance/ledger invariants. Test commit: `f2db47ff77d5b6b0babd9d325f57d07632250987`.
 - The previous test run for commit `6e1f012d029a6b0ac73e6b24fe7db40769fbac34` is still pending or may fail because the assertion expected the wrong UI primitive. Await the new run for authoritative status.
+
+
+## Continuation — credit page feedback toast added; CI recheck pending (2026-10-18)
+
+- The latest gameplay workflow failed in `tests/finance_payroll_e2e.test.js` because `kredit.html` had no `#msg` feedback element and did not load the shared `js/ui.js` helper. `js/finance.js` correctly rejected the overpayment and returned a message, but the page had no visible place to display it. This was a real UI feedback gap, not a loan balance/ledger mutation.
+- Added an accessible `role=status` toast element and a page-local `msg()` helper to `kredit.html`, including auto-hide styling/timing. Fix commit: `584ab9f977316610810d9812c34221733e9f7776`.
+- A fresh Actions run must confirm the toast and all existing tests before this fix is marked passed. `main` and owner-validated coconut values remain unchanged.
