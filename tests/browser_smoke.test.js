@@ -48,7 +48,7 @@ async function main() {
     browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     const pageErrors = [];
-    page.on("pageerror", error => pageErrors.push(error.message));
+    page.on("pageerror", error => pageErrors.push(`${new URL(page.url()).pathname}: ${error.message}`));
     const baseUrl = `http://127.0.0.1:${server.address().port}`;
 
     const response = await page.goto(baseUrl, { waitUntil: "load" });
@@ -92,7 +92,15 @@ async function main() {
     assert.match(await page.locator("#d-text").innerText(), /Pemain E2E/, "saved player name is restored");
     assert.ok(pageErrors.length === 0, `no uncaught browser exceptions after reload: ${pageErrors.join("; ")}`);
 
-    console.log("PASS: browser smoke test covers homepage, hamburger navigation, onboarding validation/story, initial cash, and save/load persistence.");
+    const menuLinks = await page.locator("#sideMenu a").evaluateAll(links => links.map(link => link.getAttribute("href")));
+    for (const href of menuLinks) {
+      const route = new URL(href, baseUrl);
+      const pageResponse = await page.goto(route.href, { waitUntil: "load" });
+      assert.equal(pageResponse.status(), 200, `menu page ${href} serves successfully`);
+      assert.ok(pageErrors.length === 0, `no uncaught browser exceptions after opening ${href}: ${pageErrors.join("; ")}`);
+    }
+
+    console.log(`PASS: browser smoke test covers onboarding/save-load plus all ${menuLinks.length} pages linked in the hamburger menu.`);
   } finally {
     if (browser) await browser.close();
     await new Promise(resolve => server.close(resolve));
