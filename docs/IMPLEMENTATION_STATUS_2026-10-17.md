@@ -336,3 +336,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - GitHub Actions run [39131276899](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131276899) succeeded on commit `905cea2f92e76eef1d09c80a792f4d4fddc65861` under Node.js 22. The job log confirms all 15 currently present `tests/*.test.js` scripts were invoked and passed.
 - Coverage includes accounting, household inventory/consumption, finance, payroll, harvest, commodity transformation/tier chains, coconut benchmark invariants, market-chain contracts, production taxonomy, official economic-data provenance, unit economics, and deterministic 365-day world simulation.
 - Browser E2E and full browser interaction remain unverified. This workflow run tested the code at `905cea2...`; later commits are docs-only. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Continuation checkpoint — browser smoke test wired into CI (2026-10-18; result pending)
+
+- Added `tests/browser_smoke.test.js` with Playwright/Chromium checks for homepage loading, hamburger navigation, onboarding validation/story, initial cash display, persisted onboarding completion and player-name restoration after reload, and uncaught browser exceptions.
+- Workflow now installs Playwright/Chromium and runs browser smoke after all 15 standalone Node tests. Commits: test `5663fc98d670290ef72758a14b62d86dc6277d08`; workflow `4c97501fd54043d129d5093de64e59f86d675f61`. Browser validation remains pending actual GitHub Actions logs.
+- No runtime game source or owner-validated coconut values changed. `main` remains untouched.
