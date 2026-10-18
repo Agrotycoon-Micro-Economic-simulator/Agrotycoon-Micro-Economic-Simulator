@@ -570,3 +570,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Rechecked the Bapanas dataset landing page and its visible row-level table. The generic metadata says Rp/kg live weight for cattle/chicken, but the chicken row is explicitly labelled `Ayam Ras (Rp/Ekor Hidup)` and reports Rp22,971/bird for January 2026. This conflict is now documented in `docs/REAL_COMMODITY_TIER1_RESEARCH.md` commit `21e05701f505d9e9da4ea902418702d4c98c8e07` and `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` commit `d8f72220a9e282b26828987d06d59b7dfeda5290`.
 - Chicken observation is quarantined from canonical Rp/kg ingestion until original CSV/XLSX schema is verified; no per-bird-to-per-kg conversion is inferred. Confirmed visible data runs through January 2026, not October 2026 current price. No game values changed; Tier 1 remains incomplete. main unchanged.
+
+
+## 2026-10-19 — Vaname shrimp success/failure evidence added
+
+- Added three KKP-linked shrimp-farm cases to `docs/REAL_COMMODITY_TIER1_RESEARCH.md` commit `13fca31e150512e6aac92402d5f45ab1ea2e4489`; research-program log updated in `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` commit `ec492e882878e3eb4b6318cc4022603c0e58dd59`.
+- Captured Cianjur 2025 observation (99% SR, FCR 1.53; costs still need extraction), Bangka Selatan downside case (loss Rp278.6m, R/C 0.65, disease/water/SOP issues), and a West Sumatra company-scale abstract whose totals/period need reconciliation. Cases are not averaged; each has separate farm/system context.
+- No gameplay parameters or coconut benchmark changed. Tier 1 remains incomplete; main/runtime unchanged. Latest technical baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373).
