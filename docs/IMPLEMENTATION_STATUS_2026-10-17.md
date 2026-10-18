@@ -436,3 +436,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Extended `tests/finance_payroll_e2e.test.js` to cover partial loan repayment before final settlement: outstanding obligation must fall exactly by the partial payment, loan remains active, a dedicated ledger entry is persisted, then final repayment clears principal and interest and marks the loan paid with two repayment entries recorded.
 - Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`. Pending a fresh GitHub Actions result; prior suite run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) passed the previous full-repayment-only scenario.
 - Runtime game source and owner-validated coconut data remain unchanged. `main` remains untouched.
+
+
+## Continuation checkpoint — partial repayment and malformed-save recovery (2026-10-18; CI pending)
+
+- Added partial-then-full loan repayment assertions to `tests/finance_payroll_e2e.test.js`: the partial payment must reduce outstanding obligation exactly, preserve active status, and persist a financing ledger entry; the final payment must clear principal and interest and leave two repayment entries. Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`.
+- Added `tests/corrupt_save_recovery_e2e.test.js` for malformed JSON recovery and stable reload. Inspection found `loadSaved()` reset state in memory on parse failure but did not replace the corrupt localStorage value. Updated `js/state.js` catch handling to ensure migration fields and persist the fresh default state (commit `eb6b4ea67e7342773bd8e98872cab41af6e52629`). Added this browser test to CI (workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`).
+- New changes await Actions validation. The preceding 15 Node tests and four browser suites passed in [run 39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39133117116), before these additions.
+- No owner-validated coconut values changed; `main` remains untouched.
