@@ -440,3 +440,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - GitHub Actions run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) succeeded on test commit `05cd03ec988892c1cec911f7ece808cbe72058b0`. Logs confirm all 15 standalone Node regressions and all four browser suites passed: menu/onboarding smoke, harvest→sale→day→accounting, payroll/credit lifecycle, and legacy-save migration.
 - Legacy-save test preserved player name, cash and day from a representative v12-shaped save, initialized migration-managed day log/purchase/household/finance/payroll/employee/warung fields, and loaded the game, assets, credit and accounting pages without uncaught exceptions. The route checks use separate Playwright pages to isolate navigation contexts.
 - This is representative backward-compatibility coverage, not exhaustive testing of every historical schema or corrupt-save recovery. No runtime game source or owner-validated coconut data changed; `main` remains untouched.
+
+
+## Continuation — partial-to-full loan repayment browser scenario added (2026-10-18; CI pending)
+
+- Extended `tests/finance_payroll_e2e.test.js` to repay a loan partially first, verify the loan remains active and total obligation drops by the exact payment, verify the partial repayment ledger row, then pay the remaining balance and verify status becomes `paid`, principal/interest are zero, and both repayment entries persist.
+- Test commit: `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`. GitHub Actions must pass before this additional scenario is marked green. Latest prior full suite was successful at run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116), but that run predates the partial-repayment assertions.
+- No production game code or owner-validated coconut benchmark values changed. `main` remains untouched.
