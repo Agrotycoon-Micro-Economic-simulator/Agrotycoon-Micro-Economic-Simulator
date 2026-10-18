@@ -361,3 +361,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - GitHub Actions run [39131485716](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131485716) completed successfully on workflow commit `4c97501fd54043d129d5093de64e59f86d675f61`. The log confirms the 15 Node regression scripts and `tests/browser_smoke.test.js` all completed successfully under Node.js 22 with Chromium.
 - Browser coverage passed for homepage load/title, hamburger open/Escape-close, blank-name validation, onboarding story completion, initial Rp5,000,000 display, persistence of onboarding completion/player name across reload, and absence of uncaught page exceptions.
 - This is a browser smoke test, not a complete gameplay E2E audit: harvesting, sales, day transitions, payroll/loan flows and all secondary pages still need dedicated browser scenarios. No runtime game source or owner-validated coconut parameters changed; `main` remains untouched.
+
+
+## Continuation — extending browser smoke coverage to all menu pages (2026-10-18; CI pending)
+
+- Expanded `tests/browser_smoke.test.js` to open every page linked from the hamburger menu and assert HTTP 200 plus no uncaught browser exceptions on each page. Browser test commit: `2dba8ffd06ab67afd56e4c8152b3a1a132a3154d`.
+- The preceding browser smoke run passed only the home/onboarding/save-load flow. The new multi-page checks require a fresh GitHub Actions result before claiming all menu pages pass. No runtime source, owner-validated coconut parameters, or `main` branch changed.
