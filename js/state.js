@@ -51,7 +51,7 @@ function loadSaved(){
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.landSystem)S.landSystem=null;
   } else { throw new Error('Null save'); }
- }catch(e){ console.error(e); S=defaultState(); }
+ }catch(e){ console.error(e); S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
 }
 function save(){ if(S&&typeof ensureAgriState==='function')ensureAgriState(); localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
 function gainXP(amount){
