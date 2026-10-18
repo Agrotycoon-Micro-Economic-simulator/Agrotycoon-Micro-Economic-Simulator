@@ -373,3 +373,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Multi-page browser run `39131604320` exposed a real JavaScript error in `pasar-komoditas.html`: `stageCell()` invoked `rupiah()` before the `const rupiah` declaration initialized. Moved the formatter declaration before the first table render. Fix commit: `eec6231783013285feac5e1e266a81f14370a08a`.
 - The multi-page browser suite must rerun to confirm this page and the remaining menu pages are clean. The prior run failed on this first detected page, so it did not establish the status of later pages. No coconut benchmark parameters or `main` changed.
+
+
+## Continuation — HTML/CSS changes now trigger browser regression CI (2026-10-18; run pending)
+
+- Updated workflow path filters to run on root HTML and `css/**` changes, so fixes to static game pages trigger the browser suite. CI commit: `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`.
+- This commit includes the prior `pasar-komoditas.html` formatter-order fix (`eec6231783013285feac5e1e266a81f14370a08a`) and the multi-page browser smoke test. Await the new Actions result before claiming the market page or all menu pages are clean. `main` and coconut benchmark values remain unchanged.
