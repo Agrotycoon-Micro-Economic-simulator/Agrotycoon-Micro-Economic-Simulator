@@ -69,12 +69,13 @@ table{border-collapse:collapse;width:100%;min-width:600px}th,td{text-align:left;
 <script src="js/market_chain.js"></script>
 <script>
 (function(){
- const data=window.MARKET_PRICE_DATA; const chainBody=document.getElementById('chain-body');
+ const data=window.MARKET_PRICE_DATA;
+ const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+ const chainBody=document.getElementById('chain-body');
  const stageCell=s=>s&&s.value!==null?rupiah(s.value)+'<br><small>'+(s.type==='official_reference'?'Referensi resmi '+s.period:'Parameter game')+'</small>':'<span class="muted">Belum ada data</span>';
  window.MARKET_CHAIN_DATA.rows.forEach(row=>{const tr=document.createElement('tr');tr.innerHTML='<td><b>'+row.name+'</b></td><td>'+stageCell(row.producer)+'</td><td>'+stageCell(row.middleman)+'</td><td>'+stageCell(row.wholesale)+'</td><td>'+stageCell(row.direct)+'</td><td>'+stageCell(row.factory)+'</td><td>'+(row.producer.type==='official_reference'?'Ada referensi produsen; tahap lain belum tervalidasi':'Parameter game / data tahap belum lengkap')+'</td>';chainBody.appendChild(tr);});
  document.getElementById('chain-note').textContent=window.MARKET_CHAIN_DATA.snapshotNote+' '+window.MARKET_CHAIN_DATA.missingDataPolicy;
 
- const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
  document.getElementById('snapshot-date').textContent=data.snapshotDate;
  document.getElementById('source-link').href=data.sourceUrl;
  const body=document.getElementById('prices-body');
