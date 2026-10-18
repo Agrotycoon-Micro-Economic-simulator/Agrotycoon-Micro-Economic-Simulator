@@ -340,3 +340,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Expanded `.github/workflows/targeted-regression.yml` from 7 to all 15 currently listed `tests/*.test.js` scripts. Coverage now includes accounting/household stock/finance/payroll/harvest plus commodity transformation and tier chains, owner-validated es-kelapa benchmarks, market-chain contracts, production tiers, official economic-data provenance, unit economics, and 365-day deterministic world simulation.
 - Workflow expansion commit: `905cea2f92e76eef1d09c80a792f4d4fddc65861`. GitHub Actions must finish before the 15-test suite can be marked passing. The prior run `39031115000` validates only the earlier 7 scripts.
 - No game runtime source or owner-validated coconut parameters were changed in this pass. `main` remains untouched. Browser E2E is still a separate outstanding validation.
+
+
+## Continuation — all 15 standalone Node regression scripts passed (2026-10-18)
+
+- Expanded workflow run [39131276899](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131276899) completed with **success** on workflow commit `905cea2f92e76eef1d09c80a792f4d4fddc65861`, using a real GitHub checkout and Node.js 22.
+- All 15 scripts under `tests/*.test.js` were executed and passed: accounting ledger, commodity tier chain, commodity transformation, double-entry transactions, harvest, es-kelapa benchmark, finance, household inventory accounting, living stock, market-chain contract, payroll, production tiers, real economic data, unit economics, and world simulation.
+- This is the full currently listed standalone Node test inventory, not browser E2E or full interactive gameplay validation. Browser E2E remains outstanding. No runtime source or owner-validated coconut parameters changed during test-workflow expansion; `main` remains untouched.
