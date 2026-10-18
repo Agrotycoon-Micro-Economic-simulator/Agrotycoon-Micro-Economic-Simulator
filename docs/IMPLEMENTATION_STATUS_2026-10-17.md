@@ -396,3 +396,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - The new browser E2E exercised the actual UI path: harvest mature coconut trees → sell all harvested stock to the tengkulak → run the real sleep/day transition → open `akuntansi.html`. It verified stock depletion, labor expense and sales ledger entries, report/day persistence, and visible accounting journal descriptions.
 - Initial failure was isolated to the test harness reseeding localStorage on every navigation; corrected to seed only once. No runtime source or owner-validated coconut parameters changed; `main` remains untouched.
 - Not yet covered by browser E2E: loan application/repayment, payroll interaction, and legacy-save migration.
+
+
+## Continuation checkpoint — payroll and loan browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/finance_payroll_e2e.test.js`, run after the harvest/sale/day/accounting E2E. It exercises employee hiring through `assets.html`, payroll through the real day-transition UI, loan disbursement via `kredit.html`, full repayment via the UI prompt, and persisted status/ledger assertions.
+- Test commit `38fd732b5f917feb655c28192a6bd970f66d65d3`; workflow commit `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Browser run pending; do not claim pass before Actions evidence.
+- This is a local game simulation, not a real credit product. Runtime source and owner-validated coconut values remain unchanged; `main` untouched.
