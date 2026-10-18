@@ -329,3 +329,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Expanded `.github/workflows/targeted-regression.yml` to execute all 15 currently present standalone `tests/*.test.js` scripts under Node.js 22, including commodity transformation/tier logic, coconut benchmark invariants, market-chain contracts, official economic-data provenance, unit economics, and deterministic 365-day world simulation in addition to the 7 previously targeted accounting/finance/payroll/harvest tests.
 - Workflow commit: `905cea2f92e76eef1d09c80a792f4d4fddc65861`. Expanded suite status is **pending actual GitHub Actions result**; the earlier success run `39031115000` covered only 7 scripts and must not be represented as validation of all 15.
 - No runtime source, owner-validated coconut values, or `main` branch changed. Browser E2E remains unrun.
+
+
+## Latest continuation checkpoint — all 15 standalone Node regression tests green (2026-10-18)
+
+- GitHub Actions run [39131276899](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131276899) succeeded on commit `905cea2f92e76eef1d09c80a792f4d4fddc65861` under Node.js 22. The job log confirms all 15 currently present `tests/*.test.js` scripts were invoked and passed.
+- Coverage includes accounting, household inventory/consumption, finance, payroll, harvest, commodity transformation/tier chains, coconut benchmark invariants, market-chain contracts, production taxonomy, official economic-data provenance, unit economics, and deterministic 365-day world simulation.
+- Browser E2E and full browser interaction remain unverified. This workflow run tested the code at `905cea2...`; later commits are docs-only. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
