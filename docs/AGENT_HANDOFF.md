@@ -564,3 +564,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Recorded March 2026 HBA coal prices by GAR quality, January 2026 nickel HMA (explicitly not nickel ore HPM), September 2026 ICP crude-oil benchmark, and the distinction between LNG export, liquefied product, and regulated plant-gate natural gas. Iron ore, gold, bauxite, copper, generic plastics and cement remain source-needed/blocked pending exact product form/grade and producer-gate evidence.
 - No game parameters or coconut benchmark changed; runtime source untouched. Tier 1 is still incomplete. main remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Technical baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373).
 - Next: continue sourcing remaining commodity rows, extract period-specific HPM for ore (not HMA metal), and resolve exact data files/units for national and direct-source series. Tier 2/3/4 stay gated behind Tier 1 reconciliation.
+
+
+## 2026-10-19 — Bapanas poultry unit conflict audited and quarantined
+
+- Rechecked the Bapanas dataset landing page and its visible row-level table. The generic metadata says Rp/kg live weight for cattle/chicken, but the chicken row is explicitly labelled `Ayam Ras (Rp/Ekor Hidup)` and reports Rp22,971/bird for January 2026. This conflict is now documented in `docs/REAL_COMMODITY_TIER1_RESEARCH.md` commit `21e05701f505d9e9da4ea902418702d4c98c8e07` and `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` commit `d8f72220a9e282b26828987d06d59b7dfeda5290`.
+- Chicken observation is quarantined from canonical Rp/kg ingestion until original CSV/XLSX schema is verified; no per-bird-to-per-kg conversion is inferred. Confirmed visible data runs through January 2026, not October 2026 current price. No game values changed; Tier 1 remains incomplete. main unchanged.
