@@ -553,3 +553,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Audited visible Bapanas metadata/table mismatch: metadata describes poultry in Rp/kg live weight, while the row is labelled Rp/ekor hidup and gives Rp22,971 per bird for January 2026. Documented in ledger commit `21e05701f505d9e9da4ea902418702d4c98c8e07` and program log commit `d8f72220a9e282b26828987d06d59b7dfeda5290`.
 - The chicken price is quarantined from canonical Rp/kg use pending original downloadable file validation; the page's visible series ends at January 2026. No game values changed. Tier 1 is still incomplete; main and coconut benchmark remain unchanged.
+
+
+## 2026-10-19 research checkpoint — vaname shrimp farm-risk evidence
+
+- Added Cianjur commercial farm performance observations, a Bangka Selatan failed-cycle case, and a West Sumatra company-scale financial abstract to the Tier 1 research ledger. Ledger commit `13fca31e150512e6aac92402d5f45ab1ea2e4489`; program log commit `ec492e882878e3eb4b6318cc4022603c0e58dd59`.
+- Evidence highlights wide variation: FCR/survival differ by farm, and disease, contaminated water and inadequate SOP/monitoring can turn a high-value crop into a loss. Financial scopes are not reconciled enough to produce a universal margin. No game parameters changed; Tier 1 remains in progress; main and coconut benchmark unchanged.
