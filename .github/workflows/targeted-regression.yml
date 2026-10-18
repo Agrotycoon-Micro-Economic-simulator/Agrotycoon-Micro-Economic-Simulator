@@ -8,6 +8,8 @@ on:
       - ".github/workflows/targeted-regression.yml"
       - "js/**"
       - "tests/**"
+      - "*.html"
+      - "css/**"
   pull_request:
     branches:
       - main
@@ -15,6 +17,8 @@ on:
       - "js/**"
       - "tests/**"
       - ".github/workflows/targeted-regression.yml"
+      - "*.html"
+      - "css/**"
   workflow_dispatch:
 
 permissions:
