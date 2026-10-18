@@ -80,20 +80,36 @@ async function main() {
     assert.ok(saved.ledger.some(row => row.cat === "PINJAMAN" && row.amt > 0), "loan disbursement posts financing inflow");
     assert.ok(await page.locator("#credit-list").getByText(/active/).count() > 0, "active loan appears in the credit history UI");
 
-    const due = loan.principal + loan.interestDue;
+    const initialDue = loan.principal + loan.interestDue;
+    const partialPayment = Math.min(1000000, Math.floor(initialDue / 2));
     page.once("dialog", async dialog => {
       assert.equal(dialog.type(), "prompt");
-      await dialog.accept(String(due));
+      await dialog.accept(String(partialPayment));
     });
     await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
-    const repaid = saved.finance.loans.find(item => item.id === loan.id);
-    assert.equal(repaid.status, "paid", "full repayment marks the loan paid");
-    assert.equal(repaid.principal + repaid.interestDue, 0, "full repayment clears principal and accrued interest");
-    assert.ok(saved.ledger.some(row => row.cat === "CICILAN" && row.detail && row.detail.loanId === loan.id), "repayment posts a financing repayment ledger entry");
+    let repaid = saved.finance.loans.find(item => item.id === loan.id);
+    assert.equal(repaid.status, "active", "partial repayment keeps the loan active");
+    assert.equal(repaid.principal + repaid.interestDue, initialDue - partialPayment,
+      "partial repayment reduces total outstanding obligation by the payment amount");
+    assert.ok(saved.ledger.some(row => row.cat === "CICILAN" && row.detail && row.detail.loanId === loan.id && row.amt === -partialPayment),
+      "partial repayment posts its own financing ledger entry");
+
+    const finalDue = repaid.principal + repaid.interestDue;
+    page.once("dialog", async dialog => {
+      assert.equal(dialog.type(), "prompt");
+      await dialog.accept(String(finalDue));
+    });
+    await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
+    saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
+    repaid = saved.finance.loans.find(item => item.id === loan.id);
+    assert.equal(repaid.status, "paid", "full repayment after partial payment marks the loan paid");
+    assert.equal(repaid.principal + repaid.interestDue, 0, "full repayment clears remaining principal and accrued interest");
+    assert.equal(saved.ledger.filter(row => row.cat === "CICILAN" && row.detail && row.detail.loanId === loan.id).length, 2,
+      "partial and final repayment each persist a financing ledger entry");
     assert.ok(pageErrors.length === 0, `no uncaught browser exceptions: ${pageErrors.join("; ")}`);
 
-    console.log("PASS: browser E2E covers employee hiring, daily payroll posting, loan disbursement, full repayment, and persisted financing ledger.");
+    console.log("PASS: browser E2E covers employee hiring, daily payroll posting, loan disbursement, partial then full repayment, and persisted financing ledger.");
   } finally {
     if (browser) await browser.close();
     await new Promise(resolve => server.close(resolve));
