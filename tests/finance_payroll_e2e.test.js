@@ -81,6 +81,22 @@ async function main() {
     assert.ok(await page.locator("#credit-list").getByText(/active/).count() > 0, "active loan appears in the credit history UI");
 
     const initialDue = loan.principal + loan.interestDue;
+    page.once("dialog", async dialog => {
+      assert.equal(dialog.type(), "prompt");
+      await dialog.accept(String(initialDue + 1));
+    });
+    page.once("dialog", async dialog => {
+      assert.equal(dialog.type(), "alert", "invalid overpayment is rejected with a user-facing message");
+      await dialog.accept();
+    });
+    await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
+    saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
+    let repaid = saved.finance.loans.find(item => item.id === loan.id);
+    assert.equal(repaid.status, "active", "invalid overpayment leaves loan active");
+    assert.equal(repaid.principal + repaid.interestDue, initialDue, "invalid overpayment does not alter the outstanding balance");
+    assert.equal(saved.ledger.filter(row => row.cat === "CICILAN" && row.detail && row.detail.loanId === loan.id).length, 0,
+      "invalid overpayment does not create a repayment ledger entry");
+
     const partialPayment = Math.min(1000000, Math.floor(initialDue / 2));
     page.once("dialog", async dialog => {
       assert.equal(dialog.type(), "prompt");
@@ -88,7 +104,7 @@ async function main() {
     });
     await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
-    let repaid = saved.finance.loans.find(item => item.id === loan.id);
+    repaid = saved.finance.loans.find(item => item.id === loan.id);
     assert.equal(repaid.status, "active", "partial repayment keeps the loan active");
     assert.equal(repaid.principal + repaid.interestDue, initialDue - partialPayment,
       "partial repayment reduces total outstanding obligation by the payment amount");
@@ -109,7 +125,7 @@ async function main() {
       "partial and final repayment each persist a financing ledger entry");
     assert.ok(pageErrors.length === 0, `no uncaught browser exceptions: ${pageErrors.join("; ")}`);
 
-    console.log("PASS: browser E2E covers employee hiring, daily payroll posting, loan disbursement, partial then full repayment, and persisted financing ledger.");
+    console.log("PASS: browser E2E covers employee hiring, daily payroll, loan disbursement, invalid overpayment rejection, partial and full repayment, and financing ledger persistence.");
   } finally {
     if (browser) await browser.close();
     await new Promise(resolve => server.close(resolve));
