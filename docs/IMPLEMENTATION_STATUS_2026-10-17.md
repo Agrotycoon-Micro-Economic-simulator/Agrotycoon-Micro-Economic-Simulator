@@ -382,3 +382,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added `tests/gameplay_e2e.test.js` and appended it to regression CI. The test uses a seeded v15 save but executes actual UI actions: harvest mature trees, sell the stock to the tengkulak, advance the day through the sleep flow, reload the accounting page, and verify persistent labor/sales ledger rows, daily report, stock depletion, and accounting descriptions.
 - Test commit `7c1d0c8a1c1eaa94f6ca3fd77b07ebdcb4c4213b`; workflow commit `7cd0df9a93980c56355b4f1101977a767ebe8159`. New E2E is pending actual GitHub Actions result; do not assume success.
 - No runtime source or owner-validated coconut values changed. `main` remains untouched.
+
+
+## Gameplay E2E fixture correction (2026-10-18; rerun pending)
+
+- First run [39132561554](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132561554) failed on the accounting-page assertion. Root cause was test setup: Playwright's `addInitScript` re-applied the seeded initial save on each page navigation, overwriting the state created by gameplay. The test now seeds only when the save key is missing. Fix commit: `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`.
+- Rerun required to verify harvest/sale/day/accounting E2E. Do not claim it passes until Actions confirms.
