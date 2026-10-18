@@ -61,3 +61,4 @@ jobs:
           node tests/gameplay_e2e.test.js
           node tests/finance_payroll_e2e.test.js
           node tests/legacy_save_migration_e2e.test.js
+          node tests/corrupt_save_recovery_e2e.test.js
