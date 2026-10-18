@@ -197,3 +197,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added cassava price/discount evidence: a 2025 industrial purchase reference alongside reported factory deductions of 15–38%, plus a September 2026 Lampung-centre price report. Added a red-ginger grower-reported cost/yield/assumed-price scenario and explicitly flagged a second repository cost table for visual verification because extracted rows are garbled.
 - Added dairy-farm feed/forage/water/labor/infrastructure dependency evidence and a KKP milkfish operator cost/output case with explicit missing cycle/capex/land context.
 - No game balance values or coconut benchmark changed. Tier 1 remains incomplete; do not infer current prices, complete net profit, or move to Tier 2/3/4 final values from partial evidence.
+
+
+## Work log update — mining and energy benchmark mapping (2026-10-19)
+
+- Added official March 2026 HBA coal quality-indexed reference prices; January 2026 nickel HMA benchmark with explicit warning that it is metal benchmark, not nickel-ore HPM; September 2026 ICP crude-oil benchmark; and LNG/industrial-gas source mapping distinguishing upstream gas, liquefied LNG, plant-gate gas and export/regasified routes.
+- Set explicit blocked/source-needed status for iron ore, gold, bauxite, copper, generic plastics and cement until product form/grade and producer-gate transaction data are located. No mine-gate price or margin was inferred from a metal/energy benchmark.
+- Research-only documentation update; no game values or coconut benchmark changed. Tier 1 remains incomplete for the full 60-commodity blueprint; all mining/manufacturing rows need product-node definitions, quality basis and complete costs before Tier 2/3/4.
