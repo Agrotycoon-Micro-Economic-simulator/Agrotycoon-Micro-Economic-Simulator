@@ -269,3 +269,29 @@ A KKP Directorate of Logistics performance report records a milkfish grower case
 - Red-ginger profit arithmetic is provisional because not all costs are specified and a second PDF's table extraction is garbled.
 - Milkfish operator costs are partial and need the full report context before any unit-economics calculation.
 - No commodity is declared fully economics-verified by this tranche; no game parameter, recipe, yield or margin was changed.
+
+
+## Research tranche — mining, crude oil and gas benchmark-source mapping (2026-10-19)
+
+These commodities require a different evidence model from farm output: regulatory benchmarks and exchange metal prices are not automatically mine-gate receipts. Ore grade, moisture, impurities, recovery, processing stage, freight, royalties and offtake deductions must be explicit.
+
+### Batu bara — official quality-indexed HBA benchmark located
+ESDM Decree 124.K/MB.01/MEM.B/2026 for the second period of March 2026 lists four HBA benchmarks: 6,322 GAR at US$103.01/t; 5,300 GAR at US$71.55/t; 4,100 GAR at US$48.32/t; and 3,400 GAR at US$34.25/t. The decree specifies calorific value and moisture/sulphur/ash assumptions for each benchmark. These are reference prices by coal quality, not a mine's realized sale price; the exact period, GAR basis and quality adjustment must be retained. Source: https://www.minerba.esdm.go.id/files/2026/91afdb04e1dd82a83385a5fdc67aea48.pdf
+
+### Nikel — official metal benchmark located, ore HPM not yet extracted
+ESDM's official first-period January 2026 decree lists the nickel HMA at US$14,630/dmt, defined by the LME cash-seller-and-settlement price averaging method. This is a refined/metal benchmark used in the official formula context; it is **not** the price per tonne of Indonesian laterite ore. The corresponding period-specific HPM formula/value for ore, with grade and moisture basis, must be extracted before recording any nickel ore producer price. Source: https://www.minerba.esdm.go.id/files/2026/c54cffcbe80f3aad56bc0001dc176250.pdf
+
+### Minyak mentah — official Indonesian Crude Price (ICP) is a benchmark, not individual wellhead netback
+ESDM set average ICP for September 2026 at US$112.81/barrel, up from US$89.43/barrel in August 2026. The official announcement cites the applicable ministerial decree and explains ICP as a benchmark for upstream state revenue/macro assumptions. It cannot be directly assigned as a specific field's wellhead realization: crude quality, lifting point, transport, contract differential, production-sharing/fiscal terms and lifting costs remain necessary. Source: https://www.esdm.go.id/id/media-center/arsip-berita/ketegangan-geopolitik-dorong-icp-september-naik-ke-us11281-per-barel
+
+### LNG / natural gas — regulated industrial plant-gate gas is a different node from LNG export price
+ESDM's 29 June 2026 announcement describes policy action to lower LNG industrial prices, while ESDM's regulated gas framework distinguishes price at user plant gate and transmission/midstream costs. A published academic netback analysis (28 September 2026) estimates the wellhead value differs substantially between HGBT-regulated pipeline sales and export/regasified-LNG routes. These are distinct commercial nodes; the game's generic “LNG” commodity must not mix upstream natural gas, liquefied product at plant gate, shipping and regasified gas. The current exact contract/price per MMBtu for the intended node is not yet established in this ledger. Sources: https://www.esdm.go.id/en/media-center/news-archives/selamatkan-industri-menteri-esdm-turunkan-harga-lng-industri ; https://journal.lemigas.esdm.go.id/index.php/SCOG/article/view/2183
+
+### Iron ore, gold, bauxite, copper, plastics and cement — no final Tier 1 price assigned in this tranche
+- For iron ore, gold, bauxite and copper, a metal benchmark is insufficient. Need an actual mine/operator disclosure or government source with product form (ore/concentrate/cathode/refined), grade/assay, moisture, recovery, period, delivery basis and applicable HPM/royalty/TC-RC deductions.
+- For plastics/raw materials, first specify resin family and grade (PE/PP/PET/PVC etc.) and whether price is resin producer gate, distributor, or recycled feedstock. A generic “plastic” number is not a defensible commodity observation.
+- For cement, specify product type (OPC/PCC/etc.), bag vs bulk, ex-plant vs delivered, energy/clinker/freight, and actual producer/industrial transaction context. A retail store price is not a factory-gate producer price.
+- No unsupported price, extraction cost or profit is inserted for these commodities. They remain source-needed/blocked until a source and unit match the defined commodity node.
+
+### Mining/energy evidence rule
+For every mining/energy observation, record benchmark type, commodity form, quality/grade, unit, currency, period, location/delivery point, source URL, whether regulated/market/transaction price, and all relevant deductions. Do not treat a global benchmark as a mine-gate invoice or a price observation as production-cost evidence.
