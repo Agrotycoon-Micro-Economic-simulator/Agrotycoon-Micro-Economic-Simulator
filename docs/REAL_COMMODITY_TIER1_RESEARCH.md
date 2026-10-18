@@ -238,3 +238,34 @@ A 2023 review in *Forum Penelitian Agro Ekonomi* summarizes reported porang yiel
 - The onion, chili and potato values above are historical local observations or model budgets, not current national averages. Price, grade, weather, season, crop duration and production system remain explicit dimensions.
 - Do not average the chili rainy-season budget and PM-999 contract budget; they represent different varieties, costing assumptions and sales arrangements.
 - No game parameter or Tier 1 row is marked fully economics-verified by this tranche. All 60 commodities remain under evidence reconciliation; Tier 2/3/4 finalization remains blocked behind Tier 1 coverage and cost/yield completeness.
+
+
+## Research tranche — soybean, cassava, red ginger, dairy-feed constraints and milkfish operator costs (2026-10-19)
+
+### Kedelai — cooperative on-farm trial and farmgate price context
+- The Ministry of Agriculture's 2021 technology package for large-seeded yellow soybean (Detap 1) involved 79 cooperating farmers on 24 ha in irrigated rice fields in Pandaan, Pasuruan during dry-season planting (MK-2). It reports average yield 2.7 t/ha, best result 3.3 t/ha, production cost Rp7.726m/ha, and modeled revenue Rp24.3m at Rp9,000/kg (reported modeled net Rp16.574m). This is a specific supervised variety/technology package and season, not the national farmer average. Source: https://repository.pertanian.go.id/items/b2769280-f6d8-4426-8ffb-7653a2bbc798
+- Kementan's 2026 statement says farm-level soybean prices in its current policy context were around Rp8,000–9,000/kg, with government discussing a higher purchase reference. This is a dated policy statement, not an actual invoice series and not necessarily the same variety/moisture/location as the 2021 trial. Source: https://pertanian.go.id/news/view/7755?lang=eng
+- Keep dry-season irrigated soybean trials, intercropped plantation soybean and ordinary rainfed farm scenarios separate; seed, drainage, mechanization, moisture, variety and buyer contract affect unit costs.
+
+### Singkong — official purchase-price floor context and factory deductions
+- On 31 January 2025, Kementan announced a Rp1,350/kg national purchase reference for cassava supplied to the starch industry after reports that factories were buying at Rp1,100/kg with 15–18% deductions, or Rp1,300–1,400/kg with 35–38% deductions. This is a policy/market dispute record; deductions materially change the realized net farmgate price and must be modeled separately from the headline price. Source: https://www.pertanian.go.id/?act=view&id=6576&show=news
+- A Kementan release dated 23 September 2026 quotes the Indonesian Cassava Society chair reporting around Rp2,400/kg in some Lampung production centres after import restrictions and domestic-market measures. It is a regional reported market observation, not a nationwide guaranteed price and not proof of producer margin. Source: https://hortikultura.pertanian.go.id/harga-singkong-naik-msi-apresiasi-kebijakan-mentan-amran-stop-impor/
+- Before calculating cassava profit, obtain same-period farm yield, harvest age, variety/starch content, labor/land/input costs, transport distance, factory acceptance and actual deduction basis.
+
+### Jahe merah — grower-reported scenario, not an audited profit series
+Kementan's horticulture directorate quoted Chevi describing a one-hectare red-ginger scenario with reported Rp70.2m investment for seed, fertilizer and labor, 15 t harvest and up to 18 t with good seed/fertilizer; the report uses an assumed Rp10,000/kg price. At 15 t the implied gross revenue is Rp150m; subtracting only the stated Rp70.2m gives Rp79.8m before any omitted costs or timing adjustments. The source is a grower-reported illustrative calculation, not a current transaction quote or complete verified net profit. Source: https://hortikultura.pertanian.go.id/tanaman-obat-baik-untuk-imunitas-sekaligus-pengungkit-ekonomi-petani/
+- A separate Ministry of Agriculture repository document includes a 1-ha red-ginger cost/revenue table, but extracted text appears internally garbled/inconsistent in some row alignment. Do not ingest its totals until the original PDF table is visually checked and recalculated. Source: https://repository.pertanian.go.id/server/api/core/bitstreams/0a92470d-815d-4d67-924b-59c8195d6e86/content
+
+### Sapi perah — input dependency is established; farm economics still missing
+- Kementan's September 2026 feed/productivity report explicitly says herd expansion must be coupled with year-round forage, local feed ingredients, water, labor and feed infrastructure; it reports national domestic milk production targets but does not provide an individual farm's milk yield/cost ledger. This supports the dependency structure, not a precise per-cow margin. Source: https://ditjenpkh.pertanian.go.id/berita/kementan-perkuat-inovasi-pakan-dorong-produktivitas-sapi-perah-dan-produksi-susu-nasional
+- Farm-specific data still needed: lactation stage and days in milk, breed, milk yield and fat/protein grade, feed dry-matter intake/ration price, replacement/calf cost, veterinary/breeding, cooling/electricity, labor, rejected milk, manure revenue and cooperative payment deductions.
+
+### Bandeng — operator cost and trader-stage evidence in a KKP operational report
+A KKP Directorate of Logistics performance report records a milkfish grower case with around two permanent workers plus six seasonal harvest workers; operational costs per cycle included seed, fuel, vitamins, urea fertilizer for natural feed, permanent and harvest labor, and netting rentals. The reported output was 4 tonnes/cycle sold into Gresik and Lamongan at Rp18,000/kg for size 4–6 fish/kg; the report mentions a Rp1,000–2,000/kg net margin between collector and grower. This is a named operational case in a government performance report, not a national farmgate average; the cycle length, pond area, and complete capex/land ledger must be recovered from the source before computing comparable profitability. Source: https://www.kkp.go.id/storage/AkuntabilitasKinerja/3266/document-akuntabilitas-kinerja-686b228529047LKj%20Ditlog%20TW%20III%20tahun%202024%20Review_Kirim.pdf
+
+### Data-quality conclusion for this tranche
+- The soybean model is a supervised 2021 production package; the current soybean price quote is a different period/source. Do not combine them as a same-period observed margin.
+- Cassava's realized price depends on factory deductions; preserve the deduction rate and price basis.
+- Red-ginger profit arithmetic is provisional because not all costs are specified and a second PDF's table extraction is garbled.
+- Milkfish operator costs are partial and need the full report context before any unit-economics calculation.
+- No commodity is declared fully economics-verified by this tranche; no game parameter, recipe, yield or margin was changed.
