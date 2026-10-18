@@ -322,3 +322,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Follow-up validation on 2026-10-17: corrected the new household inventory test to call the real `buyLivingItem('rice')` path, including stock addition, then consumption. Updated `tests/double_entry_transactions.test.js` to expect food purchases to debit Persediaan Rumah Tangga (consumption is tested separately).
 - Rechecked syntax parsing for `js/economy.js`, `js/day.js`, `js/akuntansi.js`, and the three relevant test files. Isolated V8 scenarios passed for purchase/consumption, balanced noncash posting, cash reconciliation, and legacy stock period consumption.
 - GitHub reported no commit status checks and no workflow runs for the checkpoint commit; `.github/workflows` was not found at the feature branch. These checks are not substitutes for running the Node test files in a repository checkout. Browser E2E remains unrun.
+
+
+## Continuation checkpoint — full standalone Node regression inventory wired into CI (2026-10-18)
+
+- Expanded `.github/workflows/targeted-regression.yml` to execute all 15 currently present standalone `tests/*.test.js` scripts under Node.js 22, including commodity transformation/tier logic, coconut benchmark invariants, market-chain contracts, official economic-data provenance, unit economics, and deterministic 365-day world simulation in addition to the 7 previously targeted accounting/finance/payroll/harvest tests.
+- Workflow commit: `905cea2f92e76eef1d09c80a792f4d4fddc65861`. Expanded suite status is **pending actual GitHub Actions result**; the earlier success run `39031115000` covered only 7 scripts and must not be represented as validation of all 15.
+- No runtime source, owner-validated coconut values, or `main` branch changed. Browser E2E remains unrun.
