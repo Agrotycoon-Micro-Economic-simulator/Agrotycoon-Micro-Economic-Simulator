@@ -478,3 +478,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Latest workflow run `39137673529` failed at the new overpayment browser assertion: `kredit.html` had no `#msg` element and did not include the shared UI helper, so the finance module's returned validation message was never rendered. Loan validation itself returns the expected invalid-payment message.
 - Added an accessible status toast and page-local `msg()` helper to `kredit.html`; fix commit `584ab9f977316610810d9812c34221733e9f7776`. Wait for a fresh Actions run before marking the test or UI fix successful.
 - No owner-validated coconut parameters or `main` changes.
+
+
+## Latest continuation checkpoint — credit feedback UI fix and all current tests passed (2026-10-18)
+
+- GitHub Actions [run 39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) succeeded on commit `584ab9f977316610810d9812c34221733e9f7776`. All 15 standalone Node tests and five Chromium browser suites passed.
+- Fixed a real feedback gap in `kredit.html`: the finance module rejected invalid overpayment and returned a message, but the page had no `#msg` element or global `msg()` helper, so users could not see the result. Added accessible status toast markup/styles and a local helper. Browser E2E now verifies rejected overpayment leaves active loan/balance/ledger unchanged, then confirms partial and final repayments work.
+- Current browser coverage: all 10 hamburger-linked pages start without uncaught exceptions; harvest/sale/day/accounting flow; employee hire, payroll, loan origination, invalid overpayment, partial/full repayment; one representative legacy-save migration; malformed-save recovery. This does not yet prove every gameplay feature, all historic save versions, storage quota failures, or accessibility conformance.
+- `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
