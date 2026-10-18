@@ -111,3 +111,35 @@ Status definitions:
 3. Use direct operator/farmer/trader evidence where published or provided. Do not claim a direct interview occurred when only a government report quotes an operator.
 4. Source observation does not mean the economic scenario is verified. Preserve original period and geography; do not silently update historical prices to current.
 5. Never copy the blueprint's illustrative profits into the real-data registry. Keep them as game design candidates until all required inputs reconcile.
+
+
+## New source extraction — January 2026 producer-price snapshot (checked 2026-10-19)
+
+The Bapanas dataset page currently exposes January 2026 observations alongside historical monthly data. The following are *national producer-level average observations*, not individual invoices and not Tier 2/retail prices:
+
+| Commodity / exact label | Period | Published value | Unit / interpretation | Evidence limit |
+|---|---|---:|---|---|
+| GKP Tingkat Petani | Jan 2026 | 6,884 | Rp/kg, harvested dry paddy (GKP) at farmer level | Not milled rice; moisture/grade detail must be preserved |
+| GKG Tingkat Penggilingan | Jan 2026 | 7,980 | Rp/kg, dry paddy at mill | Different chain stage from farmgate GKP |
+| Beras Medium Tk. Penggilingan | Jan 2026 | 13,012 | Rp/kg, medium rice at mill | Not consumer retail price |
+| Beras Premium Tk. Penggilingan | Jan 2026 | 14,370 | Rp/kg, premium rice at mill | Not consumer retail price |
+| Jagung Pipilan Kering Tk. Petani | Jan 2026 | 5,810 | Rp/kg, dry shelled maize at farmer level | Moisture basis and local grade still need confirmation |
+| Kedelai Biji Kering Tk. Petani | Jan 2026 | 9,418 | Rp/kg, dry soybean seed at farmer level | Variety/import origin and quality not specified in this aggregate |
+| Cabai Merah Keriting Tk. Petani | Jan 2026 | 24,578 | Rp/kg, curly red chili at farmer level | Does not substitute for rawit chili |
+| Cabai Merah Besar Tk. Petani | Jan 2026 | 21,445 | Rp/kg, large red chili at farmer level | Separate cultivar/category from curly chili |
+| Cabai Rawit Merah Tk. Petani | Jan 2026 | 34,122 | Rp/kg, red bird's-eye chili at farmer level | National average does not capture local season/grade |
+| Bawang Merah Tk. Petani | Jan 2026 | 23,915 | Rp/kg, shallot at farmer level | Local variety, size and curing state remain open |
+| Sapi Hidup | Jan 2026 | 52,883 | Rp/kg live weight | Must not be compared directly with dressed-beef Rp/kg |
+| Ayam Ras | Jan 2026 | 22,971 | Rp/kg live weight | Published dataset's displayed unit metadata is inconsistent in some table views; verify underlying download before importing into a registry |
+| Telur Ayam Ras | Jan 2026 | 26,027 | Rp/kg eggs | Farm-gate grade/packaging and farm cost remain unknown |
+
+Source: Bapanas, *Rata-rata Harga Pangan Bulanan Tingkat Produsen Nasional*, current dataset page and published table. Page metadata describes a representative selected-respondent national average and monthly update; do not label it as a direct farmer invoice: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional
+
+### Additional livestock and input source confirmed
+
+- BPS, *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025*, released 24 April 2026, reports monthly rural producer prices across 38 provinces. This is a separate source family for livestock and fisheries; extract commodity-specific tables with species, product stage, province, month and unit intact before assigning values: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html
+- Kementan SPORA price bulletin (6 March 2026): BR1 Rp8,010/kg (33 feed mills), BR0 Rp8,451/kg (30 mills), BR2 Rp7,967/kg (31 mills), layer P3 Rp6,803/kg (32 mills), and layer concentrate KP3 Rp7,735/kg (14 mills). These are reported mill-level averages; farm-delivered price must add or separately source freight, bag size, discount and local availability: https://ditjenpkh.pertanian.go.id/berita/harga-pakan-terpantau-turun-kementan-biaya-produksi-peternak-diharapkan-lebih-efisien
+
+### Status after this extraction
+
+This improves the dated Tier 1 price evidence for paddy, maize, soybean, red chili categories, shallot, cattle, broiler and eggs. It does **not** complete Tier 1 economics: farm yields, inputs, labor, losses, production system and direct operator/trader evidence remain missing for most rows. For the 60-commodity blueprint, do not infer farm profit from these prices; do not move Tier 2/3/4 to final until the corresponding Tier 1 producer scenario is reconciled. The Bapanas poultry unit ambiguity is explicitly flagged for checking against the original downloadable CSV/XLSX before use.
