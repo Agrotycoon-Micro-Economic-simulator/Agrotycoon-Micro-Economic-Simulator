@@ -362,3 +362,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Browser run `39131604320` found `Cannot access 'rupiah' before initialization` on `pasar-komoditas.html`. The page built its chain table using `stageCell()` before the `const rupiah` binding was initialized. Moved the formatter declaration above the first use; fix commit `eec6231783013285feac5e1e266a81f14370a08a`.
 - Multi-page Chromium regression is pending rerun; the earlier run stopped at this first failing route and did not verify subsequent routes. No owner-validated coconut parameters changed; `main` untouched.
+
+
+## Continuation checkpoint — browser CI now covers HTML/CSS edits (2026-10-18; run pending)
+
+- Workflow path filters now include root HTML and `css/**` changes, ensuring page-level fixes trigger regression tests. Workflow commit: `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`.
+- This CI run should verify the `pasar-komoditas.html` temporal-dead-zone fix and all hamburger menu pages with the expanded browser smoke test. Await actual run result; do not assume success. No owner-validated coconut values or `main` changes.
