@@ -204,3 +204,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added official March 2026 HBA coal quality-indexed reference prices; January 2026 nickel HMA benchmark with explicit warning that it is metal benchmark, not nickel-ore HPM; September 2026 ICP crude-oil benchmark; and LNG/industrial-gas source mapping distinguishing upstream gas, liquefied LNG, plant-gate gas and export/regasified routes.
 - Set explicit blocked/source-needed status for iron ore, gold, bauxite, copper, generic plastics and cement until product form/grade and producer-gate transaction data are located. No mine-gate price or margin was inferred from a metal/energy benchmark.
 - Research-only documentation update; no game values or coconut benchmark changed. Tier 1 remains incomplete for the full 60-commodity blueprint; all mining/manufacturing rows need product-node definitions, quality basis and complete costs before Tier 2/3/4.
+
+
+## Work log update — Bapanas metadata/unit audit (2026-10-19)
+
+- Rechecked the Bapanas producer-price page metadata and visible table. The metadata's unit description for poultry conflicts with the row label/value: chicken is shown as “Rp/Ekor Hidup” (Rp22,971/bird for January 2026), while generic metadata says Rp/kg live weight for cattle/chicken. The chicken observation is quarantined from canonical per-kg use until the original CSV/XLSX schema and calculation are verified.
+- Confirmed that the currently visible series runs through January 2026; do not describe it as October 2026 current price. Documented the visible January 2026 observations and dataset method/validity date in the Tier 1 ledger.
+- No game data changed. Tier 1 remains in progress; continue raw-file validation and source matching.
