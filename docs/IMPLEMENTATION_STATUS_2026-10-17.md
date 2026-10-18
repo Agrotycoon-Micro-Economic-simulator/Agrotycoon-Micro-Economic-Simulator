@@ -356,3 +356,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Expanded `tests/browser_smoke.test.js` to visit every link in the main hamburger navigation, asserting successful HTTP responses and no uncaught browser exceptions for each route. Test commit: `2dba8ffd06ab67afd56e4c8152b3a1a132a3154d`.
 - This extension is pending a fresh Actions run; the prior successful browser run covered only the homepage/onboarding/save-load scenario. Runtime game code and owner-validated coconut parameters remain unchanged; `main` remains untouched.
+
+
+## Continuation checkpoint — market page formatter initialization fixed (2026-10-18; browser recheck pending)
+
+- Browser run `39131604320` found `Cannot access 'rupiah' before initialization` on `pasar-komoditas.html`. The page built its chain table using `stageCell()` before the `const rupiah` binding was initialized. Moved the formatter declaration above the first use; fix commit `eec6231783013285feac5e1e266a81f14370a08a`.
+- Multi-page Chromium regression is pending rerun; the earlier run stopped at this first failing route and did not verify subsequent routes. No owner-validated coconut parameters changed; `main` untouched.
