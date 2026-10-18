@@ -211,3 +211,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Rechecked the Bapanas producer-price page metadata and visible table. The metadata's unit description for poultry conflicts with the row label/value: chicken is shown as “Rp/Ekor Hidup” (Rp22,971/bird for January 2026), while generic metadata says Rp/kg live weight for cattle/chicken. The chicken observation is quarantined from canonical per-kg use until the original CSV/XLSX schema and calculation are verified.
 - Confirmed that the currently visible series runs through January 2026; do not describe it as October 2026 current price. Documented the visible January 2026 observations and dataset method/validity date in the Tier 1 ledger.
 - No game data changed. Tier 1 remains in progress; continue raw-file validation and source matching.
+
+
+## Work log update — vaname shrimp farm variation and downside evidence (2026-10-19)
+
+- Added three KKP-linked sources for vaname grow-out: a Cianjur farm observed in 2025 (99% survival, FCR 1.53; full economics still to extract), a Bangka Selatan farm cycle reporting loss/R/C 0.65 with disease, water-quality and SOP issues, and a West Sumatra company-scale financial abstract whose periods/scales/totals need reconciliation.
+- Key design constraint: shrimp economics must include biosecurity, water quality, disease/mortality, aeration, FCR, seed quality and financing; a high selling price does not guarantee a positive cycle. Do not average success and failure cases or turn abstracts into a universal margin.
+- No game parameters changed. Tier 1 remains incomplete for the 60-commodity blueprint.
