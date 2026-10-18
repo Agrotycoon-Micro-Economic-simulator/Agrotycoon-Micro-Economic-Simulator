@@ -59,3 +59,4 @@ jobs:
           node tests/world_simulation.test.js
           node tests/browser_smoke.test.js
           node tests/gameplay_e2e.test.js
+          node tests/finance_payroll_e2e.test.js
