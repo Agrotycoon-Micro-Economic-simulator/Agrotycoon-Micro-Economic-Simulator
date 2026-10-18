@@ -368,3 +368,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Workflow path filters now include root HTML and `css/**` changes, ensuring page-level fixes trigger regression tests. Workflow commit: `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`.
 - This CI run should verify the `pasar-komoditas.html` temporal-dead-zone fix and all hamburger menu pages with the expanded browser smoke test. Await actual run result; do not assume success. No owner-validated coconut values or `main` changes.
+
+
+## Latest continuation checkpoint — all menu pages and 15 Node regressions pass (2026-10-18)
+
+- GitHub Actions run [39131731020](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131731020) succeeded on workflow commit `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`. All 15 standalone Node tests passed; Chromium browser smoke passed homepage/onboarding/save-load plus all 10 hamburger-linked pages with HTTP 200 and no uncaught browser exceptions.
+- The multi-page audit identified a temporal-dead-zone bug in `pasar-komoditas.html` (`rupiah` used before its `const` initialization); formatter initialization order was corrected and the rerun passed. CI path filters now include root HTML and `css/**` changes.
+- Browser smoke is not yet a full gameplay E2E suite: harvesting, sales, day changes, loan/payroll interactions, and save migration still need dedicated scenarios. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut data remains unchanged.
