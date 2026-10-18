@@ -495,3 +495,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Initial source map: BPS producer prices (37 provinces, DKI excluded); Bapanas monthly producer prices; Kementan SPORA feed price series; Kementan Hortikultura report with a local chili-farmer cost/price quote. Details/limitations and URLs are in the research program. These sources do not yet constitute a complete 60-commodity dataset.
 - No game price, cost, yield, recipe, margin, coconut benchmark or runtime source changed. Current test baseline remains successful Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373) (15 Node tests + five Chromium suites) on `584ab9f...`. `main` remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
 - Next work item: Tier 1 evidence collection for all 60 commodities; do not publish profit values until production inputs, yields, losses, output prices and relevant infrastructure costs are source-supported and reconciled.
+
+
+## Tier 1 research ledger update (2026-10-18; incomplete by design)
+
+- Added `docs/REAL_COMMODITY_TIER1_RESEARCH.md` (commit `699ceb4f2d3301c21c69517574d7010c0ee1b52c`) with a 60-row matrix of source status and missing technical/economic evidence. It distinguishes observed producer prices from complete cost/yield/profitability validation.
+- Evidence collected so far includes a local Kementan-reported curly-chili farmer case, selected monthly Bapanas producer prices, BPS's 2025 producer-price publication coverage (37 provinces, DKI excluded), and Kementan SPORA feed-price data. Exact date, geography, product form, market stage and unit are preserved; historical observations are not current-price claims.
+- Tier 1 for all 60 commodities remains **in progress**; this is not a final dataset. Missing data include many producer transaction prices, crop/farm/aquaculture yields, feed/FCR, fertilizer and energy usage, housing/cold-chain/pond/plant/mine infrastructure, mortality/losses and labor/capital costs. No commodity game parameter changed; do not start final Tier 2/3/4 numbers before Tier 1 evidence is reconciled.
