@@ -444,3 +444,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added `tests/corrupt_save_recovery_e2e.test.js` for malformed JSON recovery and stable reload. Inspection found `loadSaved()` reset state in memory on parse failure but did not replace the corrupt localStorage value. Updated `js/state.js` catch handling to ensure migration fields and persist the fresh default state (commit `eb6b4ea67e7342773bd8e98872cab41af6e52629`). Added this browser test to CI (workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`).
 - New changes await Actions validation. The preceding 15 Node tests and four browser suites passed in [run 39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39133117116), before these additions.
 - No owner-validated coconut values changed; `main` remains untouched.
+
+
+## Latest continuation checkpoint — 15 Node tests + five browser suites passing (2026-10-18)
+
+- GitHub Actions run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) succeeded on workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`. All 15 standalone Node tests passed, along with five Chromium suites: all-menu onboarding smoke, harvest/sale/day/accounting, employee/payroll/partial-and-full loan repayment, representative v12 migration, and corrupt-save recovery.
+- The malformed-save test exposed that the recovery catch replaced in-memory state but left malformed JSON in localStorage. `js/state.js` now ensures migration-managed state and persists the fresh default save after parse failure. Browser test confirms valid schema-v15 state, default cash/orchard/onboarding, and a stable subsequent reload.
+- Current feature branch HEAD: `0737a982b56aa4b3e5d7a746c76a9ee6793d200f`; `main` remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut data unchanged.
+- Remaining gaps: malformed/old save variants beyond the tested examples, localStorage quota/write failures, and complete end-to-end exploration of all economic/gameplay features. Browser tests do not constitute a full playthrough audit.
