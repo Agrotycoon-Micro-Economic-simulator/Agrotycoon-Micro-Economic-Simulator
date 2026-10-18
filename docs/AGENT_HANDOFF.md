@@ -530,3 +530,13 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Updated `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` with this evidence and caveats in commit `c7cf64bb3950c40e5b0aa0e6d21593f22261e87d`. Sources are contextual/historical; no current universal prices or net-profit claims inferred. No game values changed.
 - Technical baseline still latest confirmed full run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373), 15 Node tests + five Chromium suites passed. Research-only changes do not alter runtime. `main` unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
 - Tier 1 across 60 commodities is still in progress; proceed by building commodity-level evidence, not by filling gaps with assumptions. Tier 2/3/4 remain sequenced after Tier 1 reconciliation.
+
+
+## 2026-10-19 — Tier 1 research tranche 2 recorded
+
+- Added a new source-backed research tranche to `docs/REAL_COMMODITY_TIER1_RESEARCH.md` in commit `3fe0e54909ac83cacbcd482c6f0b203dee8f7b1c`; updated the research program log in `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` in commit `720681b2eb7a85e4e2696c9c801819986b7d45ea`.
+- Added separate evidence notes for rice costs (two non-comparable budgets), a Kementan-quoted tomato grower, broiler DOC stage-specific reference prices, phase-specific feed-mill prices and a layer farm-size context, catfish operator testimony/technical study/biofloc case, tilapia traditional-pond operator/biofloc case, coffee annual averages and a producer cooperative post-harvest case, and oil-palm TBS price-source context.
+- Explicit caveats documented: source years, place, stage, production system, unit and exclusions; feed mill price != farm-delivered price; cherry != green bean; earthen pond != biofloc; gross revenue less partial inputs != audited net profit. No missing value was filled by assumption.
+- Tier 1 is still incomplete across the 60-commodity master blueprint. No game parameters, recipes, margins, coconut owner benchmark, or runtime code changed. main remains unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+- Latest technical baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373), 15 Node regression tests + five Chromium browser suites passed. These research-only documentation commits do not change runtime.
+- Next: capture stable numeric TBS rows for a chosen province/period; verify downloadable Bapanas/BPS original tables and product units; extend direct/operator evidence for the remaining unresearched Tier 1 rows. Do not start Tier 2/3/4 final values before Tier 1 evidence is reconciled.
