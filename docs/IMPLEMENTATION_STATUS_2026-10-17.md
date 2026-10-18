@@ -452,3 +452,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - The malformed-save test exposed that the recovery catch replaced in-memory state but left malformed JSON in localStorage. `js/state.js` now ensures migration-managed state and persists the fresh default save after parse failure. Browser test confirms valid schema-v15 state, default cash/orchard/onboarding, and a stable subsequent reload.
 - Current feature branch HEAD: `0737a982b56aa4b3e5d7a746c76a9ee6793d200f`; `main` remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut data unchanged.
 - Remaining gaps: malformed/old save variants beyond the tested examples, localStorage quota/write failures, and complete end-to-end exploration of all economic/gameplay features. Browser tests do not constitute a full playthrough audit.
+
+
+## Continuation checkpoint — invalid loan overpayment UI test added (2026-10-18; CI pending)
+
+- Extended the credit browser E2E to submit an overpayment (obligation + Rp1) through the actual prompt. It must be rejected with an alert, leave the loan active with unchanged principal/interest, and create no repayment ledger entry. The existing scenario then continues through partial and final repayment. Test commit `6adb3c87a9e053965ea5b6ea3bf5108934080424`.
+- Await a fresh Actions result; prior suite run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) passed before this invalid-input scenario was added.
+- Runtime game code and owner-validated coconut values remain unchanged; `main` untouched.
