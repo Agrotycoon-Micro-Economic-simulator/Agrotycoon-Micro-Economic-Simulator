@@ -83,13 +83,12 @@ async function main() {
     const initialDue = loan.principal + loan.interestDue;
     page.once("dialog", async dialog => {
       assert.equal(dialog.type(), "prompt");
-      page.once("dialog", async alertDialog => {
-        assert.equal(alertDialog.type(), "alert", "invalid overpayment is rejected with a user-facing message");
-        await alertDialog.accept();
-      });
       await dialog.accept(String(initialDue + 1));
     });
     await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
+    await page.locator("#msg").waitFor({ state: "visible" });
+    assert.match(await page.locator("#msg").innerText(), /Jumlah pembayaran tidak valid/,
+      "invalid overpayment is rejected with a user-facing toast");
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
     let repaid = saved.finance.loans.find(item => item.id === loan.id);
     assert.equal(repaid.status, "active", "invalid overpayment leaves loan active");
