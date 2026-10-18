@@ -459,3 +459,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Extended the credit browser E2E to submit an overpayment (obligation + Rp1) through the actual prompt. It must be rejected with an alert, leave the loan active with unchanged principal/interest, and create no repayment ledger entry. The existing scenario then continues through partial and final repayment. Test commit `6adb3c87a9e053965ea5b6ea3bf5108934080424`.
 - Await a fresh Actions result; prior suite run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) passed before this invalid-input scenario was added.
 - Runtime game code and owner-validated coconut values remain unchanged; `main` untouched.
+
+
+## Browser-test diagnostic — dialog event sequencing fix pending CI (2026-10-18)
+
+- Run [39137517616](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137517616) failed at the new invalid-overpayment test. Both one-time dialog handlers were attached before the click, so both received the same initial prompt; the second handler expected an alert.
+- Updated the test to attach the alert handler inside the prompt handler before accepting the prompt. Fix commit `6e1f012d029a6b0ac73e6b24fe7db40769fbac34`; await a new Actions result. No runtime code changed.
