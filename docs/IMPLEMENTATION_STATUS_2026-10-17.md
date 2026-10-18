@@ -410,3 +410,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - GitHub Actions run [39132843320](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132843320) succeeded on workflow commit `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Full suite: 15 standalone Node tests, 10-menu-page browser smoke, harvest → sale → day transition → accounting E2E, and employee/payroll/loan lifecycle E2E.
 - Payroll/credit browser scenario hired an eligible employee via `assets.html`, processed and verified wage payment on day transition, applied a simulated loan via `kredit.html`, repaid it in full through the UI prompt, and verified status/liability clearing and ledger persistence.
 - Still outstanding: legacy-save migration/recovery E2E. Loan rules are game-only experimental parameters. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Continuation checkpoint — legacy-save migration browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/legacy_save_migration_e2e.test.js`, run after the harvest/accounting and payroll/credit E2Es. It seeds a representative older v12-shaped save missing migration-managed fields, checks preservation of core player identity/cash/day, validates default initialization for newer household/finance/payroll/warung state, and visits game/assets/credit/accounting pages while checking for uncaught exceptions.
+- Test commit `5d2a77707a809440917f8a085a193519fb665848`; workflow commit `e268402b7f4d2bb2d5f852ffc5bde0722757669d`. Await the Actions result before marking it passing. This is not exhaustive coverage of all historic schemas or corrupt-save recovery.
