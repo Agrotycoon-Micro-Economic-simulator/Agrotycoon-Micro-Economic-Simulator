@@ -416,3 +416,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Added `tests/legacy_save_migration_e2e.test.js`, run after the harvest/accounting and payroll/credit E2Es. It seeds a representative older v12-shaped save missing migration-managed fields, checks preservation of core player identity/cash/day, validates default initialization for newer household/finance/payroll/warung state, and visits game/assets/credit/accounting pages while checking for uncaught exceptions.
 - Test commit `5d2a77707a809440917f8a085a193519fb665848`; workflow commit `e268402b7f4d2bb2d5f852ffc5bde0722757669d`. Await the Actions result before marking it passing. This is not exhaustive coverage of all historic schemas or corrupt-save recovery.
+
+
+## Legacy-save migration E2E diagnostic/fix (2026-10-18; rerun pending)
+
+- Run [39132999377](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132999377) failed because the Playwright locator reported its page/context had closed while checking the credit page after sequential navigations. All earlier Node and gameplay E2E checks in that run passed.
+- Changed the migration test to use separate browser pages for assets, credit, and accounting routes, and added explicit response-status/readiness assertions. Test fix commit `05cd03ec988892c1cec911f7ece808cbe72058b0`; fresh CI run required.
