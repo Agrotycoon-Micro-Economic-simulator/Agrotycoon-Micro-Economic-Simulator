@@ -433,3 +433,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Multi-page migration run [39132999377](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132999377) failed when querying the credit page after navigating through multiple routes in one Playwright page; the locator reported that its page/context had closed. The earlier 15 Node tests and three gameplay/browser E2Es passed in that run.
 - Isolated assets, credit, and accounting checks into separate pages within the same browser context, with explicit HTTP status and page readiness assertions. Test fix commit: `05cd03ec988892c1cec911f7ece808cbe72058b0`. Await the next workflow run before marking migration coverage green.
+
+
+## Continuation — legacy-save migration E2E passed (2026-10-18)
+
+- GitHub Actions run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) succeeded on test commit `05cd03ec988892c1cec911f7ece808cbe72058b0`. Logs confirm all 15 standalone Node regressions and all four browser suites passed: menu/onboarding smoke, harvest→sale→day→accounting, payroll/credit lifecycle, and legacy-save migration.
+- Legacy-save test preserved player name, cash and day from a representative v12-shaped save, initialized migration-managed day log/purchase/household/finance/payroll/employee/warung fields, and loaded the game, assets, credit and accounting pages without uncaught exceptions. The route checks use separate Playwright pages to isolate navigation contexts.
+- This is representative backward-compatibility coverage, not exhaustive testing of every historical schema or corrupt-save recovery. No runtime game source or owner-validated coconut data changed; `main` remains untouched.
