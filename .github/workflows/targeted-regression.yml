@@ -30,6 +30,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install Playwright and Chromium for browser smoke test
+        run: |
+          npm init -y
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
       - name: Run all standalone Node regression tests
         run: |
           set -e
@@ -48,3 +53,4 @@ jobs:
           node tests/real_economic_data.test.js
           node tests/unit_economics.test.js
           node tests/world_simulation.test.js
+          node tests/browser_smoke.test.js
