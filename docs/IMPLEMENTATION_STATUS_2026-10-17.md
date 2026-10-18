@@ -375,3 +375,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - GitHub Actions run [39131731020](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131731020) succeeded on workflow commit `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`. All 15 standalone Node tests passed; Chromium browser smoke passed homepage/onboarding/save-load plus all 10 hamburger-linked pages with HTTP 200 and no uncaught browser exceptions.
 - The multi-page audit identified a temporal-dead-zone bug in `pasar-komoditas.html` (`rupiah` used before its `const` initialization); formatter initialization order was corrected and the rerun passed. CI path filters now include root HTML and `css/**` changes.
 - Browser smoke is not yet a full gameplay E2E suite: harvesting, sales, day changes, loan/payroll interactions, and save migration still need dedicated scenarios. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut data remains unchanged.
+
+
+## Continuation checkpoint — harvest/sale/day/accounting browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/gameplay_e2e.test.js` and appended it to regression CI. The test uses a seeded v15 save but executes actual UI actions: harvest mature trees, sell the stock to the tengkulak, advance the day through the sleep flow, reload the accounting page, and verify persistent labor/sales ledger rows, daily report, stock depletion, and accounting descriptions.
+- Test commit `7c1d0c8a1c1eaa94f6ca3fd77b07ebdcb4c4213b`; workflow commit `7cd0df9a93980c56355b4f1101977a767ebe8159`. New E2E is pending actual GitHub Actions result; do not assume success.
+- No runtime source or owner-validated coconut values changed. `main` remains untouched.
