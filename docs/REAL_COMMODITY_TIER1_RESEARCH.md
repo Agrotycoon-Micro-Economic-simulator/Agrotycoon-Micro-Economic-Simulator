@@ -143,3 +143,34 @@ Source: Bapanas, *Rata-rata Harga Pangan Bulanan Tingkat Produsen Nasional*, cur
 ### Status after this extraction
 
 This improves the dated Tier 1 price evidence for paddy, maize, soybean, red chili categories, shallot, cattle, broiler and eggs. It does **not** complete Tier 1 economics: farm yields, inputs, labor, losses, production system and direct operator/trader evidence remain missing for most rows. For the 60-commodity blueprint, do not infer farm profit from these prices; do not move Tier 2/3/4 to final until the corresponding Tier 1 producer scenario is reconciled. The Bapanas poultry unit ambiguity is explicitly flagged for checking against the original downloadable CSV/XLSX before use.
+
+
+## Direct operator and commodity-specific evidence — horticulture, coffee, aquaculture (checked 2026-10-19)
+
+These sources improve Tier 1 evidence beyond national averages. All observations remain dated and context-specific; they must not be mixed with present-day prices without a fresh quote/series.
+
+### Tomat — named grower cost/yield/sales case
+
+Kementan Directorate General of Horticulture reports Juhara, a vegetable farmer in Pangalengan, Bandung, saying a 1-hectare tomato crop could cost Rp100.8 million, yield 40 tonnes fresh tomato, and at a stated “normal” selling price Rp3,000/kg yield Rp120 million revenue and about Rp19 million profit per season. Arithmetic check: 40,000 kg × Rp3,000 = Rp120,000,000; less Rp100,800,000 = Rp19,200,000 before any cost categories omitted from the report. The report also says a second planting after the first harvest can save certain inputs (mulch, stakes, ties, tools, land preparation labor). Date is historical (roughly 2019-era publication); crop season, detailed cost ledger, grade, buyer transaction and whether land/capital depreciation are included need confirmation. Treat as an operator-reported scenario, not a current baseline.
+
+Source: https://hortikultura.pertanian.go.id/mau-raup-untung-dari-usahatani-tomat-begini-caranya/
+
+### Kopi Robusta/Arabika — farmer group, conversion yield and buyer-stage evidence
+
+Kementan Directorate General of Estate Crops documents the Candi Mulyo farmer group and Heri Tahan Muji. The report says the group initially sold cherries to collectors at Rp5,000/kg for robusta and Rp8,000/kg for arabica (historical, around 2020); later, Wonosari group figures were reported as 4–6 tonnes robusta cherry/ha converted to 700–900 kg green bean/ha, sold to collectors/processor at Rp65,000–70,000/kg. Arabica was reported at 500–650 kg green bean/ha with average price Rp80,000–95,000/kg, in the stated villages at 800–1,000 m elevation. This is valuable because it separates cherry and green-bean stages and includes a conversion yield, but the report does not supply a full input/labor ledger, exact crop year for every price, sample size, moisture standard or transaction receipts. Do not treat these numbers as current universal yield or price.
+
+Source: https://ditjenbun.pertanian.go.id/kementan-dorong-potensi-bisnis-kopi-wonosari-jadikan-desa-wisata-kopi/
+
+### Lele — operator testimony and controlled/technical studies
+
+- KKP profile of Jali / Kelompok Tri Mino in Demak records a local operator/customer comparison: commercial feed stated at a minimum Rp10,500/kg versus locally formulated feed Rp6,500/kg; an interviewed grower reported local-feed FCR up to 1.2. This is historical, site-specific testimony; verify date, current prices, recipe/nutrient quality and survival before game use. Source: https://www.kkp.go.id/djpb/jali-sosok-penggerak-pakan-ikan-mandiri-di-kabupaten-demak65c30075eba47/detail.html
+- KKP aquaculture journal article comparing selected and non-selected African catfish in 50 m² earthen ponds, stocked at 200 fish/m² to around 100 g harvest size, reports selected fish FCR 0.90 ± 0.08 and 68 ± 13 day cycle versus non-selected FCR 1.09 ± 0.01 and 90 ± 12 days; bioeconomic analysis found lower production cost and higher profit for the selected group under that study's design. These are experimental results, not a guarantee for every farm or system. Source: https://jurnal.kkp.go.id/ma/article/view/1205
+- KKP field account of biofloc catfish: 30,000 fingerlings across ten 3-metre round tanks required Rp40.6 million per roughly 3-month cycle for fingerlings, feed, electricity and probiotics. This is a project-specific cost scope; it does not automatically include labor, depreciation, mortality or land. Source: https://kkp.go.id/djpb/jadi-solusi-budidaya-di-lahan-terbatas-kkp-kembangkan-aplikasi-bioflok-di-masyarakat65c3004d0a09e/detail.html
+
+### Sawit/TBS — official province-level administered price data source identified
+
+Kementan's SIPASBUN portal exposes provincial team-set TBS prices by period, including age class, K index, CPO/kernel prices and rendemen. This is the correct official source family for smallholder FFB pricing, but the public landing page is interactive and the current result table did not expose a stable numeric observation in this retrieval. No current TBS value is entered from the empty table. Source: https://sipasbun.ditjenbun.pertanian.go.id/harga-tbs/report-provinsi
+
+### Data-quality and next steps
+
+These findings now provide commodity-specific producer/operator evidence for tomato, coffee and catfish, and an official price route for oil-palm FFB. Remaining gaps include full dated direct quotes/invoices, regional current prices, complete cost ledgers, infrastructure/depreciation, and corroboration for all 60 commodities. Keep each production system separate (earthen pond vs biofloc; cherry vs green bean; single vs repeat tomato planting). No Tier 1 commodity is declared fully economics-verified by these sources alone.
