@@ -343,3 +343,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added `tests/browser_smoke.test.js` with Playwright/Chromium checks for homepage loading, hamburger navigation, onboarding validation/story, initial cash display, persisted onboarding completion and player-name restoration after reload, and uncaught browser exceptions.
 - Workflow now installs Playwright/Chromium and runs browser smoke after all 15 standalone Node tests. Commits: test `5663fc98d670290ef72758a14b62d86dc6277d08`; workflow `4c97501fd54043d129d5093de64e59f86d675f61`. Browser validation remains pending actual GitHub Actions logs.
 - No runtime game source or owner-validated coconut values changed. `main` remains untouched.
+
+
+## Latest continuation checkpoint — 15 Node tests + Chromium smoke test passing (2026-10-18)
+
+- GitHub Actions run [39131485716](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131485716) completed successfully on workflow commit `4c97501fd54043d129d5093de64e59f86d675f61`. Node.js 22 regression scripts (all 15) and `tests/browser_smoke.test.js` both passed.
+- Chromium smoke test exercised initial page load, hamburger navigation open/close, required-name validation, story completion, configured Rp5,000,000 starting cash, save/load restoration after reload, and uncaught browser exception checks.
+- Broader interactive gameplay is not yet validated: harvest/sale/day-change and finance/payroll UI flows still need dedicated browser coverage. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut parameters remain unchanged.
