@@ -347,3 +347,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Expanded workflow run [39131276899](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131276899) completed with **success** on workflow commit `905cea2f92e76eef1d09c80a792f4d4fddc65861`, using a real GitHub checkout and Node.js 22.
 - All 15 scripts under `tests/*.test.js` were executed and passed: accounting ledger, commodity tier chain, commodity transformation, double-entry transactions, harvest, es-kelapa benchmark, finance, household inventory accounting, living stock, market-chain contract, payroll, production tiers, real economic data, unit economics, and world simulation.
 - This is the full currently listed standalone Node test inventory, not browser E2E or full interactive gameplay validation. Browser E2E remains outstanding. No runtime source or owner-validated coconut parameters changed during test-workflow expansion; `main` remains untouched.
+
+
+## Continuation — browser smoke test added; CI result pending (2026-10-18)
+
+- Added `tests/browser_smoke.test.js` using Playwright/Chromium. It exercises homepage response/title, hamburger open and Escape-close behavior, blank-name onboarding validation, story completion, initial cash display, and persisted player-name/save restoration after reload; uncaught browser exceptions fail the test.
+- Updated `.github/workflows/targeted-regression.yml` to install Playwright + Chromium and run this browser smoke test after the 15 standalone Node regression scripts. Workflow/test commits: `5663fc98d670290ef72758a14b62d86dc6277d08` and `4c97501fd54043d129d5093de64e59f86d675f61`.
+- Browser result is pending a real Actions run. Do not treat the test as passing until the run logs confirm it. No runtime game source, coconut benchmark values, or `main` changed.
