@@ -218,3 +218,11 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added three KKP-linked sources for vaname grow-out: a Cianjur farm observed in 2025 (99% survival, FCR 1.53; full economics still to extract), a Bangka Selatan farm cycle reporting loss/R/C 0.65 with disease, water-quality and SOP issues, and a West Sumatra company-scale financial abstract whose periods/scales/totals need reconciliation.
 - Key design constraint: shrimp economics must include biosecurity, water quality, disease/mortality, aeration, FCR, seed quality and financing; a high selling price does not guarantee a positive cycle. Do not average success and failure cases or turn abstracts into a universal margin.
 - No game parameters changed. Tier 1 remains incomplete for the 60-commodity blueprint.
+
+
+## 2026-10-19 research checkpoint — carrots, Cavendish, tuna and goat operator evidence
+
+- Added source-backed notes to `docs/REAL_COMMODITY_TIER1_RESEARCH.md` (ledger update commit recorded in the Git history) for: a Banjarnegara carrot-glut case with farmer-reported prices below production cost; Cavendish yield and sale-price observations from a primary-data farm study (profit figures quarantined due arithmetic inconsistencies); named tuna species landing prices and a separate Biak cooperative first-sale/cold-chain case; and a Pangandaran goat farmer's reported liveweight-price downturn with feed/housing/labor cost pressure.
+- Source links are embedded per commodity in the research ledger. The evidence is deliberately kept as dated/local observations and not merged into a synthetic current price or universal margin.
+- No runtime game code, commodity parameters, recipes, yield/cost/margin assumptions, or owner-locked coconut benchmark changed. Tier 1 for all 60 commodities remains incomplete; Tier 2/3/4 remain gated until Tier 1 is reconciled.
+- Next: audit the original Cavendish study's cost/revenue tables; extract producer costs and cycle data for remaining food, livestock/fisheries, plantation, and mining/energy rows; then proceed through Tier 2 and Tier 3/4 in the controlling blueprint order.
