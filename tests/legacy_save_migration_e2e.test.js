@@ -64,12 +64,22 @@ async function main() {
     assert.equal(saved.warung.autoMode, false, "legacy save receives safe manual-mode default");
     assert.equal(saved.warung.successfulSales, 0, "legacy save receives sales progression default");
 
-    await page.goto(new URL("assets.html", baseUrl).href, { waitUntil: "load" });
-    assert.match(await page.locator("#day").innerText(), /12/, "assets page can read migrated legacy save");
-    await page.goto(new URL("kredit.html", baseUrl).href, { waitUntil: "load" });
-    assert.ok(await page.locator("#credit-summary").innerText().length > 0, "credit page can render migrated legacy save");
-    await page.goto(new URL("akuntansi.html", baseUrl).href, { waitUntil: "load" });
-    assert.match(await page.locator("#acc").innerText(), /Belum ada data sesi ini|Laporan Akuntansi|Neraca Posisi Keuangan/,
+    const assetsPage = await context.newPage();
+    assetsPage.on("pageerror", e => pageErrors.push(`/assets.html: ${e.message}`));
+    const assetsResponse = await assetsPage.goto(new URL("assets.html", baseUrl).href, { waitUntil: "load" });
+    assert.equal(assetsResponse.status(), 200, "assets page serves successfully");
+    assert.match(await assetsPage.locator("#day").innerText(), /12/, "assets page can read migrated legacy save");
+    const creditPage = await context.newPage();
+    creditPage.on("pageerror", e => pageErrors.push(`/kredit.html: ${e.message}`));
+    const creditResponse = await creditPage.goto(new URL("kredit.html", baseUrl).href, { waitUntil: "load" });
+    assert.equal(creditResponse.status(), 200, "credit page serves successfully");
+    await creditPage.locator("#credit-summary").waitFor({ state: "visible" });
+    assert.ok((await creditPage.locator("#credit-summary").innerText()).length > 0, "credit page can render migrated legacy save");
+    const accountingPage = await context.newPage();
+    accountingPage.on("pageerror", e => pageErrors.push(`/akuntansi.html: ${e.message}`));
+    const accountingResponse = await accountingPage.goto(new URL("akuntansi.html", baseUrl).href, { waitUntil: "load" });
+    assert.equal(accountingResponse.status(), 200, "accounting page serves successfully");
+    assert.match(await accountingPage.locator("#acc").innerText(), /Belum ada data sesi ini|Laporan Akuntansi|Neraca Posisi Keuangan/,
       "accounting page handles legacy save without an uncaught exception");
     assert.ok(pageErrors.length === 0, `no uncaught exceptions while loading legacy save across pages: ${pageErrors.join("; ")}`);
 
