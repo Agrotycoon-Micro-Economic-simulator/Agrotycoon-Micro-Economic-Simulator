@@ -386,3 +386,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - GitHub Actions run [39131731020](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131731020) completed with **success** on commit `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`. All 15 Node regression scripts passed, and Playwright/Chromium passed the home onboarding/save-load checks plus all 10 pages linked in the hamburger menu, each with HTTP 200 and no uncaught page exceptions.
 - The browser audit caught and the fix addressed the `rupiah` temporal-dead-zone error in `pasar-komoditas.html`; the rerun now passes that page and the remaining menu routes. The workflow also now triggers on root HTML and `css/**` changes.
 - This remains route/startup smoke coverage, not full gameplay E2E for harvest, sales, day transitions, loan repayment, payroll UI, or save migration. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Continuation — gameplay E2E added; CI result pending (2026-10-18)
+
+- Added `tests/gameplay_e2e.test.js` and wired it into `.github/workflows/targeted-regression.yml`. It seeds a fresh v15 save and drives the real browser UI through harvest, sale to tengkulak, sleep/day transition, and the accounting page. Assertions cover stock mutation, labor-cost and sale ledger entries, sale quantity, day-2/report persistence, and visible accounting journal descriptions.
+- Test commit: `7c1d0c8a1c1eaa94f6ca3fd77b07ebdcb4c4213b`; workflow commit: `7cd0df9a93980c56355b4f1101977a767ebe8159`. Await Actions logs before claiming this new gameplay E2E passes. The prior 15 Node tests and menu-page smoke passed at run `39131731020`; this is additional coverage.
+- No runtime game code or owner-validated coconut benchmark values changed. `main` remains untouched.
