@@ -414,3 +414,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added `tests/finance_payroll_e2e.test.js` and wired it into CI. It seeds a qualifying level-7 save, hires a farmer through the Assets & Employees UI, advances a game day through the real sleep flow, verifies paid wages and ledger posting, applies a local game loan through `kredit.html`, then fully repays through the UI prompt and verifies loan status/liability clearing plus financing ledger entries.
 - Test commit: `38fd732b5f917feb655c28192a6bd970f66d65d3`; workflow commit: `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Await GitHub Actions before claiming the new E2E passes.
 - This test covers the game’s local simulation only; its interest/eligibility rules are not real lending offers. No runtime source or owner-validated coconut data changed; `main` untouched.
+
+
+## Continuation — payroll and loan browser E2E passed (2026-10-18)
+
+- GitHub Actions run [39132843320](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132843320) completed successfully on workflow commit `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Logs confirm all 15 Node regression scripts, the all-menu smoke test, the harvest/sale/day/accounting E2E, and the new payroll/credit E2E passed.
+- Payroll/credit E2E verified employee hiring through `assets.html`, daily wage payment and ledger posting during real day transition, local loan application through `kredit.html`, full repayment via the browser prompt, paid loan status, zero remaining principal/interest, and financing ledger persistence.
+- Remaining planned browser coverage is legacy-save migration/recovery. These are browser tests against the local game simulation, not a real bank/credit service. No runtime source or owner-validated coconut values changed; `main` remains untouched.
