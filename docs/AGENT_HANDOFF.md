@@ -393,3 +393,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added `tests/gameplay_e2e.test.js` and wired it into `.github/workflows/targeted-regression.yml`. It seeds a fresh v15 save and drives the real browser UI through harvest, sale to tengkulak, sleep/day transition, and the accounting page. Assertions cover stock mutation, labor-cost and sale ledger entries, sale quantity, day-2/report persistence, and visible accounting journal descriptions.
 - Test commit: `7c1d0c8a1c1eaa94f6ca3fd77b07ebdcb4c4213b`; workflow commit: `7cd0df9a93980c56355b4f1101977a767ebe8159`. Await Actions logs before claiming this new gameplay E2E passes. The prior 15 Node tests and menu-page smoke passed at run `39131731020`; this is additional coverage.
 - No runtime game code or owner-validated coconut benchmark values changed. `main` remains untouched.
+
+
+## Gameplay E2E first-run finding and fixture correction (2026-10-18)
+
+- First run [39132561554](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132561554) failed at the accounting-page assertion because the Playwright `addInitScript` re-seeded the fresh save on every navigation, overwriting the persisted gameplay state before `akuntansi.html` loaded. The harvest, sale, day transition, and previous test assertions had progressed before this failure.
+- Corrected the test fixture to seed only when `agrotycoon_save_v15` is absent. Test fix commit: `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`. Await the next Actions run before marking the new E2E passing.
