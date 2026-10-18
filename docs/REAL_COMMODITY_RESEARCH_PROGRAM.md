@@ -160,3 +160,11 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - 2026-10-18: read the repository tier contracts and owner coconut benchmark, inspected the complete 60-commodity owner blueprint, and confirmed that many values in the blueprint are labeled assumptions or lack primary citations. Do not ingest those values as verified real data.
 - 2026-10-18: initial source reconnaissance located BPS producer prices, Bapanas producer price series, Kementan SPORA feed prices and one local horticulture farmer report. This is a source map, not completed per-commodity research.
 - Next: audit and source Tier 1 for commodities 1–60. Store evidence observations in a separate research registry and do not change game prices until each relevant source and calculation is reviewed. Then move to Tier 2, followed by Tier 3/4.
+
+
+## Work log update — dated price extraction and livestock/feed source triangulation (2026-10-19)
+
+- Extracted January 2026 Bapanas producer-price observations for GKP paddy, GKG at mill, medium/premium rice at mill, dry shelled maize, dry soybean, curly/big/bird's-eye red chili, shallot, live cattle and eggs. Values and stage/unit caveats are recorded in `docs/REAL_COMMODITY_TIER1_RESEARCH.md`; these are national averages from selected representative respondents, not direct invoices or full economics.
+- Added the separate BPS 2025 livestock/fisheries producer-price publication (38 provinces, monthly) as a source family, and recorded Kementan's March 2026 sampled feed-mill prices by phase. Feed factory averages are not treated as delivered farm costs.
+- Critical data-quality issue: Bapanas table metadata/labels for poultry may not be consistent across page views. Before importing the broiler observation into a machine-readable registry, verify the original CSV/XLSX field unit and whether the observation is per bird or per kg live weight. No silent unit conversion.
+- Tier 1 remains incomplete across the 60-commodity blueprint. Direct operator/farmer/trader evidence and full input-yield-cost accounting are still missing for many rows. No game balance or owner-locked coconut values changed.
