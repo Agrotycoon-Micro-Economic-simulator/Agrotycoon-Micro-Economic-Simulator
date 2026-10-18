@@ -547,3 +547,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Tier 1 ledger commit `23110bf103e3fbe54a8bf6ba2918783cdca0ea84`; program log commit `a74d1e4643d7ec6a65c9a2133074bbe8715e749b`.
 - Added official HBA coal benchmark values by GAR quality, nickel HMA with a strict warning that it is not nickel-ore HPM, September 2026 ICP crude-oil benchmark, and source mapping distinguishing LNG/export price from regulated plant-gate gas. Iron ore, gold, bauxite, copper, plastics and cement remain blocked/source-needed pending price-stage and product-grade evidence.
 - These are benchmark-source records, not mine-gate invoices or full production economics. No gameplay price/cost/yield/margin, recipe, or coconut benchmark changed. Tier 1 remains incomplete for the 60-commodity blueprint; Tier 2/3/4 not finalized. main unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; latest runtime baseline Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373).
+
+
+## 2026-10-19 research checkpoint — Bapanas poultry unit audit
+
+- Audited visible Bapanas metadata/table mismatch: metadata describes poultry in Rp/kg live weight, while the row is labelled Rp/ekor hidup and gives Rp22,971 per bird for January 2026. Documented in ledger commit `21e05701f505d9e9da4ea902418702d4c98c8e07` and program log commit `d8f72220a9e282b26828987d06d59b7dfeda5290`.
+- The chicken price is quarantined from canonical Rp/kg use pending original downloadable file validation; the page's visible series ends at January 2026. No game values changed. Tier 1 is still incomplete; main and coconut benchmark remain unchanged.
