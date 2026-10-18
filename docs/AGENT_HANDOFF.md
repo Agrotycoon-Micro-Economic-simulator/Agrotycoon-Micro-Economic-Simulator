@@ -464,3 +464,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - The recovery fix in `js/state.js` persists the fresh default state in the `loadSaved()` parse-failure path. This fix and the new test are now covered by the successful workflow run.
 - Current feature branch HEAD: `0737a982b56aa4b3e5d7a746c76a9ee6793d200f`; `main` unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut benchmark values unchanged.
 - Coverage is broader but not exhaustive: corrupt JSON and one representative v12 save are tested; all historic save schemas and quota/storage write failures are not yet covered.
+
+
+## Continuation — credit UI invalid-overpayment guard added to browser E2E (2026-10-18; CI pending)
+
+- Extended `tests/finance_payroll_e2e.test.js` to attempt paying one rupiah above the current obligation before the valid partial/full repayments. The browser test expects a user-facing rejection, unchanged active-loan balance, and no repayment ledger entry for the rejected attempt. Test commit: `6adb3c87a9e053965ea5b6ea3bf5108934080424`.
+- Fresh Actions validation is pending. The preceding full suite, including partial/full repayment and malformed-save recovery, passed in [run 39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970), but it predates this overpayment assertion.
+- No runtime game code, coconut benchmark values, or `main` changed.
