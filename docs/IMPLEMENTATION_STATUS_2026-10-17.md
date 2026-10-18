@@ -429,3 +429,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - GitHub Actions run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) succeeded. It ran all 15 standalone Node tests plus four Chromium suites: onboarding/menu smoke, harvest → tengkulak sale → day transition → accounting, employee/payroll/loan disbursement/full repayment, and legacy-save migration.
 - Legacy-save E2E preserved core identity/cash/day, initialized fields missing from a representative v12-shaped save, and opened game/assets/credit/accounting pages without uncaught exceptions. This is not exhaustive coverage of every old schema or malformed-save recovery.
 - Runtime gameplay code and owner-validated coconut values were unchanged in this testing pass. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+
+
+## Continuation checkpoint — partial repayment added to browser E2E (2026-10-18; CI pending)
+
+- Extended `tests/finance_payroll_e2e.test.js` to cover partial loan repayment before final settlement: outstanding obligation must fall exactly by the partial payment, loan remains active, a dedicated ledger entry is persisted, then final repayment clears principal and interest and marks the loan paid with two repayment entries recorded.
+- Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`. Pending a fresh GitHub Actions result; prior suite run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) passed the previous full-repayment-only scenario.
+- Runtime game source and owner-validated coconut data remain unchanged. `main` remains untouched.
