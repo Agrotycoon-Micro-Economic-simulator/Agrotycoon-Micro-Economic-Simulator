@@ -354,3 +354,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added `tests/browser_smoke.test.js` using Playwright/Chromium. It exercises homepage response/title, hamburger open and Escape-close behavior, blank-name onboarding validation, story completion, initial cash display, and persisted player-name/save restoration after reload; uncaught browser exceptions fail the test.
 - Updated `.github/workflows/targeted-regression.yml` to install Playwright + Chromium and run this browser smoke test after the 15 standalone Node regression scripts. Workflow/test commits: `5663fc98d670290ef72758a14b62d86dc6277d08` and `4c97501fd54043d129d5093de64e59f86d675f61`.
 - Browser result is pending a real Actions run. Do not treat the test as passing until the run logs confirm it. No runtime game source, coconut benchmark values, or `main` changed.
+
+
+## Continuation — browser smoke test passed in GitHub Actions (2026-10-18)
+
+- GitHub Actions run [39131485716](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131485716) completed successfully on workflow commit `4c97501fd54043d129d5093de64e59f86d675f61`. The log confirms the 15 Node regression scripts and `tests/browser_smoke.test.js` all completed successfully under Node.js 22 with Chromium.
+- Browser coverage passed for homepage load/title, hamburger open/Escape-close, blank-name validation, onboarding story completion, initial Rp5,000,000 display, persistence of onboarding completion/player name across reload, and absence of uncaught page exceptions.
+- This is a browser smoke test, not a complete gameplay E2E audit: harvesting, sales, day transitions, payroll/loan flows and all secondary pages still need dedicated browser scenarios. No runtime game source or owner-validated coconut parameters changed; `main` remains untouched.
