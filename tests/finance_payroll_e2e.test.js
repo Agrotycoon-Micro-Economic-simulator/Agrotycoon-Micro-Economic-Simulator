@@ -83,11 +83,11 @@ async function main() {
     const initialDue = loan.principal + loan.interestDue;
     page.once("dialog", async dialog => {
       assert.equal(dialog.type(), "prompt");
+      page.once("dialog", async alertDialog => {
+        assert.equal(alertDialog.type(), "alert", "invalid overpayment is rejected with a user-facing message");
+        await alertDialog.accept();
+      });
       await dialog.accept(String(initialDue + 1));
-    });
-    page.once("dialog", async dialog => {
-      assert.equal(dialog.type(), "alert", "invalid overpayment is rejected with a user-facing message");
-      await dialog.accept();
     });
     await page.getByRole("button", { name: /Bayar pinjaman/ }).click();
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
