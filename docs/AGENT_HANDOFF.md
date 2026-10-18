@@ -490,3 +490,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - The latest gameplay workflow failed in `tests/finance_payroll_e2e.test.js` because `kredit.html` had no `#msg` feedback element and did not load the shared `js/ui.js` helper. `js/finance.js` correctly rejected the overpayment and returned a message, but the page had no visible place to display it. This was a real UI feedback gap, not a loan balance/ledger mutation.
 - Added an accessible `role=status` toast element and a page-local `msg()` helper to `kredit.html`, including auto-hide styling/timing. Fix commit: `584ab9f977316610810d9812c34221733e9f7776`.
 - A fresh Actions run must confirm the toast and all existing tests before this fix is marked passed. `main` and owner-validated coconut values remain unchanged.
+
+
+## Continuation — credit-page feedback fix verified; complete current suite green (2026-10-18)
+
+- GitHub Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) succeeded on runtime/UI fix commit `584ab9f977316610810d9812c34221733e9f7776`. Logs confirm all 15 standalone Node regression tests and all five Chromium browser suites passed.
+- Root cause: `kredit.html` had no toast element and did not load the shared UI script; `js/finance.js` returned the correct validation message but the credit page did not render it. Added an accessible status toast and page-local `msg()` helper. The browser E2E now confirms an overpayment is rejected with visible feedback, outstanding balance and loan status remain unchanged, no repayment ledger row is added, and subsequent partial/final repayments still pass.
+- Current test coverage includes all-menu page startup smoke, harvest → tengkulak sale → day transition → accounting report, payroll/loan application/invalid overpayment/partial and full repayment, representative legacy-save migration, and malformed-save recovery. This is still not a complete all-features playthrough or full browser accessibility audit.
+- Docs are being updated in this checkpoint. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut benchmark values unchanged.
