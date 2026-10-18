@@ -388,3 +388,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - First run [39132561554](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132561554) failed on the accounting-page assertion. Root cause was test setup: Playwright's `addInitScript` re-applied the seeded initial save on each page navigation, overwriting the state created by gameplay. The test now seeds only when the save key is missing. Fix commit: `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`.
 - Rerun required to verify harvest/sale/day/accounting E2E. Do not claim it passes until Actions confirms.
+
+
+## Latest continuation checkpoint — gameplay E2E passed (2026-10-18)
+
+- GitHub Actions run [39132650359](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132650359) succeeded. All 15 Node regressions, the 10-page browser smoke test, and `tests/gameplay_e2e.test.js` passed under Node.js 22 + Chromium.
+- The new browser E2E exercised the actual UI path: harvest mature coconut trees → sell all harvested stock to the tengkulak → run the real sleep/day transition → open `akuntansi.html`. It verified stock depletion, labor expense and sales ledger entries, report/day persistence, and visible accounting journal descriptions.
+- Initial failure was isolated to the test harness reseeding localStorage on every navigation; corrected to seed only once. No runtime source or owner-validated coconut parameters changed; `main` remains untouched.
+- Not yet covered by browser E2E: loan application/repayment, payroll interaction, and legacy-save migration.
