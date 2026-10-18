@@ -477,3 +477,9 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 
 - Run [39137517616](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137517616) failed in `tests/finance_payroll_e2e.test.js` before it could finish the remaining assertions. The first prompt event was received by both `page.once("dialog")` listeners because both were registered before the click; the alert assertion incorrectly saw the prompt.
 - Fixed the test harness by registering the alert listener from inside the prompt handler before accepting the prompt. Test fix commit: `6e1f012d029a6b0ac73e6b24fe7db40769fbac34`. This was a test synchronization defect; no runtime loan logic was changed. Fresh CI validation pending.
+
+
+## Browser-test refinement — assert the game's toast, not a native alert (2026-10-18; CI pending)
+
+- Inspection of `js/ui.js` confirmed the game's `msg()` helper renders feedback in `#msg`; it does not call native `alert()`. Updated the invalid-overpayment browser test to assert the visible toast text `Jumlah pembayaran tidak valid`, while retaining balance/ledger invariants. Test commit: `f2db47ff77d5b6b0babd9d325f57d07632250987`.
+- The previous test run for commit `6e1f012d029a6b0ac73e6b24fe7db40769fbac34` is still pending or may fail because the assertion expected the wrong UI primitive. Await the new run for authoritative status.
