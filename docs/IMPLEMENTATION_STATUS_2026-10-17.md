@@ -422,3 +422,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Run [39132999377](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132999377) failed because the Playwright locator reported its page/context had closed while checking the credit page after sequential navigations. All earlier Node and gameplay E2E checks in that run passed.
 - Changed the migration test to use separate browser pages for assets, credit, and accounting routes, and added explicit response-status/readiness assertions. Test fix commit `05cd03ec988892c1cec911f7ece808cbe72058b0`; fresh CI run required.
+
+
+## Latest continuation checkpoint — all current regression and browser E2E suites pass (2026-10-18)
+
+- GitHub Actions run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) succeeded. It ran all 15 standalone Node tests plus four Chromium suites: onboarding/menu smoke, harvest → tengkulak sale → day transition → accounting, employee/payroll/loan disbursement/full repayment, and legacy-save migration.
+- Legacy-save E2E preserved core identity/cash/day, initialized fields missing from a representative v12-shaped save, and opened game/assets/credit/accounting pages without uncaught exceptions. This is not exhaustive coverage of every old schema or malformed-save recovery.
+- Runtime gameplay code and owner-validated coconut values were unchanged in this testing pass. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
