@@ -333,3 +333,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Follow-up validation on 2026-10-17: corrected the new household inventory test to call the real `buyLivingItem('rice')` path, including stock addition, then consumption. Updated `tests/double_entry_transactions.test.js` to expect food purchases to debit Persediaan Rumah Tangga (consumption is tested separately).
 - Rechecked syntax parsing for `js/economy.js`, `js/day.js`, `js/akuntansi.js`, and the three relevant test files. Isolated V8 scenarios passed for purchase/consumption, balanced noncash posting, cash reconciliation, and legacy stock period consumption.
 - GitHub reported no commit status checks and no workflow runs for the checkpoint commit; `.github/workflows` was not found at the feature branch. These checks are not substitutes for running the Node test files in a repository checkout. Browser E2E remains unrun.
+
+
+## Continuation — broaden regression coverage to every standalone Node test (2026-10-18)
+
+- Expanded `.github/workflows/targeted-regression.yml` from 7 to all 15 currently listed `tests/*.test.js` scripts. Coverage now includes accounting/household stock/finance/payroll/harvest plus commodity transformation and tier chains, owner-validated es-kelapa benchmarks, market-chain contracts, production tiers, official economic-data provenance, unit economics, and 365-day deterministic world simulation.
+- Workflow expansion commit: `905cea2f92e76eef1d09c80a792f4d4fddc65861`. GitHub Actions must finish before the 15-test suite can be marked passing. The prior run `39031115000` validates only the earlier 7 scripts.
+- No game runtime source or owner-validated coconut parameters were changed in this pass. `main` remains untouched. Browser E2E is still a separate outstanding validation.
