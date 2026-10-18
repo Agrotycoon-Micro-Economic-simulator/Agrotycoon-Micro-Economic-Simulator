@@ -471,3 +471,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Source inspection showed `msg()` in `js/ui.js` displays a toast in `#msg` rather than a native browser alert. Updated invalid-overpayment E2E to assert visible `Jumlah pembayaran tidak valid` toast text plus unchanged balance/ledger. Test commit `f2db47ff77d5b6b0babd9d325f57d07632250987`.
 - Await fresh Actions result. Prior dialog-handler attempt was not authoritative for the invalid-input assertion because it expected a native alert that the UI does not emit.
+
+
+## Continuation checkpoint — credit page now renders finance feedback (2026-10-18; CI pending)
+
+- Latest workflow run `39137673529` failed at the new overpayment browser assertion: `kredit.html` had no `#msg` element and did not include the shared UI helper, so the finance module's returned validation message was never rendered. Loan validation itself returns the expected invalid-payment message.
+- Added an accessible status toast and page-local `msg()` helper to `kredit.html`; fix commit `584ab9f977316610810d9812c34221733e9f7776`. Wait for a fresh Actions run before marking the test or UI fix successful.
+- No owner-validated coconut parameters or `main` changes.
