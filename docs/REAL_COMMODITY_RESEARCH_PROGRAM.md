@@ -168,3 +168,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added the separate BPS 2025 livestock/fisheries producer-price publication (38 provinces, monthly) as a source family, and recorded Kementan's March 2026 sampled feed-mill prices by phase. Feed factory averages are not treated as delivered farm costs.
 - Critical data-quality issue: Bapanas table metadata/labels for poultry may not be consistent across page views. Before importing the broiler observation into a machine-readable registry, verify the original CSV/XLSX field unit and whether the observation is per bird or per kg live weight. No silent unit conversion.
 - Tier 1 remains incomplete across the 60-commodity blueprint. Direct operator/farmer/trader evidence and full input-yield-cost accounting are still missing for many rows. No game balance or owner-locked coconut values changed.
+
+
+## Work log update — direct producer/operator and technical evidence (2026-10-19)
+
+- Added commodity-specific source observations to the Tier 1 ledger: named tomato farmer Pangalengan (1 ha, reported Rp100.8m cost, 40t yield, Rp3,000/kg price; historical and incomplete ledger); Candi Mulyo/Wonosari coffee grower-group report (cherry-to-green-bean conversion and separate robusta/arabica price contexts); KKP operator testimony on catfish feed/FCR; KKP technical study for catfish FCR and cycle duration; KKP biofloc project-scale cost scope; and the official SIPASBUN provincial TBS pricing portal.
+- Explicitly preserved context differences and uncertainty: none of these observations is treated as a current universal value. Tomat reported gross revenue/cost arithmetic reconciles to Rp19.2m before unreported costs, approximately the article's Rp19m claim. Coffee cherry and green-bean stages remain distinct. Catfish earthen-pond experimental data are not merged with biofloc commercial-scale costs. TBS portal did not return a stable numeric value, so none was invented.
+- Tier 1 remains incomplete; no final margin or game value changed. Continue source-by-source coverage for all 60 commodities before Tier 2, then Tier 3/4.
