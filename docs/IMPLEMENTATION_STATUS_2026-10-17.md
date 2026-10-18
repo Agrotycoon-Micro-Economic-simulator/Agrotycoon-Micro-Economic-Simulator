@@ -465,3 +465,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Run [39137517616](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137517616) failed at the new invalid-overpayment test. Both one-time dialog handlers were attached before the click, so both received the same initial prompt; the second handler expected an alert.
 - Updated the test to attach the alert handler inside the prompt handler before accepting the prompt. Fix commit `6e1f012d029a6b0ac73e6b24fe7db40769fbac34`; await a new Actions result. No runtime code changed.
+
+
+## Browser-test refinement — credit validation uses in-app toast (2026-10-18; CI pending)
+
+- Source inspection showed `msg()` in `js/ui.js` displays a toast in `#msg` rather than a native browser alert. Updated invalid-overpayment E2E to assert visible `Jumlah pembayaran tidak valid` toast text plus unchanged balance/ledger. Test commit `f2db47ff77d5b6b0babd9d325f57d07632250987`.
+- Await fresh Actions result. Prior dialog-handler attempt was not authoritative for the invalid-input assertion because it expected a native alert that the UI does not emit.
