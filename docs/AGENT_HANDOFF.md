@@ -734,3 +734,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - In `COMMODITY_ECONOMICS`, the legacy kelapa processed node says es-kelapa price Rp13,000 with `inputPerUnit: 1` and `otherCost: 2500`. That conflicts with the owner benchmark (Rp5,000/glass; 4 glasses/coconut; listed non-coconut consumables Rp1,200/glass). The object is not referenced by the reviewed market page/known runtime paths, so it is quarantined as unused legacy configuration; do not wire it into gameplay until corrected and regression-tested. The owner-locked benchmark values were not changed.
 - Current market page renders `MARKET_CHAIN_DATA`, not `COMMODITY_ECONOMICS`; therefore the legacy mismatch should not be reported as an observed live transaction bug without further usage evidence.
 - Next: create a 60-row crosswalk (owner inventory ↔ runtime IDs ↔ research ledger ↔ transformation nodes), identify removed/added/renamed items, and plan backward-compatible save migration before changing the catalogue. Continue Tier 1 research; no game code changed in this tranche.
+
+
+## Audit tranche 13 — owner/runtime 60-item crosswalk created (2026-10-19)
+
+- Added `docs/COMMODITY_INVENTORY_CROSSWALK.md` mapping all 60 owner inventory rows against the 60 runtime IDs in `js/commodities.js`. It distinguishes candidate matches, generic collisions, product-form mismatches and missing nodes, and records migration/evidence acceptance gates.
+- Key issue: runtime has 60 items but not the same 60 as the owner blueprint. One generic runtime kelapa item stands in for owner Kelapa Super and Kelapa Biasa; runtime generic coffee/banana/ginger/pepper do not distinguish owner varieties/forms; owner rows such as porang, guava, green beans, tuna, milkfish, clove, nutmeg, palm sugar and mining/energy nodes are missing or product-form mismatched. Runtime-only extras are explicitly listed.
+- Do not silently replace/rename IDs. Create a canonical crosswalk and backward-compatible local-save migration first; only then reconcile source-backed data and owner-approved scope.
+- Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`. No game code/values changed.
