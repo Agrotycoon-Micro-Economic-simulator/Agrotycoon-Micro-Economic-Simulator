@@ -77,3 +77,12 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Test source covers loan origination, daily interest, repeated same-day accrual, partial/full repayment, legacy debt + payroll liability aggregation, due-day overdue state, and invalid repayment inputs. It was not executed in this audit.
 - Missing edge coverage: tiny-principal rounding; loaded state where `lastAccrualDay === dueDay` but status remains active; save/load migration; and reconciliation of loan/payroll liabilities across ledger, cash flow, P&L and balance sheet. `accrueDay()` returns early for same-day accrual before it re-evaluates overdue status, so test restored inconsistent state explicitly.
 - No runtime code changed. Node and browser tests were not run due lack of a repository checkout/runtime in this pass. Do not claim these tests passed without execution.
+
+
+## 2026-10-19 implementation checkpoint — smart shop copy
+
+- Corrected inaccurate smart-shop explanatory copy in `js/economy.js`: package rounding can slightly exceed the 150%-of-demand stock target; the code does not block a package to zero. No stock logic, price, recipe, or target changed.
+- Added `tests/shop_materials.test.js` for 3 stock/demand cases and 2 copy assertions.
+- Targeted isolated runtime evaluation of exact `materialPlan()` source: 3/3 cases passed; copy/test-source assertions 4/4 passed. Node test file and full regression/browser suites remain unrun.
+- Commits: `f4d7aa17e961874849274a14956b7da2ea92bc66` (code), `9d35d0a34f8b2213a2e4dbf831b7a88e69b45c9d` (test).
+- Next: run the Node test and repository suites in a real checkout, audit finance/accounting cross-reconciliation, continue source-backed commodity evidence. No main-branch changes.
