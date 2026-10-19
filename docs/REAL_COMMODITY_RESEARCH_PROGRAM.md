@@ -263,3 +263,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Owner row #50 now has separate source records for sugar-palm sap farm economics (Riau, 2025 publication), molded-sugar yield (Lampung, 2022), liquid-sugar processor economics (Bulukumba, 2026 publication) and a local UMKM optimization model (Hariang, 2025).
 - Do not pool the studies: raw sap vs molded sugar vs liquid sugar are different nodes. Two arithmetic/scope mismatches are flagged in the ledger; exact package unit, Brix, yield, energy, labor, shelf-life and sale-channel evidence remain required.
 - Row remains cost_yield_partial, not verified for game. No game values changed.
+
+
+## Work log update — clove source triangulation (2026-10-19)
+
+- Added official Kementan Clove Outlook 2025 productivity context, BPS 2025 producer-price source family, 2025 Pasuruan and Gowa farm-economics studies, and an IPB 2025 East Java productivity observation.
+- No single yield/margin adopted: abstract labels and period bases conflict, and East Java productivity differs materially from national estimates. Extract monthly BPS clove prices and full paper tables before clearing Tier 1.
+- Cengkeh status remains cost_yield_partial; no game values changed.
