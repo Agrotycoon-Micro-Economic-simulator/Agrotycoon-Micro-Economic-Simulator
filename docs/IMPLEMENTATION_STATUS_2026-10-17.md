@@ -659,3 +659,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Loan regression tests exist but were not executed in this pass. Additional tests are needed for small-principal rounding, restored overdue state, save/load migration and ledger/cashflow/P&L/balance-sheet reconciliation.
 - Feature branch HEAD at audit start was `ba130853ef1259a1053a4fc081cac54c83647ef1`; main remained `612451c03be59dd8cacd3b13adb8a79a46e51be2`. No merge/rebase or main modification.
 - No game code/values changed; remaining Library/source audit continues.
+
+
+## 2026-10-19 commodity-blueprint data-quality audit
+
+- Completed text/table review of harga komoditi.docx and data peternakan dan pertanian.docx. The 60-item list remains the owner inventory, but its tier-profit figures are not verified real-world economics.
+- Main defects: paddy Tier 3 is contribution before omitted restaurant operating costs yet labeled as net profit; mining rows use an explicit blanket 25% NPM assumption and target-shaped revenues; commodity list mixes farmgate raw goods and manufactured nodes; Tier definitions/counts vary; agriculture/livestock ranges mix periods/scales/units and several profit claims need arithmetic reconciliation.
+- No values imported to runtime registry; no game parameters changed. Keep the owner-locked coconut benchmark intact. Continue per-row source triangulation before Tier 1 clearance.
