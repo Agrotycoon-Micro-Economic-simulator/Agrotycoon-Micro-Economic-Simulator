@@ -538,3 +538,41 @@ Article PDF: https://journal.ipb.ac.id/jmagr/article/download/59276/30467/
 - Tier 1 farm economics are not complete: producer price, mature-tree density, yield per tree/ha/year, productive age, harvest labor, drying/post-harvest loss, inputs, land and fixed-cost allocation still need source-backed reconciliation.
 - Status: **cost_yield_partial / not verified for game**. No runtime values, prices, recipes, yields, or profit parameters changed.
 - Next: extract exact nutmeg price observations from the BPS 2025 publication; extract the official provincial production/area rows and derive productivity only where numerator and mature/harvested-area denominator align; then source farm-level cost studies with matching product form and period.
+
+
+## Pala — official producer-price series extracted (2026-10-19)
+
+### Source and basis
+
+- Kementerian Pertanian, Pusat Data dan Sistem Informasi Pertanian, *Statistik Harga Komoditas Pertanian Tahun 2025*, Table 2.36, page 54, “Perkembangan Rata-rata Harga Produsen Pala menurut Provinsi, 2020–2024”; https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf
+- Unit: Rp/kg; source attribution in the table is BPS. This is an annual historical producer-price series, not a 2026 spot quote. Product form/grade/moisture basis is not fully established by the extracted heading, so price comparability remains a limitation.
+
+### National annual averages
+
+| Year | Producer price (Rp/kg) | Annual change |
+|---|---:|---:|
+| 2020 | 41,569 | — |
+| 2021 | 44,827 | +7.84% calculated |
+| 2022 | 52,093 | +16.21% calculated |
+| 2023 | 53,610 | +2.91% calculated |
+| 2024 | 56,540 | +5.47% reported |
+
+The nominal increase from 2020 to 2024 is approximately 36.0%; it is not inflation-adjusted and does not establish a farm-profit trend.
+
+### Selected 2024 provincial observations (Rp/kg)
+
+- Maluku: 83,071 (+4.88%)
+- Maluku Utara: 81,011 (+8.26%)
+- Papua Barat: 81,988 (-16.71%)
+- Banten: 77,083 (+14.85%)
+- Jawa Tengah: 70,270 (+9.98%)
+- Sumatera Barat: 63,558 (+28.68%)
+- Indonesia average: 56,540 (+5.47%)
+
+Regional differences are material; do not substitute the national average for a producing province without a documented game-design decision. A dash in the source means data unavailable, not zero.
+
+### Reconciliation decision
+
+- This completes the initial extraction of the official historical price series, but does not establish a current 2026 price or complete Tier 1 unit economics.
+- Next: verify product form/grade/moisture; extract provincial production and mature/harvested-area data; and source farm-level costs, yield per tree/ha/year, tree age, harvest labor and post-harvest loss. Extract monthly 2025 BPS observations if monthly resolution is needed.
+- Status remains **cost_yield_partial / not verified for game**. No game values changed.
