@@ -69,3 +69,11 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 6. Implement and test level unlocks for all action paths, not only land acquisition and crop planting.
 7. Add consultant/mentor/government gameplay only after simulation/data validation. Consultant price plan (1–10 Gold/project) and US$5/100 Gold remain design notes; premium Gold wallet and real payments are not active.
 8. No Supabase until frontend workflows and local simulation are complete and tested.
+
+
+## 2026-10-19 branch audit — finance commits after checkpoint
+
+- Reconstructed the five commits after `95e2a3be880ccbf75620e4bd42490489c010cac6`; latest branch HEAD at audit start was `c6c035f86320299629bdc2916f9478ff3c6a770a`. The commits add handoff notes, loan lifecycle tests, legacy debt aggregation and its test, then update the status ledger.
+- Test source covers loan origination, daily interest, repeated same-day accrual, partial/full repayment, legacy debt + payroll liability aggregation, due-day overdue state, and invalid repayment inputs. It was not executed in this audit.
+- Missing edge coverage: tiny-principal rounding; loaded state where `lastAccrualDay === dueDay` but status remains active; save/load migration; and reconciliation of loan/payroll liabilities across ledger, cash flow, P&L and balance sheet. `accrueDay()` returns early for same-day accrual before it re-evaluates overdue status, so test restored inconsistent state explicitly.
+- No runtime code changed. Node and browser tests were not run due lack of a repository checkout/runtime in this pass. Do not claim these tests passed without execution.
