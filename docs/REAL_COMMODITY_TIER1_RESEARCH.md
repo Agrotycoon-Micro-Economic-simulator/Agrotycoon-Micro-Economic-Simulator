@@ -387,3 +387,8 @@ The abstract reports total cost Rp5,485,665, revenue Rp6,665,000, income Rp4,410
 - Do not average these observations. Do not turn a 2020 chain price, a 2024 local budget, a 2025 abstract or a 2026 cooperative case into one synthetic “current” price or margin.
 - Next evidence tasks: inspect the complete source tables for the Ponorogo, Suela and Rembang studies; reconcile the Garut cooperative cashflow/payback figures; identify planting-material type, plant density, cycle, yield basis, labor, fertilizer, loss and buyer quality terms for the chosen production scenario.
 - No game parameters changed.
+
+
+## Data-quality warning — owner blueprint figures (2026-10-19)
+
+The 50/60 commodity tables in harga komoditi.docx are an inventory and legacy design blueprint, not a verified economic dataset. In particular, the mining extension explicitly sets Tier 1 NPM to 25% as a game assumption and adjusts example revenue to reach desired profits. Some agricultural Tier 3 values are gross contribution before omitted operating costs, despite being called net profit. data peternakan dan pertanian.docx contains mixed-period, mixed-scale ranges and unspecific source labels; arithmetic and units require per-source verification. No values from these blueprints may be promoted to real-data registry or live game economics without reconciliation. Preserve the coconut owner-locked benchmark separately.
