@@ -234,3 +234,11 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Reconciliation flags: the studies report substantially different cost/revenue outcomes and are not pooled; one cooperative paper's printed profit equation appears reversed, and its payback/IRR/NPV/initial investment require cash-flow-table reconciliation. Two journal pages were inaccessible in this pass, so their values remain abstract-level only.
 - Porang status remains cost_yield_partial / not verified for game. Next evidence work is to inspect full tables, confirm planting-material type and cycle, yield/area basis, labor and input costs, and buyer grade/price terms.
 - No game values changed. Tier 1 remains incomplete across the 60-item inventory.
+
+
+## Work log update — source-book arithmetic and unit-scope audit (2026-10-19)
+
+- Reviewed extracted text and tables from the full harga komoditi.docx and data peternakan dan pertanian.docx. The owner's 60-item list is retained as the controlling inventory, not as verified data.
+- Flagged the table's claim that all tier values are real-world net profit divided by 1,000: some source calculations are gross contribution before omitted restaurant operating expenses. The mining/energy extension explicitly uses a universal 25% NPM assumption and revenue values adjusted to achieve desired profits; these are game-only hypotheses, not evidence-backed producer economics.
+- Flagged mixed units/scales/years, inconsistent tier counts and mixed product-node types (raw commodities and manufactured products), and animal/crop profit calculations that need source-level arithmetic reconciliation.
+- Do not import these values into runtime registry. No game values changed. Continue evidence-led Tier 1 source work and preserve unknowns as null/blocked.
