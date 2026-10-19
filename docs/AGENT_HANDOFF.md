@@ -6069,3 +6069,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Identified official BPS 2025 producer-price publication and Kementan/provincial plantation-statistics source families. Exact price/production rows have not been extracted, so no numeric model input was added.
 - Pala remains cost_yield_partial / not verified for game; fresh fruit, seed-in-shell, dried kernel and mace must be treated as distinct product forms. No runtime economics changed.
 - Verification this checkpoint: source discovery and documentation review only; no code tests run. Next: extract exact BPS nutmeg price rows and official production/area data, then reconcile with farm cost studies.
+
+
+## Latest continuation checkpoint — pala historical producer prices extracted (2026-10-19)
+
+- On feat/production-tier-taxonomy, extracted official historical nutmeg producer-price data from Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.36, page 54 (BPS-sourced): national average Rp41,569/kg in 2020, Rp44,827 in 2021, Rp52,093 in 2022, Rp53,610 in 2023 and Rp56,540 in 2024.
+- Selected 2024 province values: Maluku Rp83,071/kg; Maluku Utara Rp81,011; Papua Barat Rp81,988; Banten Rp77,083; Jawa Tengah Rp70,270; Sumatera Barat Rp63,558. Regional values must not be silently pooled into a single local price.
+- Historical annual prices are not 2026 spot quotes. Product form/grade, production denominator, yield, input cost and farm profitability remain unresolved. Pala remains cost_yield_partial / not verified for game.
+- No runtime code or game parameters changed; no tests run (research/documentation only). Next: verify product form and extract matching production/area and farm cost/yield evidence.
