@@ -1390,3 +1390,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added multi-source evidence for owner inventory row #50: Riau sap-farm/processed beverage case, Lampung molded-sugar yield study, Bulukumba liquid-sugar processor case and UMKM Hariang optimization model.
 - Arithmetic/unit flags: Riau average sap volume and revenue do not reconcile due to different tenure/sharecropping scopes; 2026 liquid-sugar income differs from revenue minus cost by Rp10,000; molded-sugar yield is not liquid-sugar yield. Product unit/packaging basis needs full-text extraction.
 - Status remains cost_yield_partial, not verified for game. No runtime values changed. Ledger commit: `3365d72a9344a9d4fa0a7a371ced6d938545fb58`.
+
+
+## 2026-10-19 research checkpoint — Cengkeh
+
+- Added Kementan 2025 outlook productivity figures, BPS 2025 producer-price source family and regional studies from Pasuruan/Gowa, plus an IPB East Java productivity observation.
+- Arithmetic/scope gaps: Pasuruan abstract labels revenue/net income inconsistently; Gowa cost period is harvest season but income period annual; IPB East Java yield figures differ sharply from Kementan national estimates. Full tables and units must be reconciled before using a model.
+- Cengkeh remains cost_yield_partial / not verified for game. Exact BPS monthly producer-price rows not yet extracted. No runtime values changed.
+- Ledger commit: `32096a15e787d1cdea57c1e513fd879bf6ac39a1`.
