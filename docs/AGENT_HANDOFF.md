@@ -3014,3 +3014,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Quality flags: Pasuruan abstract labels figures inconsistently, though revenue Rp24,879,452 minus cost Rp3,807,642 equals net Rp21,071,810/ha/year; Gowa compares cost per harvest season with income per year; East Java productivity 2,600 kg/ha and max 16,000 kg/ha/year differs sharply from Kementan national estimate ~400 kg/ha in 2025. Do not pool these until methods/units are reconciled.
 - Cengkeh row status is now cost_yield_partial, not verified for game. Exact monthly BPS producer-price row and full farm ledgers remain pending. No runtime values changed.
 - Ledger commit: `32096a15e787d1cdea57c1e513fd879bf6ac39a1`.
+
+
+## Audit tranche 17 — clove official price series extracted (2026-10-19)
+
+- Extracted the BPS-derived annual producer-price series for dry clove flower from Kementan Pusdatin's *Outlook Cengkeh 2025*, Lampiran 9–10: national 2014 Rp68,529/kg; 2023 Rp99,385/kg; annual rows for 2014–2023 and Maluku/South Sulawesi are recorded in the Tier 1 ledger.
+- The series is annual historical producer price, not a current 2026 quote. Monthly 2025 BPS rows remain unextracted. Provincial volatility is material and must not be pooled into one synthetic farm price.
+- Clove remains cost_yield_partial / not verified for game because regional cost studies have unresolved period/label issues and yield varies by orchard age/location. No runtime values changed.
+- Ledger commit: `a94a7b39b07f5049ff960515932ebbdd7faa156c`.
