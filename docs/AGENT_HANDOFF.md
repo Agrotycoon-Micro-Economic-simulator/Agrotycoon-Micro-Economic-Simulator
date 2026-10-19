@@ -1494,3 +1494,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Fixed on `fix/core-auto-warung-accounting-ui`: set overdue status before the same-day accrual guard and added a regression assertion. Exact-source isolated checks passed 3/3 for loan lifecycle, legacy liabilities and restored due-day state. The Node test file and full regression/browser suites remain unrun.
 - Fix commits: `01b474afcf27ce6c9e7a85a3dbf7fa59ca8073bc` (implementation), `0e9ce330a19a69380d6ac48a60f30967dba915ed` (test), `8d09d12b838f0d37403efb8cbe54a72f6393bc7c` (handoff), `340826235c9260a0de56c0cf082f265dd150e5b2` (status).
 - No `main` changes. Next: full Node/browser validation when a checkout/runtime is available, then accounting cross-reconciliation and continued commodity evidence.
+
+
+## Audit tranche 15 — sugar palm liquid processing evidence (2026-10-19)
+
+- Researched owner inventory row #50, Gula Aren Cair, using three distinct source families: Riau sugar-palm farm/processed beverage case (fieldwork 2023–2024, published 2025), Lampung molded-sugar yield study (2022), and Bulukumba liquid-sugar processing case (published 2026), plus a 2025 UMKM liquid-sugar optimization case. Source links and exact reported units are in `docs/REAL_COMMODITY_TIER1_RESEARCH.md`.
+- Found reconciliation issues: Riau average sap volume × Rp12,000/L does not match the paper's average revenue due to mixed tenure/sharecropping scopes; the 2026 liquid-sugar table's revenue minus cost differs from reported income by Rp10,000 and its R/C rounds differently; molded sugar yield cannot be applied to liquid sugar. No pooling or synthetic margin was created.
+- Row #50 status updated to `cost_yield_partial`, not verified for game. It is a processed product node; raw sap, conversion and packaged liquid sugar must be separate. No runtime values changed.
+- Research ledger commit: `3365d72a9344a9d4fa0a7a371ced6d938545fb58`. Continue with another blocked owner row and source-level validation; do not use blueprint Tier profits.
