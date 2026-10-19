@@ -283,3 +283,9 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Identified BPS 2025 monthly producer-price publication and Kementan/provincial plantation-statistics tables as official source families for nutmeg price and production context.
 - Exact BPS nutmeg price rows and official production/area table values have not yet been extracted. No numerical farmgate price, yield, or cost is asserted from search snippets alone.
 - Product-form reconciliation (fresh fruit vs seed in shell vs dried kernel vs mace) is required before comparing prices or calculating processing yields. Row #42 remains cost_yield_partial; no game values changed.
+
+
+## Work log update — pala official historical producer prices extracted (2026-10-19)
+
+- Extracted Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.36 (BPS-sourced), annual nutmeg producer prices for 2020–2024, in Rp/kg. National averages: 41,569; 44,827; 52,093; 53,610; 56,540. Selected 2024 observations: Maluku 83,071; Maluku Utara 81,011; Papua Barat 81,988; Banten 77,083; Jawa Tengah 70,270; Sumatera Barat 63,558.
+- Historical annual prices are not current 2026 quotes. Product-form/grade basis still requires verification; provincial production, area/yield and cost ledger are incomplete. Row #42 remains cost_yield_partial; no game values changed.
