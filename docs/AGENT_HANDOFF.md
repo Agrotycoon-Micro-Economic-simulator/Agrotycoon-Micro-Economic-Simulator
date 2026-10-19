@@ -717,3 +717,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Preserve original blueprint figures for traceability, and build new source-backed observations with explicit source, date, geography, unit, market stage, method and uncertainty.
 - For every row, separate price_observed, cost_yield_partial, economics_reconciled, verified_for_game, or blocked_missing_evidence. A table entry alone does not clear a row.
 - No runtime game values changed.
+
+
+## Audit tranche 11 — shop UI discrepancy fixed on non-main branch (2026-10-19)
+
+- Screenshot review found stale smart-shop copy claiming packages would be locked to zero when they exceed the 150% stock target. Audited `js/economy.js` on `fix/core-auto-warung-accounting-ui`: algorithm rounds each deficit up to package size, so actual stock may slightly exceed target. Updated explanatory copy only; algorithm and economic values were not changed.
+- Added `tests/shop_materials.test.js` for three demand/stock cases and copy consistency. Targeted isolated runtime evaluation of the exact `materialPlan()` function passed 3/3 cases and copy/source assertions passed 4/4. Node test file and full regression/browser suite remain unrun.
+- Fix-branch commits: code `f4d7aa17e961874849274a14956b7da2ea92bc66`, test `9d35d0a34f8b2213a2e4dbf831b7a88e69b45c9d`, handoff `3428f67e2f55abf93104f250d2e46ff80ed3ae39`, status `250f60fe44fb9464a29c839742c737508b5eab4e`.
+- Continue on non-main only. Next: obtain/run real Node test and full regressions when checkout runtime is available, then close finance/accounting reconciliation gaps and continue 60-item source research. Sim Companies remains parked until direct owner order.
