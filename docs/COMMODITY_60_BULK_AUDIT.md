@@ -126,7 +126,7 @@ This checkpoint adds concrete dated observations from the national producer-pric
 | Red bird's-eye chili, farmer | 2025-06 | Rp37,245 | Rp/kg | #5 Cabai Rawit | National mean; date and market scope remain attached |
 | Shallot, farmer | 2025-06 | Rp24,559 | Rp/kg | #6 Bawang Merah | National mean; grade/region spread not yet extracted |
 | Live cattle | 2025-06 | Rp52,777 | Rp/kg live weight | #27 Sapi Potong | Liveweight, not carcass/meat price |
-| Live broiler chicken | 2025-06 | Rp20,073 | Rp/kg live weight | #26 Ayam Pedaging | The dataset page labels this “Ayam Ras”; confirm unit interpretation in underlying metadata before runtime use |
+| Ayam Ras (live) | 2025-06 | Rp20,073 | Rp/ekor hidup (per bird) | #26 Ayam Pedaging | Bapanas dataset metadata explicitly states per bird; NOT Rp/kg and cannot be compared to liveweight cattle without a bird-weight conversion source |
 | Eggs from layer chickens | 2025-06 | Rp24,595 | Rp/kg | #25 Ayam Petelur | Egg output price, not full layer-farm economics |
 | GKP, farmer level | 2025-11 | Rp6,748 | Rp/kg | #3 Padi | Different period from June observation |
 | Dry shelled maize, farmer | 2025-11 | Rp5,992 | Rp/kg | #4 Jagung | Different period from June observation |
@@ -135,10 +135,10 @@ This checkpoint adds concrete dated observations from the national producer-pric
 | Red bird's-eye chili, farmer | 2025-11 | Rp25,203 | Rp/kg | #5 Cabai Rawit | National mean; do not use as current 2026 price |
 | Shallot, farmer | 2025-11 | Rp24,925 | Rp/kg | #6 Bawang Merah | National mean |
 | Live cattle | 2025-11 | Rp52,496 | Rp/kg live weight | #27 Sapi Potong | Liveweight basis |
-| Live broiler chicken | 2025-11 | Rp22,221 | Rp/kg live weight | #26 Ayam Pedaging | Confirm unit in source metadata |
+| Ayam Ras (live) | 2025-11 | Rp22,221 | Rp/ekor hidup (per bird) | #26 Ayam Pedaging | Bapanas metadata explicitly states per bird; not a per-kg liveweight price |
 | Eggs from layer chickens | 2025-11 | Rp26,185 | Rp/kg | #25 Ayam Petelur | Not net margin or feed-cost evidence |
 
-Source data explicitly identifies national monthly averages and uses Rp/kg, with liveweight units for cattle/chicken where specified. The displayed source page has limited access for its latest 2026 dataset; this checkpoint therefore retains the accessible 2025 observations instead of claiming a complete 2026 series. Source page: https://data.badanpangan.go.id/datasetpublications/no2/rata-rata-harga-pangan-bulanan-produsen-nasional
+Source metadata distinguishes Rp/kg from Rp/kg live weight for cattle and **Rp/ekor hidup (per bird) for Ayam Ras**. This is a critical unit correction: the chicken values must not be described as Rp/kg. The official national dataset page now exposes January 2026 observations as well; values below are national sampled averages, not game prices. Source page: https://data.badanpangan.go.id/datasetpublications/no2/rata-rata-harga-pangan-bulanan-produsen-nasional
 
 ### Shared source coverage refinement
 
@@ -150,8 +150,35 @@ Source data explicitly identifies national monthly averages and uses Rp/kg, with
 ### Bulk progress accounting
 
 - Inventory coverage: 60/60 rows present in the matrix.
-- Concrete dated producer-price examples recorded in this checkpoint: 18 observations (9 June 2025 and 9 November 2025).
-- Rows with directly relevant price observations among the 60: at least 7 (#3, #4, #5, #6, #13, #25, #26, #27; #5 has the rawit series and #27 cattle; total 8 owner rows).
+- Concrete dated producer-price observations recorded: 29 listed entries across June/November 2025 and January 2026 (includes separate rice stages and explicitly marked comparator entries; chicken is per bird, not per kg).
+- Rows with directly relevant price observations among the 60: 8 owner rows (#3, #4, #5, #6, #13, #25, #26, #27). For #26, the observation is per bird and is not comparable to a per-kg liveweight price without further evidence.
 - Rows with fully validated price + cost + yield + loss + fixed-cost model: **0 confirmed by this checkpoint**.
 - Runtime parameter changes: none.
 - Tests: not run; documentation-only update.
+
+
+### Additional national producer-price observations — January 2026
+
+The official Bapanas national dataset page also exposes January 2026. The following are additional exact values visible in the published table; preserve the stated stage and units:
+
+| Commodity / stage | Period | Observation | Unit | Potential owner row(s) | Caveat |
+|---|---|---:|---|---|---|
+| GKP, farmer level | 2026-01 | Rp6,884 | Rp/kg | #3 Padi | GKP, not GKG or milled rice |
+| GKG, mill level | 2026-01 | Rp7,980 | Rp/kg | #3 Padi, downstream comparator | Mill-stage GKG; not farmgate GKP |
+| Medium rice, mill level | 2026-01 | Rp13,012 | Rp/kg | #3 Padi, downstream comparator | Milled rice, different stage and product form |
+| Premium rice, mill level | 2026-01 | Rp14,370 | Rp/kg | #3 Padi, downstream comparator | Milled rice, different stage and product form |
+| Dry shelled maize, farmer | 2026-01 | Rp5,810 | Rp/kg | #4 Jagung | Dry grain, not fresh cob |
+| Dry soybean seed, farmer | 2026-01 | Rp9,418 | Rp/kg | #13 Kedelai | Dry seed basis |
+| Red bird's-eye chili, farmer | 2026-01 | Rp34,122 | Rp/kg | #5 Cabai Rawit | National sampled average; not a local quote |
+| Shallot, farmer | 2026-01 | Rp23,915 | Rp/kg | #6 Bawang Merah | National sampled average |
+| Live cattle | 2026-01 | Rp52,883 | Rp/kg live weight | #27 Sapi Potong | Not carcass/meat price |
+| Ayam Ras (live) | 2026-01 | Rp22,971 | Rp/ekor hidup (per bird) | #26 Ayam Pedaging | Per-bird basis, not per kg; must not convert without matching liveweight data |
+| Layer eggs | 2026-01 | Rp26,027 | Rp/kg | #25 Ayam Petelur | Egg output price only |
+
+Source: Bapanas, *Rata-rata Harga Pangan Bulanan Tingkat Produsen Nasional (Angka Januari 2026)*, https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional. Dataset metadata says the price unit is Rp/kg, except live cattle (Rp/kg live weight) and Ayam Ras (Rp/ekor hidup). The data is sampled national producer price, not universal regional farmgate price or full unit economics.
+
+### Unit-quality correction
+
+- Earlier text in this file described Ayam Ras values Rp20,073 (June 2025) and Rp22,221 (November 2025) as Rp/kg live weight. That was incorrect. The source metadata explicitly defines Ayam Ras as **Rp/ekor hidup**. This correction supersedes those earlier unit labels.
+- As a result, #26 has a dated price observation but does **not** yet have a comparable per-kg price. A conversion would require contemporaneous average liveweight per bird and a matched basis; no such conversion is made here.
+- Bapanas dataset page: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional; provincial series: https://data.badanpangan.go.id/datasetpublications/u7t/rata-rata-harga-pangan-bulanan-produsen-provinsi.
