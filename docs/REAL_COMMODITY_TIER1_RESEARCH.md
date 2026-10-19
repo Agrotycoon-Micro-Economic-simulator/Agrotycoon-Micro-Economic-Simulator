@@ -93,7 +93,7 @@ Status definitions:
 | 47 | Lada Hitam | source-family-found: BPS smallholder plantation prices | Fresh berry vs dried black pepper, blanching/drying yield, labor, moisture and grade |
 | 48 | Karet/Lateks | source-family-found: BPS smallholder plantation prices | Latex vs wet slab vs dry rubber, DRC, tree age, tapping labor, coagulation/drying, transport and quality deductions |
 | 49 | Cokelat Olahan | not a Tier 1 farm commodity; upstream Tier 1 is cocoa | Treat cocoa producer data separately; industrial chocolate requires factory recipe, cocoa-butter/sugar/milk inputs, energy, packaging and yield |
-| 50 | Gula Aren Cair | not-yet-researched at sap producer level | Palm species, sap volume/tree/day, fermentation loss, tapping labor, fuel/energy, concentration yield, packaging and shelf life |
+| 50 | Gula Aren Cair | cost_yield_partial: liquid-sugar processor study and separate sugar-palm sap-farm studies found; unit and arithmetic reconciliation pending | Palm species, sap volume/tree/day, fermentation loss, tapping labor, fuel/energy, concentration yield, packaging and shelf life |
 | 51 | Bijih Besi | blocked_missing_evidence: no mine-gate transaction price/cost record yet | Ore grade, wet/dry ton, mine permit, recovery, overburden, drilling/blasting, diesel/electricity, labor, royalties and transport |
 | 52 | Batu Bara | price-source-found: official quality-indexed HBA benchmark located; not a mine-gate realized price or lifting-cost ledger | Coal grade/GAR, mine permit, stripping ratio, extraction cost, hauling/barge, royalties, moisture and buyer contract |
 | 53 | Emas | blocked_missing_evidence: no mine-gate grade/recovery/cost ledger; spot bullion price is not mine netback | Ore grade, recovery, mining/processing route, energy/reagents, tailings, permits/royalties, refining terms and assay |
@@ -400,3 +400,45 @@ The 50/60 commodity tables in harga komoditi.docx are an inventory and legacy de
 The runtime `COMMODITIES` array in `js/commodities.js` has 60 rows but does not match the owner's 60-row inventory in `harga komoditi.docx`. The runtime list uses one generic kelapa item and includes additional crops/livestock/fish while omitting owner-listed nodes such as porang, Cavendish, tuna/bandeng and mining/energy products. Preserve existing IDs until a canonical crosswalk and backward-compatible save migration are designed.
 
 The legacy `COMMODITY_ECONOMICS.kelapa.processed` entry is also inconsistent with the owner-locked es-kelapa benchmark (Rp13,000 per output unit, 1 coconut per unit, otherCost Rp2,500 versus Rp5,000/glass, 4 glasses/coconut and Rp1,200 listed consumables/glass). The reviewed market page uses `MARKET_CHAIN_DATA`, not this object; do not wire this legacy object into live gameplay until reconciled and tested. No owner-locked values were changed.
+
+
+## Gula aren cair — sap supply and processor evidence (2026-10-19)
+
+### Source 1: Sugar palm farm and processing survey, Riau (published 2025)
+
+Kusumawaty et al., “Analysis of Income and Added Value of Oil Palm and Sugar Palm Diversification in Bandar Sei Kijang District Pelalawan Regency,” Agriekonomika 14(1), 2025. DOI: https://doi.org/10.21107/agriekonomika.v14i1.27151 ; PDF: https://journal.trunojoyo.ac.id/agriekonomika/article/download/27151/pdf
+
+- Fieldwork was September 2023–July 2024, with six farmers in the oil-palm/sugar-palm diversification system and one monoculture sugar-palm farmer; processed-product sales were represented by one seller. This is a local case, not a national estimate.
+- The study reports average sap output 4.67 L/tree/day for genjah sugar palm, an average of six tapped trees, sap selling price Rp12,000/L, total monthly sugar-palm farming cost Rp3,768,531.11, revenue Rp6,427,000, and income Rp2,658,468.89. These are source-reported values for the studied local model.
+- Reconciliation warning: reported average sap output 882.44 L/month × Rp12,000/L would equal Rp10,589,280, not the paper's average revenue Rp6,427,000. The paper averages distinct sharecropping and own-land arrangements (including a 50% share to landowner for sharecroppers), but its average volume and average revenue do not use the same visible weighting. Do not divide or multiply these averages into a synthetic per-tree profit without the underlying respondent-level data and tenure terms.
+- The same paper's downstream drink example is sap coffee/tea, not liquid sugar: sap coffee uses 218 L/month and reports 1,090 glasses/month at Rp10,000/glass; total monthly costs Rp5,253,144.35 and income Rp5,646,855.65. This is adjacent evidence for downstream processing structure, not a recipe or margin for liquid palm sugar.
+
+### Source 2: Molded palm sugar yield study, Lampung (published 2022)
+
+Putri, Indriyanto & Asmarahman, “Produksi Gula Aren Cetak Milik Anggota KTH Harapan Baru I di Kelurahan Batu Putuk, Kota Bandar Lampung,” Makila 16(1), 20–30. DOI: https://doi.org/10.30598/makila.v16i1.5386 ; landing page: https://ojs3.unpatti.ac.id/index.php/makila/article/view/5386
+
+- Observed processing of 46.125 L sap/day (50.737 kg/day) from 16 palm trees, producing an average 6.53 kg molded palm sugar/day; reported sap-to-product yield is 12.57%.
+- This is a 2022 local molded-sugar case, not a liquid-sugar conversion factor. It can inform a separate molded-sugar chain only after method and product moisture basis are checked.
+
+### Source 3: Liquid palm sugar processing group, South Sulawesi (published 2026)
+
+Lestari, Syahidah & Mujetahid, “Added value of palm sugar processing by the Buhung Lali forest farmers group in South Sulawesi, Indonesia,” Asian Journal of Forestry 10(1), r100135, June 2026. DOI: https://doi.org/10.13057/asianjfor/r100135 ; publisher record: https://www.smujo.id/ajf/article/view/25184
+
+The accessible indexed table snippet reports the liquid palm sugar line as 36 L/month, selling price Rp30,000/L, equipment/fixed cost Rp634,583/month, depreciation Rp143,819/month, variable cost Rp252,500/month, total cost Rp887,083/month, revenue Rp1,080,000/month, stated income Rp202,917/month and R/C 1.21. The granulated-sugar line is a different product and must not be substituted for liquid sugar.
+
+- Arithmetic check: Rp1,080,000 revenue minus Rp887,083 total cost = Rp192,917, not the stated Rp202,917; difference Rp10,000. R/C = 1,080,000 / 887,083 ≈ 1.217, which rounds to 1.22 at two decimal places under conventional rounding, not 1.21. Treat the source's reported income/R-C as unverified until the full table is checked.
+- The study is a single forest-farmer group in Bulukumba, not a national benchmark. Its 36 L/month output and Rp30,000/L price should not be generalized across producer groups, packaging sizes, Brix, shelf-life or buyer channel.
+
+### Source 4: Liquid sugar cost case, UMKM Gula Aren Hariang (published 2025)
+
+Firlitha et al., “Optimasi Penjualan Gula Aren di Kabupaten Lebak Menggunakan Metode Simpleks (Studi Kasus UMKM Gula Aren Hariang),” Jurnal Ilmiah Multidisiplin Ilmu 2(4), 2025. DOI: https://doi.org/10.69714/bnfnsy39 ; article: https://journal.smartpublisher.id/index.php/jimi/article/view/881
+
+- The article's accessible text lists liquid palm sugar input allocations 18,000 + 6,000 + 4,000 = Rp28,000/unit and later states HPP Rp28,000 with a stated selling price Rp35,000, giving a nominal Rp7,000/unit difference. However, product unit/packaging basis and the relationship between the table and the optimization coefficients need full-text reconciliation. Treat this as a local enterprise model, not a market-wide price.
+- The article describes limited capital/time/equipment and a gap between demand and production capacity. These are enterprise-specific constraints, not universal yield assumptions.
+
+### Reconciliation decision
+
+- Owner inventory item #50 is a processed product node (“Gula Aren Cair”), not a raw farmgate crop. The upstream raw input is sap from sugar palm; keep sap tapping, liquid sugar conversion and packaged retail liquid sugar as separate nodes.
+- Current evidence is **cost_yield_partial / not verified for game**. It is sufficient to establish plausible unit types and process variables, not a universal Tier 1–4 price/profit schedule.
+- Required before runtime integration: define packaging unit (e.g. ml/bottle or liter), Brix/moisture, raw sap litres per finished litre, cooking energy/time, labor, container/cap, spoilage/fermentation/shelf-life, batch capacity and verified sale channel; reconcile each cited study's arithmetic and local conditions.
+- Do not use the owner blueprint's Tier profits (10,000 / 5,000 / 40,000 Coin) as verified economics. No game values changed.
