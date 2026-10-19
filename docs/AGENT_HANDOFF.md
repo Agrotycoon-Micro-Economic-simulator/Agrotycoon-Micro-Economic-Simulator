@@ -688,3 +688,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Visual audit reinforces the existing priorities: preserve core play loop and reports/accounting; automatic shop unlock must remain tied to three successful sales as the update board says. Do not infer new feature scope from older blueprint screenshots.
 - No code or values changed. Documentation-only checkpoint; no tests run.
 - Remaining Library review: reconcile all screenshots with current HEAD, inspect the separate commodity/agriculture reference documents row by row, and finish source-level evidence for 60 commodities. Sim Companies remains owner-gated until direct instruction.
+
+
+## Audit tranche 10 — fix-branch history reconstructed (2026-10-19)
+
+- Used the GitHub commits endpoint to verify the exact current HEAD of `fix/core-auto-warung-accounting-ui` at audit start (`c6c035f86320299629bdc2916f9478ff3c6a770a)) and enumerate its five commits after `95e2a3be880ccbf75620e4bd42490489c010cac6`: `c275eee165a54704428760c804c3ae562a6cb4d8`, `7106a7e143dfdcca24fa2a175b01281f30c99211`, `88de624b9120b62bb3c31b8d583d5ee7ab64c46c`, `64691151ef52c42e35860db940a6f82af3a2afff`, `c6c035f86320299629bdc2916f9478ff3c6a770a`. Each diff was inspected.
+- Finance tests exist but were not executed during this audit. Gaps include small-principal rounding, restored active loans whose due day is already accrued, save/load migration, and cross-report reconciliation for loan/payroll liabilities. This audit's exact findings are recorded in the fix branch's own handoff and status files.
+- Current feature branch HEAD before this checkpoint was `ba130853ef1259a1053a4fc081cac54c83647ef1); `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2` and was not changed. Branches remain unmerged.
+- No game runtime code or economic values changed. Continue with remaining Library reconciliation and source-backed commodity research before implementation.
