@@ -644,3 +644,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Research ledger updated with four porang sources: 2026 Garut cooperative value-chain case (fieldwork 2024–2025), 2025 Ponorogo abstract, 2024 East Lombok abstract and 2025 Rembang thesis abstract. Source links and evidence limitations are recorded in the ledger.
 - Large variation in cost/revenue and production scales means observations cannot be pooled. A printed profit equation in the Garut paper appears reversed; its cashflow/payback/IRR/NPV also needs reconciliation. Inaccessible landing pages leave two records at abstract-level evidence.
 - Porang remains cost_yield_partial / not verified for game. No runtime parameters changed. Continue Tier 1 research for all 60 commodities.
+
+
+## 2026-10-19 audit tranche 9 — screenshot review
+
+- Visually reviewed all 10 prototype screenshots under `Agrotycoon file blueprint/Contoh game asli`, plus the Sim Companies store screenshot and the Game Update Board. Prototype screenshots show home/onboarding, manual/smart purchases, live warung sales/stock, achievements, daily itemized report and monthly accounting/balance-sheet UI. They are snapshots, not verification of current HEAD.
+- Preserve current update-board scope: stability, shop, accounting/reports and gameplay/visuals; automatic shop unlock after three successful sales. Sim Companies-inspired direction remains strictly owner-gated.
+- No code or values changed; no tests run. Full audit continues with row-level review of commodity/agriculture reference documents and reconciliation against current code.
