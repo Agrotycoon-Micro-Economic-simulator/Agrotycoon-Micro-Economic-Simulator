@@ -348,3 +348,42 @@ This audit is an important ingestion gate: the raw row label takes precedence ov
 - These observations broaden direct/local producer and first-sale evidence but do not complete Tier 1 for all 60 blueprint commodities.
 - No current price is inferred from historical cases; different species, irrigation systems, product grades, dates and market stages are not averaged.
 - No gameplay parameters, production recipes, yields, costs, margins or owner-locked coconut benchmark values were changed. Tier 2/3/4 remain gated until Tier 1 evidence is reconciled.
+
+
+## Porang — triangulated source review update (2026-10-19)
+
+### Source 1: Garut cooperative value-chain case, fieldwork 2024–2025
+
+Kinanti, Yustiana & Esyanti (2026), *Integrating Business Model Canvas and Balanced Scorecard for Porang Tuber Business Development: A Case Study of Koperasi Porang Garut Agro*, Caraka Tani: Journal of Sustainable Agriculture 41(1), 46–65. DOI: https://doi.org/10.20961/carakatani.v41i1.106736 ; PDF: https://jurnal.uns.ac.id/carakatani/article/viewFile/106736/pdf
+
+- Study methods: fieldwork September 2024–June 2025; 10 purposively/snowball-selected respondents (5 farmers, 4 cooperative managers, 1 collector), interviews, field observation, document review and cooperative financial records. This is a small case study, not a national representative series.
+- The paper reports historical industrial prices for porang tubers associated with flour/chips: 2020 Rp15,500/Rp15,000 per kg; 2021 Rp8,500/Rp8,000; 2022 Rp2,500/Rp2,000; 2023 Rp5,500/Rp5,000; 2024 Rp10,500/Rp10,000. Preserve the paper's label and do not silently interpret these as a current farmer-gate price.
+- Its 2020 chain table reports farmer sale Rp12,500/kg with a listed margin Rp9,460.04/kg; collector sale Rp14,000/kg with margin Rp1,128.60/kg; cooperative sale Rp15,250/kg with margin Rp135.39/kg. These are actor-level case values for 2020, not current quotes.
+- Cooperative investment analysis reports NPV Rp1,011,238,818.73 over five years at 10% discount rate, IRR 7.82% against a stated 15% MARR, B/C ratio 1.41, payback 0.84 years, and initial investment over Rp3.6 billion. Because the reported payback and initial-investment/IRR/NPV figures need to be reconciled to the underlying cash-flow table, do not reuse them as a validated investment model without checking the source tables.
+- The paper itself describes supply volatility, limited processing absorption and uneven margins along the chain. It notes tuber prices peaked at Rp13,000/kg in 2020 and fell to Rp1,700/kg in 2022 (cited historical context), and says 2024 harvested volume was estimated at 600,000 tonnes against processing capacity about 160,000 tonnes/year. Treat these as figures reported by the paper with its cited-source lineage, not as independently verified current statistics.
+- Quality note: the PDF's stated profit equation appears printed as I = TC - TR, which reverses the usual profit identity (revenue minus total cost). This may be a typesetting error; it must be checked against the calculations before treating the paper's derived financial outputs as audited.
+
+### Source 2: Ponorogo farm survey (published 2025)
+
+Pratama, Susilowati & Maula, *Analisis Efisiensi Usahatani Porang di Desa Selur Kecamatan Ngrayun Kabupaten Ponorogo*, Jurnal Sosial Ekonomi Pertanian dan Agribisnis. Landing page: https://jim.unisma.ac.id/index.php/SEAGRI/article/view/29840
+
+The indexed abstract reports fixed cost Rp1,507,466.67 per planting season (Rp3,076,462.57/ha), variable cost Rp27,535,136.20 per planting season (Rp56,194,155.57/ha), total cost Rp29,042,602.90 per season (Rp59,270,618.14/ha), production 7,631.1 kg per season (15,573.67 kg/ha), and selling price Rp8,845/kg. The page could not be opened reliably during this pass, so retain these as abstract-level reported values pending extraction of the full paper and clarification of whether “per planting season” and per-hectare scales are consistent.
+
+### Source 3: East Lombok farm survey (2024)
+
+Nabilah & Widiyanti, *Analisis Profitabilitas Usahatani Porang di Kecamatan Suela Kabupaten Lombok Timur*, Jurnal Agrimansion 25(1), published 31 May 2024. DOI: https://doi.org/10.29303/agrimansion.v25i1.1654 ; landing page: https://agrimansion.unram.ac.id/index.php/Agri/article/view/1654
+
+The abstract reports 40 farmer respondents and total production cost Rp20,854,935/ha/season, revenue Rp141,930,515/ha/season, and income Rp121,075,580/ha/season, with a stated profitability of 581%. The landing page returned 403 during this pass; figures remain abstract-level. The very high return and apparent scale differences versus other surveys require full-table review rather than pooling or averaging.
+
+### Source 4: Rembang farm survey (thesis deposited 2025)
+
+Ayuningsih (2025), *Analisis Usahatani Porang di Desa Sendangcoyo Kecamatan Lasem Kabupaten Rembang*, Universitas Muhammadiyah Yogyakarta repository: https://etd.umy.ac.id/id/eprint/51279/
+
+The abstract reports total cost Rp5,485,665, revenue Rp6,665,000, income Rp4,410,388 and profit Rp1,179,335, with R/C ratio 1.21. The relationship among “income”, “profit”, and revenue minus cost is not self-evident from the abstract; the full thesis is required before using the values as a reconciled ledger. Period, land area and production quantity must also be extracted.
+
+### Reconciliation decision
+
+- Porang Tier 1 is **cost_yield_partial / not verified for game**. Evidence now includes multiple local farm/operator studies and a value-chain case, but they vary sharply by location, season, planting material, cultivation model, sample and unit basis.
+- Do not average these observations. Do not turn a 2020 chain price, a 2024 local budget, a 2025 abstract or a 2026 cooperative case into one synthetic “current” price or margin.
+- Next evidence tasks: inspect the complete source tables for the Ponorogo, Suela and Rembang studies; reconcile the Garut cooperative cashflow/payback figures; identify planting-material type, plant density, cycle, yield basis, labor, fertilizer, loss and buyer quality terms for the chosen production scenario.
+- No game parameters changed.
