@@ -242,3 +242,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Flagged the table's claim that all tier values are real-world net profit divided by 1,000: some source calculations are gross contribution before omitted restaurant operating expenses. The mining/energy extension explicitly uses a universal 25% NPM assumption and revenue values adjusted to achieve desired profits; these are game-only hypotheses, not evidence-backed producer economics.
 - Flagged mixed units/scales/years, inconsistent tier counts and mixed product-node types (raw commodities and manufactured products), and animal/crop profit calculations that need source-level arithmetic reconciliation.
 - Do not import these values into runtime registry. No game values changed. Continue evidence-led Tier 1 source work and preserve unknowns as null/blocked.
+
+
+## Work log update — runtime catalogue vs owner inventory crosswalk (2026-10-19)
+
+- Reviewed all 60 entries in `js/commodities.js` and compared against the owner's 60-item blueprint. Lists differ: runtime has generic kelapa plus extra produce/livestock/fish; owner inventory has separate kelapa super/biasa, porang/Cavendish/tuna/bandeng, chocolate/sugar palm and mining/energy nodes. This must be reconciled before claiming all 60 owner commodities are implemented.
+- Do not silently replace commodity IDs because saves/UI/transactions may depend on them. Next deliverable is a crosswalk (owner row, runtime ID, research row, transformation node, evidence status) and backward-compatible save migration plan.
+- Legacy `COMMODITY_ECONOMICS.kelapa.processed` conflicts with owner benchmark (Rp13,000 price, 1 coconut per glass, Rp2,500 other costs vs Rp5,000/glass, 4 glasses/coconut, Rp1,200 listed consumables/glass). It is not used by the reviewed market page/known runtime paths; quarantine until usage is confirmed and regression-tested. No values changed.
