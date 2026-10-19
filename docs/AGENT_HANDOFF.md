@@ -6077,3 +6077,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Selected 2024 province values: Maluku Rp83,071/kg; Maluku Utara Rp81,011; Papua Barat Rp81,988; Banten Rp77,083; Jawa Tengah Rp70,270; Sumatera Barat Rp63,558. Regional values must not be silently pooled into a single local price.
 - Historical annual prices are not 2026 spot quotes. Product form/grade, production denominator, yield, input cost and farm profitability remain unresolved. Pala remains cost_yield_partial / not verified for game.
 - No runtime code or game parameters changed; no tests run (research/documentation only). Next: verify product form and extract matching production/area and farm cost/yield evidence.
+
+
+## Latest continuation checkpoint — pala historical market price series (2026-10-19)
+
+- Added the Ditjenbun/SIPASBUN domestic-market annual price series for dried nutmeg seed, 2020–2025, to the research ledger and research-program log. Values range from Rp41,072/kg (2020) to Rp58,019/kg (2024), then Rp50,852/kg (2025).
+- Product basis and market stage are explicit: dried seed, domestic-market average, not Tier 1 farmgate and not fresh fruit/mace. No game prices, costs, yields or recipes changed.
+- Pala remains cost_yield_partial / not verified for game. Next: extract provincial production/area data and farm-level cost/yield studies; reconcile farmgate vs domestic-market price basis.
