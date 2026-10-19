@@ -249,3 +249,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Reviewed all 60 entries in `js/commodities.js` and compared against the owner's 60-item blueprint. Lists differ: runtime has generic kelapa plus extra produce/livestock/fish; owner inventory has separate kelapa super/biasa, porang/Cavendish/tuna/bandeng, chocolate/sugar palm and mining/energy nodes. This must be reconciled before claiming all 60 owner commodities are implemented.
 - Do not silently replace commodity IDs because saves/UI/transactions may depend on them. Next deliverable is a crosswalk (owner row, runtime ID, research row, transformation node, evidence status) and backward-compatible save migration plan.
 - Legacy `COMMODITY_ECONOMICS.kelapa.processed` conflicts with owner benchmark (Rp13,000 price, 1 coconut per glass, Rp2,500 other costs vs Rp5,000/glass, 4 glasses/coconut, Rp1,200 listed consumables/glass). It is not used by the reviewed market page/known runtime paths; quarantine until usage is confirmed and regression-tested. No values changed.
+
+
+## Work log update — canonical 60-item crosswalk (2026-10-19)
+
+- Added `docs/COMMODITY_INVENTORY_CROSSWALK.md`, mapping every owner inventory row to runtime ID candidates and marking exact/partial/generic-collision/product-form-mismatch/missing status.
+- Do not interpret the runtime catalogue's 60-row count as coverage of the owner's 60-item list. Several owner nodes are missing, while some runtime IDs are generic aliases for multiple owner rows. Stable IDs and save migrations must be designed before aligning lists.
+- No runtime values changed. Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`.
