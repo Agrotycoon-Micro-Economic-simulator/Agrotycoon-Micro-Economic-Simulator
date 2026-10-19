@@ -679,3 +679,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Findings remain fragmented by year, geography, production system and unit basis. The Garut paper has a possible reversed printed profit equation and investment metrics requiring source-table reconciliation; inaccessible abstracts are not treated as full verification. Porang is not cleared for game parameters.
 - Current research status: `cost_yield_partial`, not `verified_for_game`. No prices/costs/yields/recipes/margins were changed in game code.
 - Latest research-ledger commit: `a659334e5dffe9728528fb2a70791c45d99f5370`. Continue source reconciliation and keep all work on non-`main` branches.
+
+
+## Audit tranche 9 — Library screenshot review (2026-10-19)
+
+- Materialized and visually reviewed all 10 screenshots in `Agrotycoon file blueprint/Contoh game asli` (screenshots captured 2026-10-16), in addition to the previously inspected Sim Companies store screenshot and Agrotycoon Game Update Board.
+- The game screenshots document the current browser prototype: onboarding/home screen with balance/level/weather, manual and smart-recommended shop purchases, warung state with sales/stock/cashier, achievement progression, daily report with itemized expenses and used ingredients, and accounting with monthly P&L and balance-sheet sections. They are a visual reference snapshot, not proof of current HEAD behavior; current code/tests must still be checked for any issue inferred from the images.
+- Visual audit reinforces the existing priorities: preserve core play loop and reports/accounting; automatic shop unlock must remain tied to three successful sales as the update board says. Do not infer new feature scope from older blueprint screenshots.
+- No code or values changed. Documentation-only checkpoint; no tests run.
+- Remaining Library review: reconcile all screenshots with current HEAD, inspect the separate commodity/agriculture reference documents row by row, and finish source-level evidence for 60 commodities. Sim Companies remains owner-gated until direct instruction.
