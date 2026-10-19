@@ -628,3 +628,12 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Monetization assumptions conflict internally: ARPDAU $0.25 is stated in one place, while another ads-only scenario gives $0.005–$0.02. The proposed corruption rate reduction does not guarantee a strict monthly hard cap. These remain unvalidated design estimates, not measured data or proven safeguards.
 - Proposed test scaffold imports `game_economy.EconomyEngine` and references an imagined CI entry; no evidence from the reviewed text proves these exist in the current repo. Do not claim it is runnable without adapting and executing it.
 - No code/parameters changed and no tests run. Continue structured review of tables/images and then reconcile implementation state before 60-commodity source research.
+
+
+## 2026-10-19 audit tranche 7 — 119-table review
+
+- Enumerated and reviewed all 119 Word tables in `data game.docx` (3,526 paragraphs). Reviewed table groups cover skill tiers, R&D/value-added multipliers, commodity chains, ads/IAP, schools, national contracts, and proposed config/test scaffolds. Embedded images, page/layout context, and full source validation remain open.
+- Legacy blueprint inconsistencies: production-tier labels and buffs vary across tables; R&D margin claims are not backed by full mass balance and reconciled cost ledgers; school/contracts require multiplayer/backend capabilities not evidenced in current code; “stable/realistic/guaranteed” and 90/100 ratings are unmeasured assertions; game-time/real-time conversions conflict; forced-ad enrollment and strong paid buffs are unapproved legacy concepts.
+- Preserve distinction between commercial `marketStage` and code `productionTier`. Do not import legacy profit multipliers or school buffs as economic truth.
+- Revenue arithmetic defect remains logged: 200k DAU × 3 ads/day × $0.002 = $1,200/day / $438,000/year before deductions, not $600/day / $219,000/year. ARPDAU assumptions conflict within the document.
+- No code/parameters changed; no tests run. Audit remains open for embedded images, page context, branch-specific docs/history and source-level evidence.
