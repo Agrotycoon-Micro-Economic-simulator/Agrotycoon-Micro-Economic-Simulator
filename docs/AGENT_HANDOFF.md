@@ -627,3 +627,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - The blueprint mixes game-time and real-time mechanics (e.g. 1 game year = 90 real minutes alongside daily/12-hour real-time loops), and mixes corporate cashflow, personal wallet, NPC-scale estimates, and monetization assumptions. These need a coherent timebase and accounting contract before implementation; no assumptions were changed during this audit.
 - Full Library review remains incomplete: the current sequential text review has reached P1076 of the extracted `data game.docx` paragraph stream; the source file has 223 pages and 119 Word tables. Page/paragraph position is only a navigation checkpoint, not a claim that every table/image/layout detail has been audited.
 - No game code, prices, yields, recipes, margins, progression values, or coconut benchmark values changed. Next: continue from P1077, audit remaining tables and embedded images, and separately reconstruct fix-branch commit identities/diffs.
+
+
+## Owner scope clarification — 2026-10-19
+
+- Owner explicitly directed that the Sim Companies-inspired expansion is deferred until the owner personally orders it. Do not start, design, prototype, or otherwise advance that direction on the assistant's initiative.
+- Continue the existing Agrotycoon work to completion on non-`main` branches only. Never commit, edit, merge into, or rebase `main`. Work must follow the current research/technical priorities and owner-approved roadmap; do not silently redefine “complete”.
+- Mandatory sequence remains: complete Library and all branch-note audits; verify branch HEADs and commit histories; validate the coconut Tier 1–4 reference contract; complete source-backed commodity research and reconciliation for the 60-commodity inventory; then proceed with approved implementation/testing tasks. Do not promote unsupported values to live game parameters.
+- Each meaningful checkpoint must be written to the existing handoff/status/research documents and include branch, commit SHA, files changed, tests actually run, limitations, and next task. Sim Companies direction is explicitly owner-gated and must remain parked until a direct owner instruction.
