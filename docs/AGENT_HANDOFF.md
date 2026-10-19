@@ -6061,3 +6061,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Correction to tranche 18: when the fix branch HEAD was `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`, the true comparison to `95e2a3be880ccbf75620e4bd42490489c010cac6` was 17 ahead / 0 behind, not 15. The 15-commit comparison belonged to earlier HEAD `340826235c9260a0de56c0cf082f265dd150e5b2`.
 - Subsequent documentation-only clarification commits on the fix branch are `bd039c8dc955c1be5898ca51dbd49cc8604948af` and `892ea06bd4e47b53c565871ff4a183c24a2dbe96`; the comparison before those two commits was 17 ahead. The branch ref must be queried for its live HEAD after these commits.
 - No code/test findings changed; no main changes. This correction is recorded to keep branch history precise.
+
+
+## Latest continuation checkpoint — pala source triage (2026-10-19)
+
+- Continued Tier 1 research on Pala (owner inventory row #42) on feat/production-tier-taxonomy; did not touch main or the fix branch.
+- Identified official BPS 2025 producer-price publication and Kementan/provincial plantation-statistics source families. Exact price/production rows have not been extracted, so no numeric model input was added.
+- Pala remains cost_yield_partial / not verified for game; fresh fruit, seed-in-shell, dried kernel and mace must be treated as distinct product forms. No runtime economics changed.
+- Verification this checkpoint: source discovery and documentation review only; no code tests run. Next: extract exact BPS nutmeg price rows and official production/area data, then reconcile with farm cost studies.
