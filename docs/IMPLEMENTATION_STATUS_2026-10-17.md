@@ -372,3 +372,10 @@ Bulk import acceptance rule: retain raw file and source metadata, normalize with
 - Added two targeted fixes and regression test source; exact-source isolated runtime checks passed. Node tests/full suite not run; no CI status checks were returned for the finance commits.
 - Changed files vs checkpoint: handoff, status, `js/economy.js`, `js/finance.js`, `tests/finance.test.js`, `tests/shop_materials.test.js`.
 - No main changes or economic/gameplay value changes. Next: real Node/browser validation, then accounting reconciliation.
+
+
+## Branch-head history clarification — 2026-10-19
+
+- The earlier line saying HEAD `340826235c9260a0de56c0cf082f265dd150e5b2` / 15 commits ahead is a historical checkpoint from before the subsequent two documentation commits `08b3721cc06f37ad76448e926f16677bd377bf32` and `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`.
+- At the start of this clarification, GitHub comparison showed branch `fix/core-auto-warung-accounting-ui` was `17` commits ahead and `0` behind checkpoint `95e2a3be880ccbf75620e4bd42490489c010cac6`. This note is a historical audit record, not a live pointer; use the branch ref for the latest HEAD after documentation commits.
+- The code/test findings remain unchanged: isolated source checks passed, but Node and browser suites remain unrun.
