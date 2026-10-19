@@ -671,3 +671,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Confirmed arithmetic issue from tranche 6 remains recorded: 200,000 DAU × 3 ads/day × $0.002/view = $1,200/day and $438,000/year before deductions, not the blueprint's $600/day and $219,000/year. ARPDAU assumptions also conflict internally.
 - No code, runtime values, recipes, costs, yields, margins, coconut benchmark values or branch topology changed. No tests run.
 - Next: inspect embedded images and document page/layout context, complete per-branch notes/commit-history audit, then source/reconcile remaining Tier 1 commodity rows. The library audit is still not fully complete because table text review does not validate every claim or embedded image.
+
+
+## Audit tranche 8 — commodity research resumed: porang (2026-10-19)
+
+- After the structured text/table audit, resumed source-backed Tier 1 commodity research without changing runtime values. Added a porang triangulation section to `docs/REAL_COMMODITY_TIER1_RESEARCH.md`, covering a Garut cooperative value-chain paper and three geographically distinct farm-survey/thesis sources.
+- Findings remain fragmented by year, geography, production system and unit basis. The Garut paper has a possible reversed printed profit equation and investment metrics requiring source-table reconciliation; inaccessible abstracts are not treated as full verification. Porang is not cleared for game parameters.
+- Current research status: `cost_yield_partial`, not `verified_for_game`. No prices/costs/yields/recipes/margins were changed in game code.
+- Latest research-ledger commit: `a659334e5dffe9728528fb2a70791c45d99f5370`. Continue source reconciliation and keep all work on non-`main` branches.
