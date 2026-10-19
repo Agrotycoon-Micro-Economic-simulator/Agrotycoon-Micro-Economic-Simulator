@@ -520,3 +520,21 @@ Article PDF: https://journal.ipb.ac.id/jmagr/article/download/59276/30467/
 - Cengkeh is now **cost_yield_partial / not verified for game**. Evidence supports that productivity varies strongly by tree age/location and that price and harvest-season risk matter, but it does not yet establish a complete per-hectare/per-cycle ledger.
 - Next: extract monthly 2025 BPS producer-price observations for cloves; read full tables from Pasuruan/Gowa studies; resolve area, harvest season, dried-flower grade/moisture, mature-tree density, labor, fertilizer, drying, storage and rejected-quality deductions.
 - Do not use owner blueprint Tier profit of 20,000 Coin for Tier 1 as an empirically validated figure. No game values changed.
+
+
+## Pala (owner inventory row #42) — Tier 1 evidence triage (2026-10-19)
+
+### Official source family identified
+
+- BPS, *Statistik Harga Produsen Pertanian Subsektor Tanaman Pangan, Hortikultura, dan Tanaman Perkebunan Rakyat 2025*, released 24 April 2026: https://www.bps.go.id/en/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html
+- The publication describes monthly rural producer-price observations across 37 provinces. This is a promising official series for producer prices, but the exact nutmeg row, province, month, unit, and product form have not yet been extracted in this checkpoint.
+- Kementan, *Statistik Pertanian 2025*: https://satudata.pertanian.go.id/assets/docs/publikasi/7ac141132b916c67eeac812c81d140e3.pdf. The publication's table of contents identifies nutmeg production by province for 2020–2024 (table 2.3.30). This supports an official production-data path but does not by itself supply per-farm yield, cost, or harvest cycle.
+- A provincial plantation-statistics volume also lists 2024–2026 nutmeg area/production tables: https://satudata.malutprov.go.id/publikasi/buku-statistik-perkebunan-tahun-2024-2026-jilid-i/download. The relevant table rows and units must be extracted and cross-checked before using them.
+
+### Reconciliation and decision
+
+- Do not use third-party indexed price estimates as a current game input; they may be stale or derive from a different series/basis.
+- Nutmeg product basis must be specified before comparing prices: fresh fruit, seed in shell, dried nutmeg kernel, and mace are distinct outputs. Drying yield, grade/moisture, rejected product, and whether the unit is kg of fresh or dried product must be established.
+- Tier 1 farm economics are not complete: producer price, mature-tree density, yield per tree/ha/year, productive age, harvest labor, drying/post-harvest loss, inputs, land and fixed-cost allocation still need source-backed reconciliation.
+- Status: **cost_yield_partial / not verified for game**. No runtime values, prices, recipes, yields, or profit parameters changed.
+- Next: extract exact nutmeg price observations from the BPS 2025 publication; extract the official provincial production/area rows and derive productivity only where numerator and mature/harvested-area denominator align; then source farm-level cost studies with matching product form and period.
