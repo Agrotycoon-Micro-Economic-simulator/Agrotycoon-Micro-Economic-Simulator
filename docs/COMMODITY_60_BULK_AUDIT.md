@@ -106,3 +106,52 @@ For each owner row capture: source URL/title/table/page; release and observation
 - Keep `productionTier` separate from `marketStage`.
 - Do not alter runtime catalogue IDs, prices, yields, recipes, costs or margins until the owner mapping and save-migration gates in `docs/COMMODITY_INVENTORY_CROSSWALK.md` are satisfied.
 - Update this file, `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md`, `docs/REAL_COMMODITY_TIER1_RESEARCH.md`, and `docs/AGENT_HANDOFF.md` at bulk checkpoints; report evidence coverage across the whole set, not only the last row worked.
+
+
+## 2026-10-20 — bulk producer-price extraction checkpoint
+
+This checkpoint adds concrete dated observations from the national producer-price dataset to the shared evidence pool. These are historical observations for cross-row calibration and source matching, not automatic game prices. Dataset pages:
+- Bapanas monthly national producer prices, published update “Angka November 2025”: https://data.badanpangan.go.id/datasetpublications/no2/rata-rata-harga-pangan-bulanan-produsen-nasional
+- BPS agricultural producer prices 2025, released 2026-04-24: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html
+- BPS livestock/fishery producer prices 2025, released 2026-04-24: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html
+
+### National producer-price observations found in the Bapanas dataset
+
+| Commodity / stage | Period | Observation | Unit | Potential owner row(s) | Caveat |
+|---|---|---:|---|---|---|
+| GKP, farmer level | 2025-06 | Rp6,714 | Rp/kg | #3 Padi | GKP only; not milled rice or GKG |
+| Dry shelled maize, farmer | 2025-06 | Rp4,883 | Rp/kg | #4 Jagung | Dry shelled grain; not sweet corn/cob |
+| Dry soybean seed, farmer | 2025-06 | Rp9,258 | Rp/kg | #13 Kedelai | Dry seed basis |
+| Curly red chili, farmer | 2025-06 | Rp21,216 | Rp/kg | adjacent comparator for #5 Cabai Rawit | Not rawit; do not substitute |
+| Red bird's-eye chili, farmer | 2025-06 | Rp37,245 | Rp/kg | #5 Cabai Rawit | National mean; date and market scope remain attached |
+| Shallot, farmer | 2025-06 | Rp24,559 | Rp/kg | #6 Bawang Merah | National mean; grade/region spread not yet extracted |
+| Live cattle | 2025-06 | Rp52,777 | Rp/kg live weight | #27 Sapi Potong | Liveweight, not carcass/meat price |
+| Live broiler chicken | 2025-06 | Rp20,073 | Rp/kg live weight | #26 Ayam Pedaging | The dataset page labels this “Ayam Ras”; confirm unit interpretation in underlying metadata before runtime use |
+| Eggs from layer chickens | 2025-06 | Rp24,595 | Rp/kg | #25 Ayam Petelur | Egg output price, not full layer-farm economics |
+| GKP, farmer level | 2025-11 | Rp6,748 | Rp/kg | #3 Padi | Different period from June observation |
+| Dry shelled maize, farmer | 2025-11 | Rp5,992 | Rp/kg | #4 Jagung | Different period from June observation |
+| Dry soybean seed, farmer | 2025-11 | Rp9,385 | Rp/kg | #13 Kedelai | Different period from June observation |
+| Curly red chili, farmer | 2025-11 | Rp44,158 | Rp/kg | comparator only | Not rawit; seasonal variation substantial |
+| Red bird's-eye chili, farmer | 2025-11 | Rp25,203 | Rp/kg | #5 Cabai Rawit | National mean; do not use as current 2026 price |
+| Shallot, farmer | 2025-11 | Rp24,925 | Rp/kg | #6 Bawang Merah | National mean |
+| Live cattle | 2025-11 | Rp52,496 | Rp/kg live weight | #27 Sapi Potong | Liveweight basis |
+| Live broiler chicken | 2025-11 | Rp22,221 | Rp/kg live weight | #26 Ayam Pedaging | Confirm unit in source metadata |
+| Eggs from layer chickens | 2025-11 | Rp26,185 | Rp/kg | #25 Ayam Petelur | Not net margin or feed-cost evidence |
+
+Source data explicitly identifies national monthly averages and uses Rp/kg, with liveweight units for cattle/chicken where specified. The displayed source page has limited access for its latest 2026 dataset; this checkpoint therefore retains the accessible 2025 observations instead of claiming a complete 2026 series. Source page: https://data.badanpangan.go.id/datasetpublications/no2/rata-rata-harga-pangan-bulanan-produsen-nasional
+
+### Shared source coverage refinement
+
+- **Direct dated producer-price observations now recorded:** rice paddy, maize, soybean, red bird's-eye chili, shallot, live cattle, broiler chicken, layer eggs.
+- **Comparable but not interchangeable:** curly red chili provides a seasonal comparison, not a substitute for bird's-eye chili.
+- **Other owner rows:** still need row-level extraction from BPS publications or sector-specific official sources. A source being identified does not count as a commodity value extracted.
+- **Costs/yields:** no cost or yield values are inferred from these selling prices. Each row still requires its own physical production model and cost coverage.
+
+### Bulk progress accounting
+
+- Inventory coverage: 60/60 rows present in the matrix.
+- Concrete dated producer-price examples recorded in this checkpoint: 18 observations (9 June 2025 and 9 November 2025).
+- Rows with directly relevant price observations among the 60: at least 7 (#3, #4, #5, #6, #13, #25, #26, #27; #5 has the rawit series and #27 cattle; total 8 owner rows).
+- Rows with fully validated price + cost + yield + loss + fixed-cost model: **0 confirmed by this checkpoint**.
+- Runtime parameter changes: none.
+- Tests: not run; documentation-only update.
