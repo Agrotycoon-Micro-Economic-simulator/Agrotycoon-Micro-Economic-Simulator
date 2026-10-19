@@ -80,7 +80,7 @@ function shopMaterials(){
  '<p>🧊 Es: stok '+p.current.ice+' porsi; '+(k?'beli '+k+' karung ('+(k*40)+' porsi)':'stok memenuhi target — 0 karung')+'.</p>'+
  '<p>🍯 Gula: stok '+p.current.sugar+' porsi; '+(g?'beli '+g+' blok ('+(g*50)+' porsi)':'stok memenuhi target — 0 blok')+'.</p>'+
  '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*20)+' pcs)':'stok memenuhi target — 0 pak')+'.</p>'+
- '<p style="font-size:12px">Item juga dikunci ke 0 bila satu paket utuh akan melampaui batas stok 150% target.</p>'+
+ '<p style="font-size:12px">Pembelian dibulatkan ke paket utuh; stok akhir dapat sedikit melampaui target 150% karena ukuran paket.</p>'+
  '<p><b>Total: '+rp(total)+'</b></p></div>'+
  '<button class="btn btn-success" '+(total===0?'disabled ':'')+'onclick="buyRecommended('+k+','+g+','+c+')">✅ '+(total===0?'Tidak perlu belanja':'Beli sesuai rekomendasi')+'</button> '+
  '<button class="btn btn-primary" onclick="showManualShop()">⚙️ Atur Manual (tetap dibatasi)</button> '+
