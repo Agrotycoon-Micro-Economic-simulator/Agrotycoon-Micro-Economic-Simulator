@@ -393,3 +393,10 @@ The abstract reports total cost Rp5,485,665, revenue Rp6,665,000, income Rp4,410
 ## Data-quality warning — owner blueprint figures (2026-10-19)
 
 The 50/60 commodity tables in harga komoditi.docx are an inventory and legacy design blueprint, not a verified economic dataset. In particular, the mining extension explicitly sets Tier 1 NPM to 25% as a game assumption and adjusts example revenue to reach desired profits. Some agricultural Tier 3 values are gross contribution before omitted operating costs, despite being called net profit. data peternakan dan pertanian.docx contains mixed-period, mixed-scale ranges and unspecific source labels; arithmetic and units require per-source verification. No values from these blueprints may be promoted to real-data registry or live game economics without reconciliation. Preserve the coconut owner-locked benchmark separately.
+
+
+## Runtime inventory crosswalk blocker (2026-10-19)
+
+The runtime `COMMODITIES` array in `js/commodities.js` has 60 rows but does not match the owner's 60-row inventory in `harga komoditi.docx`. The runtime list uses one generic kelapa item and includes additional crops/livestock/fish while omitting owner-listed nodes such as porang, Cavendish, tuna/bandeng and mining/energy products. Preserve existing IDs until a canonical crosswalk and backward-compatible save migration are designed.
+
+The legacy `COMMODITY_ECONOMICS.kelapa.processed` entry is also inconsistent with the owner-locked es-kelapa benchmark (Rp13,000 per output unit, 1 coconut per unit, otherCost Rp2,500 versus Rp5,000/glass, 4 glasses/coconut and Rp1,200 listed consumables/glass). The reviewed market page uses `MARKET_CHAIN_DATA`, not this object; do not wire this legacy object into live gameplay until reconciled and tested. No owner-locked values were changed.
