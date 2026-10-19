@@ -296,3 +296,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Extracted the official Ditjenbun/SIPASBUN annual domestic-market average for dried nutmeg seed: Rp41,072/kg (2020), Rp47,132 (2021), Rp51,291 (2022), Rp53,178 (2023), Rp58,019 (2024), Rp50,852 (2025). Source: *Laporan Kinerja Ditjenbun 2025*, Table 35, https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
 - This is a dried-seed domestic-market average, not a farmgate quote and not comparable to fresh-fruit or mace prices. 2025 fell 12.35% vs 2024 based on annual averages. Do not use as Tier 1 price without a source-backed market-stage reconciliation.
 - Pala remains cost_yield_partial; no game parameters changed.
+
+
+## Work log update — Pala official production context (2026-10-19)
+
+- Added Ditjen Perkebunan 2025 performance report as an official production/productivity source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. Reported production: 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); productivity 447 kg/ha (2020) and 373 kg/ha (2025), about -16.6%.
+- Official production basis is dried nutmeg seed. Productivity must use mature producing area (TM), not total planted area. This does not establish farm-level costs or prices; exact BPS nutmeg producer-price rows remain pending.
+- Row #42 remains cost_yield_partial / not verified for game. No runtime values changed.
