@@ -1462,3 +1462,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added 18 dated observations from Bapanas national producer-price data to `docs/COMMODITY_60_BULK_AUDIT.md` in commit `5eee351378dade4cdc73c0f5250c78815cb50255`. Observations cover June/November 2025 paddy GKP, dry shelled maize, dry soybean, bird's-eye chili, shallot, live cattle, live broiler chicken and layer eggs; curly red chili is only a comparator. Units, dates and product-form caveats are preserved.
 - The matrix still contains all 60 owner rows. At least 8 rows have a directly relevant price observation or clearly marked comparator; no row is yet confirmed as a complete price+cost+yield+loss+fixed-cost model. These are source observations, not game parameter approvals.
 - No runtime changes; docs only; tests not run. Main branch remains untouched. Next: bulk-extract applicable BPS 2025 price tables and BPS SEP/Kementan cost/yield evidence across all relevant rows.
+
+
+## 2026-10-20 — bulk producer-price checkpoint and unit correction
+
+- Research docs updated: `docs/COMMODITY_60_BULK_AUDIT.md` commit `e376d6a2914b25837b382061ea20d5d857b8ef70`; `docs/COMMODITY_60_BULK_DATA_REGISTER.md` commit `146ba211184eb7d7cd2abbb53015f3088abb8260`; `docs/AGENT_HANDOFF.md` commit `6f7568a9b99cdd5cf1e66d4ab5c3b30fb6ceb2f3`.
+- Added January 2026 Bapanas observations for the shared staple/livestock subset. Corrected Ayam Ras price units from incorrectly reported Rp/kg to source-defined Rp/ekor hidup. No conversion to kg was made.
+- Audit scope/status: 60/60 owner rows present; 8 rows have relevant producer-price evidence; 0 full cost models verified; 0 runtime values approved. The audit remains research-only and the coconut owner benchmark remains locked.
+- Runtime code unchanged. Tests not run (documentation-only). Browser E2E remains outstanding. Main untouched; feature branch divergence unresolved.
