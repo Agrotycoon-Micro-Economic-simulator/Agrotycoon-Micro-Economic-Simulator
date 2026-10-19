@@ -1425,3 +1425,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - No runtime code, economic parameters, recipes, yields, or profit assumptions changed. Pala remains cost_yield_partial / not verified for game.
 - Commits: research ledger 1f4b0d2e458c39bccdc30b8ba30ebe6c713faa1f; research program 54a405e5c0f2d6bcbc756a424ba86806f1602c5e; handoff 89ed9f25b18e40d4d033d1024a071e59c25c33cc. Status-file update follows.
 - Verification: documentation write only; no code tests run. Next: extract exact BPS nutmeg price rows and official production/area tables, then source comparable farm-level cost/yield studies.
+
+
+## 2026-10-19 continuation — pala price series extraction
+
+- Extracted Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.36, annual producer prices for pala (Rp/kg), BPS-sourced: Indonesia average 2020 Rp41,569; 2021 Rp44,827; 2022 Rp52,093; 2023 Rp53,610; 2024 Rp56,540. Selected 2024 values: Maluku Rp83,071; Maluku Utara Rp81,011; Papua Barat Rp81,988; Banten Rp77,083; Jawa Tengah Rp70,270; Sumatera Barat Rp63,558.
+- Source: https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. Historical annual averages are not current 2026 prices; product form/grade remains to be verified. No runtime economics changed; pala remains cost_yield_partial. Research-only checkpoint; no tests run.
