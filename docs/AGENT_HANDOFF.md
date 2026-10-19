@@ -1,3 +1,11 @@
+## Bulk extraction checkpoint — shared source register (2026-10-20)
+
+- Added `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, commit `ee68d1628cce7130e403737c3203217734e192cb`. It registers verified BPS producer-price sources for crops/plantations and livestock/fishery, BPS SEP 2024 cost publications for crop and livestock subsets, BPS producer-price metadata, Kementan statistics, and source-family gates for mining/energy/manufacturing. It explicitly separates publication discovery from actual numeric extraction.
+- This is a second-stage bulk research artifact; it is not a completed 60-row dataset. Exact commodity observations still require extraction from original tables, preserving period, geography, unit, grade, product form and source page. The previously recorded June 2025 prices are carried as examples from the existing ledger and need direct row-level verification before any runtime use.
+- No game runtime values or IDs changed. No tests run (documentation-only). Continue batch extraction across all 60 rows; don't revert to a serial one-commodity-at-a-time workflow. Never edit `main`.
+
+---
+
 ## Latest owner direction — bulk audit all 60 commodities (2026-10-19)
 
 - Owner explicitly rejected the serial one-commodity-at-a-time workflow. Continue as a unified 60-row bulk audit; use shared official datasets across all relevant commodities and report coverage for the entire matrix each checkpoint.
