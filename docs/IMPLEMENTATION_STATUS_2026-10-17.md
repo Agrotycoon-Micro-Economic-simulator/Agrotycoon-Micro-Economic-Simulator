@@ -651,3 +651,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Visually reviewed all 10 prototype screenshots under `Agrotycoon file blueprint/Contoh game asli`, plus the Sim Companies store screenshot and the Game Update Board. Prototype screenshots show home/onboarding, manual/smart purchases, live warung sales/stock, achievements, daily itemized report and monthly accounting/balance-sheet UI. They are snapshots, not verification of current HEAD.
 - Preserve current update-board scope: stability, shop, accounting/reports and gameplay/visuals; automatic shop unlock after three successful sales. Sim Companies-inspired direction remains strictly owner-gated.
 - No code or values changed; no tests run. Full audit continues with row-level review of commodity/agriculture reference documents and reconciliation against current code.
+
+
+## 2026-10-19 audit tranche 10 — fix branch history
+
+- Reconstructed the five commits after the fix branch's recorded checkpoint and inspected each diff. Current fix branch HEAD at audit start: `c6c035f86320299629bdc2916f9478ff3c6a770a`; exact commit identities and test gaps are recorded in that branch's handoff/status files.
+- Loan regression tests exist but were not executed in this pass. Additional tests are needed for small-principal rounding, restored overdue state, save/load migration and ledger/cashflow/P&L/balance-sheet reconciliation.
+- Feature branch HEAD at audit start was `ba130853ef1259a1053a4fc081cac54c83647ef1`; main remained `612451c03be59dd8cacd3b13adb8a79a46e51be2`. No merge/rebase or main modification.
+- No game code/values changed; remaining Library/source audit continues.
