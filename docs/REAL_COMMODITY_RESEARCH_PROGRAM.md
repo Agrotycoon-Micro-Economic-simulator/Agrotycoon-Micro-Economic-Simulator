@@ -226,3 +226,11 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Source links are embedded per commodity in the research ledger. The evidence is deliberately kept as dated/local observations and not merged into a synthetic current price or universal margin.
 - No runtime game code, commodity parameters, recipes, yield/cost/margin assumptions, or owner-locked coconut benchmark changed. Tier 1 for all 60 commodities remains incomplete; Tier 2/3/4 remain gated until Tier 1 is reconciled.
 - Next: audit the original Cavendish study's cost/revenue tables; extract producer costs and cycle data for remaining food, livestock/fisheries, plantation, and mining/energy rows; then proceed through Tier 2 and Tier 3/4 in the controlling blueprint order.
+
+
+## Work log update — porang farm and value-chain triangulation (2026-10-19)
+
+- Added four distinct source records to the Tier 1 research ledger: a 2026 Caraka Tani/ITB cooperative value-chain case based on fieldwork in Garut (2024–2025), a 2025 Ponorogo farm-survey abstract, a 2024 East Lombok survey abstract, and a 2025 Rembang thesis abstract. The source URLs and reported units/periods are documented in the ledger.
+- Reconciliation flags: the studies report substantially different cost/revenue outcomes and are not pooled; one cooperative paper's printed profit equation appears reversed, and its payback/IRR/NPV/initial investment require cash-flow-table reconciliation. Two journal pages were inaccessible in this pass, so their values remain abstract-level only.
+- Porang status remains cost_yield_partial / not verified for game. Next evidence work is to inspect full tables, confirm planting-material type and cycle, yield/area basis, labor and input costs, and buyer grade/price terms.
+- No game values changed. Tier 1 remains incomplete across the 60-item inventory.
