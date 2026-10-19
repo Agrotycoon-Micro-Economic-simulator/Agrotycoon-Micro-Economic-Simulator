@@ -36,10 +36,11 @@ https://ditjenpkh.pertanian.go.id/index.php/berita/harga-pakan-terpantau-turun-k
 ## Tier 1 coverage matrix
 
 Status definitions:
-- **price-source-found** = a plausible source family or dated price observation exists; not a complete Tier 1 scenario.
-- **source-family-found** = a source institution/path is identified but exact commodity observations and producer costs still need extraction.
-- **not-yet-researched** = no sufficiently specific source has been reviewed yet.
-- **blocked** = do not estimate or publish until missing evidence is supplied.
+- **price-source-found** = a dated/official benchmark or price observation exists; not a complete Tier 1 scenario.
+- **source-family-found** = a relevant source institution/path is identified but exact observations or producer costs still need extraction.
+- **cost_yield_partial** = some commodity-specific price/cost/yield/operator evidence exists, but the production ledger is not reconciled.
+- **blocked_missing_evidence** = do not estimate or publish a game value until required evidence is supplied.
+- Any status other than **verified_for_game** means the commodity is not cleared for runtime economics. The matrix records evidence progress, not final approval.
 
 | # | Commodity | Price/source status | Missing Tier 1 evidence before economics can be finalized |
 |---:|---|---|---|
@@ -59,30 +60,30 @@ Status definitions:
 | 14 | Pepaya | source-family-found: BPS fruit producer-price publication | Cultivar, plant density/lifespan, monthly yield, seed/fertilizer/pest control, labor and rejects |
 | 15 | Kacang Tanah | source-family-found: BPS food-crop producer-price publication | In-shell vs shelled form, moisture/grade, seed, fertilizer, yield, drying/shelling recovery |
 | 16 | Kubis/Kol | source-family-found: BPS vegetable producer-price publication | Variety/grade, highland location, crop duration, seed, fertilizer/pest control, labor and trimming loss |
-| 17 | Wortel | source-family-found: BPS vegetable producer-price publication | Grade, altitude/soil, seed, fertilizer, crop cycle, labor, washing/sorting loss |
+| 17 | Wortel | cost_yield_partial: direct Banjarnegara farmer/producer-cost observation reviewed; historical and location-specific | Grade, altitude/soil, seed, fertilizer, crop cycle, labor, washing/sorting loss |
 | 18 | Buncis | source-family-found: BPS vegetable producer-price publication | Bush vs climbing variety, support structure, repeated harvest yield, seed/fertilizer/labor and rejected produce |
 | 19 | Timun | source-family-found: BPS vegetable producer-price publication | Cultivar, trellis vs ground system, picking frequency, yield, seed/fertilizer/water/labor and spoilage |
 | 20 | Jambu Biji | source-family-found: BPS fruit producer-price publication | Cultivar, orchard age, annual yield, fruit bagging/pest control, labor, grade and post-harvest loss |
 | 21 | Bawang Putih | source-family-found: BPS producer-price publication; import/local type must be separated | Local vs imported origin, seed clove, altitude/cold requirement, cycle, yield, curing and storage loss |
-| 22 | Porang | not-yet-researched at specific producer transaction level | Bulbil/corm source, crop age, fresh corm grade, oxalate processing requirements, yield and buyer contract |
+| 22 | Porang | cost_yield_partial: Garut cooperative chain case plus Ponorogo, East Lombok and Rembang farm-study abstracts; full tables/arithmetic pending | Bulbil/corm source, crop age, fresh corm grade, oxalate processing requirements, yield and buyer contract |
 | 23 | Jahe Merah | source-family-found: BPS producer-price publication | Rhizome seed, crop duration, shade/soil, fertilizer, disease loss, fresh vs dried grade and drying recovery |
-| 24 | Pisang Cavendish | source-family-found: BPS fruit producer-price publication; export chain requires separate grade | Export-grade standards, farm/contract price, bunch yield, bagging, fertilizer, irrigation, field packing and rejection rate |
-| 25 | Ayam Petelur | price-source-found for eggs; SPORA feed source found | DOC/pullet, strain, layer feed intake, FCR/egg mass, mortality, vaccines, housing/temperature/ventilation, manure and spent-hen value |
-| 26 | Ayam Pedaging | price-source-found for live chicken; SPORA feed source found | DOC price, age/weight, FCR, mortality, cycle length, vaccine/medicine, heating/cooling, litter, labor, transport and slaughter yield |
+| 24 | Pisang Cavendish | cost_yield_partial: farm study and contract-price source found; economics quarantined pending arithmetic audit | Export-grade standards, farm/contract price, bunch yield, bagging, fertilizer, irrigation, field packing and rejection rate |
+| 25 | Ayam Petelur | price-source-found for eggs and SPORA feed; DOC/feed/yield/mortality farm ledger still incomplete | DOC/pullet, strain, layer feed intake, FCR/egg mass, mortality, vaccines, housing/temperature/ventilation, manure and spent-hen value |
+| 26 | Ayam Pedaging | price-source-found for live chicken and SPORA feed; local DOC/feed-cost observations found, full cycle ledger incomplete | DOC price, age/weight, FCR, mortality, cycle length, vaccine/medicine, heating/cooling, litter, labor, transport and slaughter yield |
 | 27 | Sapi Potong | price-source-found for live cattle | Breed/age/weight, purchase vs breeding model, feed ration, forage/land, water, housing, veterinary costs, mortality and weight gain |
 | 28 | Sapi Perah | not-yet-researched at farm-specific level | Breed/lactation curve, milk yield/quality, feed ration, replacement/calf, veterinary/breeding, cooling, electricity and manure |
-| 29 | Kambing | not-yet-researched at farm-specific level | Meat vs breeding system, breed, kidding/mortality, forage/concentrate, housing, veterinary costs and liveweight price |
-| 30 | Lele | not-yet-researched at farm-specific level | Fingerling, density, feed price/FCR, pond construction, water/electricity/aeration, survival, cycle, grading and harvest price |
-| 31 | Udang | not-yet-researched at farm-specific level | Species/system, PL price, stocking density, feed/FCR, pond prep, salinity/water quality, aeration/power, disease, survival and harvest grade |
-| 32 | Nila | not-yet-researched at farm-specific level | Pond/cage system, fingerling, stocking density, feed/FCR, water quality, survival, cycle, labor and buyer grade |
+| 29 | Kambing | cost_yield_partial: dated operator downside-price/cost evidence found; complete farm ledger and representative price series missing | Meat vs breeding system, breed, kidding/mortality, forage/concentrate, housing, veterinary costs and liveweight price |
+| 30 | Lele | cost_yield_partial: operator evidence and technical/controlled studies reviewed; production systems must remain separate | Fingerling, density, feed price/FCR, pond construction, water/electricity/aeration, survival, cycle, grading and harvest price |
+| 31 | Udang | cost_yield_partial: commercial-farm studies show wide performance/profitability variation; system-specific inputs and full ledger pending | Species/system, PL price, stocking density, feed/FCR, pond prep, salinity/water quality, aeration/power, disease, survival and harvest grade |
+| 32 | Nila | cost_yield_partial: two distinct operator/system examples reviewed; cannot pool pond/cage or different densities | Pond/cage system, fingerling, stocking density, feed/FCR, water quality, survival, cycle, labor and buyer grade |
 | 33 | Telur Bebek | not-yet-researched at farm-specific level | Breed/age, laying rate, feed intake, housing/free-range conditions, mortality, replacement, egg grade and farmgate buyer |
-| 34 | Ikan Tuna | not-yet-researched at vessel/landing level | Wild-catch vs farmed distinction, gear/vessel, fuel/ice/crew, catch variability, landing port, size/grade and spoilage |
-| 35 | Ikan Bandeng | not-yet-researched at farm-specific level | Brackish pond area, fry, stocking density, feed/fertilizer, salinity/water exchange, survival, cycle and size-grade price |
+| 34 | Ikan Tuna | price-source-found: local landing/first-sale observations and intermediary margins reviewed; vessel fuel/crew/catch ledger missing | Wild-catch vs farmed distinction, gear/vessel, fuel/ice/crew, catch variability, landing port, size/grade and spoilage |
+| 35 | Ikan Bandeng | cost_yield_partial: KKP operational report includes operator cost/trader-stage evidence; pond-cycle reconciliation pending | Brackish pond area, fry, stocking density, feed/fertilizer, salinity/water exchange, survival, cycle and size-grade price |
 | 36 | Ayam Kampung (Daging) | not-yet-researched at farm-specific level | Breed/strain, semi-intensive vs intensive, cycle, feed, mortality, vaccination, housing, carcass yield and livebird price |
-| 37 | Kopi Robusta | source-family-found: BPS smallholder plantation prices | Cherry vs green bean vs dried bean, moisture/grade, tree age/yield, harvest labor, wet/dry processing and conversion |
-| 38 | Kopi Arabika | source-family-found: BPS smallholder plantation prices | Altitude/cultivar, cherry vs green bean price, yield, picking/selective labor, fermentation/drying and grading |
+| 37 | Kopi Robusta | cost_yield_partial: farmer-group, conversion-yield and buyer-stage evidence reviewed; farm-specific full ledger pending | Cherry vs green bean vs dried bean, moisture/grade, tree age/yield, harvest labor, wet/dry processing and conversion |
+| 38 | Kopi Arabika | cost_yield_partial: farmer-group/conversion-yield and official price-series evidence reviewed; altitude/grade-specific full ledger pending | Altitude/cultivar, cherry vs green bean price, yield, picking/selective labor, fermentation/drying and grading |
 | 39 | Kakao | source-family-found: BPS smallholder plantation prices | Wet beans vs fermented/dried beans, pod yield, disease control, fermentation/drying recovery and grade discount |
-| 40 | Sawit/TBS | source-family-found: BPS; provincial official TBS price decision needed | Age/FFB yield, fertilizer, harvest labor, transport, mill distance, quality/ALB, official pricing formula and deductions |
+| 40 | Sawit/TBS | source-family-found: BPS and official provincial TBS price decision identified; exact provincial observation and farm cost ledger pending | Age/FFB yield, fertilizer, harvest labor, transport, mill distance, quality/ALB, official pricing formula and deductions |
 | 41 | Cengkeh | source-family-found: BPS smallholder plantation prices | Wet vs dry clove, tree age, bearing periodicity, harvest labor, drying recovery, grade and season |
 | 42 | Pala | source-family-found: BPS smallholder plantation prices | Nut vs mace, fresh/dry form, tree yield, harvest/splitting/drying labor, grade and disease |
 | 43 | Vanili Kering | source-family-found: BPS smallholder plantation prices | Green pods vs cured dry vanilla, hand pollination labor, cure yield/time, grade/moisture and theft/weather loss |
@@ -93,13 +94,13 @@ Status definitions:
 | 48 | Karet/Lateks | source-family-found: BPS smallholder plantation prices | Latex vs wet slab vs dry rubber, DRC, tree age, tapping labor, coagulation/drying, transport and quality deductions |
 | 49 | Cokelat Olahan | not a Tier 1 farm commodity; upstream Tier 1 is cocoa | Treat cocoa producer data separately; industrial chocolate requires factory recipe, cocoa-butter/sugar/milk inputs, energy, packaging and yield |
 | 50 | Gula Aren Cair | not-yet-researched at sap producer level | Palm species, sap volume/tree/day, fermentation loss, tapping labor, fuel/energy, concentration yield, packaging and shelf life |
-| 51 | Bijih Besi | not-yet-researched at mine-gate level | Ore grade, wet/dry ton, mine permit, recovery, overburden, drilling/blasting, diesel/electricity, labor, royalties and transport |
-| 52 | Batu Bara | not-yet-researched at mine-gate level | Coal grade/GAR, mine permit, stripping ratio, extraction cost, hauling/barge, royalties, moisture and buyer contract |
-| 53 | Emas | not-yet-researched at mine-gate level | Ore grade, recovery, mining/processing route, energy/reagents, tailings, permits/royalties, refining terms and assay |
-| 54 | Nikel | not-yet-researched at mine-gate level | Laterite/saprolite/limonite grade, moisture, mine/haul distance, stripping, royalties, buyer/specification and processing route |
-| 55 | Bauksit | not-yet-researched at mine-gate level | Grade/alumina/silica, moisture, stripping/haulage, washing/recovery, permits/royalties and offtake terms |
-| 56 | Gas Alam Cair/LNG | not a generic farmgate commodity; upstream gas supply and LNG are different nodes | Gas composition, contractual price, liquefaction energy, plant capex/throughput, shipping, regasification and take-or-pay terms |
-| 57 | Minyak Mentah | not-yet-researched at wellhead level | API gravity/sulfur, field decline, lifting cost, water handling, royalties/PSC terms, transport and realized benchmark differential |
+| 51 | Bijih Besi | blocked_missing_evidence: no mine-gate transaction price/cost record yet | Ore grade, wet/dry ton, mine permit, recovery, overburden, drilling/blasting, diesel/electricity, labor, royalties and transport |
+| 52 | Batu Bara | price-source-found: official quality-indexed HBA benchmark located; not a mine-gate realized price or lifting-cost ledger | Coal grade/GAR, mine permit, stripping ratio, extraction cost, hauling/barge, royalties, moisture and buyer contract |
+| 53 | Emas | blocked_missing_evidence: no mine-gate grade/recovery/cost ledger; spot bullion price is not mine netback | Ore grade, recovery, mining/processing route, energy/reagents, tailings, permits/royalties, refining terms and assay |
+| 54 | Nikel | price-source-found: official metal benchmark located; ore HPM and mine-gate cost/grade not yet extracted | Laterite/saprolite/limonite grade, moisture, mine/haul distance, stripping, royalties, buyer/specification and processing route |
+| 55 | Bauksit | blocked_missing_evidence: mine-gate grade, recovery and cost data not yet sourced | Grade/alumina/silica, moisture, stripping/haulage, washing/recovery, permits/royalties and offtake terms |
+| 56 | Gas Alam Cair/LNG | source-family-found: regulated industrial plant-gate gas benchmark located; LNG export price/cost chain remains separate | Gas composition, contractual price, liquefaction energy, plant capex/throughput, shipping, regasification and take-or-pay terms |
+| 57 | Minyak Mentah | price-source-found: official Indonesian Crude Price (ICP) benchmark located; wellhead netback/lifting costs missing | API gravity/sulfur, field decline, lifting cost, water handling, royalties/PSC terms, transport and realized benchmark differential |
 | 58 | Plastik/Bahan Baku | this is a manufactured material, not raw farm output | Define resin type (PE/PP/PET/PVC), polymer grade, feedstock/naphtha, plant yield/energy, resin producer price and unit |
 | 59 | Semen | this is a manufactured product, not a raw Tier 1 producer commodity | Define cement type/grade, clinker and gypsum, kiln fuel/electricity, capacity utilization, bag/bulk packaging, freight and plant-gate price |
 | 60 | Tembaga | not-yet-researched at mine-gate level | Ore grade, recovery, concentrate vs cathode, smelting/refining charges, energy, permits/royalties and benchmark price |
