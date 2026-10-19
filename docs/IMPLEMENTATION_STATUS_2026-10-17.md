@@ -673,3 +673,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Corrected inaccurate smart-shop copy on `fix/core-auto-warung-accounting-ui`; package rounding can slightly exceed target. No algorithm or economic values changed.
 - Added stock recommendation regression tests. Exact `materialPlan()` source passed 3 targeted isolated runtime cases; source/copy assertions passed 4/4. Node test and full game/browser suite still not executed.
 - Commit identities and test limitations are recorded in the fix branch's own handoff/status docs. No `main` changes.
+
+
+## 2026-10-19 audit tranche 12 — catalogue and coconut config drift
+
+- The 60-row runtime catalogue in `js/commodities.js` differs from the owner's 60-item inventory. It has a generic kelapa ID, extra crop/animal/fish entries and lacks several owner-listed mining/manufactured nodes. Do not silently replace IDs; first produce a crosswalk and save-migration plan.
+- Legacy `COMMODITY_ECONOMICS.kelapa.processed` currently says price Rp13,000, inputPerUnit 1 and otherCost Rp2,500, inconsistent with the owner-locked es-kelapa benchmark of Rp5,000/glass, 4 glasses/coconut and Rp1,200 listed non-coconut consumables/glass. This object is not used by the reviewed market page/known runtime paths; quarantine it until usage is confirmed and it is corrected/tested.
+- No game code or owner-locked values changed. Next: 60-item crosswalk and backward-compatible migration plan.
