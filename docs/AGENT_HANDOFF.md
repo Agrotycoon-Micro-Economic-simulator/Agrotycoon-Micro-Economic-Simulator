@@ -77,3 +77,22 @@ P5 product:
 
 ## Resume protocol
 Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DATA_CONTRACT.md`, and `docs/WORLD_SIMULATION_ENGINE.md`; then inspect actual branch HEAD and relevant files. This note can lag code: confirm HEAD. Make small commits, test them, update status ledger. Owner's reference book for Tier 1–4 is missing from repo/context.
+
+
+## Audit follow-up — five commits after recorded checkpoint (2026-10-19)
+
+Current branch HEAD at audit: `c6c035f86320299629bdc2916f9478ff3c6a770a`. The five commits after the recorded `95e2a3be880ccbf75620e4bd42490489c010cac6` checkpoint are:
+
+1. `c275eee165a54704428760c804c3ae562a6cb4d8` — add agent handoff and owner rules/status/backlog.
+2. `7106a7e143dfdcca24fa2a175b01281f30c99211` — add `tests/finance.test.js` for loan lifecycle.
+3. `88de624b9120b62bb3c31b8d583d5ee7ab64c46c` — include legacy `finance.debt` in credit obligation summary.
+4. `64691151ef52c42e35860db940a6f82af3a2afff` — extend finance test for legacy debt/payroll liability aggregation.
+5. `c6c035f86320299629bdc2916f9478ff3c6a770a` — document liability audit/test coverage.
+
+Review findings:
+- The new tests cover origination, interest accrual, idempotence within a day, partial/full repayment, legacy debt/payroll aggregation, overdue status on the due day, and input validation.
+- The test source has not been executed during this audit. Do not report it as passing based solely on the test code.
+- Still missing explicit tests for tiny-principal rounding boundaries, state restoration with `lastAccrualDay === dueDay` while status is active, cashflow/P&L/balance-sheet cross-reconciliation, and save/load migration. The due-date transition currently happens after the early return for same-day accrual, so restored inconsistent loan state needs a regression test.
+- `totalDebt()` sums active/overdue loan principal and interest, payroll payable and legacy debt. Confirm no separate accounting aggregator counts the same legacy debt twice before claiming balance-sheet consistency.
+- No game code changed in this audit; only documentation records this audit.
+- Environment limitation: repository checkout/runtime is unavailable here, so the Node test and browser suite were not executed in this pass.
