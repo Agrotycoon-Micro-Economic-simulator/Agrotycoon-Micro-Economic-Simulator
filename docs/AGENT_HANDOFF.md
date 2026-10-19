@@ -6118,3 +6118,12 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Continued on feat/production-tier-taxonomy. Added official Ditjen Perkebunan 2025 performance-report context for nutmeg: production 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); reported productivity 447 kg/ha (2020) to 373 kg/ha (2025).
 - Output is dried nutmeg seed; mature producing area (TM) must be distinguished from total area and from fresh fruit/mace. Farm cost ledger and exact BPS producer-price rows remain outstanding.
 - No game values/runtime code changed. No tests run; source-ledger documentation only. Continue extracting official price rows and matching farm-level cost/yield studies. Do not touch main or begin Sim Companies work.
+
+
+## Bulk audit checkpoint — 2026-10-20 (January observations + unit correction)
+
+- Updated `docs/COMMODITY_60_BULK_AUDIT.md`, commit `e376d6a2914b25837b382061ea20d5d857b8ef70`, with January 2026 national producer-price observations for paddy stages, maize, soybean, bird's-eye chili, shallot, live cattle, Ayam Ras and layer eggs.
+- Corrected a source-unit error: Bapanas defines Ayam Ras price as **Rp/ekor hidup**, not Rp/kg live weight. June 2025 Rp20,073, November 2025 Rp22,221 and January 2026 Rp22,971 are per bird. Do not derive a per-kg value without matched liveweight evidence.
+- Updated `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, commit `146ba211184eb7d7cd2abbb53015f3088abb8260`, with the source metadata and unit correction.
+- Coverage remains 60/60 owner rows mapped; 8 rows have directly relevant producer-price observations; 0 have a fully validated price+cost+yield+loss+fixed-cost model; 0 approved for runtime. No runtime parameters or IDs changed.
+- Tests: not run; documentation/research only. Next: batch-extract province-level Bapanas rows for the same eight commodity groups, then extract exact BPS 2025 publication tables and SEP 2024 cost tables in one shared pass. Preserve the source stage and unit, and record unavailable rows rather than guessing. Keep `main` untouched; no merge/rebase.
