@@ -6054,3 +6054,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - The fix branch's current diff from that checkpoint includes handoff/status, `js/economy.js`, `js/finance.js`, `tests/finance.test.js` and `tests/shop_materials.test.js`. The newest two logic changes are smart-shop copy correction and overdue-status ordering. Targeted exact-source isolated checks passed; Node test files and full browser suite remain unrun.
 - Main remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`, unchanged. No merges/rebases.
 - Feature research branch current HEAD before this checkpoint: `22f13b4199795d9044d23ef99dcc5f9a8e5cd1d2`. Continue 60-row evidence reconciliation; no runtime economics changed.
+
+
+## Audit correction — fix branch ahead count (2026-10-19)
+
+- Correction to tranche 18: when the fix branch HEAD was `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`, the true comparison to `95e2a3be880ccbf75620e4bd42490489c010cac6` was 17 ahead / 0 behind, not 15. The 15-commit comparison belonged to earlier HEAD `340826235c9260a0de56c0cf082f265dd150e5b2`.
+- Subsequent documentation-only clarification commits on the fix branch are `bd039c8dc955c1be5898ca51dbd49cc8604948af` and `892ea06bd4e47b53c565871ff4a183c24a2dbe96`; the comparison before those two commits was 17 ahead. The branch ref must be queried for its live HEAD after these commits.
+- No code/test findings changed; no main changes. This correction is recorded to keep branch history precise.
