@@ -1398,3 +1398,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Arithmetic/scope gaps: Pasuruan abstract labels revenue/net income inconsistently; Gowa cost period is harvest season but income period annual; IPB East Java yield figures differ sharply from Kementan national estimates. Full tables and units must be reconciled before using a model.
 - Cengkeh remains cost_yield_partial / not verified for game. Exact BPS monthly producer-price rows not yet extracted. No runtime values changed.
 - Ledger commit: `32096a15e787d1cdea57c1e513fd879bf6ac39a1`.
+
+
+## 2026-10-19 research checkpoint — cengkeh producer prices
+
+- Extracted national and provincial annual producer-price series for dry clove flower, 2014–2023, from Kementan Pusdatin's Outlook Cengkeh 2025 (BPS-derived). National series ranges from Rp68,529/kg (2014) to Rp99,385/kg (2023); Maluku/South Sulawesi rows are recorded in the research ledger.
+- These are historical annual averages, not current prices. Monthly 2025 BPS observations remain pending. Clove is still cost_yield_partial pending full cost/yield reconciliation.
+- Ledger commit: `a94a7b39b07f5049ff960515932ebbdd7faa156c`.
