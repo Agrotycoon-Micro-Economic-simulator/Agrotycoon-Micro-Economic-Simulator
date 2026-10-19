@@ -1455,3 +1455,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Official source bundles identified: BPS 2025 agricultural producer prices; BPS 2025 livestock/fishery producer prices; BPS SEP 2024 costs for the selected commodities actually surveyed; Kementan Statistik Pertanian 2025; separate ESDM/industry sources for mineral, energy and manufactured products.
 - This is an audit baseline, **not** a claim that all 60 commodities have verified prices, costs, yields or margins. Exact row-level extraction remains outstanding. No runtime parameters or commodity IDs changed; owner-approved coconut benchmark remains locked.
 - Documentation-only changes. No tests run for this checkpoint. Browser E2E remains outstanding. Continue on `feat/production-tier-taxonomy`; never edit `main`, and do not merge/rebase without resolving branch divergence first.
+
+
+## 2026-10-20 — bulk producer-price evidence added
+
+- Added 18 dated observations from Bapanas national producer-price data to `docs/COMMODITY_60_BULK_AUDIT.md` in commit `5eee351378dade4cdc73c0f5250c78815cb50255`. Observations cover June/November 2025 paddy GKP, dry shelled maize, dry soybean, bird's-eye chili, shallot, live cattle, live broiler chicken and layer eggs; curly red chili is only a comparator. Units, dates and product-form caveats are preserved.
+- The matrix still contains all 60 owner rows. At least 8 rows have a directly relevant price observation or clearly marked comparator; no row is yet confirmed as a complete price+cost+yield+loss+fixed-cost model. These are source observations, not game parameter approvals.
+- No runtime changes; docs only; tests not run. Main branch remains untouched. Next: bulk-extract applicable BPS 2025 price tables and BPS SEP/Kementan cost/yield evidence across all relevant rows.
