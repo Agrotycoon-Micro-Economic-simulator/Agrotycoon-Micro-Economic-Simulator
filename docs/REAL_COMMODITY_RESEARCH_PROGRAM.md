@@ -256,3 +256,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added `docs/COMMODITY_INVENTORY_CROSSWALK.md`, mapping every owner inventory row to runtime ID candidates and marking exact/partial/generic-collision/product-form-mismatch/missing status.
 - Do not interpret the runtime catalogue's 60-row count as coverage of the owner's 60-item list. Several owner nodes are missing, while some runtime IDs are generic aliases for multiple owner rows. Stable IDs and save migrations must be designed before aligning lists.
 - No runtime values changed. Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`.
+
+
+## Work log update — Gula Aren Cair source triangulation (2026-10-19)
+
+- Owner row #50 now has separate source records for sugar-palm sap farm economics (Riau, 2025 publication), molded-sugar yield (Lampung, 2022), liquid-sugar processor economics (Bulukumba, 2026 publication) and a local UMKM optimization model (Hariang, 2025).
+- Do not pool the studies: raw sap vs molded sugar vs liquid sugar are different nodes. Two arithmetic/scope mismatches are flagged in the ledger; exact package unit, Brix, yield, energy, labor, shelf-life and sale-channel evidence remain required.
+- Row remains cost_yield_partial, not verified for game. No game values changed.
