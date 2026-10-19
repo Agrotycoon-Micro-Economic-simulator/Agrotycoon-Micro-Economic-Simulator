@@ -1,3 +1,12 @@
+## Latest bulk evidence checkpoint — 2026-10-20
+
+- Continued all-60 audit using shared producer-price datasets rather than serial commodity work.
+- Updated `docs/COMMODITY_60_BULK_AUDIT.md`, commit `5eee351378dade4cdc73c0f5250c78815cb50255`, with 18 dated Bapanas national producer-price observations (June and November 2025) spanning paddy GKP, dry shelled maize, dry soybean, bird's-eye chili, shallot, live cattle, live broiler chicken, and layer eggs; red curly chili is explicitly marked comparator-only. Source periods, units, product-stage caveats and unsupported inference limits are documented.
+- Coverage: 60/60 owner rows in matrix; at least 8 owner rows now have a directly relevant price observation or a specifically marked comparator. Zero rows are confirmed as complete price+cost+yield+loss+fixed-cost models by this checkpoint. No runtime price/cost/yield changes. Documentation-only; tests not run. Keep `main` untouched and do not merge/rebase the divergent branch.
+- Next bulk action: extract BPS 2025 crop/estate price tables and livestock/fishery price tables across their full applicable commodity sets; map source rows to all 60 inventory rows, then add the first comparable costs/yield bundle from BPS SEP 2024 and Kementan sector statistics. Report coverage counts, not one-commodity narratives.
+
+---
+
 ## Bulk extraction checkpoint — shared source register (2026-10-20)
 
 - Added `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, commit `ee68d1628cce7130e403737c3203217734e192cb`. It registers verified BPS producer-price sources for crops/plantations and livestock/fishery, BPS SEP 2024 cost publications for crop and livestock subsets, BPS producer-price metadata, Kementan statistics, and source-family gates for mining/energy/manufacturing. It explicitly separates publication discovery from actual numeric extraction.
