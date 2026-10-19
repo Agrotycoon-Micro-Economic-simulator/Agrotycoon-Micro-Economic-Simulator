@@ -680,3 +680,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - The 60-row runtime catalogue in `js/commodities.js` differs from the owner's 60-item inventory. It has a generic kelapa ID, extra crop/animal/fish entries and lacks several owner-listed mining/manufactured nodes. Do not silently replace IDs; first produce a crosswalk and save-migration plan.
 - Legacy `COMMODITY_ECONOMICS.kelapa.processed` currently says price Rp13,000, inputPerUnit 1 and otherCost Rp2,500, inconsistent with the owner-locked es-kelapa benchmark of Rp5,000/glass, 4 glasses/coconut and Rp1,200 listed non-coconut consumables/glass. This object is not used by the reviewed market page/known runtime paths; quarantine it until usage is confirmed and it is corrected/tested.
 - No game code or owner-locked values changed. Next: 60-item crosswalk and backward-compatible migration plan.
+
+
+## 2026-10-19 audit tranche 13 — 60-item crosswalk
+
+- Created `docs/COMMODITY_INVENTORY_CROSSWALK.md` with all 60 owner rows, runtime candidate IDs, mapping status and acceptance gates.
+- Runtime catalogue has 60 entries but differs from the owner inventory; generic collisions and missing owner nodes mean the count “60” alone does not establish coverage. No IDs or game values changed. Save migration must precede any catalogue alignment.
+- Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`.
