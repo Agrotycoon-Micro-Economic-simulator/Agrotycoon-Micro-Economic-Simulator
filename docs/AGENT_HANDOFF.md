@@ -6084,3 +6084,10 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Added the Ditjenbun/SIPASBUN domestic-market annual price series for dried nutmeg seed, 2020–2025, to the research ledger and research-program log. Values range from Rp41,072/kg (2020) to Rp58,019/kg (2024), then Rp50,852/kg (2025).
 - Product basis and market stage are explicit: dried seed, domestic-market average, not Tier 1 farmgate and not fresh fruit/mace. No game prices, costs, yields or recipes changed.
 - Pala remains cost_yield_partial / not verified for game. Next: extract provincial production/area data and farm-level cost/yield studies; reconcile farmgate vs domestic-market price basis.
+
+
+## Latest continuation checkpoint — pala official production evidence (2026-10-19)
+
+- Continued on feat/production-tier-taxonomy. Added official Ditjen Perkebunan 2025 performance-report context for nutmeg: production 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); reported productivity 447 kg/ha (2020) to 373 kg/ha (2025).
+- Output is dried nutmeg seed; mature producing area (TM) must be distinguished from total area and from fresh fruit/mace. Farm cost ledger and exact BPS producer-price rows remain outstanding.
+- No game values/runtime code changed. No tests run; source-ledger documentation only. Continue extracting official price rows and matching farm-level cost/yield studies. Do not touch main or begin Sim Companies work.
