@@ -1431,3 +1431,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Extracted Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.36, annual producer prices for pala (Rp/kg), BPS-sourced: Indonesia average 2020 Rp41,569; 2021 Rp44,827; 2022 Rp52,093; 2023 Rp53,610; 2024 Rp56,540. Selected 2024 values: Maluku Rp83,071; Maluku Utara Rp81,011; Papua Barat Rp81,988; Banten Rp77,083; Jawa Tengah Rp70,270; Sumatera Barat Rp63,558.
 - Source: https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. Historical annual averages are not current 2026 prices; product form/grade remains to be verified. No runtime economics changed; pala remains cost_yield_partial. Research-only checkpoint; no tests run.
+
+
+## 2026-10-19 continuation — pala market-price evidence strengthened
+
+- Research ledger now contains Ditjenbun/SIPASBUN 2020–2025 annual domestic-market price averages for dried nutmeg seed. Latest 2025 observation is Rp50,852/kg versus Rp58,019/kg in 2024; this is not a farmgate quote.
+- Updated evidence does not clear pala for implementation: product form, province, grade/moisture, drying conversion and farm cost/yield still need reconciliation. No runtime economics changed.
+- Research ledger commit: 1f4b0d2e458c39bccdc30b8ba30ebe6c713faa1f; research program, handoff and status updates are part of this checkpoint.
+- Tests: no code tests run; research/documentation only.
