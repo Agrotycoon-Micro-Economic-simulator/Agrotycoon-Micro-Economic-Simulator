@@ -1416,3 +1416,12 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 ## Audit correction — branch comparison count
 
 - Tranche 18's statement “15 commits ahead” was stale for fix HEAD `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`; the correct count at that point was 17 ahead / 0 behind. Subsequent documentation commits `bd039c8d` and `892ea06b` advanced the branch again. No code/test conclusions changed.
+
+
+## 2026-10-19 continuation — pala source triage
+
+- Added a Tier 1 evidence-triage entry for owner inventory row #42 (pala) to the research ledger, research program, and agent handoff.
+- Official BPS producer-price publication and Kementan/provincial plantation-statistics sources are identified, but exact price and production/area observations remain unextracted. Product form (fresh fruit, seed in shell, dried kernel, mace), moisture/grade and unit must be reconciled.
+- No runtime code, economic parameters, recipes, yields, or profit assumptions changed. Pala remains cost_yield_partial / not verified for game.
+- Commits: research ledger 1f4b0d2e458c39bccdc30b8ba30ebe6c713faa1f; research program 54a405e5c0f2d6bcbc756a424ba86806f1602c5e; handoff 89ed9f25b18e40d4d033d1024a071e59c25c33cc. Status-file update follows.
+- Verification: documentation write only; no code tests run. Next: extract exact BPS nutmeg price rows and official production/area tables, then source comparable farm-level cost/yield studies.
