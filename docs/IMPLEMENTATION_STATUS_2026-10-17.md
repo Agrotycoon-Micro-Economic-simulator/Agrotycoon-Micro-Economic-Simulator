@@ -1405,3 +1405,9 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Extracted national and provincial annual producer-price series for dry clove flower, 2014–2023, from Kementan Pusdatin's Outlook Cengkeh 2025 (BPS-derived). National series ranges from Rp68,529/kg (2014) to Rp99,385/kg (2023); Maluku/South Sulawesi rows are recorded in the research ledger.
 - These are historical annual averages, not current prices. Monthly 2025 BPS observations remain pending. Clove is still cost_yield_partial pending full cost/yield reconciliation.
 - Ledger commit: `a94a7b39b07f5049ff960515932ebbdd7faa156c`.
+
+
+## 2026-10-19 current branch reconciliation
+
+- Latest fix branch HEAD at this check: `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`, 15 commits ahead of `95e2a3be880ccbf75620e4bd42490489c010cac6`. Targeted source checks passed; Node/browser suites remain unrun.
+- Main remains unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Research branch remains separate and unmerged.
