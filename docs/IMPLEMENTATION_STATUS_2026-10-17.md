@@ -687,3 +687,699 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Created `docs/COMMODITY_INVENTORY_CROSSWALK.md` with all 60 owner rows, runtime candidate IDs, mapping status and acceptance gates.
 - Runtime catalogue has 60 entries but differs from the owner inventory; generic collisions and missing owner nodes mean the count “60” alone does not establish coverage. No IDs or game values changed. Save migration must precede any catalogue alignment.
 - Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`.
+## Latest continuation checkpoint — targeted Node regression suite passed (2026-10-17)
+
+- GitHub Actions run [39031115000](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39031115000) completed successfully on commit `9ff852adf89d86a1fdce077ad4ffe109fa703eef`, using Node.js 22 and a real checkout.
+- Passed scripts: household inventory accounting, double-entry transactions, accounting ledger rendering, household-stock consumption, finance, payroll accounting and harvest validation (7/7). The initial run found a contradictory household-stock test fixture (starting rice stock was 1 while expected post-purchase stock was 1); the fixture now starts at 0 and the rerun passed.
+- Scope is limited to these seven tests. Browser E2E and the complete repository test inventory have not been run. The local environment still cannot resolve `github.com`; CI supplies the actual checkout. `main` and owner-validated coconut data remain untouched.
+
+---
+
+## Latest continuation checkpoint — targeted regression CI setup (2026-10-17)
+
+- Added `.github/workflows/targeted-regression.yml` on `feat/production-tier-taxonomy`, configured for Node.js 22. It executes seven standalone regression scripts: household inventory accounting, double-entry transactions, accounting ledger rendering, household stock consumption, finance, payroll accounting and harvest validation.
+- Workflow commit: `8f0a914d247d2027ee9f6dd0a5eae230e7ddb33c`. GitHub commit status and PR-associated workflow-run lookup currently return no checks/runs for the preceding checkpoint. A real local checkout could not be obtained because DNS resolution for `github.com` fails in this environment.
+- Do not mark tests passed until an actual Actions run or a checkout-based Node execution confirms it. Browser E2E remains outstanding. `main` and owner-validated coconut data remain untouched.
+
+---
+
+# Agrotycoon implementation ledger — 2026-10-17
+
+## Latest verified continuation checkpoint — household package-stock consumption (2026-10-17)
+
+- Active branch `feat/production-tier-taxonomy`; starting HEAD `be279efaed2270f57bad3d1721c1cd51d7fe08f9`. Never modify `main`; its HEAD at start was `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut prices/yield data remain untouched.
+- Implemented package-stock consumption in `js/day.js`: rice, egg, oil, mie, tempe, sayur and lauk consume one package after the existing `DATA.living[key].period` number of use-days. Progress resets after consumption; empty stock does not become negative or accumulate a fake consumption timer. Automatic shopping now buys only when the corresponding package stock reaches zero, preventing scheduled purchases from piling up while stock remains.
+- Added `livingUseDays` to fresh saves and backward-compatible initialization for older saves in `js/state.js`. Existing `livingStock` quantities are preserved; no stock is reset or inferred from past purchases. Manual and automatic restocking reset the use timer only when stock was empty (`js/economy.js`, `js/day.js`).
+- Added `tests/living_stock.test.js` for legacy saves without progress maps, rice/egg package duration, repeat consumption, empty stock, non-stock utilities and negative legacy quantities.
+- Verification: syntax parsing passed for changed modules and test source; helper runtime scenarios passed in an isolated V8 harness. This is not a checkout-based `node tests/living_stock.test.js` run or browser E2E.\n- Follow-up verification correction: the consumption helper now writes the normalized nonnegative integer quantity back to `S.livingStock`, so negative legacy values are actually clamped to zero (not merely treated as zero for one calculation). The isolated runtime check includes this case.\n
+- Accounting limitation: household purchases are still posted as cash expenses at purchase time. This change adds stock quantities/consumption but does not yet switch household journal entries to debit household inventory and recognize kitchen expense on consumption. Cash-flow policy when mandatory auto-purchases exceed available cash also remains unresolved.
+- Next: obtain a repository checkout/Node runtime and run `node tests/living_stock.test.js`, payroll/finance tests and the existing accounting/harvest suite; then align household inventory valuation and expense recognition with the owner's double-entry rules. Do not change coconut values or create branches.
+
+
+---
+
+## Latest verified continuation checkpoint — payroll accounting + household-stock audit (2026-10-17)
+
+- Work branch: `feat/production-tier-taxonomy`; prior verified HEAD `5dc48a2ab815d0f514f37911895f981424f817c2`. Keep `main` untouched and do not change owner-validated coconut data/prices.
+- Payroll accounting: `js/economy.js` now classifies paid wages as debit Beban Gaji / credit Kas. `js/staff.js` records unpaid wages as debit Beban Gaji / credit Utang Gaji on a noncash basis, and arrears repayments as debit Utang Gaji / credit Kas. Unpaid wage ledger amounts now carry the expense value while `basis: noncash` keeps them out of cash reconciliation.
+- Added `tests/payroll_accounting.test.js` for paid wages, accrued unpaid wages and partial arrears repayment. Actual fetched runtime modules passed these scenarios in an isolated V8 harness; the new test source and modified modules were syntax-parsed. This is not a repository-checkout Node test run.
+- `livingStock` audit across `js/state.js`, `js/day.js`, `js/economy.js`, `js/ui.js`, `js/data.js`, `js/akuntansi.js`, and `stock.html`: the field is initialized/migrated in state; automatic purchases increment it; `buyLivingItem()` increments it; no decrement/consumption reference was found in the audited files. `DATA.living` declares periods (rice 10, egg 5, oil 30, mie 3, tempe 2, sayur 1, lauk 2 days), but `finishDay()` hardcodes intervals for most items and rice checks only stock <= 0. Consequently the counter is not a validated inventory balance; rice can fail to restock after the initial stock, while other scheduled purchases can accumulate without consumption. Purchases are booked as cash expenses when bought, not when consumed.
+- No living-stock behavior was changed in this pass because legacy saves contain counters that have never been decremented; silently interpreting/resetting them would invent a migration/consumption rule. Next: define backward-compatible stock consumption semantics using the existing `period` contract and test legacy saves before modifying the behavior. Full Node suite/browser E2E still need a real checkout; clone previously failed due DNS.
+
+
+---
+
+## Latest verified continuation checkpoint — financing journal metadata (2026-10-17)
+
+- Work branch: `feat/production-tier-taxonomy`; starting HEAD was `eedb7db27315c1dcd87a4dfb7affa4e10648031e`. No branch was created, `main` was not modified, and validated coconut-price/benchmark data was not changed.
+- Updated `js/finance.js`: loan disbursement posts debit Kas / credit Utang Pinjaman; accrued interest posts debit Beban Bunga / credit Utang Bunga with `basis: noncash`; repayments split debits between Utang Bunga and Utang Pinjaman and credit Kas. Multi-line debit/credit totals are equal.
+- Updated `js/akuntansi.js` to render multi-line posting accounts and line-level debit/credit details. Noncash interest remains excluded from cash reconciliation while still classified as an expense.
+- Updated `tests/finance.test.js` to assert balanced loan origination, interest accrual, and repayment postings. The test source was syntax-parsed and the corresponding runtime scenarios were executed in an isolated V8 harness using the fetched module. This is **not** a run of `node tests/finance.test.js` in a repository checkout.
+- Isolated runtime checks passed: Rp5,000,000 disbursement increases cash without increasing operating revenue; Rp2,500 interest accrual is noncash and does not alter cash movement; Rp100,000 repayment reduces cash and splits Rp2,500 interest plus Rp97,500 principal into balanced debits against Kas credit. Accounting renderer showed Utang Pinjaman, Beban Bunga, Utang Bunga, and cash reconciliation (opening Rp30,000,000, closing Rp34,900,000).
+- Limitations: full checkout-based Node suite and browser E2E remain unrun because the previous clone attempt failed on DNS. Other legacy finance/payroll ledger rows may still lack explicit posting metadata; inventory consumption/COGS and household stock-consumption behavior remain separate unfinished tasks.
+- Next: run the finance and accounting test files in a real Node checkout when available; then continue the `livingStock` audit (purchase cadence vs consumption) without inventing a meal schedule. Keep owner-validated coconut data locked.
+
+
+---
+
+## Latest owner-requested accounting implementation checkpoint (2026-10-17)
+
+- Code branch was re-fetched before edits: `feat/production-tier-taxonomy`; prior HEAD was `a80e8cafb30be7958b31c2402d1fdc3e6b50ed1d`. No branch was created and `main` was not modified.
+- Code commits:
+  - `3051b5b32131a948e88c888fbe915a9bbe2c31bf`: `js/state.js` now permits optional accounting metadata on each ledger row without changing old save rows.
+  - `a6d2de9b14fc00d0dac02747cf595ce70bd682dc`: `js/economy.js` posts balanced cash entries. Sales: debit Kas / credit Penjualan. Household kitchen purchases: debit Beban Dapur / credit Kas. Other household spending: debit Beban Pribadi / credit Kas. `BELANJA`: debit Pembelian Bahan Baku / credit Kas. `TENAGA`: debit Beban Tenaga Kerja / credit Kas. `CAPEX`: debit Aset Tetap/Modal / credit Kas.
+  - `86e1f949332f298de46f0c30b72b3e7774e789be` and `0f171ae5342f6297f067c9538ac3a5c8179d62ec`: `js/akuntansi.js` now displays debit/credit columns and monthly business vs household totals, plus a cash reconciliation; known non-cash event categories are excluded from cash movement.
+  - `7b52b02a72347f8192f8a2d117c1a686a8804872`: revised `tests/accounting_ledger.test.js` for a sample Rp400,000 sale, Rp50,000 material purchase, Rp62,000 kitchen purchase and expected Rp1,288,000 closing cash from Rp1,000,000 opening cash.
+  - `ad804fff71710b6405918ce3c6f3859e9993acb8`: added `tests/double_entry_transactions.test.js` for live `earn()`/`spend()` posting behavior.
+- Current observed code/test HEAD before documentation refresh: `ad804fff71710b6405918ce3c6f3859e9993acb8`. GitHub combined commit status returned no status checks. The two committed Node test files have **not been executed as test files in a repository checkout**. However, an isolated V8 harness executed the fetched current `js/economy.js` functions and `js/akuntansi.js` renderer: JS syntax checks passed for `state.js`, `economy.js`, `day.js`, `akuntansi.js`, and both test files; the sale Rp400,000 + purchase Rp50,000 + kitchen Rp62,000 case produced cash Rp1,288,000, cash-in Rp400,000, cash-out Rp112,000, and equal debit/credit amounts for all three transactions; the accounting UI rendered the kitchen account, Rp350,000 business subtotal, cash reconciliation and double-entry journal. This is targeted isolated-harness evidence, **not** a checkout-based Node test-suite run or browser E2E.
+- Important accounting boundary: the ledger now stores balanced debit/credit metadata for new cash transactions, but purchases are currently classified as `Pembelian Bahan Baku` at purchase time. Actual consumption-based COGS, inventory cost layers, spoilage write-offs, depreciation, complete non-cash journal entries and a full trial-balance/financial-statement engine are not implemented. Therefore the displayed “hasil usaha” is a cash-transaction subtotal, not yet a fully reconciled accrual-accounting net profit.
+- Household food names configured in `DATA.living` (rice, egg, oil, mie, tempe, sayur, lauk) are classified to `Beban Dapur`; household electricity, pulsa, personal fuel and bath/laundry are classified to `Beban Pribadi`. Business-unit utilities still need explicit business-unit attribution; do not infer that household utility values are business utilities.
+- Existing ledger rows without accounting metadata are reconstructed only for known legacy categories/food descriptions. Unrecognized legacy rows remain unclassified. New rows are recorded in real time when `spend()`/`earn()` is called. The cash reconciliation derives opening cash from the current cash balance minus the month’s recognized cash movement; verify loan/disbursement/repayment paths and non-cash events before treating all financing flows as fully classified.
+- Dividend/investment payment flows remain unimplemented. If implemented later, the owner’s rate is 0.001% (= 0.00001), not 0.1%; eligible base, period, payment verification, timing and rounding must be specified first.
+- Next: execute both accounting tests in a real checkout; fix failures; add regression tests for non-cash interest and loan cash movements; then implement consumption-based raw-material inventory/COGS and business-unit utility attribution without double-counting cash or profit.
+
+
+This ledger separates shipped code from incomplete work. No Supabase integration has been started.
+
+
+> **CURRENT CHECKPOINT (2026-10-17; read before any work)**
+>
+> - Repository: `Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator`.
+> - Active branch at checkpoint creation: `feat/production-tier-taxonomy`; verified pre-documentation-update HEAD: `0beaab144af1fe7fd22e6d34ba3de61e6e25b1a3` ([commit](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/commit/0beaab144af1fe7fd22e6d34ba3de61e6e25b1a3)). This documentation refresh itself will create a newer commit, so **always fetch the live branch HEAD before resuming** and do not assume the embedded baseline is still the latest SHA.
+> - Branches observed: exactly 3 — `main` = `612451c03be59dd8cacd3b13adb8a79a46e51be2`; `fix/core-auto-warung-accounting-ui` = `c6c035f86320299629bdc2916f9478ff3c6a770a`; `feat/production-tier-taxonomy` = `0beaab144af1fe7fd22e6d34ba3de61e6e25b1a3`. No branch was created during this work. Never modify `main`.
+> - Other-agent branch audit: recent commits on `fix/core-auto-warung-accounting-ui` cover legacy debt aggregation, payroll liability, interest accrual, daily cash-flow reporting, market price stages and documentation. Compare reported this branch 59 commits ahead and 0 behind; re-check compare if either branch moves.
+> - Harvest affordability fix: `js/economy.js`, commit `2d0ed8ed580e99db9cdb00cfb99221441f00b51b`. Yield/cost/cash are validated before harvest dates, stock and expenses mutate. Test file: `tests/economy_harvest.test.js`; localStorage mock/harness documentation commit: `699de05b986a189344d1579c9cf0399d4fa7d8ba`.
+> - Accounting journal update: `js/akuntansi.js` commit `d3830be63dc3da05392f668f0d40b2a4c00f802b` adds a transaction journal showing up to the latest 200 ledger entries, including household `HIDUP` costs and detail fields with HTML escaping. Regression test added at `tests/accounting_ledger.test.js` in commit `b77a5e098558ec06d427114bfa9d03701e34e300`; **this new test has not been executed**.
+> - Test evidence: 3 harvest scenarios passed in an isolated V8 harness using fetched `state.js` + `economy.js`: insufficient cash has no side effects; exact affordability posts one harvest/labor expense; zero yield has no side effects. Test file syntax was checked. Nine prior tests passed in an isolated harness at parent HEAD `7dd6d4511922f17497f777af82bbdd2537cbf2be`. **No checkout-based Node suite or browser E2E has been run.** A Git clone attempt previously failed due DNS.
+> - Architecture gap: `S.stock` (coconut stock/age) and `S.warung` (ice/sugar/cups plus business flags) remain legacy state stores. `js/commodity_transformation.js` is planning-only; live purchase/harvest/process/sale flows are not connected. Do not add a second inventory map until canonical-source and backward-compatible save-migration semantics are designed.
+> - Cash/accounting audit (owner clarification 2026-10-17): `js/day.js::finishDay()` automatically records household food and daily necessities through `spend()` as mandatory expenses; do not skip them because cash is low. The player starts living alone with no partner or employees and Rp5,000,000. Cash can become negative; no household payable exists. The accounting page previously showed only monthly P&L, balance sheet and daily aggregates; `js/akuntansi.js` now includes a transaction journal (latest 200 ledger rows) so `HIDUP` entries and details are visible. Low-cash representation is still unresolved: do not invent debt/overdraft semantics. In inspected `js/state.js` and `js/day.js`, `livingStock` is initialized/incremented but no daily consumption decrement was found; household purchase cadence therefore must not be described as a complete food-consumption model. Audit other call sites and define consumption/cost recognition before changing the simulation.
+> - Next task: inspect `livingStock` references across the game and accounting reports, establish whether food is represented as purchases, daily consumption, or both, and add tests for the chosen behavior. Do not invent a menu/consumption schedule beyond the owner's stated rule that daily food cost varies by side dish. Resolve low-cash treatment from existing contracts or ask the owner if still ambiguous. Then design canonical inventory migration with quantity/unit, quality/age, acquired day, cost basis/source and provenance before transaction integration. Update this checkpoint and ledger after every work unit.
+
+## Owner accounting requirements (2026-10-17)
+
+- Separate business gross/operating result from household living costs. Food and side-dish spending belongs in a dedicated `DAPUR`/kitchen expense category and must be rolled up monthly; household electricity, water, phone, personal fuel, and bath/laundry costs must remain distinguishable from utilities attributable to a business unit.
+- Monthly report must show revenue, direct/business costs, business result before household expenses, itemized household/kitchen costs, other personal costs, and final residual/after-household cash result. Monthly cash movement must reconcile opening cash + cash inflows − all cash outflows = closing cash. Loans and developer special-investment deposits are financing, not sales revenue. Example figures Rp4m gross, Rp100k–Rp500k business costs, Rp1.5m kitchen costs are illustrative only.
+- Owner clarified developer special-investment dividend rate is 0.001% (= decimal 0.00001), not 0.1%. This is a future design requirement only. Before implementation, define eligible investment base, distribution period, payment verification, timing, and rounding.
+- Current `day.js` records food and personal utility-like items under `HIDUP`; `spend()` aggregates all costs in `dayLog.expense/cashOut`. A label change alone will not fix accounting. Add explicit expense classification and monthly rollups without double-counting or breaking existing saves.
+
+## Owner clarification and accounting constraints (2026-10-17)
+
+- Harvest labor is Rp500 per harvested coconut (`DATA.laborPerFruit`); this value already exists in `js/data.js`. Total labor cost must be computed as harvested quantity × Rp500 and recorded once.
+- Starting cash is Rp5,000,000 (`defaultState()` in `js/state.js`). Player starts as a single person living alone, with no partner and no employees. Do not add partner/family or employee household expenses to the starting scenario.
+- Daily household food and necessities are required living expenses, recorded in the books. The total varies with the food/side-dish mix and the configured purchase schedule; they are not optional player purchases. Current code books them through `spend()` without an affordability gate. Cash-shortfall accounting remains unresolved: do not silently skip costs or introduce household debt without an established rule.
+- Future real-money purchases of game currency, when implemented and payment-verified, must be classified as a special developer investment into the paying game account—not ordinary operating revenue and not a loan. Dividends should be very small per owner direction. This is a design requirement only; do not imply payment verification, investment accounting, or dividends are implemented today.
+
+## Frontend and local simulation changes in this branch
+
+- Main player navigation is hamburger-based; pages include game, stock, accounting, assets/staff, market, world simulation, historical import, achievements, progression, and credit.
+- Added `stock.html` and `assets.html`.
+- Added `kemajuan.html` + `js/progression.js`: level/wealth thresholds for land, staff, expansion, loans, consultants, and government. Land purchases and crop planting check progression.
+- Fixed `gainXP` to advance through multiple levels if one reward crosses multiple thresholds.
+- Added `js/staff.js`: local staff hiring/dismissal and daily payroll; unpaid wages accrue as a liability. Wage rates are explicitly experimental assumptions.
+- Added `kredit.html` + `js/finance.js`: local-only loans, eligibility, daily interest accrual, partial/full repayment, and overdue status. Interest rate and loan limits are experimental game rules, not real-world offers.
+- Accounting now includes recorded loan and payroll liabilities and purchased land book costs.
+- Added regional qualitative land-use/logistics profiles. They are labeled hypotheses, not official suitability classifications or appraisals.
+- Improved historical CSV import for comma/semicolon/tab delimiters, Indonesian number formats, year/month periods, and market-level provenance.
+- Fixed the world simulation's state lookup: the save uses top-level lexical `let S`, so checking `window.S` prevented initialization.
+- Added `tests/world_simulation.test.js` and `tests/finance.test.js`.
+
+## Additional implementation in the latest pass
+
+- Added `kredit.html` and `js/finance.js`: local loan application, eligibility, capped principal, daily interest accrual, partial/full repayment, and overdue state.
+- Added `js/market_chain.js` and a market-chain table for producer, middleman, wholesale, direct-sale, and factory stages. Missing stages stay null; game-only values are labeled as parameters.
+- Added regional qualitative profiles for Banten, Central Java, East Java, Jambi, South Kalimantan, Central Kalimantan, South Sulawesi, NTB, and Riau, with farming/trade ideas and logistics risks. These are hypotheses, not official land suitability results.
+- Daily reports now separately track cash inflow, cash outflow, and net cash flow rather than conflating cash flow with profit. Accounting includes recorded loan/payroll liabilities and purchased land cost.
+- Importer now supports comma, semicolon, and tab-delimited CSV; Indonesian thousands/decimal separators; year/month periods; market-level field; and source URL provenance.
+- Audited liability aggregation across credit summary and accounting. `AgroFinance.totalDebt()` now includes active/overdue loans, payroll payable, and legacy `finance.debt`, matching the three liability components shown by accounting.
+- Extended `tests/finance.test.js` to cover legacy debt and payroll aggregation, and ensure new loan liabilities do not mask existing obligations.
+
+## Verification actually performed
+
+- JavaScript syntax compilation passed for the changed core JS modules and inline scripts in the principal frontend pages.
+- Runtime smoke test simulated 365 in-game days: nonnegative inventories, finite and bounded price indices, deterministic event sequence and price indices, and all generated bulletins marked `SIMULASI` passed.
+- Earlier local module smoke tests passed for progression, staff hiring/payroll, loan eligibility/origination, interest accrual, and repayment.
+- CSV parser smoke test passed for semicolon-delimited rows and Indonesian numeric formats.
+- Final syntax checks passed for core JavaScript modules and inline scripts on all principal frontend pages. Historical smoke-test results are recorded above; they do not mean every current test file was run against the latest commit.
+- `tests/finance.test.js` now contains focused assertions for loan lifecycle and liability aggregation, but **this latest version has not been executed in a Node runtime during this pass**. Do not report it as passing until `node tests/finance.test.js` is run.
+- A full browser end-to-end run was not performed. A local clone could not be obtained in the current runtime because network DNS resolution failed; this does not affect the GitHub commits but limits browser verification.
+
+## Historical data coverage: honest count
+
+The current curated registry in `js/real_economic_data.js` contains:
+- 8 food-price points for national consumer/producer-labelled series for period 2026-03 (one observation per listed commodity; not a time series).
+- 5 subsidized-fertilizer HET points, dated 2025-10-22.
+- 3 feed-price points, dated 2026-09.
+- 17 provincial live-cattle producer price points, snapshot 2026-10-14.
+- 46 coconut price points: annual producer and consumer prices for 2002–2024 (23 observations per market stage), Rp/butir, national.
+- 14 official toll segment tariff entries.
+
+That is 79 food/input/animal/coconut price records plus 14 toll-segment entries; it is **not thousands of historical price observations**. The toll entries are transport parameters, not commodity observations. No bulk BPS monthly tables, Bapanas provincial producer/consumer time series, SPORA feed history, or BNPB raw event workbook has yet been committed as normalized observations.
+
+## Official sources to ingest next
+
+- BPS agriculture producer prices 2025: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html
+- BPS livestock and fisheries producer prices 2025: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html
+- Bapanas producer prices by province: https://data.badanpangan.go.id/datasetpublications/5jb/rata-rata-harga-pangan-bulanan-produsen-provinsi
+- Bapanas consumer prices by province: https://data.badanpangan.go.id/datasetpublications/sw6/rata-rata-harga-pangan-bulanan-konsumen-provinsi
+- SPORA feed prices: https://simpakan.ditjenpkh.pertanian.go.id/spora/backend/web/site/data-harga
+- BNPB disaster dataset: https://data.bnpb.go.id/dataset/data-bencana-indonesia
+- SIMPONI Ternak daily history: https://simponiternak-v1.pertanian.go.id/harga-komoditas.php
+
+Bulk import acceptance rule: retain raw file and source metadata, normalize with market stage and units, count accepted/rejected/duplicates/missing values, and do not write estimated values into the historical observation store.
+
+## Remaining requested work
+
+1. Complete historical bulk ingestion and validation; the importer UI is only a local CSV/JSON validation path, not an automated downloader or bulk ETL pipeline.
+2. Expand the engine beyond five simulated regions and four tracked crops; currently simulated indices are experimental and are not yet wired into all actual sale transactions.
+3. Add regional commodity chains (producer, middleman, wholesale market, direct sale, factory) only where sourced data exists; unknown stage prices must remain null.
+4. Connect generic commodity inventory to every purchase, harvest, processing, and sale transaction.
+5. Finish stock/accounting/assets UI integration, audit valuation and daily cash-flow semantics, and run browser end-to-end tests.
+6. Implement and test level unlocks for all action paths, not only land acquisition and crop planting.
+7. Add consultant/mentor/government gameplay only after simulation/data validation. Consultant price plan (1–10 Gold/project) and US$5/100 Gold remain design notes; premium Gold wallet and real payments are not active.
+8. No Supabase until frontend workflows and local simulation are complete and tested.
+
+
+## Production tier taxonomy pass — 2026-10-17
+
+- Read the owner's Library blueprint documents, including `data game.docx`, `harga komoditi.docx`, and `data peternakan dan pertanian.docx`; Tier definitions were found in `data game.docx`.
+- Added `docs/PRODUCTION_TIERS.md` to preserve the exact production taxonomy and explicitly distinguish it from the market-stage columns used in `harga komoditi.docx`.
+- Added `js/production_tiers.js`: dependency-free metadata for Tier 1 raw (0% school buff), Tier 2 semi-processed (+10%), Tier 3 industrial (+15%), Tier 4 national specialization (+20%); normalizer, lookup, upward-transition check, and minimal definition validation.
+- Added `tests/production_tiers.test.js` for tier metadata, normalization, invalid input, upward transitions and product-definition validation.
+- Important: school buffs are design values from the blueprint, not verified empirical productivity effects. This does not create commodity prices, recipe ratios, yields, costs, or historical observations.
+- Verification: `node tests/production_tiers.test.js` passed against byte-identical scratch copies of the newly committed module and test file (PASS: taxonomy, normalization, transition checks and validation). The test has **not** been run from a checked-out repository working tree. Existing finance/world-simulation tests and browser E2E were not run in this pass.
+- Next: run the new test and current finance/world-simulation tests in a real Node environment, then select one commodity for a source-backed end-to-end production chain. Keep `productionTier` separate from `marketStage`. No backend/Supabase work.
+
+## Unit economics + coconut historical prices — 2026-10-17
+
+- Added `js/unit_economics.js`: scenario validator and calculator for revenue, required production after waste, purchased vs self-produced input costs, stand-only cash result, integrated-chain operating cash result, accounting profit after depreciation, opportunity-adjusted profit, HPP per saleable unit, contribution margin, break-even volume, and startup capex.
+- Provenance is tracked separately for selling price, planned sales volume, waste, recipe quantity, each relevant input price, variable costs, fixed costs, and capex. Fixed costs and assets can be scoped to stand, upstream, or the whole chain. Numeric completeness does not mean real-data validation. Missing required cost inputs block the calculation; missing evidence marks the result as incomplete-provenance.
+- Added `tests/unit_economics.test.js` for es-kelapa-shaped buy-vs-own scenarios, internal-chain cost counted once, opportunity cost, depreciation, invalid waste and missing costs/provenance.
+- Added `docs/UNIT_ECONOMICS_AND_BUSINESS_MODEL_CONTRACT.md` with the canonical business schema, accounting rules, es-kelapa benchmark, extension to fertilizer/feed/pellets/processing and acceptance criteria.
+- Added 46 official historical coconut-price observations to `js/real_economic_data.js`: annual 2002–2024 producer and consumer prices (23 each), Rp/butir, national, source: Kementerian Pertanian Pusdatin's *Outlook Komoditas Perkebunan Kelapa Tahun 2025*, Lampiran 27; underlying price series attributed to BPS/Susenas. Official source: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_KELAPA_2025_sign.pdf. 2024: producer Rp3,422/butir; consumer Rp6,061/butir.
+- Added `tests/real_economic_data.test.js` for row count, source URL, 2024 values, unit and stage separation.
+- Benchmark correction (2026-10-17): owner standards preserved — direct whole coconut Rp13,000, es kelapa Rp5,000/glass, 4 glasses/coconut, no milk. Cup pack was inconsistent (Rp8,000/20 in shop input versus Rp15,000/50 in both starter packs); shop input is now aligned to Rp15,000/50 (Rp300/cup), within current online 16 oz/50-piece comparables. Ice is Rp500/glass; syrup allowance Rp400/glass; corrected listed non-coconut consumables subtotal is Rp1,200/glass. Old Rp1,525 lesson figure was unsupported by its stated component arithmetic. This subtotal excludes coconut, labor, water/gas, spoilage, transport, utilities and fixed costs.
+- Verification: the committed `tests/unit_economics.test.js` and `tests/real_economic_data.test.js` were both executed against the fetched committed module/registry and test sources in an isolated V8 harness with Node API stubs; both passed. The unit-economics test also passed in a scratch Node v22.16.0 harness using equivalent local copies. These are not repository-checkout runs. Existing finance/world-simulation tests and browser E2E were not run in this pass.
+- This work does not yet wire the calculator into all business UIs/transactions, provide real es-kelapa recipe inputs or local stand demand, or deliver thousands of observations. The new 46-point coconut price series is a first source-backed slice, not the target dataset volume.
+
+## Owner es-kelapa benchmark correction — 2026-10-17
+
+- Preserved the owner-provided direct-customer price Rp13,000/whole coconut, es price Rp5,000/glass, 4 glasses per coconut, no-milk recipe, and syrup batch serving 50 glasses.
+- Corrected `js/data.js` cup pack to Rp15,000/50 (Rp300/cup), consistent with the existing starter-pack price and online 16 oz cup comparisons (roughly Rp12,100–Rp18,246 per 50 pieces; marketplace references, not an owner supplier invoice).
+- Kept the Rp20,000 syrup batch allowance for 50 portions (Rp400/glass), but documented that this is provisional: online reference is Rp20,000/kg gula merah; actual grams of gula merah used per 1 L Tupperware and cooking fuel/water costs are unverified.
+- Updated lesson to call Rp1,200/glass the listed **non-coconut consumables subtotal**, not full HPP: ice Rp500 + syrup Rp400 + cup Rp300. It excludes coconut, labor, water/gas, spoilage, transport and fixed costs.
+- Derived comparison: four glasses gross Rp20,000; whole coconut direct sale Rp13,000; four glasses' listed consumables Rp4,800; processing route's advantage over whole-fruit sale is Rp2,200/coconut before omitted costs. This is not net profit.
+- Added `docs/ES_KELAPA_OWNER_BENCHMARK.md` and `tests/es_kelapa_benchmark.test.js`. Run the new test before claiming it passes. No national producer price is substituted for the owner's direct customer price. No milk added.
+
+## Credit identifier integrity fix — 2026-10-17
+
+- Fixed `js/finance.js` loan ID generation: IDs now combine the timestamp with a module-local sequence and check existing loan records, preventing collisions when two applications occur during the same millisecond.
+- Added a deterministic regression case to `tests/finance.test.js` that freezes `Date.now()`, originates two loans, and asserts unique IDs plus correct combined liabilities.
+- Verification boundary: the GitHub repository could not be cloned in the current runtime because DNS resolution for github.com failed. The committed test has not yet been run with Node against a repository checkout. Do not report the repository test suite as passing until run in a real checkout.
+
+
+## Repository-wide branch and commit audit — 2026-10-17
+
+- Branches observed: `main` (`612451c0`), `fix/core-auto-warung-accounting-ui` (`c6c035f8`), and `feat/production-tier-taxonomy` (latest audit commit `b360ba96`). Main remains untouched.
+- The Tier branch includes prior UI/accounting/credit work plus Tier taxonomy, provenance-aware unit economics, 46 annual coconut producer/consumer price observations (2002–2024), owner es-kelapa benchmark correction, and collision-resistant loan identifiers.
+- GitHub commit metadata for inspected history uses the same bot identity for author/committer, so commit ownership by individual AI agent cannot be established from the repository metadata. Commit messages are useful for task chronology but do not prove which agent performed each task.
+- Source discrepancy found in `data game.docx`: around page 192, Tier 4 examples include technology/electronics/weapons; around page 199, Tier 4 examples include technology/heavy equipment/clean energy while electronics is Tier 3. `docs/PRODUCTION_TIERS.md` now documents the conflict rather than silently selecting across both sections. Current module uses the page-199 national-production table as provisional canonical examples.
+- No pull requests were returned by the connected PR search. The branch comparison reports `feat/production-tier-taxonomy` 204 commits ahead and 2 behind `main`; `fix/core-auto-warung-accounting-ui` 160 ahead and 2 behind. These are Git history counts, not completed-feature percentages.
+- Do not treat this audit as test validation: finance and browser E2E still require execution in a real checkout as documented.
+
+
+## Owner market-stage contract — 2026-10-17 follow-up
+
+- Updated `js/market_chain.js`: owner-verified farmer-to-tengkulak field price is Rp3,400/butir; owner direct-to-customer whole-coconut price remains Rp13,000/butir. The existing Rp5,000 collector sourcing value remains unchanged and is explicitly labeled a game parameter.
+- Added separate `processorPurchase` and `retailConsumer` fields for kelapa. Collector-to-es-kelapa/santan purchase price remains unknown (`null`) until a matching transaction source is available. National household consumer data is comparison data only, not a proxy for business input purchases.
+- Added `tests/market_chain_contract.test.js` for owner-price immutability and market-stage separation. Test source is committed but has not been executed in a real repository checkout.
+- No official dataset was used to overwrite any owner-provided price. No claims are made that the new test passes until executed.
+
+
+## Finance rounding hardening — 2026-10-17
+- Changed `js/finance.js` to carry daily fractional-interest rounding remainder per loan; the prior implementation rounded each day's interest independently and could systematically overstate small-principal loans.
+- Extended `tests/finance.test.js` with a small-principal 30-day accrual case, ledger total assertion, due-day overdue assertion, and same-day idempotence check.
+- No coconut/commodity prices, market-chain data, or user-validated field data were changed.
+- Test execution: not run in this change pass because no repository checkout/Node test runner was available through the connected GitHub workflow. Do not mark as passing until executed against the branch.
+
+
+## Coconut price-stage protection — 2026-10-17
+
+- Clarified the owner-locked Rp13,000/butir lapak price in `js/market_chain.js` and `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+- The value means the owner's direct-to-final-consumer whole-coconut product, packaged in plastic for the stated medicinal-use context. It is not a farmgate, collector, wholesale, or national consumer-survey observation.
+- Documented the distinct chain context supplied by the owner: farmer → collector; collector → market about Rp5,000; sampled market → consumer Rp6,000+; owner's lapak → consumer Rp13,000.
+- No coconut numeric values in `js/data.js` were changed. This pass updates semantic notes and documentation only; no price was recalibrated.
+- Validation: content/diff review only; repository Node tests were not executable in this tool environment.
+
+
+## Owner chain tier standard — 2026-10-17
+- Added `js/commodity_tier_chain.js` for Tier 1 producer/raw, Tier 2 distributor/market, Tier 3 retail/lapak/santan, Tier 4 finished foods/manufactures (rendang, cakes, coconut oil, coconut-milk dishes, bath soap).
+- Added `tests/commodity_tier_chain.test.js` and `docs/COMMODITY_CHAIN_TIER_STANDARD.md` with provenance rules and internet benchmark sources.
+- Separate from `js/production_tiers.js`; no coconut numeric values changed, and owner Rp13,000 remains locked.
+- Node tests not run in this environment; buy/sell flows are not yet fully wired to the schema.
+
+
+## Tier 4 coconut expansion and residue recovery — 2026-10-17
+- Expanded Tier 4 definition to include coconut oil made by heating santan for several hours and viable coconut seedling production from nuts unsaleable for consumption.
+- Owner land inputs documented: 37-tree capacity, 30 occupied, 7 free slots, seedling pots at approximately 0.5 m spacing. These are design assumptions supplied by owner, not agronomic validation.
+- Generalized residue-recovery policy to all commodities: validate safety and feasibility, record alternate output, inputs, yield, process costs, packaging, transport and market evidence; do not invent residual value or assume residue is free.
+- Updated taxonomy metadata and standard documentation. Tests not executed; live production/inventory/sales/accounting integration remains pending. No coconut numerical prices or `js/data.js` values changed.
+
+## Generic commodity transformation engine — 2026-10-17
+
+- Added `js/commodity_transformation.js`, a dependency-free planner for multi-input recipes, primary outputs, by-products, explicit waste outputs, process-cost lines, batch capacity and inventory-shortage checks.
+- Unknown physical quantities, saleable output prices, and required process costs remain null and block execution or complete economics. By-products do not generate revenue unless explicitly saleable and backed by price provenance. Waste cannot be declared saleable.
+- Added `tests/commodity_transformation.test.js` with synthetic-only fixture values. These are not real-world commodity prices, recipes, yields or costs. The test passed when the fetched committed source and test were executed in an isolated V8 harness; this is not a repository checkout or browser E2E.
+- The planner is loaded by `index.html` but is not connected to live player transactions or save inventory yet.
+
+## Transaction-boundary audit — 2026-10-17
+
+- Current gameplay uses legacy `S.stock` for coconut quantity/quality/age and `S.warung` for ice/syrup/cup stock. Purchase, harvest, and sales functions directly mutate those fields and write cash/ledger entries through `spend()` / `earn()`.
+- A generic inventory map does not exist. Do not mirror legacy stock into a second inventory map without a migration and single source of truth; that would risk double counting and save-state divergence.
+- Next: define canonical commodity lots (commodity ID, quantity, unit, quality/state, acquired day, cost basis/source), migrate old saves once, then route purchases, harvest, processing and sales through one transaction API with rollback-safe validation.
+
+## Repository file-path integrity repair — 2026-10-17
+
+- The branch audit found four content/path mismatches: the owner chain-standard document was stored in `docs/AGENT_HANDOFF.md`; the Tier-chain test code was stored in `docs/COMMODITY_CHAIN_TIER_STANDARD.md`; the implementation ledger was stored in `tests/commodity_tier_chain.test.js`; and the handoff text was stored in `docs/IMPLEMENTATION_STATUS_2026-10-17.md`.
+- Restored each document/test to its intended path using the content already present in the branch. No gameplay price or owner benchmark was changed by this repair.
+- Re-run the Tier-chain test and check these paths before relying on earlier status statements.
+
+
+## Finance test-contract correction — 2026-10-17
+
+- Isolated execution exposed a test-contract mismatch: `tests/finance.test.js` expected a repayment of Rp1 to be rejected while `js/finance.js` intentionally permits any positive partial repayment up to the amount due. This did not establish a production-code defect.
+- Corrected the regression assertion to reject zero and negative repayment amounts instead. A positive Rp1 partial repayment remains permitted by the current contract; no minimum installment rule was invented.
+- Re-run result is pending after this correction. All reported tests are isolated fetched-source executions, not a local checkout suite.
+
+
+## Harvest affordability and mutation-order fix — 2026-10-17
+
+- Source audit found `harvest()` marked every ready tree as harvested before checking whether the player could afford labor. It also called `spend()` without checking available cash, so an otherwise valid harvest could create negative cash and consume a harvest cycle without a valid payment.
+- Updated `js/economy.js` to calculate yield/cost first, reject non-finite/non-positive yield or invalid labor cost, reject insufficient cash, and only then mark trees harvested and post labor expense/stock.
+- Added `tests/economy_harvest.test.js` covering insufficient cash (no state mutation), exact-affordability harvest, and invalid yield.
+- Verification: the harvest scenario passed in an isolated V8 execution of fetched state/economy source (insufficient cash, exact affordability, invalid yield). The committed Node test harness was also reviewed and its localStorage mock added; repository checkout execution remains pending. No repository checkout or browser E2E is claimed.
+
+
+## Cash-affordability call-site audit — 2026-10-17
+
+Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkpoint immediately after the harvest fix).
+
+- `js/economy.js::harvest()`: fixed in `2d0ed8ed580e99db9cdb00cfb99221441f00b51b`; validates yield/cost/cash before mutating harvest dates or posting labor cost.
+- Player-initiated purchase paths in `js/economy.js` (external coconut, warung package/materials, fridge, living item, seedling) contain cash checks before calling `spend()`. Land acquisition/cultivation/care in `js/land.js` and loan repayment in `js/finance.js` also check available cash.
+- `js/staff.js::payroll()` explicitly pays wages only when cash is available and records unpaid wages as `S.finance.payablesPayroll`; prior arrears are paid from available cash before current wages.
+- **Unresolved policy risk:** `js/day.js::finishDay()` calls `spend()` for automatic household purchases, recurring utilities and monthly bills without checking cash. This can make `S.gold` negative, and the save schema does not record a separate household-payables liability. Do not silently change this to skipped purchases or new debt: those are different gameplay/economic rules. Decide and document the intended policy before patching.
+- The shared `spend()` helper itself does not enforce affordability. That is currently needed for mandatory expense paths, so adding a global guard without first resolving household-expense policy could break day progression or hide unpaid obligations.
+
+## Harvest regression verification — 2026-10-17
+
+- The isolated V8 harness executed fetched `js/state.js` + `js/economy.js` with three scenarios: (1) insufficient cash leaves cash, inventory, harvest dates, ledger and expense unchanged; (2) exact cash covers labor and adds stock once; (3) invalid zero yield changes nothing. All three passed.
+- `tests/economy_harvest.test.js` was syntax-checked and its VM context includes a mock `localStorage`. It has not been run by Node in a repository checkout.
+- Latest code commits in this unit: `2d0ed8ed580e99db9cdb00cfb99221441f00b51b` (fix), `699de05b986a189344d1579c9cf0399d4fa7d8ba` (test harness + documentation), `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (authoritative checkpoint docs).
+
+
+## Household inventory accounting integration — 2026-10-17
+
+- Implemented on `feat/production-tier-taxonomy`; `main` remained untouched. No coconut prices, yields, or owner-locked benchmark values were changed.
+- In `js/economy.js`, food-package purchases identified through the configured rice/egg/oil/mie/tempe/sayur/lauk keys are capitalized: Dr **Persediaan Rumah Tangga** / Cr **Kas**. Cash and cash-out change immediately; daily expense does not.
+- In `js/day.js`, package consumption now records a noncash Dr **Beban Dapur** / Cr **Persediaan Rumah Tangga** journal and recognizes kitchen expense once, without duplicating cash outflow.
+- In `js/akuntansi.js`, the monthly statement shows household inventory purchases separately from kitchen expense. The current-asset section includes remaining household package stock, valued using current configured package prices. Since save data does not retain per-lot historical cost, this is explicitly a current-price proxy, not historical-cost accounting.
+- Added `tests/household_inventory_accounting.test.js`. Targeted isolated V8 verification passed syntax parsing for the three changed runtime modules and test source, plus assertions for purchase cash-out, no expense at purchase, consumption decrement, balanced debit-credit, and no second cash outflow. Example: buy rice for Rp65,000 from Rp1,000,000 cash; cash becomes Rp935,000; expense remains zero until consumption; consuming one package recognizes Rp65,000 kitchen expense while cash-out remains Rp65,000. The committed Node test file has **not** been executed from a real repository checkout; browser E2E was not run.
+- Commits: `4b8dcd23acb768c718e11da7722d3380da4f1170`, `e44a238159b4c6fc5baca801579451ecf12f830b`, `c1d0c5445f4277fb09b02ab7a3e9261fa8e5cadb`, `d20e18acde7dde3905feade6fcbba4d6116a0ac1`, followed by handoff/status documentation commits.
+- Known limitation: historical purchases without the new classification remain in their original legacy kitchen-expense category; no retroactive reclassification is attempted. Mandatory auto-purchases may still make cash negative; unpaid household necessities policy remains unresolved.
+- Next: execute `node tests/household_inventory_accounting.test.js`, `tests/accounting_ledger.test.js`, `tests/double_entry_transactions.test.js`, `tests/living_stock.test.js`, and relevant finance/harvest tests from a real checkout; then browser E2E and review full balance-sheet reconciliation.
+
+
+- Follow-up validation on 2026-10-17: corrected the new household inventory test to call the real `buyLivingItem('rice')` path, including stock addition, then consumption. Updated `tests/double_entry_transactions.test.js` to expect food purchases to debit Persediaan Rumah Tangga (consumption is tested separately).
+- Rechecked syntax parsing for `js/economy.js`, `js/day.js`, `js/akuntansi.js`, and the three relevant test files. Isolated V8 scenarios passed for purchase/consumption, balanced noncash posting, cash reconciliation, and legacy stock period consumption.
+- GitHub reported no commit status checks and no workflow runs for the checkpoint commit; `.github/workflows` was not found at the feature branch. These checks are not substitutes for running the Node test files in a repository checkout. Browser E2E remains unrun.
+
+
+## Continuation checkpoint — full standalone Node regression inventory wired into CI (2026-10-18)
+
+- Expanded `.github/workflows/targeted-regression.yml` to execute all 15 currently present standalone `tests/*.test.js` scripts under Node.js 22, including commodity transformation/tier logic, coconut benchmark invariants, market-chain contracts, official economic-data provenance, unit economics, and deterministic 365-day world simulation in addition to the 7 previously targeted accounting/finance/payroll/harvest tests.
+- Workflow commit: `905cea2f92e76eef1d09c80a792f4d4fddc65861`. Expanded suite status is **pending actual GitHub Actions result**; the earlier success run `39031115000` covered only 7 scripts and must not be represented as validation of all 15.
+- No runtime source, owner-validated coconut values, or `main` branch changed. Browser E2E remains unrun.
+
+
+## Latest continuation checkpoint — all 15 standalone Node regression tests green (2026-10-18)
+
+- GitHub Actions run [39131276899](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131276899) succeeded on commit `905cea2f92e76eef1d09c80a792f4d4fddc65861` under Node.js 22. The job log confirms all 15 currently present `tests/*.test.js` scripts were invoked and passed.
+- Coverage includes accounting, household inventory/consumption, finance, payroll, harvest, commodity transformation/tier chains, coconut benchmark invariants, market-chain contracts, production taxonomy, official economic-data provenance, unit economics, and deterministic 365-day world simulation.
+- Browser E2E and full browser interaction remain unverified. This workflow run tested the code at `905cea2...`; later commits are docs-only. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Continuation checkpoint — browser smoke test wired into CI (2026-10-18; result pending)
+
+- Added `tests/browser_smoke.test.js` with Playwright/Chromium checks for homepage loading, hamburger navigation, onboarding validation/story, initial cash display, persisted onboarding completion and player-name restoration after reload, and uncaught browser exceptions.
+- Workflow now installs Playwright/Chromium and runs browser smoke after all 15 standalone Node tests. Commits: test `5663fc98d670290ef72758a14b62d86dc6277d08`; workflow `4c97501fd54043d129d5093de64e59f86d675f61`. Browser validation remains pending actual GitHub Actions logs.
+- No runtime game source or owner-validated coconut values changed. `main` remains untouched.
+
+
+## Latest continuation checkpoint — 15 Node tests + Chromium smoke test passing (2026-10-18)
+
+- GitHub Actions run [39131485716](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131485716) completed successfully on workflow commit `4c97501fd54043d129d5093de64e59f86d675f61`. Node.js 22 regression scripts (all 15) and `tests/browser_smoke.test.js` both passed.
+- Chromium smoke test exercised initial page load, hamburger navigation open/close, required-name validation, story completion, configured Rp5,000,000 starting cash, save/load restoration after reload, and uncaught browser exception checks.
+- Broader interactive gameplay is not yet validated: harvest/sale/day-change and finance/payroll UI flows still need dedicated browser coverage. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut parameters remain unchanged.
+
+
+## Continuation checkpoint — multi-page browser smoke coverage added (2026-10-18; pending CI)
+
+- Expanded `tests/browser_smoke.test.js` to visit every link in the main hamburger navigation, asserting successful HTTP responses and no uncaught browser exceptions for each route. Test commit: `2dba8ffd06ab67afd56e4c8152b3a1a132a3154d`.
+- This extension is pending a fresh Actions run; the prior successful browser run covered only the homepage/onboarding/save-load scenario. Runtime game code and owner-validated coconut parameters remain unchanged; `main` remains untouched.
+
+
+## Continuation checkpoint — market page formatter initialization fixed (2026-10-18; browser recheck pending)
+
+- Browser run `39131604320` found `Cannot access 'rupiah' before initialization` on `pasar-komoditas.html`. The page built its chain table using `stageCell()` before the `const rupiah` binding was initialized. Moved the formatter declaration above the first use; fix commit `eec6231783013285feac5e1e266a81f14370a08a`.
+- Multi-page Chromium regression is pending rerun; the earlier run stopped at this first failing route and did not verify subsequent routes. No owner-validated coconut parameters changed; `main` untouched.
+
+
+## Continuation checkpoint — browser CI now covers HTML/CSS edits (2026-10-18; run pending)
+
+- Workflow path filters now include root HTML and `css/**` changes, ensuring page-level fixes trigger regression tests. Workflow commit: `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`.
+- This CI run should verify the `pasar-komoditas.html` temporal-dead-zone fix and all hamburger menu pages with the expanded browser smoke test. Await actual run result; do not assume success. No owner-validated coconut values or `main` changes.
+
+
+## Latest continuation checkpoint — all menu pages and 15 Node regressions pass (2026-10-18)
+
+- GitHub Actions run [39131731020](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39131731020) succeeded on workflow commit `ab3c3fd0243fc52e40a92d2f42ffdc6d568d41ac`. All 15 standalone Node tests passed; Chromium browser smoke passed homepage/onboarding/save-load plus all 10 hamburger-linked pages with HTTP 200 and no uncaught browser exceptions.
+- The multi-page audit identified a temporal-dead-zone bug in `pasar-komoditas.html` (`rupiah` used before its `const` initialization); formatter initialization order was corrected and the rerun passed. CI path filters now include root HTML and `css/**` changes.
+- Browser smoke is not yet a full gameplay E2E suite: harvesting, sales, day changes, loan/payroll interactions, and save migration still need dedicated scenarios. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut data remains unchanged.
+
+
+## Continuation checkpoint — harvest/sale/day/accounting browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/gameplay_e2e.test.js` and appended it to regression CI. The test uses a seeded v15 save but executes actual UI actions: harvest mature trees, sell the stock to the tengkulak, advance the day through the sleep flow, reload the accounting page, and verify persistent labor/sales ledger rows, daily report, stock depletion, and accounting descriptions.
+- Test commit `7c1d0c8a1c1eaa94f6ca3fd77b07ebdcb4c4213b`; workflow commit `7cd0df9a93980c56355b4f1101977a767ebe8159`. New E2E is pending actual GitHub Actions result; do not assume success.
+- No runtime source or owner-validated coconut values changed. `main` remains untouched.
+
+
+## Gameplay E2E fixture correction (2026-10-18; rerun pending)
+
+- First run [39132561554](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132561554) failed on the accounting-page assertion. Root cause was test setup: Playwright's `addInitScript` re-applied the seeded initial save on each page navigation, overwriting the state created by gameplay. The test now seeds only when the save key is missing. Fix commit: `24dcbc168d7936ce4f1fce41e75e070cbb05ed98`.
+- Rerun required to verify harvest/sale/day/accounting E2E. Do not claim it passes until Actions confirms.
+
+
+## Latest continuation checkpoint — gameplay E2E passed (2026-10-18)
+
+- GitHub Actions run [39132650359](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132650359) succeeded. All 15 Node regressions, the 10-page browser smoke test, and `tests/gameplay_e2e.test.js` passed under Node.js 22 + Chromium.
+- The new browser E2E exercised the actual UI path: harvest mature coconut trees → sell all harvested stock to the tengkulak → run the real sleep/day transition → open `akuntansi.html`. It verified stock depletion, labor expense and sales ledger entries, report/day persistence, and visible accounting journal descriptions.
+- Initial failure was isolated to the test harness reseeding localStorage on every navigation; corrected to seed only once. No runtime source or owner-validated coconut parameters changed; `main` remains untouched.
+- Not yet covered by browser E2E: loan application/repayment, payroll interaction, and legacy-save migration.
+
+
+## Continuation checkpoint — payroll and loan browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/finance_payroll_e2e.test.js`, run after the harvest/sale/day/accounting E2E. It exercises employee hiring through `assets.html`, payroll through the real day-transition UI, loan disbursement via `kredit.html`, full repayment via the UI prompt, and persisted status/ledger assertions.
+- Test commit `38fd732b5f917feb655c28192a6bd970f66d65d3`; workflow commit `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Browser run pending; do not claim pass before Actions evidence.
+- This is a local game simulation, not a real credit product. Runtime source and owner-validated coconut values remain unchanged; `main` untouched.
+
+
+## Latest continuation checkpoint — harvest/accounting and payroll/credit E2E both pass (2026-10-18)
+
+- GitHub Actions run [39132843320](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132843320) succeeded on workflow commit `263514b3f4e1a4b32b221fbced9c112b2e62ae38`. Full suite: 15 standalone Node tests, 10-menu-page browser smoke, harvest → sale → day transition → accounting E2E, and employee/payroll/loan lifecycle E2E.
+- Payroll/credit browser scenario hired an eligible employee via `assets.html`, processed and verified wage payment on day transition, applied a simulated loan via `kredit.html`, repaid it in full through the UI prompt, and verified status/liability clearing and ledger persistence.
+- Still outstanding: legacy-save migration/recovery E2E. Loan rules are game-only experimental parameters. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Continuation checkpoint — legacy-save migration browser E2E added (2026-10-18; CI pending)
+
+- Added `tests/legacy_save_migration_e2e.test.js`, run after the harvest/accounting and payroll/credit E2Es. It seeds a representative older v12-shaped save missing migration-managed fields, checks preservation of core player identity/cash/day, validates default initialization for newer household/finance/payroll/warung state, and visits game/assets/credit/accounting pages while checking for uncaught exceptions.
+- Test commit `5d2a77707a809440917f8a085a193519fb665848`; workflow commit `e268402b7f4d2bb2d5f852ffc5bde0722757669d`. Await the Actions result before marking it passing. This is not exhaustive coverage of all historic schemas or corrupt-save recovery.
+
+
+## Legacy-save migration E2E diagnostic/fix (2026-10-18; rerun pending)
+
+- Run [39132999377](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39132999377) failed because the Playwright locator reported its page/context had closed while checking the credit page after sequential navigations. All earlier Node and gameplay E2E checks in that run passed.
+- Changed the migration test to use separate browser pages for assets, credit, and accounting routes, and added explicit response-status/readiness assertions. Test fix commit `05cd03ec988892c1cec911f7ece808cbe72058b0`; fresh CI run required.
+
+
+## Latest continuation checkpoint — all current regression and browser E2E suites pass (2026-10-18)
+
+- GitHub Actions run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) succeeded. It ran all 15 standalone Node tests plus four Chromium suites: onboarding/menu smoke, harvest → tengkulak sale → day transition → accounting, employee/payroll/loan disbursement/full repayment, and legacy-save migration.
+- Legacy-save E2E preserved core identity/cash/day, initialized fields missing from a representative v12-shaped save, and opened game/assets/credit/accounting pages without uncaught exceptions. This is not exhaustive coverage of every old schema or malformed-save recovery.
+- Runtime gameplay code and owner-validated coconut values were unchanged in this testing pass. `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+
+
+## Continuation checkpoint — partial repayment added to browser E2E (2026-10-18; CI pending)
+
+- Extended `tests/finance_payroll_e2e.test.js` to cover partial loan repayment before final settlement: outstanding obligation must fall exactly by the partial payment, loan remains active, a dedicated ledger entry is persisted, then final repayment clears principal and interest and marks the loan paid with two repayment entries recorded.
+- Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`. Pending a fresh GitHub Actions result; prior suite run [39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39133117116) passed the previous full-repayment-only scenario.
+- Runtime game source and owner-validated coconut data remain unchanged. `main` remains untouched.
+
+
+## Continuation checkpoint — partial repayment and malformed-save recovery (2026-10-18; CI pending)
+
+- Added partial-then-full loan repayment assertions to `tests/finance_payroll_e2e.test.js`: the partial payment must reduce outstanding obligation exactly, preserve active status, and persist a financing ledger entry; the final payment must clear principal and interest and leave two repayment entries. Test commit `043b472e28d9c6bbae993f4bc0785a8f8759ae1a`.
+- Added `tests/corrupt_save_recovery_e2e.test.js` for malformed JSON recovery and stable reload. Inspection found `loadSaved()` reset state in memory on parse failure but did not replace the corrupt localStorage value. Updated `js/state.js` catch handling to ensure migration fields and persist the fresh default state (commit `eb6b4ea67e7342773bd8e98872cab41af6e52629`). Added this browser test to CI (workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`).
+- New changes await Actions validation. The preceding 15 Node tests and four browser suites passed in [run 39133117116](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39133117116), before these additions.
+- No owner-validated coconut values changed; `main` remains untouched.
+
+
+## Latest continuation checkpoint — 15 Node tests + five browser suites passing (2026-10-18)
+
+- GitHub Actions run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) succeeded on workflow commit `a87894352ea697ce5c8c4df0da0da8f43c3e1f05`. All 15 standalone Node tests passed, along with five Chromium suites: all-menu onboarding smoke, harvest/sale/day/accounting, employee/payroll/partial-and-full loan repayment, representative v12 migration, and corrupt-save recovery.
+- The malformed-save test exposed that the recovery catch replaced in-memory state but left malformed JSON in localStorage. `js/state.js` now ensures migration-managed state and persists the fresh default save after parse failure. Browser test confirms valid schema-v15 state, default cash/orchard/onboarding, and a stable subsequent reload.
+- Current feature branch HEAD: `0737a982b56aa4b3e5d7a746c76a9ee6793d200f`; `main` remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Owner-validated coconut data unchanged.
+- Remaining gaps: malformed/old save variants beyond the tested examples, localStorage quota/write failures, and complete end-to-end exploration of all economic/gameplay features. Browser tests do not constitute a full playthrough audit.
+
+
+## Continuation checkpoint — invalid loan overpayment UI test added (2026-10-18; CI pending)
+
+- Extended the credit browser E2E to submit an overpayment (obligation + Rp1) through the actual prompt. It must be rejected with an alert, leave the loan active with unchanged principal/interest, and create no repayment ledger entry. The existing scenario then continues through partial and final repayment. Test commit `6adb3c87a9e053965ea5b6ea3bf5108934080424`.
+- Await a fresh Actions result; prior suite run [39137393970](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137393970) passed before this invalid-input scenario was added.
+- Runtime game code and owner-validated coconut values remain unchanged; `main` untouched.
+
+
+## Browser-test diagnostic — dialog event sequencing fix pending CI (2026-10-18)
+
+- Run [39137517616](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39137517616) failed at the new invalid-overpayment test. Both one-time dialog handlers were attached before the click, so both received the same initial prompt; the second handler expected an alert.
+- Updated the test to attach the alert handler inside the prompt handler before accepting the prompt. Fix commit `6e1f012d029a6b0ac73e6b24fe7db40769fbac34`; await a new Actions result. No runtime code changed.
+
+
+## Browser-test refinement — credit validation uses in-app toast (2026-10-18; CI pending)
+
+- Source inspection showed `msg()` in `js/ui.js` displays a toast in `#msg` rather than a native browser alert. Updated invalid-overpayment E2E to assert visible `Jumlah pembayaran tidak valid` toast text plus unchanged balance/ledger. Test commit `f2db47ff77d5b6b0babd9d325f57d07632250987`.
+- Await fresh Actions result. Prior dialog-handler attempt was not authoritative for the invalid-input assertion because it expected a native alert that the UI does not emit.
+
+
+## Continuation checkpoint — credit page now renders finance feedback (2026-10-18; CI pending)
+
+- Latest workflow run `39137673529` failed at the new overpayment browser assertion: `kredit.html` had no `#msg` element and did not include the shared UI helper, so the finance module's returned validation message was never rendered. Loan validation itself returns the expected invalid-payment message.
+- Added an accessible status toast and page-local `msg()` helper to `kredit.html`; fix commit `584ab9f977316610810d9812c34221733e9f7776`. Wait for a fresh Actions run before marking the test or UI fix successful.
+- No owner-validated coconut parameters or `main` changes.
+
+
+## Latest continuation checkpoint — credit feedback UI fix and all current tests passed (2026-10-18)
+
+- GitHub Actions [run 39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) succeeded on commit `584ab9f977316610810d9812c34221733e9f7776`. All 15 standalone Node tests and five Chromium browser suites passed.
+- Fixed a real feedback gap in `kredit.html`: the finance module rejected invalid overpayment and returned a message, but the page had no `#msg` element or global `msg()` helper, so users could not see the result. Added accessible status toast markup/styles and a local helper. Browser E2E now verifies rejected overpayment leaves active loan/balance/ledger unchanged, then confirms partial and final repayments work.
+- Current browser coverage: all 10 hamburger-linked pages start without uncaught exceptions; harvest/sale/day/accounting flow; employee hire, payroll, loan origination, invalid overpayment, partial/full repayment; one representative legacy-save migration; malformed-save recovery. This does not yet prove every gameplay feature, all historic save versions, storage quota failures, or accessibility conformance.
+- `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; owner-validated coconut values remain unchanged.
+
+
+## Latest continuation — source-backed research program established (2026-10-18)
+
+- Added `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` (commit `0109575899a785b8b78a8e7b890576dbfbd68ee3`) after reading the owner blueprint `harga komoditi.docx`, coconut benchmark and tier/unit-economics contracts. It inventories all 60 listed commodities and formalizes research order: **Tier 1 across all 60 → Tier 2 across all 60 → Tier 3/4 processing and residue routes**.
+- Important quality finding: the owner's blueprint includes illustrative assumptions, unsourced prices/costs/yields, and profit calculations that cannot be treated as independently verified real-world data. The research program requires direct producer/farmer/farm/trader/processor evidence where available plus independent official/academic corroboration, date/geography/unit/grade/stage metadata, full cost/yield accounting, and null for unknown values. Commercial market tiers remain distinct from production-transformation tiers.
+- Initial source map: BPS producer prices (37 provinces, DKI excluded); Bapanas monthly producer prices; Kementan SPORA feed price series; Kementan Hortikultura report with a local chili-farmer cost/price quote. Details/limitations and URLs are in the research program. These sources do not yet constitute a complete 60-commodity dataset.
+- No game price, cost, yield, recipe, margin, coconut benchmark or runtime source changed. Current test baseline remains successful Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373) (15 Node tests + five Chromium suites) on `584ab9f...`. `main` remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+- Next work item: Tier 1 evidence collection for all 60 commodities; do not publish profit values until production inputs, yields, losses, output prices and relevant infrastructure costs are source-supported and reconciled.
+
+
+## Tier 1 research ledger update (2026-10-18; incomplete by design)
+
+- Added `docs/REAL_COMMODITY_TIER1_RESEARCH.md` (commit `699ceb4f2d3301c21c69517574d7010c0ee1b52c`) with a 60-row matrix of source status and missing technical/economic evidence. It distinguishes observed producer prices from complete cost/yield/profitability validation.
+- Evidence collected so far includes a local Kementan-reported curly-chili farmer case, selected monthly Bapanas producer prices, BPS's 2025 producer-price publication coverage (37 provinces, DKI excluded), and Kementan SPORA feed-price data. Exact date, geography, product form, market stage and unit are preserved; historical observations are not current-price claims.
+- Tier 1 for all 60 commodities remains **in progress**; this is not a final dataset. Missing data include many producer transaction prices, crop/farm/aquaculture yields, feed/FCR, fertilizer and energy usage, housing/cold-chain/pond/plant/mine infrastructure, mortality/losses and labor/capital costs. No commodity game parameter changed; do not start final Tier 2/3/4 numbers before Tier 1 evidence is reconciled.
+
+
+## 2026-10-19 continuation — game validation and Tier 1 source extraction
+
+- **Latest confirmed technical baseline:** Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373) passed all 15 Node regression tests and five Chromium browser suites on `584ab9f977316610810d9812c34221733e9f7776`. Browser coverage includes hamburger route startup, harvest → tengkulak sale → day transition → accounting, employee/payroll/credit flows including invalid overpayment rejection and partial/full repayment, representative legacy-save migration and malformed-save recovery. It is not a complete all-feature playthrough.
+- **Research docs updated:** Tier 1 ledger commit `f7a85497462349d7c428b6bd7d51a02417e5ba36`; research-program commit `f9e40c1c8da300c31512b86aa7b268f4eba001a4`. Added Bapanas January 2026 producer-price snapshot values and caveats; added BPS 2025 livestock/fisheries producer-price source and Kementan March 2026 feed-mill averages by feed phase.
+- **Data-quality status:** Tier 1 is still incomplete for the 60-commodity master blueprint. Direct farmer/operator/trader observations and full yield/input/labor/infrastructure/loss costing remain gaps. Bapanas poultry unit ambiguity must be resolved from original data file before canonical ingestion. No profits inferred from price-only evidence; no game prices, recipes, costs, yields or owner-locked coconut values changed.
+- `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Next research step: acquire/extract original downloadable Bapanas/BPS tables and add direct operator/market evidence per commodity; only after Tier 1 rows are reconciled should Tier 2 research begin.
+
+
+## 2026-10-19 research continuation — producer/operator evidence added
+
+- Added commodity-specific Tier 1 source notes to `docs/REAL_COMMODITY_TIER1_RESEARCH.md` (commit `045fd671a0d8448a72b8420fb227dd661b02c4ee`) and research program log (commit `c7cf64bb3950c40e5b0aa0e6d21593f22261e87d`). Evidence includes a Kementan-reported tomato grower cost/yield/price case; coffee farmer-group cherry-to-green-bean conversion and separate robusta/arabica price contexts; KKP catfish operator testimony on feed cost/FCR; KKP catfish pond study FCR/cycle values; a biofloc project cost scope; and SIPASBUN's official provincial TBS price portal.
+- Quality controls: observations are historical/site-specific, production systems are not merged, and missing costs are not set to zero. Tomato arithmetic (40 t × Rp3,000/kg less Rp100.8m reported cost) yields Rp19.2m before any unreported costs; this is not asserted as net profit. The TBS portal did not expose a stable numeric value, so none was recorded.
+- Research Tier 1 is still incomplete for all 60 blueprint commodities; direct transaction evidence, full cost/yield/infrastructure/loss ledgers and source triangulation remain outstanding. No game parameters or owner-locked coconut values changed. Latest full technical baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373). `main` unchanged.
+
+
+## 2026-10-19 research checkpoint — second Tier 1 source tranche
+
+- Research ledger updated in commit `3fe0e54909ac83cacbcd482c6f0b203dee8f7b1c`; research-program log updated in commit `720681b2eb7a85e4e2696c9c801819986b7d45ea`.
+- New evidence covers rice input-cost examples from two distinct sources, a reported tomato grower case, regulated broiler DOC price stages, feed mill prices by poultry phase, layer-farm context, catfish operator and controlled study evidence, a tilapia operator case and biofloc assumptions, coffee producer price series/cooperative post-harvest case, and the oil-palm provincial TBS pricing source.
+- Research quality guardrails preserved: these are dated, location/system-specific observations, not universal game parameters; incomplete cost ledgers are not represented as net profit; input prices are not confused with farm-delivered prices; product forms and production systems remain separate. No gameplay balance values, recipes, margins or coconut benchmark values changed.
+- Tier 1 for the 60 commodities is still in progress; this tranche does not authorize Tier 2/3/4 finalization. Latest runtime baseline remains Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373), 15 Node tests + five Chromium suites passed. main remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+- Next: resolve exact Bapanas/BPS downloadable data and unit ambiguity, capture numeric province/period TBS observations, and continue commodity-by-commodity primary-source research for all remaining Tier 1 rows.
+
+
+## 2026-10-19 research checkpoint — horticulture evidence tranche
+
+- Added Tier 1 source notes for shallot, red bird's-eye chili, potato and porang. Research ledger commit `71d82a528bd74cb18f71018adcdcaa808e2d173c`; program log commit `fc9c731db52f0a9dc6e18e778297369bf522e0db`.
+- Evidence includes historical local shallot farmgate-vs-wholesale prices, seed-grown vs bulb-seed yield comparison, a Tuban rawit farmer's glut-price report, a one-hectare rainy-season rawit input budget, a separate PM-999 contract-budget model, potato crop cost/yield/price ranges, and porang literature ranges flagged for primary-study tracing.
+- No current universal values, net margins or gameplay parameters were derived from these partial observations. No game source, recipe, cost, yield, or owner-locked coconut benchmark changed. Tier 1 across all 60 commodities remains in progress; Tier 2/3/4 not finalized. Latest runtime baseline: Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373); main unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+
+
+## 2026-10-19 research checkpoint — soybean/cassava/ginger/dairy/milkfish tranche
+
+- Research ledger commit `d59fcf60a44549591a578adb0820c93937f3be31`; program log commit `fc940caefc6cc51864a4f2dc1f67a9b854783451`.
+- Added evidence for a supervised soybean field-production package and separate later price policy context; cassava industrial purchase reference and factory deduction rates; a red-ginger grower-reported cost/yield/assumed-price case with source-table validation pending; dairy feed/forage/water/labor/infrastructure dependencies; and a KKP milkfish operator case with partial operating costs and sales.
+- These records are not combined into synthetic same-period margins; incomplete cost scopes remain explicitly incomplete. No game balance, recipes, yields, margins or owner-locked coconut benchmark changed. Tier 1 across 60 commodities remains in progress; Tier 2/3/4 not finalized. Latest technical baseline: Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373). main unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`.
+
+
+## 2026-10-19 research checkpoint — mining/energy benchmark-source mapping
+
+- Tier 1 ledger commit `23110bf103e3fbe54a8bf6ba2918783cdca0ea84`; program log commit `a74d1e4643d7ec6a65c9a2133074bbe8715e749b`.
+- Added official HBA coal benchmark values by GAR quality, nickel HMA with a strict warning that it is not nickel-ore HPM, September 2026 ICP crude-oil benchmark, and source mapping distinguishing LNG/export price from regulated plant-gate gas. Iron ore, gold, bauxite, copper, plastics and cement remain blocked/source-needed pending price-stage and product-grade evidence.
+- These are benchmark-source records, not mine-gate invoices or full production economics. No gameplay price/cost/yield/margin, recipe, or coconut benchmark changed. Tier 1 remains incomplete for the 60-commodity blueprint; Tier 2/3/4 not finalized. main unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`; latest runtime baseline Actions run [39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-simulator/actions/runs/39143990373).
+
+
+## 2026-10-19 research checkpoint — Bapanas poultry unit audit
+
+- Audited visible Bapanas metadata/table mismatch: metadata describes poultry in Rp/kg live weight, while the row is labelled Rp/ekor hidup and gives Rp22,971 per bird for January 2026. Documented in ledger commit `21e05701f505d9e9da4ea902418702d4c98c8e07` and program log commit `d8f72220a9e282b26828987d06d59b7dfeda5290`.
+- The chicken price is quarantined from canonical Rp/kg use pending original downloadable file validation; the page's visible series ends at January 2026. No game values changed. Tier 1 is still incomplete; main and coconut benchmark remain unchanged.
+
+
+## 2026-10-19 research checkpoint — vaname shrimp farm-risk evidence
+
+- Added Cianjur commercial farm performance observations, a Bangka Selatan failed-cycle case, and a West Sumatra company-scale financial abstract to the Tier 1 research ledger. Ledger commit `13fca31e150512e6aac92402d5f45ab1ea2e4489`; program log commit `ec492e882878e3eb4b6318cc4022603c0e58dd59`.
+- Evidence highlights wide variation: FCR/survival differ by farm, and disease, contaminated water and inadequate SOP/monitoring can turn a high-value crop into a loss. Financial scopes are not reconciled enough to produce a universal margin. No game parameters changed; Tier 1 remains in progress; main and coconut benchmark unchanged.
+
+
+## 2026-10-19 progress report — additional Tier 1 producer/operator evidence
+
+- Added local/direct-source cases for carrots, Cavendish bananas, tuna and goats in `docs/REAL_COMMODITY_TIER1_RESEARCH.md`; research-program log also updated. Commits: ledger `fd508d1df30291664dbf834725926999cd53ed1a`; program `21972ac0a26a136a19e7763944625c17c1300120`.
+- Important caveats: carrot prices reflect a dated glut episode; Cavendish study yield/price observations are provisional because its visible cost/profit figures need arithmetic audit; tuna observations refer to different species, ports and market stages; goat liveweight quotes are anecdotal/date-specific and not a complete farm ledger.
+- No gameplay parameter, recipe, yield, cost, margin or coconut benchmark changed. Tier 1 across the 60-item blueprint remains incomplete; Tier 2/3/4 are not finalized.
+- Latest technical validation: [Actions run 39143990373](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39143990373) passed 15 Node regression tests and five Chromium browser suites, including gameplay, finance/payroll and save-recovery/migration. `main` remains unchanged.
+
+
+## 2026-10-19 owner continuity/audit checkpoint
+
+- Owner directive: record every meaningful work tranche in the existing repository notes; read the Library and all branch-specific notes before making further implementation decisions. Do not touch `main`; preserve owner-locked coconut benchmark values.
+- Library review started: inspected the 50/60-commodity tables on pages 38–45 of `harga komoditi.docx`, reviewed extracted content of `data peternakan dan pertanian.docx`, began targeted review of the 223-page `data game.docx`, and visually inspected the Library's Sim Companies store screenshot and Agrotycoon Game Update Board. Full Library review remains outstanding and must not be reported as complete.
+- The coconut chain is the Tier 1–4 economic role model. Reuse its ledger/method structure, not its commodity-specific values. Each other commodity needs its own sourced yield, cycle, input quantities/costs, labor, infrastructure/energy, depreciation/capital, logistics, quality/rejection/by-product treatment and stage-specific selling prices; mark unsupported data unknown and do not change game parameters during research.
+- Product-direction constraint: Sim Companies-style business-chain expansion is deferred until the existing technical and commodity research tasks are complete. Current near-term focus remains core stability, shop manual/automatic behavior, accounting/reports, and gameplay visuals per the existing update board; automatic shop unlock condition remains three successful sales.
+- No gameplay/runtime parameters, recipes, yields, costs, margins, or coconut values changed in this audit tranche. Handoff updated in commit `3d51186c88d112fb2da820cfe70b5a6ec4a481b2`.
+- Remaining audit work: finish Library review, independently inspect the coconut benchmark contract/implementation, verify every branch HEAD and unique commit range, read branch-specific notes/contracts deeply, and reconcile the handoff chronology before further implementation.
+
+
+## 2026-10-19 audit tranche 2 — coconut and branch-specific contracts
+
+- Reviewed the coconut benchmark, commercial Tier 1–4 standard, unit-economics contract, historical-data contract, production-tier taxonomy, world-simulation contract, coconut data registry, transformation validator, and coconut regression test. Owner-locked values and their exclusions are now explicitly recorded in `docs/AGENT_HANDOFF.md`.
+- Important architecture distinction: commercial market-chain Tier 1–4 is not the same taxonomy as `js/production_tiers.js`; keep production transformation tier separate from market stage and do not use tier as a profit multiplier.
+- Branch audit: repository currently exposes `main`, `feat/production-tier-taxonomy`, and `fix/core-auto-warung-accounting-ui`. The feature branch is two commits beyond `7c9527f` due to this session's documentation records. The fix branch is five commits beyond the SHA recorded in its handoff; identities/diffs of those five commits still require individual audit. No branch merge/rebase performed.
+- Library review is still IN PROGRESS: `data game.docx` contains 223 pages/119 tables; full sequential review is not yet complete. No gameplay values or coconut benchmark values changed.
+
+
+## 2026-10-19 audit tranche 3 — blueprint and finance coverage
+
+- Sequentially reviewed extracted Library blueprint paragraphs P0000–P0279 from `data game.docx`. This tranche covers land/store monetization, loan concepts, NPC/government systems, market price controls, security actors, political influence/tenders and skills. Full 223-page review remains incomplete.
+- The blueprint contains historical design assertions and speculative features, including 5 million NPCs, a government surplus buyout, a universal HPP+2% price floor, premium automation and political tender mechanics. These must not be assumed implemented or economically validated. HPP+2% is not a sourced real-world rule; treat it only as a possible game-design rule requiring owner approval.
+- Reviewed fix-branch finance implementation/test source. Existing test assertions cover loan lifecycle, daily accrual/idempotence, partial/full repayment, legacy debt/payroll aggregation and overdue status. They do not establish all UI/accounting/save-migration behavior or edge cases. The fix-branch handoff states its latest finance test had not been executed in that pass; require a fresh test run before claiming pass.
+- Branch comparisons: fix branch is 5 commits ahead of recorded checkpoint `95e2a3be880ccbf75620e4bd42490489c010cac6`; the aggregate diff touches handoff/status, `js/finance.js`, and `tests/finance.test.js`. Exact five commit identities remain unresolved. Feature branch is now 4 commits ahead of `7c9527f91d2bae3c41ce7ce86a0a36592d7881b8`; recount branch history before citing a baseline. No merge/rebase and no changes to `main`.
+- No game code or economic/gameplay parameters changed. Audit remains IN PROGRESS.
+
+
+## 2026-10-19 audit tranche 4 — R&D and monetization blueprint
+
+- Sequential review of `data game.docx` continued through extracted paragraphs P0280–P1076. This section covers skills, R&D, vertical integration, cross-link events, family morale, database/timebase concepts and monetization.
+- Claims such as +150% to +1500% R&D margins, +10% vertical-integration efficiency, +250% profit, reputation price boosts and DAU/LTV/revenue projections are not supported in this section by reconciled row-level evidence or measured telemetry. Treat as historical design hypotheses, not empirical findings or live parameters. Do not promote them into game economics without owner approval and validation.
+- Blueprint text calling itself “final”, “100% complete”, or “saved permanently” is conversational history, not proof of implementation or approval. The blueprint mixes real-time and game-time loops and corporate/personal accounting concepts; resolve these against current contracts before any implementation.
+- Audit checkpoint reached P1076 of the extracted paragraph stream; full 223-page document review including tables/images is still incomplete. No code or game parameters changed.
+
+
+## Owner scope clarification — 2026-10-19
+
+- Sim Companies-inspired expansion is explicitly deferred until the owner personally orders it. Do not initiate design or implementation on that direction without a direct instruction.
+- Continue existing Agrotycoon tasks to completion on non-`main` branches only. Do not edit, commit to, merge into, or rebase `main`.
+- Continue the existing sequence: finish Library/branch-note audit, verify branch HEADs and histories, validate coconut Tier 1–4 reference economics, source/reconcile the 60-commodity inventory, then perform owner-approved implementation and tests. Unsupported economic values remain out of live game parameters.
+- Record each meaningful checkpoint in the existing repository docs with branch, SHA, changed files, actual test outcomes, limitations and next task.
+
+
+## 2026-10-19 audit tranche 5 — owner scope and macroeconomic blueprint
+
+- Owner explicitly gates all Sim Companies-inspired work behind a future direct instruction. Do not initiate it. Continue the current Agrotycoon scope on non-`main` branches only; no merge/rebase or write to `main`.
+- Sequentially reviewed `data game.docx` through approximately P2040 of the extracted paragraph stream, including macroeconomic estimates, 50-commodity table, R&D chain, governance/security, anti-exploit proposals, retention/ads/IAP and AI business mentor concepts.
+- Figures for national cashflow/taxes, 5 million NPCs, fixed HPP+2% floor, R&D buffs and monetization forecasts are not backed in the reviewed passages by a complete source ledger/reproducible calculations. Keep them as historical design hypotheses; do not treat them as empirical facts or live values. The 50-commodity table is not the final 60-item source-backed audit.
+- Several proposed capabilities (authoritative server, queues/cron, ad receipt validation, automatic AI balancing, Emergent deployment) are not established by blueprint prose; verify actual code and current scope before implementation.
+- Documentation-only checkpoint. No tests run; no game code or values changed. Library audit remains incomplete.
+
+
+## 2026-10-19 audit tranche 6 — blueprint completion and arithmetic checks
+
+- Sequential text review of `data game.docx` reached the end of the extracted paragraph stream (through P3524), including education/school, contracts/supply chain, monetization, retention and proposed config/test scaffolds. Full file audit remains incomplete: tables, embedded images, page context and source claims still need structured review.
+- Arithmetic defect in legacy ad estimate: 200,000 DAU × 3 ads/day × $0.002/view is 600,000 views/day × $0.002 = $1,200/day or $438,000/year, not $600/day / $219,000/year. This ignores fill, invalid traffic, platform share, tax and other deductions; correct the base arithmetic before using it.
+- Monetization assumptions conflict internally: ARPDAU $0.25 is stated in one place, while another ads-only scenario gives $0.005–$0.02. The proposed corruption rate reduction does not guarantee a strict monthly hard cap. These remain unvalidated design estimates, not measured data or proven safeguards.
+- Proposed test scaffold imports `game_economy.EconomyEngine` and references an imagined CI entry; no evidence from the reviewed text proves these exist in the current repo. Do not claim it is runnable without adapting and executing it.
+- No code/parameters changed and no tests run. Continue structured review of tables/images and then reconcile implementation state before 60-commodity source research.
+
+
+## 2026-10-19 audit tranche 7 — 119-table review
+
+- Enumerated and reviewed all 119 Word tables in `data game.docx` (3,526 paragraphs). Reviewed table groups cover skill tiers, R&D/value-added multipliers, commodity chains, ads/IAP, schools, national contracts, and proposed config/test scaffolds. Embedded images, page/layout context, and full source validation remain open.
+- Legacy blueprint inconsistencies: production-tier labels and buffs vary across tables; R&D margin claims are not backed by full mass balance and reconciled cost ledgers; school/contracts require multiplayer/backend capabilities not evidenced in current code; “stable/realistic/guaranteed” and 90/100 ratings are unmeasured assertions; game-time/real-time conversions conflict; forced-ad enrollment and strong paid buffs are unapproved legacy concepts.
+- Preserve distinction between commercial `marketStage` and code `productionTier`. Do not import legacy profit multipliers or school buffs as economic truth.
+- Revenue arithmetic defect remains logged: 200k DAU × 3 ads/day × $0.002 = $1,200/day / $438,000/year before deductions, not $600/day / $219,000/year. ARPDAU assumptions conflict within the document.
+- No code/parameters changed; no tests run. Audit remains open for embedded images, page context, branch-specific docs/history and source-level evidence.
+
+
+## 2026-10-19 research checkpoint — porang source triangulation
+
+- Research ledger updated with four porang sources: 2026 Garut cooperative value-chain case (fieldwork 2024–2025), 2025 Ponorogo abstract, 2024 East Lombok abstract and 2025 Rembang thesis abstract. Source links and evidence limitations are recorded in the ledger.
+- Large variation in cost/revenue and production scales means observations cannot be pooled. A printed profit equation in the Garut paper appears reversed; its cashflow/payback/IRR/NPV also needs reconciliation. Inaccessible landing pages leave two records at abstract-level evidence.
+- Porang remains cost_yield_partial / not verified for game. No runtime parameters changed. Continue Tier 1 research for all 60 commodities.
+
+
+## 2026-10-19 audit tranche 9 — screenshot review
+
+- Visually reviewed all 10 prototype screenshots under `Agrotycoon file blueprint/Contoh game asli`, plus the Sim Companies store screenshot and the Game Update Board. Prototype screenshots show home/onboarding, manual/smart purchases, live warung sales/stock, achievements, daily itemized report and monthly accounting/balance-sheet UI. They are snapshots, not verification of current HEAD.
+- Preserve current update-board scope: stability, shop, accounting/reports and gameplay/visuals; automatic shop unlock after three successful sales. Sim Companies-inspired direction remains strictly owner-gated.
+- No code or values changed; no tests run. Full audit continues with row-level review of commodity/agriculture reference documents and reconciliation against current code.
+
+
+## 2026-10-19 audit tranche 10 — fix branch history
+
+- Reconstructed the five commits after the fix branch's recorded checkpoint and inspected each diff. Current fix branch HEAD at audit start: `c6c035f86320299629bdc2916f9478ff3c6a770a`; exact commit identities and test gaps are recorded in that branch's handoff/status files.
+- Loan regression tests exist but were not executed in this pass. Additional tests are needed for small-principal rounding, restored overdue state, save/load migration and ledger/cashflow/P&L/balance-sheet reconciliation.
+- Feature branch HEAD at audit start was `ba130853ef1259a1053a4fc081cac54c83647ef1`; main remained `612451c03be59dd8cacd3b13adb8a79a46e51be2`. No merge/rebase or main modification.
+- No game code/values changed; remaining Library/source audit continues.
+
+
+## 2026-10-19 commodity-blueprint data-quality audit
+
+- Completed text/table review of harga komoditi.docx and data peternakan dan pertanian.docx. The 60-item list remains the owner inventory, but its tier-profit figures are not verified real-world economics.
+- Main defects: paddy Tier 3 is contribution before omitted restaurant operating costs yet labeled as net profit; mining rows use an explicit blanket 25% NPM assumption and target-shaped revenues; commodity list mixes farmgate raw goods and manufactured nodes; Tier definitions/counts vary; agriculture/livestock ranges mix periods/scales/units and several profit claims need arithmetic reconciliation.
+- No values imported to runtime registry; no game parameters changed. Keep the owner-locked coconut benchmark intact. Continue per-row source triangulation before Tier 1 clearance.
+
+
+## 2026-10-19 audit tranche 11 — shop copy correction
+
+- Corrected inaccurate smart-shop copy on `fix/core-auto-warung-accounting-ui`; package rounding can slightly exceed target. No algorithm or economic values changed.
+- Added stock recommendation regression tests. Exact `materialPlan()` source passed 3 targeted isolated runtime cases; source/copy assertions passed 4/4. Node test and full game/browser suite still not executed.
+- Commit identities and test limitations are recorded in the fix branch's own handoff/status docs. No `main` changes.
+
+
+## 2026-10-19 audit tranche 12 — catalogue and coconut config drift
+
+- The 60-row runtime catalogue in `js/commodities.js` differs from the owner's 60-item inventory. It has a generic kelapa ID, extra crop/animal/fish entries and lacks several owner-listed mining/manufactured nodes. Do not silently replace IDs; first produce a crosswalk and save-migration plan.
+- Legacy `COMMODITY_ECONOMICS.kelapa.processed` currently says price Rp13,000, inputPerUnit 1 and otherCost Rp2,500, inconsistent with the owner-locked es-kelapa benchmark of Rp5,000/glass, 4 glasses/coconut and Rp1,200 listed non-coconut consumables/glass. This object is not used by the reviewed market page/known runtime paths; quarantine it until usage is confirmed and it is corrected/tested.
+- No game code or owner-locked values changed. Next: 60-item crosswalk and backward-compatible migration plan.
+
+
+## 2026-10-19 audit tranche 13 — 60-item crosswalk
+
+- Created `docs/COMMODITY_INVENTORY_CROSSWALK.md` with all 60 owner rows, runtime candidate IDs, mapping status and acceptance gates.
+- Runtime catalogue has 60 entries but differs from the owner inventory; generic collisions and missing owner nodes mean the count “60” alone does not establish coverage. No IDs or game values changed. Save migration must precede any catalogue alignment.
+- Crosswalk commit: `170275b7cc05c2f19eb4e8c5f06c5a29c491bfc7`.
+
+
+## 2026-10-19 audit tranche 14 — finance due-date edge case
+
+- Isolated execution found and fixed overdue-state ordering in the fix branch; a regression case now covers restored active loan state with `dueDay === S.day` and `lastAccrualDay === S.day`.
+- Exact-source isolated runtime checks passed 3/3; Node test and full suite are not yet run. Details and commit IDs are recorded in the fix branch's handoff/status.
+- No main changes.
