@@ -666,3 +666,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Completed text/table review of harga komoditi.docx and data peternakan dan pertanian.docx. The 60-item list remains the owner inventory, but its tier-profit figures are not verified real-world economics.
 - Main defects: paddy Tier 3 is contribution before omitted restaurant operating costs yet labeled as net profit; mining rows use an explicit blanket 25% NPM assumption and target-shaped revenues; commodity list mixes farmgate raw goods and manufactured nodes; Tier definitions/counts vary; agriculture/livestock ranges mix periods/scales/units and several profit claims need arithmetic reconciliation.
 - No values imported to runtime registry; no game parameters changed. Keep the owner-locked coconut benchmark intact. Continue per-row source triangulation before Tier 1 clearance.
+
+
+## 2026-10-19 audit tranche 11 — shop copy correction
+
+- Corrected inaccurate smart-shop copy on `fix/core-auto-warung-accounting-ui`; package rounding can slightly exceed target. No algorithm or economic values changed.
+- Added stock recommendation regression tests. Exact `materialPlan()` source passed 3 targeted isolated runtime cases; source/copy assertions passed 4/4. Node test and full game/browser suite still not executed.
+- Commit identities and test limitations are recorded in the fix branch's own handoff/status docs. No `main` changes.
