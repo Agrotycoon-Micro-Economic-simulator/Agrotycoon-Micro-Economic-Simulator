@@ -303,3 +303,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 - Added Ditjen Perkebunan 2025 performance report as an official production/productivity source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. Reported production: 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); productivity 447 kg/ha (2020) and 373 kg/ha (2025), about -16.6%.
 - Official production basis is dried nutmeg seed. Productivity must use mature producing area (TM), not total planted area. This does not establish farm-level costs or prices; exact BPS nutmeg producer-price rows remain pending.
 - Row #42 remains cost_yield_partial / not verified for game. No runtime values changed.
+
+
+## Owner direction update — 60-commodity bulk audit (2026-10-19)
+
+Owner correction: do not process commodities as a one-at-a-time sequence. Use a single coordinated evidence matrix covering all 60 owner-listed rows, extracting shared datasets in parallel and recording row-specific gaps without blocking the rest. The operational matrix is `docs/COMMODITY_60_BULK_AUDIT.md` (commit `026e64956ed8cff56a6e089f0c089e09016e1104`). It includes all 60 names, shared official source bundles, unit/form gates, and initial evidence status. This is a bulk coverage baseline, not a claim that all 60 rows have complete unit economics.
+
+Bulk sources prioritized: BPS 2025 producer prices for food/horticulture/estate crops; BPS 2025 producer prices for livestock/fishery; BPS SEP 2024 costs for the subset actually surveyed; Kementan Statistik Pertanian 2025; and separate ESDM/official industry sources for mining, energy, and manufacturing. Each row must retain source, period, geography, unit, grade, product form, cost coverage and confidence. No guessed numbers and no runtime parameter changes until evidence is reconciled.
