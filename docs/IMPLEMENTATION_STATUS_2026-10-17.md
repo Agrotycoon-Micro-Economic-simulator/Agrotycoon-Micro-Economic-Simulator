@@ -602,3 +602,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Claims such as +150% to +1500% R&D margins, +10% vertical-integration efficiency, +250% profit, reputation price boosts and DAU/LTV/revenue projections are not supported in this section by reconciled row-level evidence or measured telemetry. Treat as historical design hypotheses, not empirical findings or live parameters. Do not promote them into game economics without owner approval and validation.
 - Blueprint text calling itself “final”, “100% complete”, or “saved permanently” is conversational history, not proof of implementation or approval. The blueprint mixes real-time and game-time loops and corporate/personal accounting concepts; resolve these against current contracts before any implementation.
 - Audit checkpoint reached P1076 of the extracted paragraph stream; full 223-page document review including tables/images is still incomplete. No code or game parameters changed.
+
+
+## Owner scope clarification — 2026-10-19
+
+- Sim Companies-inspired expansion is explicitly deferred until the owner personally orders it. Do not initiate design or implementation on that direction without a direct instruction.
+- Continue existing Agrotycoon tasks to completion on non-`main` branches only. Do not edit, commit to, merge into, or rebase `main`.
+- Continue the existing sequence: finish Library/branch-note audit, verify branch HEADs and histories, validate coconut Tier 1–4 reference economics, source/reconcile the 60-commodity inventory, then perform owner-approved implementation and tests. Unsupported economic values remain out of live game parameters.
+- Record each meaningful checkpoint in the existing repository docs with branch, SHA, changed files, actual test outcomes, limitations and next task.
