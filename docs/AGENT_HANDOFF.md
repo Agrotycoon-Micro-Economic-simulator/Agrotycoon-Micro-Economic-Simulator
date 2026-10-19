@@ -1,3 +1,13 @@
+## Latest owner direction — bulk audit all 60 commodities (2026-10-19)
+
+- Owner explicitly rejected the serial one-commodity-at-a-time workflow. Continue as a unified 60-row bulk audit; use shared official datasets across all relevant commodities and report coverage for the entire matrix each checkpoint.
+- Added `docs/COMMODITY_60_BULK_AUDIT.md`, commit `026e64956ed8cff56a6e089f0c089e09016e1104`. It maps all 60 owner inventory rows to source bundles and product-form/unit gates, and marks evidence status without inventing missing values. Updated the research program to require bulk execution.
+- Sources prioritized: BPS 2025 crop/horticulture/estate producer prices; BPS 2025 livestock/fishery producer prices; BPS SEP 2024 production-cost survey for only the commodities actually covered; Kementan Statistik Pertanian 2025; separate ESDM/industry evidence for mining, energy and manufactured outputs.
+- Status is a **bulk audit baseline**, not 60 completed economic models. Many row-level price/cost/yield observations still need extraction and reconciliation. Do not claim full evidence coverage or promote unsupported prices/yields/costs/margins into runtime.
+- Runtime code and commodity parameters were not changed. Keep owner-locked coconut benchmark intact and keep `main` untouched. Before any further code work, re-fetch the current branch HEAD and compare against `main`; branches have diverged, so do not merge/rebase automatically.
+
+---
+
 ## Latest continuation — targeted Node regressions passing (2026-10-17)
 
 - GitHub Actions run [39031115000](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/39031115000) completed with **success** on commit `9ff852adf89d86a1fdce077ad4ffe109fa703eef`, using a real GitHub checkout and Node.js 22.
