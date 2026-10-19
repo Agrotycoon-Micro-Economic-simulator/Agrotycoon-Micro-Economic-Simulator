@@ -96,3 +96,13 @@ Review findings:
 - `totalDebt()` sums active/overdue loan principal and interest, payroll payable and legacy debt. Confirm no separate accounting aggregator counts the same legacy debt twice before claiming balance-sheet consistency.
 - No game code changed in this audit; only documentation records this audit.
 - Environment limitation: repository checkout/runtime is unavailable here, so the Node test and browser suite were not executed in this pass.
+
+
+## Shop recommendation copy correction — 2026-10-19
+
+- Audited the manual/smart shop code in `js/economy.js`. `materialPlan()` targets 150% of estimated demand, subtracts current stock, then rounds the deficit up to full package sizes (ice 40 portions, sugar 50 portions, cups 20 pieces).
+- Found stale UI copy claiming a package would be locked to zero if it exceeded the 150% cap. That is not what the code does: package rounding can leave stock slightly above the target. Corrected the copy to disclose this behavior, without changing the purchase algorithm, package prices, target ratio, or stock quantities.
+- Changed: `js/economy.js`; added `tests/shop_materials.test.js` for empty stock, above-target stock, partial stock and the copy contract.
+- Targeted isolated runtime evaluation of the exact `materialPlan()` function passed 3 cases, and 4 copy/test-source assertions passed. The committed Node test file itself has NOT been run in Node; no full game/browser tests were run.
+- Commits: code `f4d7aa17e961874849274a14956b7da2ea92bc66`; test `9d35d0a34f8b2213a2e4dbf831b7a88e69b45c9d`.
+- Next: run `node tests/shop_materials.test.js` and existing regression suites in a real repository checkout; then continue accounting cross-reconciliation and commodity research. No changes to `main`.
