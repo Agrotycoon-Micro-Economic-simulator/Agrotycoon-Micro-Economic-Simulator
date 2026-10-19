@@ -84,7 +84,7 @@ Status definitions:
 | 38 | Kopi Arabika | cost_yield_partial: farmer-group/conversion-yield and official price-series evidence reviewed; altitude/grade-specific full ledger pending | Altitude/cultivar, cherry vs green bean price, yield, picking/selective labor, fermentation/drying and grading |
 | 39 | Kakao | source-family-found: BPS smallholder plantation prices | Wet beans vs fermented/dried beans, pod yield, disease control, fermentation/drying recovery and grade discount |
 | 40 | Sawit/TBS | source-family-found: BPS and official provincial TBS price decision identified; exact provincial observation and farm cost ledger pending | Age/FFB yield, fertilizer, harvest labor, transport, mill distance, quality/ALB, official pricing formula and deductions |
-| 41 | Cengkeh | source-family-found: BPS smallholder plantation prices | Wet vs dry clove, tree age, bearing periodicity, harvest labor, drying recovery, grade and season |
+| 41 | Cengkeh | cost_yield_partial: Kementan Outlook productivity estimates and two 2025 regional farm studies found; BPS exact price row and farm-level arithmetic need extraction | Wet vs dry clove, tree age, bearing periodicity, harvest labor, drying recovery, grade and season |
 | 42 | Pala | source-family-found: BPS smallholder plantation prices | Nut vs mace, fresh/dry form, tree yield, harvest/splitting/drying labor, grade and disease |
 | 43 | Vanili Kering | source-family-found: BPS smallholder plantation prices | Green pods vs cured dry vanilla, hand pollination labor, cure yield/time, grade/moisture and theft/weather loss |
 | 44 | Tebu | source-family-found: BPS smallholder plantation prices | Cane tonnage, sugar recovery/rendemen, ratoon cycle, fertilizer/water/labor, transport and mill payment formula |
@@ -442,3 +442,43 @@ Firlitha et al., “Optimasi Penjualan Gula Aren di Kabupaten Lebak Menggunakan 
 - Current evidence is **cost_yield_partial / not verified for game**. It is sufficient to establish plausible unit types and process variables, not a universal Tier 1–4 price/profit schedule.
 - Required before runtime integration: define packaging unit (e.g. ml/bottle or liter), Brix/moisture, raw sap litres per finished litre, cooking energy/time, labor, container/cap, spoilage/fermentation/shelf-life, batch capacity and verified sale channel; reconcile each cited study's arithmetic and local conditions.
 - Do not use the owner blueprint's Tier profits (10,000 / 5,000 / 40,000 Coin) as verified economics. No game values changed.
+
+
+## Cengkeh — national productivity context and regional farm-economics cases (2026-10-19)
+
+### Source 1: Ministry of Agriculture, Clove Outlook 2025
+
+Pusat Data dan Sistem Informasi Pertanian, *Outlook Komoditas Perkebunan Cengkeh Tahun 2025*, published 29 August 2025. Publication record: https://satudata.pertanian.go.id/details/publikasi/848 ; PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_CENGKEH_2025_sign_compressed.pdf
+
+- The official outlook reports 2024 clove production at 147.68 thousand tonnes (preliminary figure across smallholder, state and private estates) and estimates 2025–2028 production at 134.77 thousand tonnes annually.
+- It reports national clove productivity around 400 kg/ha for 2025 (estimate) and smallholder-estate productivity around 402 kg/ha (estimate); 2016 smallholder productivity was reported at 428 kg/ha. These are national aggregate/estimated benchmarks, not the yield of a particular mature orchard.
+- The BPS annual producer-price publication for 2025 covers monthly producer prices across 37 provinces and is the appropriate source family for price observations: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html . Exact clove rows/months have not yet been extracted in this tranche; no numerical farmgate price is assigned here.
+
+### Source 2: Pasuruan regional farm study (published May 2025)
+
+“Strategy to Increase Production and Income of Clove Farmers in Ledug Village, Prigen District, Pasuruan Regency,” Jurnal Agribisnis Wijaya Putra (AGRIWITAS) 4(1), DOI: https://doi.org/10.38156/agriwitas.v4i01.118 ; landing page: https://jurnal.uwp.ac.id/fp/index.php/agriwitas/article/view/118
+
+- The abstract reports 10 informants and figures of Rp3,807,642/ha/year for total cost, Rp24,879,452/ha/year for revenue (the abstract appears to label this as income in one sentence), and Rp21,071,810/ha/year as the difference/net income.
+- Arithmetic check: Rp24,879,452 − Rp3,807,642 = Rp21,071,810, so the internally consistent interpretation is revenue Rp24.879m, cost Rp3.808m and net income Rp21.072m. Keep this interpretation provisional until the full paper's tables and unit basis are checked.
+- The abstract notes uncertain productivity, limited capital/equipment, weather, pests/disease and price instability. It is a single-village case, not a national margin.
+
+### Source 3: Gowa regional cost/income-risk study (published June 2025)
+
+Ramadhani, Amruddin & Saleh, “Risk Analysis of Costs and Income of Clove Farming in Balassuka Village, Tombolopao Subdistrict, Gowa District,” Tarjih: Agribusiness Development Journal 5(1), 58–66, DOI: https://doi.org/10.47030/tadj.v5i01.902 ; landing page: https://jurnal-umsi.ac.id/index.php/agribisnis/article/view/902
+
+- Fieldwork took place September–October 2024 and included 30 clove farmers.
+- Abstract reports total production costs Rp209,993,332 for one harvest season (average Rp6,999,778 per farmer) and “income” Rp835,806,668/year (average Rp27,860,222 per farmer). Cost is labeled per harvest season while income is labeled per year, so these cannot be compared directly until full tables clarify the production period, area, crop form and revenue basis.
+- The study's low reported coefficients of variation for cost/income are local-sample risk measures, not a national guarantee of low risk.
+
+### Source 4: East Java productivity variation, IPB Journal of Management & Agribusiness (March 2025)
+
+Article PDF: https://journal.ipb.ac.id/jmagr/article/download/59276/30467/
+
+- The indexed text reports average East Java productivity of 2,600 kg/ha and a maximum of 16,000 kg/ha/year, with clove tree ages ranging from 8 to 55 years in the production group.
+- These figures differ sharply from the national Kementan outlook estimate near 400 kg/ha for 2025. The studies may use different geography, orchard age, yield denominator or reporting basis; do not pool or select the higher number until the full methods/tables and units are reconciled.
+
+### Reconciliation decision
+
+- Cengkeh is now **cost_yield_partial / not verified for game**. Evidence supports that productivity varies strongly by tree age/location and that price and harvest-season risk matter, but it does not yet establish a complete per-hectare/per-cycle ledger.
+- Next: extract the exact monthly BPS producer-price series for cloves; read full tables from Pasuruan/Gowa studies; resolve area, harvest season, dried-flower grade/moisture, mature-tree density, labor, fertilizer, drying, storage and rejected-quality deductions.
+- Do not use owner blueprint Tier profit of 20,000 Coin for Tier 1 as an empirically validated figure. No game values changed.
