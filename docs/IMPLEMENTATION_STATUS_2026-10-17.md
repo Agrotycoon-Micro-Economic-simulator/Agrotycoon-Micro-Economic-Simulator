@@ -1411,3 +1411,8 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 
 - Latest fix branch HEAD at this check: `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`, 15 commits ahead of `95e2a3be880ccbf75620e4bd42490489c010cac6`. Targeted source checks passed; Node/browser suites remain unrun.
 - Main remains unchanged at `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Research branch remains separate and unmerged.
+
+
+## Audit correction — branch comparison count
+
+- Tranche 18's statement “15 commits ahead” was stale for fix HEAD `8cdb0e0deae9ef0f07d024342cae18c07c01dbfd`; the correct count at that point was 17 ahead / 0 behind. Subsequent documentation commits `bd039c8d` and `892ea06b` advanced the branch again. No code/test conclusions changed.
