@@ -452,7 +452,45 @@ Pusat Data dan Sistem Informasi Pertanian, *Outlook Komoditas Perkebunan Cengkeh
 
 - The official outlook reports 2024 clove production at 147.68 thousand tonnes (preliminary figure across smallholder, state and private estates) and estimates 2025–2028 production at 134.77 thousand tonnes annually.
 - It reports national clove productivity around 400 kg/ha for 2025 (estimate) and smallholder-estate productivity around 402 kg/ha (estimate); 2016 smallholder productivity was reported at 428 kg/ha. These are national aggregate/estimated benchmarks, not the yield of a particular mature orchard.
-- The BPS annual producer-price publication for 2025 covers monthly producer prices across 37 provinces and is the appropriate source family for price observations: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html . Exact clove rows/months have not yet been extracted in this tranche; no numerical farmgate price is assigned here.
+- The BPS annual producer-price publication for 2025 covers monthly producer prices across 37 provinces and is the appropriate source family for current monthly price observations: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html . Exact monthly 2025 clove rows remain unextracted. However, the Kementan 2025 Outlook includes the BPS-derived annual producer-price series for 2014–2023, extracted below.
+
+### Extracted official annual producer-price series (BPS, via Kementan Pusdatin)
+
+The Outlook appendix reports the following national producer prices for clove (dry flower, Rp/kg), sourced from BPS and processed by Pusdatin:
+
+| Year | National price (Rp/kg) |
+|---:|---:|
+| 2014 | 68,529 |
+| 2015 | 75,897 |
+| 2016 | 76,588 |
+| 2017 | 95,996 |
+| 2018 | 92,786 |
+| 2019 | 80,344 |
+| 2020 | 68,443 |
+| 2021 | 77,304 |
+| 2022 | 91,046 |
+| 2023 | 99,385 |
+
+The same appendix reports annual producer prices for the two provincial production centers:
+
+| Year | Maluku (Rp/kg) | South Sulawesi (Rp/kg) |
+|---:|---:|---:|
+| 2014 | 55,988 | 79,026 |
+| 2015 | 65,001 | 77,076 |
+| 2016 | 47,603 | 78,985 |
+| 2017 | 100,727 | 101,383 |
+| 2018 | 98,883 | 108,762 |
+| 2019 | 77,781 | 75,602 |
+| 2020 | 68,268 | 58,883 |
+| 2021 | 78,145 | 76,979 |
+| 2022 | 91,455 | 95,272 |
+| 2023 | 99,295 | 104,474 |
+
+Source: *Outlook Komoditas Perkebunan Cengkeh Tahun 2025*, Lampiran 9–10, pp. 66–67 (publication PDF pagination); BPS data processed by Pusdatin: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_CENGKEH_2025_sign_compressed.pdf
+
+- These are annual average producer-price series, not a current 2026 quote and not the same as export price or a specific farm contract. The report states national 2014–2023 average Rp82,632/kg and 2023 Rp99,385/kg.
+- Provincial series show strong volatility: e.g. Maluku Rp47,603/kg in 2016 to Rp100,727/kg in 2017; South Sulawesi reached Rp108,762/kg in 2018. Do not use one high year as a universal price.
+- The national 2023 value (Rp99,385/kg) is not the 2025 current price. Keep the 2025 monthly BPS observation extraction as an open task.
 
 ### Source 2: Pasuruan regional farm study (published May 2025)
 
@@ -480,5 +518,5 @@ Article PDF: https://journal.ipb.ac.id/jmagr/article/download/59276/30467/
 ### Reconciliation decision
 
 - Cengkeh is now **cost_yield_partial / not verified for game**. Evidence supports that productivity varies strongly by tree age/location and that price and harvest-season risk matter, but it does not yet establish a complete per-hectare/per-cycle ledger.
-- Next: extract the exact monthly BPS producer-price series for cloves; read full tables from Pasuruan/Gowa studies; resolve area, harvest season, dried-flower grade/moisture, mature-tree density, labor, fertilizer, drying, storage and rejected-quality deductions.
+- Next: extract monthly 2025 BPS producer-price observations for cloves; read full tables from Pasuruan/Gowa studies; resolve area, harvest season, dried-flower grade/moisture, mature-tree density, labor, fertilizer, drying, storage and rejected-quality deductions.
 - Do not use owner blueprint Tier profit of 20,000 Coin for Tier 1 as an empirically validated figure. No game values changed.
