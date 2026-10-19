@@ -1439,3 +1439,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Updated evidence does not clear pala for implementation: product form, province, grade/moisture, drying conversion and farm cost/yield still need reconciliation. No runtime economics changed.
 - Research ledger commit: 1f4b0d2e458c39bccdc30b8ba30ebe6c713faa1f; research program, handoff and status updates are part of this checkpoint.
 - Tests: no code tests run; research/documentation only.
+
+
+## 2026-10-19 continuation — pala production source added
+
+- Added official Ditjen Perkebunan 2025 performance report data to the Tier 1 ledger, research program, and handoff: nutmeg production 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); reported productivity 447 kg/ha (2020) and 373 kg/ha (2025).
+- Basis is dried nutmeg seed; mature producing area (TM) must be distinguished from total area. This is national production context, not a complete farm economics ledger. Exact BPS monthly producer prices and cost/yield studies remain pending.
+- No runtime economics changed; no code tests run. Row #42 remains cost_yield_partial. Related commits: ledger 9cfc49167aafc0124459eec3cbac6c521d8b16ab; research program c2b2cb34600f23e23c1b44cf913b8a3609446515; handoff 3645e5fe7a73053c0bc0b499390b95cc261d995e.
