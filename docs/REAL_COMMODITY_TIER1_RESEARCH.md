@@ -585,3 +585,12 @@ Regional differences are material; do not substitute the national average for a 
 - The 2025 value is 12.35% below 2024 (calculated from the reported annual averages). This is a national domestic-market average for dried nutmeg seed, not a province-specific monthly farmgate quote and not a price for fresh nutmeg fruit, mace, or a specified grade/moisture. It is useful as a historical market-price anchor only; do not substitute it directly for the Tier 1 producer price.
 - BPS metadata defines its production variable as kg and explicitly allows either fresh nutmeg fruit or dried nutmeg seed; these forms must remain separated. Metadata: https://sirusa.web.bps.go.id/metadata/variabel/d5debe3d-4cfe-6f87-a113-02884335e266.
 - Status remains **cost_yield_partial / not verified for game**. Farmgate-vs-market price spread, province/month, grade/moisture, tree yield, labor, post-harvest drying recovery and complete cost ledger remain unresolved. No runtime game values changed.
+
+
+## Pala — official national production context (2026-10-19)
+
+Source: Ditjen Perkebunan, *Laporan Kinerja Direktorat Jenderal Perkebunan Tahun 2025*, https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf, Table 34 (area, production and productivity of nutmeg by province in 2025).
+
+The report states national nutmeg production of 38,150 tonnes (2020), 41,444 tonnes (2023 peak), 39,558 tonnes (2024), and 39,573 tonnes (2025). Reported productivity decreases from 447 kg/ha (2020) to 373 kg/ha (2025), about 16.6%. The provincial table distinguishes immature area (TBM), mature producing area (TM), nonproductive/damaged area (TTM/TR), total area, production and productivity.
+
+Interpretation: the production indicator is dried nutmeg seed, not fresh fruit, mace, or whole fruit. Do not divide production by total planted area if the productivity denominator is mature producing area (TM). This source gives macro context only; it does not provide a complete farm input ledger, farmgate price, labor costs, harvest cycle, or per-tree yield. Exact BPS monthly nutmeg producer-price rows remain unextracted. Status remains **cost_yield_partial / not verified for game**. No game parameter changed.
