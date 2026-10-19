@@ -637,3 +637,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Preserve distinction between commercial `marketStage` and code `productionTier`. Do not import legacy profit multipliers or school buffs as economic truth.
 - Revenue arithmetic defect remains logged: 200k DAU × 3 ads/day × $0.002 = $1,200/day / $438,000/year before deductions, not $600/day / $219,000/year. ARPDAU assumptions conflict within the document.
 - No code/parameters changed; no tests run. Audit remains open for embedded images, page context, branch-specific docs/history and source-level evidence.
+
+
+## 2026-10-19 research checkpoint — porang source triangulation
+
+- Research ledger updated with four porang sources: 2026 Garut cooperative value-chain case (fieldwork 2024–2025), 2025 Ponorogo abstract, 2024 East Lombok abstract and 2025 Rembang thesis abstract. Source links and evidence limitations are recorded in the ledger.
+- Large variation in cost/revenue and production scales means observations cannot be pooled. A printed profit equation in the Garut paper appears reversed; its cashflow/payback/IRR/NPV also needs reconciliation. Inaccessible landing pages leave two records at abstract-level evidence.
+- Porang remains cost_yield_partial / not verified for game. No runtime parameters changed. Continue Tier 1 research for all 60 commodities.
