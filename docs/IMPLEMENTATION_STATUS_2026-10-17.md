@@ -594,3 +594,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Reviewed fix-branch finance implementation/test source. Existing test assertions cover loan lifecycle, daily accrual/idempotence, partial/full repayment, legacy debt/payroll aggregation and overdue status. They do not establish all UI/accounting/save-migration behavior or edge cases. The fix-branch handoff states its latest finance test had not been executed in that pass; require a fresh test run before claiming pass.
 - Branch comparisons: fix branch is 5 commits ahead of recorded checkpoint `95e2a3be880ccbf75620e4bd42490489c010cac6`; the aggregate diff touches handoff/status, `js/finance.js`, and `tests/finance.test.js`. Exact five commit identities remain unresolved. Feature branch is now 4 commits ahead of `7c9527f91d2bae3c41ce7ce86a0a36592d7881b8`; recount branch history before citing a baseline. No merge/rebase and no changes to `main`.
 - No game code or economic/gameplay parameters changed. Audit remains IN PROGRESS.
+
+
+## 2026-10-19 audit tranche 4 — R&D and monetization blueprint
+
+- Sequential review of `data game.docx` continued through extracted paragraphs P0280–P1076. This section covers skills, R&D, vertical integration, cross-link events, family morale, database/timebase concepts and monetization.
+- Claims such as +150% to +1500% R&D margins, +10% vertical-integration efficiency, +250% profit, reputation price boosts and DAU/LTV/revenue projections are not supported in this section by reconciled row-level evidence or measured telemetry. Treat as historical design hypotheses, not empirical findings or live parameters. Do not promote them into game economics without owner approval and validation.
+- Blueprint text calling itself “final”, “100% complete”, or “saved permanently” is conversational history, not proof of implementation or approval. The blueprint mixes real-time and game-time loops and corporate/personal accounting concepts; resolve these against current contracts before any implementation.
+- Audit checkpoint reached P1076 of the extracted paragraph stream; full 223-page document review including tables/images is still incomplete. No code or game parameters changed.
