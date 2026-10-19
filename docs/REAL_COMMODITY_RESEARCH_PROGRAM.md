@@ -276,3 +276,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 
 - Extracted 2014–2023 annual national and Maluku/South Sulawesi producer-price rows for dry clove flower from Kementan Pusdatin Outlook Cengkeh 2025 (BPS-derived). Values are stored in the research ledger with source URL and unit.
 - Monthly 2025 BPS observations remain pending. Annual historical prices are not current quotes; farm cost/yield and harvest-season basis still require reconciliation.
+
+
+## Work log update — Pala Tier 1 evidence triage (2026-10-19)
+
+- Identified BPS 2025 monthly producer-price publication and Kementan/provincial plantation-statistics tables as official source families for nutmeg price and production context.
+- Exact BPS nutmeg price rows and official production/area table values have not yet been extracted. No numerical farmgate price, yield, or cost is asserted from search snippets alone.
+- Product-form reconciliation (fresh fruit vs seed in shell vs dried kernel vs mace) is required before comparing prices or calculating processing yields. Row #42 remains cost_yield_partial; no game values changed.
