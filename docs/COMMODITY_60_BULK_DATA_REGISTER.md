@@ -50,3 +50,12 @@ Source context for the first five observations is the Bapanas monthly national p
 ## Next checkpoint acceptance criteria
 
 Report separate counts for: source families located; exact price observations extracted; cost observations extracted; yield/production observations extracted; rows with comparable unit basis; rows with complete cost model; rows approved for runtime. These counts must be based on the actual extracted records, not estimated progress.
+
+
+## Unit correction and January 2026 bulk extract — 2026-10-20
+
+- Bapanas national dataset page exposes January 2026 monthly rows for paddy (GKP farmer, GKG mill, medium/premium rice mill), dry shelled maize, dry soybean, red bird's-eye chili, shallot, live cattle, Ayam Ras, and layer eggs. Exact values and stages are recorded in `docs/COMMODITY_60_BULK_AUDIT.md`.
+- Critical unit correction: the dataset metadata specifies **Ayam Ras = Rp/ekor hidup**, not Rp/kg live weight. June 2025 Rp20,073, November 2025 Rp22,221 and January 2026 Rp22,971 are per bird. The previous per-kg labels are superseded. Do not convert to per-kg unless a matching liveweight basis is independently sourced.
+- Source page gives unit definitions, sampled national average method, and a provincial dataset option: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional and https://data.badanpangan.go.id/datasetpublications/u7t/rata-rata-harga-pangan-bulanan-produsen-provinsi.
+- Coverage count: 60/60 inventory rows remain listed; 8 owner rows have directly relevant producer-price observations (one poultry value is per bird and not yet comparable per kg); zero rows have a complete validated price+cost+yield+loss+fixed-cost model; zero runtime approvals. These observations do not establish full economics.
+- Research only, no runtime changes. No tests run.
