@@ -610,3 +610,12 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Continue existing Agrotycoon tasks to completion on non-`main` branches only. Do not edit, commit to, merge into, or rebase `main`.
 - Continue the existing sequence: finish Library/branch-note audit, verify branch HEADs and histories, validate coconut Tier 1–4 reference economics, source/reconcile the 60-commodity inventory, then perform owner-approved implementation and tests. Unsupported economic values remain out of live game parameters.
 - Record each meaningful checkpoint in the existing repository docs with branch, SHA, changed files, actual test outcomes, limitations and next task.
+
+
+## 2026-10-19 audit tranche 5 — owner scope and macroeconomic blueprint
+
+- Owner explicitly gates all Sim Companies-inspired work behind a future direct instruction. Do not initiate it. Continue the current Agrotycoon scope on non-`main` branches only; no merge/rebase or write to `main`.
+- Sequentially reviewed `data game.docx` through approximately P2040 of the extracted paragraph stream, including macroeconomic estimates, 50-commodity table, R&D chain, governance/security, anti-exploit proposals, retention/ads/IAP and AI business mentor concepts.
+- Figures for national cashflow/taxes, 5 million NPCs, fixed HPP+2% floor, R&D buffs and monetization forecasts are not backed in the reviewed passages by a complete source ledger/reproducible calculations. Keep them as historical design hypotheses; do not treat them as empirical facts or live values. The 50-commodity table is not the final 60-item source-backed audit.
+- Several proposed capabilities (authoritative server, queues/cron, ad receipt validation, automatic AI balancing, Emergent deployment) are not established by blueprint prose; verify actual code and current scope before implementation.
+- Documentation-only checkpoint. No tests run; no game code or values changed. Library audit remains incomplete.
