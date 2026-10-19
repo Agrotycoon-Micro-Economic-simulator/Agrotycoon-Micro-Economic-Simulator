@@ -576,3 +576,12 @@ Regional differences are material; do not substitute the national average for a 
 - This completes the initial extraction of the official historical price series, but does not establish a current 2026 price or complete Tier 1 unit economics.
 - Next: verify product form/grade/moisture; extract provincial production and mature/harvested-area data; and source farm-level costs, yield per tree/ha/year, tree age, harvest labor and post-harvest loss. Extract monthly 2025 BPS observations if monthly resolution is needed.
 - Status remains **cost_yield_partial / not verified for game**. No game values changed.
+
+
+### Update — official domestic dried-nutmeg price series extracted (2026-10-19)
+
+- Directorate General of Estate Crops (Ditjenbun), *Laporan Kinerja Ditjenbun 2025*, Table 35, “Perkembangan Harga Rata-rata Komoditas Pala di Pasar Domestik Tahun 2020–2025”, PDF: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf (table around PDF page 119; source identified as SIPASBUN - Ditjen Perkebunan).
+- Annual average domestic-market prices for dried nutmeg seed: 2020 Rp41,072/kg; 2021 Rp47,132/kg; 2022 Rp51,291/kg; 2023 Rp53,178/kg; 2024 Rp58,019/kg; 2025 Rp50,852/kg.
+- The 2025 value is 12.35% below 2024 (calculated from the reported annual averages). This is a national domestic-market average for dried nutmeg seed, not a province-specific monthly farmgate quote and not a price for fresh nutmeg fruit, mace, or a specified grade/moisture. It is useful as a historical market-price anchor only; do not substitute it directly for the Tier 1 producer price.
+- BPS metadata defines its production variable as kg and explicitly allows either fresh nutmeg fruit or dried nutmeg seed; these forms must remain separated. Metadata: https://sirusa.web.bps.go.id/metadata/variabel/d5debe3d-4cfe-6f87-a113-02884335e266.
+- Status remains **cost_yield_partial / not verified for game**. Farmgate-vs-market price spread, province/month, grade/moisture, tree yield, labor, post-harvest drying recovery and complete cost ledger remain unresolved. No runtime game values changed.
