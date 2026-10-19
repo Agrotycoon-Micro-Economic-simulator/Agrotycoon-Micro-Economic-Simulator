@@ -1383,3 +1383,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Isolated execution found and fixed overdue-state ordering in the fix branch; a regression case now covers restored active loan state with `dueDay === S.day` and `lastAccrualDay === S.day`.
 - Exact-source isolated runtime checks passed 3/3; Node test and full suite are not yet run. Details and commit IDs are recorded in the fix branch's handoff/status.
 - No main changes.
+
+
+## 2026-10-19 research checkpoint — Gula Aren Cair
+
+- Added multi-source evidence for owner inventory row #50: Riau sap-farm/processed beverage case, Lampung molded-sugar yield study, Bulukumba liquid-sugar processor case and UMKM Hariang optimization model.
+- Arithmetic/unit flags: Riau average sap volume and revenue do not reconcile due to different tenure/sharecropping scopes; 2026 liquid-sugar income differs from revenue minus cost by Rp10,000; molded-sugar yield is not liquid-sugar yield. Product unit/packaging basis needs full-text extraction.
+- Status remains cost_yield_partial, not verified for game. No runtime values changed. Ledger commit: `3365d72a9344a9d4fa0a7a371ced6d938545fb58`.
