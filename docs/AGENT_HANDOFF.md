@@ -696,3 +696,24 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Finance tests exist but were not executed during this audit. Gaps include small-principal rounding, restored active loans whose due day is already accrued, save/load migration, and cross-report reconciliation for loan/payroll liabilities. This audit's exact findings are recorded in the fix branch's own handoff and status files.
 - Current feature branch HEAD before this checkpoint was `ba130853ef1259a1053a4fc081cac54c83647ef1); `main` remains at `612451c03be59dd8cacd3b13adb8a79a46e51be2` and was not changed. Branches remain unmerged.
 - No game runtime code or economic values changed. Continue with remaining Library reconciliation and source-backed commodity research before implementation.
+
+
+## Library data-quality audit — owner commodity and agriculture blueprints (2026-10-19)
+
+### Scope reviewed
+- Completed text/table extraction review of harga komoditi.docx (762 extracted lines including the 50-commodity table and 60-commodity extension) and data peternakan dan pertanian.docx (278 extracted paragraphs). This is a content audit of extracted text; it does not replace source-by-source verification against cited original studies.
+- The owner 60-item list is preserved as the controlling inventory, but its tier figures are design inputs/hypotheses, not a verified economic dataset.
+
+### Material quality defects
+1. The 50-item table states that tier values are real-world net profit divided by 1,000, but several entries trace back to earlier illustrative calculations with missing costs or inconsistent production/price assumptions. Example: the paddy Tier 3 value derives from restaurant gross contribution after rice cost only, explicitly excluding gas, water, electricity, cook wages, rent and packaging; it is not net profit.
+2. The 60-item mining/energy extension explicitly assumes a universal 25% Tier 1 net-profit margin and adjusts revenues to create desired profit levels. This is a game balancing assumption, not evidence that each mine/energy operator earns 25% NPM. Tier 2/3 profit values are also presented without row-level source calculations.
+3. The 60 rows mix raw farm products with manufactured/processed products (e.g. chocolate, plastic resin and cement) and use inconsistent Tier counts/meanings. Product-node definitions must be fixed per commodity before a chain ledger is built.
+4. data peternakan dan pertanian.docx contains mixed-year, mixed-scale, mixed-unit ranges and many unspecific source labels. It is a research lead/reference, not a source registry. Some summary profits do not reconcile cleanly with the stated yield × price less stated cost, and some livestock cost scopes need to distinguish purchase of breeding/grower stock, feed, housing, mortality, cycle length and output basis.
+5. The chicken example uses a large batch with 2% mortality and downstream by-product assumptions, but its claimed full-chain profit omits or incompletely specifies sanitation, packaging, cold chain, distribution, refrigeration/energy, unsold product and compliance. Do not adopt those values as verified economics.
+6. The coconut reference benchmark is separate from these broad crop-cost ranges; its owner-locked values remain unchanged.
+
+### Decision
+- Do not import the blueprint's tier-profit values into js/real_economic_data.js or runtime code as real data.
+- Preserve original blueprint figures for traceability, and build new source-backed observations with explicit source, date, geography, unit, market stage, method and uncertainty.
+- For every row, separate price_observed, cost_yield_partial, economics_reconciled, verified_for_game, or blocked_missing_evidence. A table entry alone does not clear a row.
+- No runtime game values changed.
