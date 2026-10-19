@@ -619,3 +619,12 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Figures for national cashflow/taxes, 5 million NPCs, fixed HPP+2% floor, R&D buffs and monetization forecasts are not backed in the reviewed passages by a complete source ledger/reproducible calculations. Keep them as historical design hypotheses; do not treat them as empirical facts or live values. The 50-commodity table is not the final 60-item source-backed audit.
 - Several proposed capabilities (authoritative server, queues/cron, ad receipt validation, automatic AI balancing, Emergent deployment) are not established by blueprint prose; verify actual code and current scope before implementation.
 - Documentation-only checkpoint. No tests run; no game code or values changed. Library audit remains incomplete.
+
+
+## 2026-10-19 audit tranche 6 — blueprint completion and arithmetic checks
+
+- Sequential text review of `data game.docx` reached the end of the extracted paragraph stream (through P3524), including education/school, contracts/supply chain, monetization, retention and proposed config/test scaffolds. Full file audit remains incomplete: tables, embedded images, page context and source claims still need structured review.
+- Arithmetic defect in legacy ad estimate: 200,000 DAU × 3 ads/day × $0.002/view is 600,000 views/day × $0.002 = $1,200/day or $438,000/year, not $600/day / $219,000/year. This ignores fill, invalid traffic, platform share, tax and other deductions; correct the base arithmetic before using it.
+- Monetization assumptions conflict internally: ARPDAU $0.25 is stated in one place, while another ads-only scenario gives $0.005–$0.02. The proposed corruption rate reduction does not guarantee a strict monthly hard cap. These remain unvalidated design estimates, not measured data or proven safeguards.
+- Proposed test scaffold imports `game_economy.EconomyEngine` and references an imagined CI entry; no evidence from the reviewed text proves these exist in the current repo. Do not claim it is runnable without adapting and executing it.
+- No code/parameters changed and no tests run. Continue structured review of tables/images and then reconcile implementation state before 60-commodity source research.
