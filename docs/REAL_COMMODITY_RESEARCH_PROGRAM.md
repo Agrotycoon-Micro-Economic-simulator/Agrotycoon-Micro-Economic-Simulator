@@ -289,3 +289,10 @@ Use statuses `researching`, `price_observed`, `cost_yield_partial`, `economics_r
 
 - Extracted Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.36 (BPS-sourced), annual nutmeg producer prices for 2020–2024, in Rp/kg. National averages: 41,569; 44,827; 52,093; 53,610; 56,540. Selected 2024 observations: Maluku 83,071; Maluku Utara 81,011; Papua Barat 81,988; Banten 77,083; Jawa Tengah 70,270; Sumatera Barat 63,558.
 - Historical annual prices are not current 2026 quotes. Product-form/grade basis still requires verification; provincial production, area/yield and cost ledger are incomplete. Row #42 remains cost_yield_partial; no game values changed.
+
+
+## Work log update — pala historical market price series (2026-10-19)
+
+- Extracted the official Ditjenbun/SIPASBUN annual domestic-market average for dried nutmeg seed: Rp41,072/kg (2020), Rp47,132 (2021), Rp51,291 (2022), Rp53,178 (2023), Rp58,019 (2024), Rp50,852 (2025). Source: *Laporan Kinerja Ditjenbun 2025*, Table 35, https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
+- This is a dried-seed domestic-market average, not a farmgate quote and not comparable to fresh-fruit or mace prices. 2025 fell 12.35% vs 2024 based on annual averages. Do not use as Tier 1 price without a source-backed market-stage reconciliation.
+- Pala remains cost_yield_partial; no game parameters changed.
