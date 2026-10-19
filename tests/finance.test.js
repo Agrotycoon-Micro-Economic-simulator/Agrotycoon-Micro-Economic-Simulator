@@ -96,4 +96,19 @@ function setup() {
   assert.equal(finance.repay(loan.id, loan.principal + 1).ok, false, "repayment above total due is rejected");
   assert.equal(finance.repay(loan.id, 1).ok, false, "zero/invalid repayment amount is rejected");
 }
+{
+  const { S, finance } = setup();
+  S.day = 31;
+  const loan = {
+    id: "restored-due-day", principal: 1000000, interestDue: 0,
+    monthlyRate: 0.015, dueDay: 31, status: "active", lastAccrualDay: 31
+  };
+  S.finance.loans.push(loan);
+  finance.accrueDay();
+  assert.equal(loan.status, "overdue",
+    "a restored active loan on an already-accrued due day must still become overdue");
+  assert.equal(loan.interestDue, 0,
+    "same-day restored state must not accrue interest twice");
+}
+
 console.log("PASS: finance origination, daily accrual, idempotence, partial/full repayment, legacy liabilities, overdue and validation.");
