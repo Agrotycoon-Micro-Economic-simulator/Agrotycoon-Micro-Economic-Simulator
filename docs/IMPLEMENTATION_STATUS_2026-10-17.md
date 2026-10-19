@@ -1446,3 +1446,12 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Added official Ditjen Perkebunan 2025 performance report data to the Tier 1 ledger, research program, and handoff: nutmeg production 38,150 t (2020), 41,444 t (2023), 39,558 t (2024), 39,573 t (2025); reported productivity 447 kg/ha (2020) and 373 kg/ha (2025).
 - Basis is dried nutmeg seed; mature producing area (TM) must be distinguished from total area. This is national production context, not a complete farm economics ledger. Exact BPS monthly producer prices and cost/yield studies remain pending.
 - No runtime economics changed; no code tests run. Row #42 remains cost_yield_partial. Related commits: ledger 9cfc49167aafc0124459eec3cbac6c521d8b16ab; research program c2b2cb34600f23e23c1b44cf913b8a3609446515; handoff 3645e5fe7a73053c0bc0b499390b95cc261d995e.
+
+
+## 2026-10-19 — owner-directed 60-commodity bulk audit
+
+- Workflow correction: owner explicitly directed that the 60 commodities must be researched together rather than in serial one-by-one sessions.
+- Created `docs/COMMODITY_60_BULK_AUDIT.md` (commit `026e64956ed8cff56a6e089f0c089e09016e1104`) with all 60 owner rows, shared source bundles, unit/product-form gates, and an initial evidence-status matrix. Updated the research program and agent handoff to enforce bulk coverage reporting (commits `bb8996446b21956f4203e016c17a77c338152fbf`, `d71071ccdaacb2568e1e778b7b252fd3272d7e49`).
+- Official source bundles identified: BPS 2025 agricultural producer prices; BPS 2025 livestock/fishery producer prices; BPS SEP 2024 costs for the selected commodities actually surveyed; Kementan Statistik Pertanian 2025; separate ESDM/industry sources for mineral, energy and manufactured products.
+- This is an audit baseline, **not** a claim that all 60 commodities have verified prices, costs, yields or margins. Exact row-level extraction remains outstanding. No runtime parameters or commodity IDs changed; owner-approved coconut benchmark remains locked.
+- Documentation-only changes. No tests run for this checkpoint. Browser E2E remains outstanding. Continue on `feat/production-tier-taxonomy`; never edit `main`, and do not merge/rebase without resolving branch divergence first.
