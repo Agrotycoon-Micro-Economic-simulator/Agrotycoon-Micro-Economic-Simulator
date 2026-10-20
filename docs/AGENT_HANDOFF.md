@@ -6159,3 +6159,10 @@ The Kementan historical series is conservatively matched to 17 owner rows at cat
 - Broad historical producer-price series now map to 27 owner rows. This is price coverage only; complete economic models 0, economically verified rows 0, runtime approvals 0. The book says its producer prices are BPS-sourced; annual table series are through 2024. Do not call them 2026 prices.
 - Newly mapped owner rows: #8 tomato, #14 papaya, #16 cabbage, #17 carrot, #18 buncis, #19 cucumber, #39 cacao, #40 oil palm, #42 nutmeg, #48 thick rubber. Exact product-form mismatches remain explicit, particularly banana cultivars, coconut grades, live chicken vs meat, live duck vs eggs, Robusta vs Arabica, generic pepper vs white/black pepper, and thick rubber vs liquid latex.
 - No runtime or ID changes. Documentation-only; tests not run. Next: batch-extract relevant province/year cells for all 27 mapped rows, then build cost/yield bundles from SEP/Kementan production statistics. Do not extrapolate missing provincial cells or infer cost/profit from price alone.
+
+
+## Post-write verification — 2026-10-20
+
+- Final verified feature-branch HEAD after this checkpoint: `320f84cd2a76d81b484c47ed8ff9fbcf0d562d1f` (handoff update commit). Latest compare against `main`: 506 ahead / 2 behind, status `diverged`; main HEAD remains `612451c03be59dd8cacd3b13adb8a79a46e51be2`. Do not merge/rebase or touch main.
+- Newly created crosswalk `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md` was fetched back from the branch; verified corrections include Table 2.11 Buncis 2024 national Rp12,701/kg and Table 2.20 Tomat Sayur Rp11,955/kg. The broad price-series mapping count is 27 owner rows, not 27 economically validated rows.
+- Repository file writes succeeded through GitHub contents API. No local clone/working-tree exists in this runtime, so no claim is made about local git status. No tests were run because only documentation files changed.
