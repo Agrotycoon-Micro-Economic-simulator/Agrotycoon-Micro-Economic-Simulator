@@ -47,3 +47,15 @@ BPS released *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* on 2026-08-31
 ### Checkpoint after locator pass
 
 No numeric observation was added by this pass. Do not increment extracted observation counts. It only reduces source-navigation work and defines bulk extraction targets. Complete models remain 0/60; runtime approvals remain 0/60. Documentation-only; tests not run.
+
+
+## BPS source expansion for horticulture and sugarcane — 2026-10-20
+
+The source search identified two official BPS publications that should be used alongside Kementan *Statistik Pertanian 2025* rather than forcing every crop through one large PDF:
+
+1. **Horticulture:** BPS, *Statistik Hortikultura 2025*, released 2026-06-12 (Catalogue 5204003; Publication 05100.26011). The official abstract describes ATAP 2025 for 18 strategic horticultural commodities, with production, harvested area, number of productive plants and supporting consumption/trade indicators. Source: https://www.bps.go.id/id/publication/2026/06/12/43da5ec30fc7d87985e108a5/statistik-hortikultura-2025.html. Use this for matching owner rows #5–#8, #11–#12, #14, #16–#20 only where the specific commodity is actually represented.
+2. **Seasonal estate crops:** BPS, *Statistik Tanaman Perkebunan Semusim Indonesia 2025 (Tebu dan Tembakau)*, released 2026-08-31 and revised 2026-09-16 (Catalogue 5501009; Publication 05100.26022). The official abstract describes area and production by province and management status plus export/import data. Source: https://www.bps.go.id/id/publication/2026/08/31/aa1f04245928352fdf4cb63f/statistik-tanaman-perkebunan-semusim-indonesia-2025-tebu-dan-tembakau.html. For owner row #44 Tebu, cane tonnage must not be treated as sugar output; mill recovery and payment basis remain separate model inputs.
+
+The BPS permanent-estate publication *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* was also verified as covering area/production by province and export/import for oil palm, coffee, cocoa, rubber, tea, clove, coconut, cashew, sago, nutmeg, pepper and kemiri sunan. Source: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html.
+
+**Extraction status:** source scope verified, but this update did not transcribe numeric rows from these publications. Therefore exact observation counts, yield counts and complete-model counts must not increase. Numeric extraction still requires table/figure locator, period, geography, unit, product form and denominator. Tests not run; no runtime changes.
