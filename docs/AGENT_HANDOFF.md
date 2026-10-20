@@ -1,3 +1,13 @@
+Latest continuation checkpoint — BPS SEP 2024 bulk crop/estate tables (2026-10-20)
+
+- Current remote branch at start: feat/production-tier-taxonomy; HEAD resolved from the branch ref: 9c75174547dd3fb9f9369f0e173159f9fb6aaccf (commit message: “Record bulk commodity evidence checkpoint”). Remote comparison against main: 479 ahead / 2 behind; main SHA remains 612451c03be59dd8cacd3b13adb8a79a46e51be2. No merge/rebase or main-branch write. This work uses GitHub's remote file API; there is no local repository checkout available in this runtime, so a local working-tree status cannot be inspected. A git ls-remote attempt failed because DNS resolution for github.com is unavailable.
+- Opened BPS SEP 2024 crop/estate PDF and extracted Tables 2.1, 2.2, 2.3, 2.7, 2.8, 2.9 and 2.10 (printed pp.15–24): paddy, maize, shallot, rawit, oil-palm TBS, rubber latex and generic fresh coconut. Seven exact producer-price values, seven total-cost values, seven per-unit cost values and seven productivity values are now documented in docs/COMMODITY_60_BULK_AUDIT.md, docs/COMMODITY_60_BULK_DATA_REGISTER.md and docs/REAL_COMMODITY_TIER1_RESEARCH.md.
+- BPS 2025 crop/estate price PDF (19.36 MB) could not be extracted (download endpoint cache miss); BPS 2025 livestock/fishery PDF (16.32 MB) exceeded the web extraction limit; SEP livestock PDF endpoint also returned cache miss. These publications are identified, but no numerical tables from them are claimed extracted.
+- Coverage: matrix 60/60; 7 official source families/pages identified; 36 exact price entries in combined ledger (29 existing Bapanas + 7 new SEP); 14 exact cost metrics (7 total cost + 7 unit cost); 7 productivity metrics; 6 owner rows with directly comparable output unit/farm-stage evidence; 12 rows with some price evidence including generic coconut partials; 6 rows still missing a matched cost/yield bundle; complete models 0; economically verified 0; runtime approvals 0.
+- No runtime/data-ID changes. Documentation-only; tests not run. Keep owner coconut benchmark locked and continue all-row bulk workflow. Next: acquire local copies of the two BPS 2025 price PDFs, extract applicable tables in one batch, then extract SEP livestock/fisheries where accessible and continue Kementan production/yield joins.
+
+---
+
 ## Latest bulk evidence checkpoint — 2026-10-20
 
 - Continued all-60 audit using shared producer-price datasets rather than serial commodity work.
