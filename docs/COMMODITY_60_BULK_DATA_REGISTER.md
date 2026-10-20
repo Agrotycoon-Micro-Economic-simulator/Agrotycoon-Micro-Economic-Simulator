@@ -100,3 +100,8 @@ Counts at this checkpoint: 36 exact producer-price entries across existing Bapan
 - A first conservative crosswalk maps category-level historical producer prices to 17 owner rows (#3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41). Rows remain PARTIAL because cultivar, grade, product form, system costs/yield or observation recency still need reconciliation.
 - Generic coconut (Rp/butir) remains non-cultivar-specific; “ayam” is liveweight rather than meat; pepper is not separated into white/black; thick rubber is not assumed equal to latex. Do not count these as exact owner-node matches.
 - Source data are annual historical prices through 2024 in Table 2.1, with limited paddy Jan–Nov 2025 stage series in Table 1.1. Full source values: `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
+
+
+## Detailed provincial table crosswalk — 2026-10-20
+
+The official Kementan 2025 price book exposes provincial producer-price tables for multiple owner categories. A new crosswalk records table number, printed page, source product form, units, and mismatch gates: `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md`. Exact broad historical price coverage maps to 27 owner rows; this remains partial evidence, not completed economics. Generic pepper, coconut grades, banana cultivars, live chicken/meat, duck/live egg and latex/thick-rubber distinctions remain explicitly unresolved.
