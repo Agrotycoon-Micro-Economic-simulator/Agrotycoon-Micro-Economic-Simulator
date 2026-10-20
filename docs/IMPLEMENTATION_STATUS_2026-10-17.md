@@ -1479,3 +1479,11 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Progress: 60/60 owner rows in matrix; 7 source families/pages identified; 36 exact price entries (29 existing Bapanas + 7 SEP producer-price values); 14 cost metrics (7 total costs + 7 unit costs); 7 productivity metrics; 6 rows with directly comparable stage/unit; 12 rows with some price evidence including generic coconut partials; 6 rows still missing matched row-level cost/yield; 0 complete models; 0 economically verified rows; 0 runtime approvals.
 - The SEP tables include input, labor/service, fuel, utilities and land-rent categories but BPS notes some cost/subsidy imputations remain unestimated. Complete losses, rejection, unsold output, capital/depreciation and logistics coverage has not been established. No runtime data changed. Tests not run (documentation-only).
 - Remote branch start HEAD: 9c75174547dd3fb9f9369f0e173159f9fb6aaccf; comparison to main was 479 ahead / 2 behind. Main untouched. Local working-tree state could not be checked because no local checkout exists and git network access failed DNS.
+
+
+## 2026-10-20 — Kementan historical price bulk extraction
+
+- New source extracted: Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025*, official 185-page PDF. Extracted 104 national annual producer-price observations from Table 2.1 (26 categories × 2021–2024) plus 26 non-missing paddy stage/quality/year price values from Table 1.1. Exact values and units are in `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
+- Source is BPS-derived for producer-price tables; the Table 2.1 latest year is 2024. Table 1.1 2025 values are January–November only, and source notes discontinuity. Historical observations must not be presented as current 2026 prices.
+- Coverage counts: 130 numeric price cells extracted in this tranche; not 130 owner rows. Owner inventory 60/60 mapped; complete economic models 0; economically verified rows 0; runtime-approved rows 0. No runtime/data IDs/owner-locked coconut values changed. Documentation-only; tests not run.
+- Current branch comparison was rechecked before writing: feature branch 485 ahead / 2 behind `main`; branch diverged. Keep `main` untouched and do not merge/rebase. Local checkout/working-tree remains unavailable in this runtime.
