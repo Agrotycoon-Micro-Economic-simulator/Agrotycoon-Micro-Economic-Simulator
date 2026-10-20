@@ -143,3 +143,20 @@ Matched the eight production observations above with BPS, *Luas Panen Tanaman Sa
 | #17 | Wortel | 6,816,552.67 | 37,162.65 | 183.42 | 18,342 |
 
 **Classification:** 8 matched production-area pairs and 8 derived productivity indicators. The kg/ha column is a unit conversion from the derived quintals/ha, not an independent BPS observation. Values are rounded to two decimals in quintals/ha and whole kg/ha; underlying ratios use the published totals. These are national aggregate ratios, not necessarily representative farm-level yields or saleable yield. Survey definitions, multi-harvest accounting, grade/rejection, losses, costs and farm-gate revenue remain unvalidated. No unit economics or runtime approval follows from this calculation.
+
+
+## Matched total-area denominators — BPS plantation crops, 2024 (not yield)
+
+Matched the seven national 2024 plantation production categories already recorded above to the BPS national 2024 total-area table. Production and area both report Indonesia and the same crop categories. Production source: BPS, *Produksi Tanaman Perkebunan Menurut Provinsi dan Jenis Tanaman (Ribu Ton)*, updated 2026-08-27: https://www.bps.go.id/id/statistics-table/2/MjU2NiMy/produksi-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman--ribu-ton-.html. Area source: BPS, *Luas Areal Tanaman Perkebunan Menurut Provinsi dan Jenis Tanaman (Ribu Hektar)*, updated 2026-03-06: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html.
+
+| Crop as published by BPS | Production (thousand tonnes) | Total planted area (thousand ha) | Status of denominator |
+|---|---:|---:|---|
+| Kelapa sawit | 45,436.20 | 16,013.04 | Total area; not verified as mature/harvested area |
+| Kelapa | 2,792.23 | 3,290.95 | Total area; not verified as mature/harvested area |
+| Karet | 2,132.09 | 3,149.28 | Total area; not verified as mature/harvested area |
+| Kopi | 813.35 | 1,273.92 | Total area; generic coffee, not robusta-only |
+| Kakao | 617.11 | 1,367.43 | Total area; product stage still needs matching |
+| Teh | 118.90 | 97.54 | Total area; product stage still needs matching |
+| Tebu | 2,465.51 | 520.82 | Total area; cane output is not sugar output |
+
+**Classification:** 7 matched production/total-area pairs. These denominator values are useful source matches but **must not be described as productivity or farm yield**. BPS metadata for the plantation-productivity indicator defines productivity as production divided by harvested area / area of producing plants, not total planted area. Retrieve the mature-producing-area series (TM / tanaman menghasilkan or the exact applicable harvested area) before calculating productivity. Do not calculate economic margins from these aggregates. The product-form caveats above remain active; no runtime values or canonical IDs changed. Documentation-only; tests not run.
