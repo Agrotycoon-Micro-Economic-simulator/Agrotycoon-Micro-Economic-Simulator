@@ -58,7 +58,7 @@ Annual average (Rp/kg), 2025 is January–November only.
 
 ## Data-quality gates
 
-- Table 2.1 contains 26 commodity rows × 4 displayed years = 104 exact annual producer-price observations. Table 1.1 contains 26 non-dash annual price cells across farmer/mill stage and GKP/GKG/outside-quality categories. Total exact numeric price cells in this tranche: 130.
+- Table 2.1 contains 26 commodity rows × 4 displayed years = 104 exact annual producer-price observations. Table 1.1 contains 27 non-dash annual price cells across farmer/mill stage and GKP/GKG/outside-quality categories. Total exact numeric price cells in this tranche: 131.
 - The 2024 values are the latest values in Table 2.1; they must not be described as 2025 or 2026 prices. Table 1.1 has limited 2025 Jan–Nov annual averages for GKP/GKG only as shown.
 - Generic labels do not resolve cultivar/grade or processing node: “ayam” is liveweight, not meat; “kelapa tua” is per nut and is not split into Kelapa Super/Biasa; “kopi robusta” producer form must be reconciled with cherry/green bean; “karet getah tebal” must be reconciled with latex grade and the SEP latex table. No unit conversions are inferred.
 - Table 2.1 contains producer prices only, not matched production cost, yield, loss, capital, mortality, rejection or logistics. It cannot clear any row's full unit-economics gate.
