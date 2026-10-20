@@ -337,3 +337,10 @@ No runtime/code/canonical IDs or economic approvals changed. Documentation-only;
 ### Tea denominator — direct verification and source-series caveat (2026-10-20)
 
 Direct search of official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025*, Table 68 (printed p. 206 / PDF p. 221), verifies 2024 tea TM 75,447 ha, production 116,030 t and productivity 1,538 kg/ha; the ratio is ≈1,538.2 kg/ha. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. However, BPS's 2024 national production table reports 118.90 thousand t. Treat these as separate source series until definitions and compilation are reconciled; do not calculate a hybrid productivity from one source's production and the other's TM. Sugarcane's LAKIN 2024 harvested-area metrics are 520,823 ha, GKP 2,465,514 t (4.73 t/ha) and cane 33,216,613 t (63.78 t/ha); harvested area is not TM, and cane is not GKP. No runtime/canonical IDs/economic approvals changed; tests not run.
+
+
+### Sugarcane denominator gate — harvested area verified (2026-10-20)
+
+For sugarcane, a TM denominator is not required to use the official harvested-area productivity series. Pusdatin Kementan *Outlook Tebu 2025* reports 2024 (temporary) harvested area 520,823 ha, GKP production 2,465,514 t, cane production 33,216,613 t, GKP productivity 4.73 t/ha, cane productivity 63.78 t/ha and rendemen 7.42%. Ratios check within rounding: GKP ≈4.733 t/ha and cane ≈63.77 t/ha. Source: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_TEBU_2025_sign_compressed.pdf.
+
+BPS's 2024 seasonal estate-crops publication records sugar production from sugarcane and area 520.82 thousand ha; Pusdatin/Ditjenbun also reports cane mass separately. Keep sugar (GKP) and raw cane as separate output forms and use harvested area, not projected TM, as the denominator for this annual crop. These are national provisional aggregates, not farm-level yields or unit economics. No runtime/code/canonical IDs or economic approvals changed; tests not run.
