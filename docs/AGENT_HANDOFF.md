@@ -6201,3 +6201,10 @@ New official evidence from Ditjen Perkebunan, Laporan Kinerja Ditjen Perkebunan 
 - Sugarcane LAKIN reports 2024 harvested area 520,823 ha, GKP 2,465,514 t, and cane 33,216,613 t. This is not evidence of a TM denominator; do not conflate cane and sugar output. BPS total-area table is not a TM/yield denominator: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html.
 
 **State:** research docs updated on feature branch only. No runtime/code/canonical IDs or economic approvals changed; tests not run. Next: directly reconcile tea table/source series; inspect BPS Statistik Tanaman Perkebunan Semusim Indonesia 2024 and/or Ditjenbun 2024–2026 Volume I for sugarcane area-status table; then re-fetch all three docs and verify branch HEAD. Continue to leave main untouched.
+
+
+## Tea verification update — direct official PDF read (2026-10-20)
+
+The tea table was verified directly in official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025*, Table 68, printed p. 206 / PDF p. 221: 2024 TBM 2,740 ha; TM 75,447 ha; TTM/TR 19,363 ha; total 97,551 ha; production 116,030 t; productivity 1,538 kg/ha. The ratio checks (≈1,538.2 kg/ha). Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
+
+BPS's national 2024 production table reports 118.90 thousand tonnes of tea, so the discrepancy between BPS and LAKIN remains open. The LAKIN series is internally consistent, but do not blend its TM with BPS production or call the source discrepancy resolved. For sugarcane, LAKIN provides 2024 harvested area 520,823 ha, GKP 2,465,514 t (4.73 t/ha) and cane 33,216,613 t (63.78 t/ha); do not label harvested area TM or cane production sugar output. Documentation only; no runtime, canonical IDs or economic approvals changed; tests not run. Next: reconcile tea series definitions, then validate crop product stage, farm-gate prices and cost bundles before any unit-economics model.
