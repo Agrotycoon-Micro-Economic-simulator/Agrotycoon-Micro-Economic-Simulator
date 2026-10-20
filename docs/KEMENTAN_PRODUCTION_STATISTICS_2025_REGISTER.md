@@ -80,3 +80,26 @@ This tranche records numeric observations from official BPS releases/table searc
 - The paddy GKG series and rice-equivalent output are different product bases; do not combine or treat rice output as paddy output.
 - National annual aggregates do not identify provincial or farm-level yield, costs, sale price, loss rates, or profit. No yield has been derived in this tranche, and no economic model is validated by these figures alone.
 - These are 2024 observations, not current 2026 prices or output. No game data, canonical IDs, or runtime parameters changed. Tests not run (documentation-only).
+
+
+## Numeric extraction tranche — BPS seasonal vegetables, 2024
+
+Extracted eight national production values from the official BPS statistics table *Produksi Tanaman Sayuran dan Buah-Buahan Semusim Menurut Jenis Tanaman, 2024* (last updated 2025-06-10). Source table: https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2024.html?year=2024
+
+| Owner row | Crop as published by BPS | Production | Period / geography | Published unit |
+|---|---|---:|---|---|
+| #6 | Bawang merah / shallots | 20,857,208.27 | 2024 / Indonesia | kuintal (kw/qui) |
+| #21 | Bawang putih / garlic | 394,380.19 | 2024 / Indonesia | kuintal (kw/qui) |
+| #5 | Cabai rawit / cayenne pepper | 15,687,569.77 | 2024 / Indonesia | kuintal (kw/qui) |
+| #7 | Kentang / potato | 12,704,492.21 | 2024 / Indonesia | kuintal (kw/qui) |
+| #19 | Ketimun / cucumber | 3,991,993.48 | 2024 / Indonesia | kuintal (kw/qui) |
+| #16 | Kubis / cabbage | 14,559,335.48 | 2024 / Indonesia | kuintal (kw/qui) |
+| #8 | Tomat / tomato | 11,527,914.77 | 2024 / Indonesia | kuintal (kw/qui) |
+| #17 | Wortel / carrot | 6,816,552.67 | 2024 / Indonesia | kuintal (kw/qui) |
+
+**Interpretation gates**
+
+- Extraction count in this tranche: **8 crop records / 8 production indicators**. Values are copied as published; unit is retained as quintal rather than silently relabelled tonnes.
+- These are national production totals, not farm-level yields. No yield calculation is made because the matching harvested-area denominator is not recorded in this tranche.
+- Production totals alone do not establish saleable grade, harvest losses, costs, farm-gate price, or profit. Product-level models remain unvalidated and no values are approved for runtime.
+- Data year is 2024; this is not a current-price series. No game data, canonical IDs or runtime parameters changed. Documentation-only; tests not run.
