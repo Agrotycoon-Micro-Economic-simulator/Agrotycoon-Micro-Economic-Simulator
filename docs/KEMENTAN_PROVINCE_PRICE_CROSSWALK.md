@@ -86,7 +86,7 @@ These values are reproduced as printed national averages. They are historical pr
 | Ketela rambat | Maluku | 11,230 | Rp/kg | 2.7 / p.25 |
 | Kelapa tua belum dikupas | Jawa Timur | 5,122 | Rp/butir | 2.29 / p.47 |
 | Kelapa tua belum dikupas | Kalimantan Selatan | 5,673 | Rp/butir | 2.29 / p.47 |
-| Kopi robusta | Jawa Barat | 29,182 | Rp/kg | 2.32 / p.50 |
+| Kopi robusta | Jawa Barat | 26,937 | Rp/kg | 2.32 / p.50 |
 | Kopi robusta | Sulawesi Tengah | 36,536 | Rp/kg | 2.32 / p.50 |
 | Kakao | Sulawesi Barat | 85,279 | Rp/kg | 2.33 / p.51 |
 | Kakao | Nusa Tenggara Barat | 73,755 | Rp/kg | 2.33 / p.51 |
@@ -108,3 +108,8 @@ These values are reproduced as printed national averages. They are historical pr
 Table-of-contents and page-level table checks identify exact broad producer-price series for additional owner rows beyond the first 17-row mapping: #8 Tomat sayur (Table 2.20, p.38), #14 Pepaya (2.24, p.42), #16 Kubis/kol (2.18, p.36), #17 Wortel (2.21, p.39), #18 Buncis (2.11, p.29), #19 Ketimun (2.17, p.35), #39 Kakao (2.33, p.51), #40 Kelapa sawit (2.30, p.48), #42 Pala (2.36, p.54), and #48 Karet getah tebal (2.31, p.49). Together with previously mapped rows, this yields 27 owner rows with category-level historical producer-price series (the two owner rows #1/#2 may also consult generic mature-coconut prices, but remain a cultivar/benchmark mismatch and are not included in the 27 count). This is evidence of price series only; it is not a verified economic model.
 
 Exact 2024 national averages confirmed in the detailed tables include bawang merah Rp31,673/kg (p.26), bawang putih Rp37,287/kg (p.27), buncis Rp12,701/kg (p.29), cabai rawit Rp45,698/kg (p.31), tomat sayur Rp11,955/kg (p.38), kelapa tua unpeeled Rp3,422/butir (p.47), kelapa sawit Rp2,105/kg (p.48), karet getah tebal Rp9,301/kg (p.49), kopi robusta Rp38,789/kg (p.50), kakao Rp47,270/kg (p.51), lada/merica Rp80,189/kg (p.52), cengkeh biji kering Rp105,062/kg (p.53), sapi potong Rp76,040/kg liveweight (p.56), kambing Rp137,258/kg liveweight (p.58), ayam Rp34,741/kg liveweight (p.60), and telur ayam ras Rp34,045/kg (p.62). Table values are annual 2024 producer-price averages, not 2026 prices.
+
+
+## Correction note — 2026-10-20
+
+- Corrected the 2024 Kopi Robusta observation for Jawa Barat from Rp29,182/kg to **Rp26,937/kg** after rechecking Table 2.32, printed p.50. Treat the earlier figure as superseded. The national 2024 value remains Rp38,789/kg. This is a source transcription correction only; no model or runtime value is promoted.
