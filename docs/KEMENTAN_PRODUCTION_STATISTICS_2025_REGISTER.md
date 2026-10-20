@@ -179,3 +179,15 @@ Official Ditjen Perkebunan, *Laporan Kinerja Ditjen Perkebunan 2025*, provides t
 - **Rubber:** TM 2,242,887 ha; production 2,132,088 tonnes; published productivity 951 kg/ha; total area 3,149,277 ha. Table 58. Calculation check: 2,132,088,000 kg / 2,242,887 ha ≈ 950.6 kg/ha, consistent with rounded 951 kg/ha. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
 
 **Still unverified in this pass:** 2024 actual national TM denominator for coconut, cocoa, tea and sugarcane. Do not fill those with projections, targets, or total planted area. These two new denominator records do not resolve all product-form, farm-level, price/cost, or owner-row gates. No runtime/model approval follows.
+
+
+### 2026-10-20 — additional actual 2024 producing-area evidence: coconut and cocoa; sugarcane remains distinct
+
+Official Ditjen Perkebunan, *Laporan Kinerja Ditjen Perkebunan 2025* (https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf):
+
+- **Coconut, Table 18:** TBM 406,043 ha; TM 2,502,062 ha; TTM/TR 382,650 ha; total area 3,290,755 ha; production 2,792,228 t; published productivity 1,116 kg/ha. Calculation: 2,792,228,000 / 2,502,062 ≈ 1,115.96 kg/ha, consistent with rounding. Keep product-form/cultivar caveats open.
+- **Cocoa, Table 63:** TBM 205,968 ha; TM 863,095 ha; TTM/TR 298,364 ha; total area 1,367,426 ha; production 617,112 t; published productivity 715 kg/ha. Calculation: 617,112,000 / 863,095 ≈ 715.1 kg/ha, consistent with rounding. Product stage remains a matching gate.
+- **Tea:** an indexed excerpt suggests TM 75,447 ha and production 116,030 t, but this record has not been rechecked directly in the PDF and conflicts with the BPS national production table (118.90 thousand t). Do not promote tea figures to verified status until the series/table discrepancy is reconciled.
+- **Sugarcane:** BPS national total-area table reports 520.82 thousand ha for 2024, but this is not a verified TM denominator. The LAKIN 2025 table gives actual 2024 harvested area 520,823 ha and production GKP 2,465,514 t / cane 33,216,613 t, with productivity 4.73 t/ha GKP and 63.78 t/ha cane. These are harvested-area/production statistics, not a TM record; preserve the cane-versus-sugar output distinction.
+
+BPS area table: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html. LAKIN is the primary source for the coconut/cocoa producing-area figures. Total area and harvested area must not be silently relabelled TM. No runtime, canonical IDs or economic approvals changed; documentation-only and tests not run.
