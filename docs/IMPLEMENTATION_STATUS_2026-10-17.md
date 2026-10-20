@@ -1487,3 +1487,8 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 - Source is BPS-derived for producer-price tables; the Table 2.1 latest year is 2024. Table 1.1 2025 values are January–November only, and source notes discontinuity. Historical observations must not be presented as current 2026 prices.
 - Coverage counts: 131 numeric price cells extracted in this tranche; not 130 owner rows. Owner inventory 60/60 mapped; complete economic models 0; economically verified rows 0; runtime-approved rows 0. No runtime/data IDs/owner-locked coconut values changed. Documentation-only; tests not run.
 - Current branch comparison was rechecked before writing: feature branch 485 ahead / 2 behind `main`; branch diverged. Keep `main` untouched and do not merge/rebase. Local checkout/working-tree remains unavailable in this runtime.
+
+
+## 2026-10-20 — conservative owner-row match count
+
+A first source-category crosswalk maps historical producer-price evidence to 17 owner rows (#3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41). These rows are only PARTIAL, not verified: the source's latest Table 2.1 year is 2024 and product form/cultivar/grade/system costs still require reconciliation. Full models remain 0; economically verified rows 0; runtime approvals 0. The source adds historical price evidence only.
