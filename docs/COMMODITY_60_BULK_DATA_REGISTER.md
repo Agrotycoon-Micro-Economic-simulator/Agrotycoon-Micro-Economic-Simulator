@@ -85,3 +85,11 @@ Source tables report total production value/cost/income in thousand Rp per hecta
 - SEP livestock PDF endpoint (8.14 MB) returned cache miss; exact livestock table rows not yet extracted. The publication page itself is discoverable: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html.
 
 Counts at this checkpoint: 36 exact producer-price entries across existing Bapanas ledger + 7 new SEP table prices; 14 exact cost metrics (7 table total-cost fields + 7 per-unit cost fields); 7 exact productivity metrics. These are field counts across 7 tables, not independent source studies. Zero complete cost models and zero runtime approvals.
+
+
+## 2026-10-20 — Kementan Pusdatin bulk historical price extraction
+
+- Extracted searchable text from official *Statistik Harga Komoditas Pertanian Tahun 2025* (published 2025-12-29; 185-page PDF). Table 2.1, printed p.19, yields 104 exact national annual producer-price cells across 26 categories for 2021–2024; Table 1.1, printed p.3, yields 26 non-missing paddy-stage annual price cells including Jan–Nov 2025 where available. Full values, units and caveats: `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
+- The book is a useful alternative source for historical national producer prices while the BPS 2025 monthly PDFs remain inaccessible in this extraction environment. Table 2.1 is BPS-sourced; latest year there is 2024, not 2025. Do not relabel annual historical averages as current quotes.
+- Source categories include maize, mung bean, soybean, peanut, cassava, sweet potato, potato, red chili, rawit, shallot, garlic, mango, banana, orange, salak, mature coconut, robusta coffee, pepper, thick rubber latex, dried clove, live cattle/buffalo/goat/pig/chicken and layer eggs. Product units are mixed (kg, bunch, nut, liveweight); retain them as published.
+- Extracted-cell count in this tranche: 130 (104 Table 2.1 cells + 26 non-dash Table 1.1 cells). This is not 130 owner rows and does not increase the count of complete unit-economics models. Runtime approval remains 0.
