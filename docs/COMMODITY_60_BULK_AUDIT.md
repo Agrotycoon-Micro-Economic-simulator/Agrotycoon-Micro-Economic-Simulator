@@ -228,6 +228,6 @@ The BPS 2025 livestock/fishery producer-price publication page was verified (Cat
 
 ## 2026-10-20 — Kementan historical producer-price bulk tranche
 
-Added `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md` with the national annual producer-price table from Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*. Extracted 104 exact values from Table 2.1 (26 commodity categories × 2021–2024) and 26 non-dash values from Table 1.1 (paddy by farmer/mill stage, quality and year, including limited Jan–Nov 2025 data). Source links, exact series, unit and period limitations are recorded in the extraction ledger.
+Added `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md` with the national annual producer-price table from Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*. Extracted 104 exact values from Table 2.1 (26 commodity categories × 2021–2024) and 27 non-dash values from Table 1.1 (paddy by farmer/mill stage, quality and year, including limited Jan–Nov 2025 data). Source links, exact series, unit and period limitations are recorded in the extraction ledger.
 
 Interpretation gate: this source adds historical producer-price coverage but does not provide matched costs/yields and does not validate 26 owner rows. Most recent Table 2.1 values are for 2024. Stage/form checks still apply: liveweight animal price is not meat price, kelapa tua per nut does not distinguish owner cultivars, and coffee/rubber processing form must be matched. No game values or IDs changed; no tests run.
