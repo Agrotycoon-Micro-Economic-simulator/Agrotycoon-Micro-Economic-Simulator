@@ -182,3 +182,45 @@ Source: Bapanas, *Rata-rata Harga Pangan Bulanan Tingkat Produsen Nasional (Angk
 - Earlier text in this file described Ayam Ras values Rp20,073 (June 2025) and Rp22,221 (November 2025) as Rp/kg live weight. That was incorrect. The source metadata explicitly defines Ayam Ras as **Rp/ekor hidup**. This correction supersedes those earlier unit labels.
 - As a result, #26 has a dated price observation but does **not** yet have a comparable per-kg price. A conversion would require contemporaneous average liveweight per bird and a matched basis; no such conversion is made here.
 - Bapanas dataset page: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional; provincial series: https://data.badanpangan.go.id/datasetpublications/u7t/rata-rata-harga-pangan-bulanan-produsen-provinsi.
+
+## 2026-10-20 — BPS SEP 2024 bulk extraction checkpoint
+
+### Source actually extracted
+
+BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan*, Catalogue 5101026, publication 05100.25001, released 2025-01-24. Official publication page: https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html. The PDF was opened and its table of contents, technical product-form notes, and Tables 2.1–2.3, 2.7–2.10 were read. Values below are national 2024 averages for self-harvested individual agricultural holdings (UTP), not 2025 prices and not game parameters. Table/page references are the printed page numbers in the publication.
+
+| Owner row | BPS table / printed page | Product form stated by BPS | Production value (000 Rp per table basis) | Production cost (000 Rp per table basis) | Income (000 Rp per table basis) | Reported producer price (000 Rp/kg) | Reported cost per unit (000 Rp/kg) | Reported productivity |
+|---:|---|---|---:|---:|---:|---:|---:|---|
+| #3 Padi | Table 2.1 / p.15 | GKP (gabah kering panen) | 26,369.86/ha | 15,287.59/ha | 11,082.11/ha | 5.76 | 3.59 | 46.35 ku/ha (= 4,635 kg/ha, derived unit conversion) |
+| #4 Jagung | Table 2.2 / p.16 | Pipilan kering | 20,943.60/ha | 11,486.06/ha | 9,457.54/ha | 4.97 | 3.13 | 42.94 ku/ha (= 4,294 kg/ha, derived unit conversion) |
+| #6 Bawang Merah | Table 2.3 / p.17 | Umbi kering panen dengan daun | 141,997.49/ha | 75,286.09/ha | 66,711.41/ha | 20.63 | 11.62 | 0.73 kg/m² (= 7,300 kg/ha, derived unit conversion) |
+| #5 Cabai Rawit | Table 2.7 / p.21 | Buah segar | 103,548.29/ha | 34,607.54/ha | 68,940.75/ha | 28.35 | 15.73 | 0.37 kg/m² (= 3,700 kg/ha, derived unit conversion) |
+| #40 Sawit / TBS | Table 2.8 / p.22 | Tandan buah segar (TBS/FFB) | 24,378.94/100 pohon | 10,112.64/100 pohon | 14,266.32/100 pohon | 2.12 | 1.06 | 12,437.86 kg/100 pohon |
+| #48 Karet / Lateks | Table 2.9 / p.23 | Lateks | 5,438.61/100 pohon | 1,643.87/100 pohon | 3,794.75/100 pohon | 7.30 | 2.40 | 842.57 kg/100 pohon |
+| #1/#2 Kelapa (generic only; not cultivar-separated) | Table 2.10 / p.24 | Buah kelapa segar | 12,788.56/100 pohon | 4,642.55/100 pohon | 8,146.04/100 pohon | 2.65 | 1.11 | 6,072.41 kg/100 pohon |
+
+The price and unit-cost columns are reported by the source in thousand rupiah per kg; multiply by 1,000 for Rp/kg (e.g. paddy Rp5,760/kg and cost Rp3,590/kg). Total value/cost/income are in thousand rupiah on the table's hectare or 100-tree basis. The coconut table is generic fresh coconut in kg, does not split Kelapa Super from Kelapa Biasa, and is not comparable to the owner-locked Rp13,000/butir customer sale benchmark without sourced mass/unit and market-stage reconciliation. Do not overwrite that benchmark.
+
+### Evidence limits and classifications
+
+- marketStage=producer/farm; productionTier=raw (kept separate; the commercial Tier 1–4 sequence is not a production transformation tier).
+- Seven source tables yielded seven reported producer-price metrics, seven total-cost metrics, seven per-unit cost metrics, and seven productivity metrics. These are distinct fields from seven tables, not 28 independent studies.
+- The tables include input, labor/agricultural-service, fuel, utility and land-rent categories, including imputed rent for owned/rent-free land. BPS notes that some cost/subsidy imputations have not yet been estimated. The tables do not establish complete loss, rejection, unsold-output, depreciation/capex and logistics coverage; do not mark any row as a complete or verified net-profit model.
+- Exact product-form definitions are stated in the publication's technical notes (printed pages 2–3); table values are on printed pages 15–24. Evidence class: official_observation; derived kg/ha conversions are derived_from_source.
+
+### 2025 producer-price publication access status
+
+The BPS 2025 crop/horticulture/smallholder-estate publication page was verified (Catalogue 7103012, released 2026-04-24; 19.36 MB): https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html. Its download endpoint returned a cache-miss error in this research environment; no numeric table from that PDF is claimed extracted in this checkpoint.
+
+The BPS 2025 livestock/fishery producer-price publication page was verified (Catalogue 7103013, released 2026-04-24; 16.32 MB): https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html. The PDF endpoint exceeded the web extraction limit (>10 MiB); no numeric table from that PDF is claimed extracted in this checkpoint. The SEP 2024 livestock publication page (8.14 MB) was found but its download endpoint returned a cache miss; SEP livestock/fishery table rows remain pending.
+
+### Updated coverage counts
+
+- Owner inventory in matrix: 60/60.
+- Official source families/publication pages identified in this pass: 7 (Bapanas national producer-price dataset; BPS 2025 crop/estate prices; BPS 2025 livestock/fishery prices; BPS SEP 2024 crop/estate costs; BPS SEP 2024 livestock costs; BPS SEP 2024 fishery costs; Kementan Statistik Pertanian 2025). This is not a count of fully extracted publications.
+- Exact producer-price records in the audit ledger: 36 total (29 previously recorded Bapanas observations plus 7 newly extracted SEP 2024 table-level producer-price values; different periods/surveys and product bases remain separate).
+- Exact production-cost metrics extracted from SEP tables: 14 (7 table-basis total costs + 7 per-unit costs); exact productivity metrics extracted: 7.
+- Owner rows with some price evidence: 12/60, including generic coconut evidence for #1/#2 that is not cultivar-specific; six rows have a directly comparable farm-stage output unit in the extracted SEP table (#3, #4, #5, #6, #40, #48).
+- Rows with a price record but still lacking a matched row-level cost/yield bundle: 6 (#1, #2 cultivar-specific match missing; #13; #25; #26 per-bird unit not comparable to kg; #27).
+- Complete price + cost + yield + losses + fixed-cost model: 0/60. Economically verified: 0/60. Approved for runtime: 0/60.
+- Runtime changes: none. Tests: not run (documentation-only checkpoint).
