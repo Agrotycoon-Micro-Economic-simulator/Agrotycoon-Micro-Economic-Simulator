@@ -160,3 +160,12 @@ Matched the seven national 2024 plantation production categories already recorde
 | Tebu | 2,465.51 | 520.82 | Total area; cane output is not sugar output |
 
 **Classification:** 7 matched production/total-area pairs. These denominator values are useful source matches but **must not be described as productivity or farm yield**. BPS metadata for the plantation-productivity indicator defines productivity as production divided by harvested area / area of producing plants, not total planted area. Retrieve the mature-producing-area series (TM / tanaman menghasilkan or the exact applicable harvested area) before calculating productivity. Do not calculate economic margins from these aggregates. The product-form caveats above remain active; no runtime values or canonical IDs changed. Documentation-only; tests not run.
+
+
+## Verified producing-area denominator — coffee, 2024
+
+A follow-up search found an official Ditjen Perkebunan actual-data series that separates producing area (TM), immature area (TBM), and non-producing/damaged area (TTM/TR). For coffee in 2024, the source reports: TM 976,435 ha; TBM 186,453 ha; TTM/TR 111,030 ha; total area 1,273,918 ha; production 813,346 tonnes; published productivity 833 kg/ha. Source: Ditjen Perkebunan, *Laporan Kinerja Ditjen Perkebunan 2025*, Table 48, official PDF https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. A separate official release repeats the 2024 coffee area composition: https://ditjenbun.pertanian.go.id/kementan-perkuat-budidaya-kopi-adaptif-iklim-hadapi-potensi-musim-kering/.
+
+**Calculation check:** 813,346 tonnes ÷ 976,435 ha = approximately 833.17 kg/ha, consistent with the published whole-number 833 kg/ha. This is a national aggregate for generic coffee, not a Robusta-only value and not a farm-level guarantee. Do not silently relabel it as Robusta productivity.
+
+For the other six matched plantation categories (oil palm, coconut, rubber, cocoa, tea, sugarcane), the same-year national TM denominator has **not yet been independently verified in the source evidence collected in this pass**. Their production/total-area pairs remain registered but are not productivity observations. Do not use projected TM targets as actual area or calculate yield from total planted area.
