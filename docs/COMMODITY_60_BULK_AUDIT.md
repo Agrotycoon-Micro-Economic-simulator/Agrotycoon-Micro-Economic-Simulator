@@ -263,3 +263,10 @@ Registered two additional official source families in `docs/COMMODITY_60_BULK_DA
 - BPS *Statistik Tanaman Perkebunan Semusim Indonesia 2025 (Tebu dan Tembakau)* (released 2026-08-31, revised 2026-09-16): area and production by province and management status; relevant to #44 Tebu. Cane tonnage is not equivalent to sugar output or farmer net revenue.
 
 This is source registration, not numeric extraction. No exact observation counts are added and no owner row changes to economically verified. Current gate remains 60/60 inventory rows, 27 owner rows with category-level historical price evidence, 0/60 complete validated economic models and 0/60 runtime approvals. No runtime parameters or canonical IDs changed. Documentation-only; tests not run.
+
+
+### 2026-10-20 — first numeric production tranche (BPS food crops)
+
+Added five rounded national annual indicators covering two owner rows (#3 padi and #4 maize) to `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`: paddy harvested area (~10.05 million ha), paddy production (53.14 million tonnes GKG), rice output for food consumption (30.62 million tonnes), maize harvested area (~2.55 million ha), and maize production (20.48 million tonnes at 28% moisture). The source URLs, release dates, geography, product bases and limits are recorded in the production register.
+
+Classification: **2 commodity records / 5 numeric indicators**, with published rounding preserved. These are national 2024 aggregates; no farm-level yield, costs, farm-gate price, loss rate or profit is inferred. Paddy GKG and rice-equivalent output remain separate bases; maize moisture basis remains explicit. This is numeric production extraction, not economic validation. The checkpoint remains 60/60 inventory rows, 27 owner rows with category-level historical price evidence, 0/60 complete validated economic models, 0/60 economically verified rows and 0/60 runtime approvals. No game data or canonical IDs changed. Documentation-only; tests not run.
