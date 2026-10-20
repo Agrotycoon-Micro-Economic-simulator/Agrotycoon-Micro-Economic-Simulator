@@ -125,3 +125,21 @@ Extracted the national Indonesia row from BPS, *Produksi Tanaman Perkebunan Menu
 - This table is distinct from BPS's separate *Produksi Perkebunan Besar Tahunan* table, which covers large plantations only. The values above come from the provincial table whose publication notes combine plantation-company survey data with smallholder plantation data to obtain Indonesian totals. Do not substitute the large-plantation-only figures.
 - These are annual national production aggregates, not yields or saleable output. No harvested-area denominator, grade/rejection rate, matched farm-gate price or cost bundle is inferred here. Owner-row matches with different commodity forms remain provisional/comparator-only.
 - No game data, canonical IDs or runtime parameters changed. Documentation-only; tests not run.
+
+
+## Matched harvested-area denominators and derived productivity — BPS seasonal vegetables, 2024
+
+Matched the eight production observations above with BPS, *Luas Panen Tanaman Sayuran dan Buah-Buahan Semusim Menurut Jenis Tanaman, 2024*, last updated 2025-06-10: https://www.bps.go.id/id/statistics-table/3/VTNWM01VdGhTelZTTTNSS1NFSkVZazkzWjJKcWR6MDkjMw%3D%3D/harvested-area-of-temporary-vegetable-and-fruit-crops-by-type-of-crops----2024.html?year=2024. Production and area are both national 2024 values for the same named crop categories. Derived productivity = published production (quintals) / harvested area (ha); 1 quintal = 100 kg.
+
+| Owner row | Crop | Production (quintals) | Harvested area (ha) | Derived productivity (quintals/ha) | Derived productivity (kg/ha) |
+|---:|---|---:|---:|---:|---:|
+| #6 | Bawang merah | 20,857,208.27 | 188,796.36 | 110.47 | 11,047 |
+| #21 | Bawang putih | 394,380.19 | 5,317.78 | 74.16 | 7,416 |
+| #5 | Cabai rawit | 15,687,569.77 | 191,884.29 | 81.76 | 8,176 |
+| #7 | Kentang | 12,704,492.21 | 67,487.54 | 188.25 | 18,825 |
+| #19 | Ketimun | 3,991,993.48 | 38,246.93 | 104.37 | 10,437 |
+| #16 | Kubis | 14,559,335.48 | 63,672.35 | 228.66 | 22,866 |
+| #8 | Tomat | 11,527,914.77 | 58,995.13 | 195.40 | 19,540 |
+| #17 | Wortel | 6,816,552.67 | 37,162.65 | 183.42 | 18,342 |
+
+**Classification:** 8 matched production-area pairs and 8 derived productivity indicators. The kg/ha column is a unit conversion from the derived quintals/ha, not an independent BPS observation. Values are rounded to two decimals in quintals/ha and whole kg/ha; underlying ratios use the published totals. These are national aggregate ratios, not necessarily representative farm-level yields or saleable yield. Survey definitions, multi-harvest accounting, grade/rejection, losses, costs and farm-gate revenue remain unvalidated. No unit economics or runtime approval follows from this calculation.
