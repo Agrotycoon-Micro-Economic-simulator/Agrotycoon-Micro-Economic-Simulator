@@ -105,3 +105,8 @@ Counts at this checkpoint: 36 exact producer-price entries across existing Bapan
 ## Detailed provincial table crosswalk — 2026-10-20
 
 The official Kementan 2025 price book exposes provincial producer-price tables for multiple owner categories. A new crosswalk records table number, printed page, source product form, units, and mismatch gates: `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md`. Exact broad historical price coverage maps to 27 owner rows; this remains partial evidence, not completed economics. Generic pepper, coconut grades, banana cultivars, live chicken/meat, duck/live egg and latex/thick-rubber distinctions remain explicitly unresolved.
+
+
+## Kementan production/population source — 2026-10-20
+
+Registered the official *Statistik Pertanian / Agricultural Statistics 2025* source and its scope in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`. This source covers five-year series including production/population, upstream inputs, trade, prices and consumption. Source discovery is not numeric extraction; no observation counts or economic-model counts are increased by this registration. Production totals must not be treated as yield, unit cost, or profit without a matching denominator and system definition.
