@@ -311,3 +311,13 @@ This adds **7 matched production/total-area pairs**, not seven validated product
 Official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025*, Table 48, provides a matched 2024 coffee production/producing-area pair: production 813,346 tonnes; TM 976,435 ha; TBM 186,453 ha; TTM/TR 111,030 ha; total area 1,273,918 ha; reported productivity 833 kg/ha. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. The reported value is consistent with 813,346 / 976,435 = approximately 833.17 kg/ha rounded to a whole number.
 
 This is one verified national aggregate for generic coffee, not a Robusta-only yield and not farm-level saleable yield. For oil palm, coconut, rubber, cocoa, tea and sugarcane, matching 2024 actual TM denominators remain unverified. Do not substitute total planted area or projected TM targets. No runtime/model approval follows; documentation-only, tests not run.
+
+
+### 2026-10-20 — additional actual 2024 plantation TM denominators verified
+
+From official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025* (https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf):
+
+- Oil palm, Table 12: TM 12,876,487 ha; production 45,436,197 t; published productivity 3,529 kg/ha; total area 16,833,985 ha. Production is explicitly labelled CPO; do not equate this with TBS yield.
+- Rubber, Table 58: TM 2,242,887 ha; production 2,132,088 t; published productivity 951 kg/ha; total area 3,149,277 ha. Production/TM arithmetic yields approximately 950.6 kg/ha, consistent with the published rounded figure.
+
+Coffee remains verified separately (TM 976,435 ha; production 813,346 t; productivity 833 kg/ha; generic coffee, not Robusta-only). Coconut, cocoa, tea and sugarcane still have no verified actual 2024 national TM denominator in the evidence gathered here. Exclude projected/target TM values and do not derive productivity from total area. Product form, price/cost and economic model gates remain open; no runtime or canonical IDs changed. Documentation-only; tests not run.
