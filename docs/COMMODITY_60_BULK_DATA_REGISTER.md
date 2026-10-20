@@ -59,3 +59,29 @@ Report separate counts for: source families located; exact price observations ex
 - Source page gives unit definitions, sampled national average method, and a provincial dataset option: https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional and https://data.badanpangan.go.id/datasetpublications/u7t/rata-rata-harga-pangan-bulanan-produsen-provinsi.
 - Coverage count: 60/60 inventory rows remain listed; 8 owner rows have directly relevant producer-price observations (one poultry value is per bird and not yet comparable per kg); zero rows have a complete validated price+cost+yield+loss+fixed-cost model; zero runtime approvals. These observations do not establish full economics.
 - Research only, no runtime changes. No tests run.
+
+## 2026-10-20 — BPS SEP 2024 bulk extraction checkpoint
+
+### BPS SEP 2024 crop/estate table extraction (actual table-level extraction)
+
+Official source: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan*, Catalogue 5101026 / publication 05100.25001, released 2025-01-24. https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html. PDF table of contents, technical notes and the tables below were actually opened/read; do not confuse this with extraction of the BPS 2025 producer-price PDFs.
+
+| BPS table/page | Owner row | Output form | Producer price (Rp/kg, converted from source's 000 Rp/kg) | Total production cost | Cost per output unit (Rp/kg) | Productivity |
+|---|---:|---|---:|---:|---:|---|
+| 2.1 / p.15 | #3 Padi | GKP | 5,760 | Rp15,287,590/ha | 3,590 | 46.35 ku/ha |
+| 2.2 / p.16 | #4 Jagung | Dry shelled grain | 4,970 | Rp11,486,060/ha | 3,130 | 42.94 ku/ha |
+| 2.3 / p.17 | #6 Bawang Merah | Dry harvested bulb with leaves | 20,630 | Rp75,286,090/ha | 11,620 | 0.73 kg/m² |
+| 2.7 / p.21 | #5 Cabai Rawit | Fresh fruit | 28,350 | Rp34,607,540/ha | 15,730 | 0.37 kg/m² |
+| 2.8 / p.22 | #40 Sawit/TBS | Fresh fruit bunches | 2,120 | Rp10,112,640/100 trees | 1,060 | 12,437.86 kg/100 trees |
+| 2.9 / p.23 | #48 Karet/Lateks | Latex | 7,300 | Rp1,643,870/100 trees | 2,400 | 842.57 kg/100 trees |
+| 2.10 / p.24 | #1/#2 generic coconut only | Fresh coconut | 2,650 | Rp4,642,550/100 trees | 1,110 | 6,072.41 kg/100 trees |
+
+Source tables report total production value/cost/income in thousand Rp per hectare or per 100 trees, producer price and unit cost in thousand Rp/kg, and productivity in the printed units. BPS technical notes define the corresponding output forms (printed pp.2–3). The generic coconut table cannot separate Kelapa Super vs Kelapa Biasa and must not be substituted for the owner-locked per-buah customer benchmark. BPS notes some cost/subsidy imputations are not yet estimated. These data remain cost_yield_partial, not complete profit models.
+
+### BPS 2025 price PDF extraction blockers
+
+- Crop/horticulture/estate producer prices 2025: official page found, 19.36 MB; PDF endpoint returned cache miss. No 2025 table values are counted as extracted from that PDF: https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan-hortikultura-dan-tanaman-perkebunan-rakyat-2025.html.
+- Livestock/fishery producer prices 2025: official page found, 16.32 MB; endpoint exceeded the web extractor's >10 MiB limit. No 2025 table values are counted as extracted from that PDF: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html.
+- SEP livestock PDF endpoint (8.14 MB) returned cache miss; exact livestock table rows not yet extracted. The publication page itself is discoverable: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html.
+
+Counts at this checkpoint: 36 exact producer-price entries across existing Bapanas ledger + 7 new SEP table prices; 14 exact cost metrics (7 table total-cost fields + 7 per-unit cost fields); 7 exact productivity metrics. These are field counts across 7 tables, not independent source studies. Zero complete cost models and zero runtime approvals.
