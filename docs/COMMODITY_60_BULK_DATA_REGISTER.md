@@ -93,3 +93,10 @@ Counts at this checkpoint: 36 exact producer-price entries across existing Bapan
 - The book is a useful alternative source for historical national producer prices while the BPS 2025 monthly PDFs remain inaccessible in this extraction environment. Table 2.1 is BPS-sourced; latest year there is 2024, not 2025. Do not relabel annual historical averages as current quotes.
 - Source categories include maize, mung bean, soybean, peanut, cassava, sweet potato, potato, red chili, rawit, shallot, garlic, mango, banana, orange, salak, mature coconut, robusta coffee, pepper, thick rubber latex, dried clove, live cattle/buffalo/goat/pig/chicken and layer eggs. Product units are mixed (kg, bunch, nut, liveweight); retain them as published.
 - Extracted-cell count in this tranche: 130 (104 Table 2.1 cells + 27 non-dash Table 1.1 cells). This is not 130 owner rows and does not increase the count of complete unit-economics models. Runtime approval remains 0.
+
+
+## Owner-row matching note — Kementan historical prices (2026-10-20)
+
+- A first conservative crosswalk maps category-level historical producer prices to 17 owner rows (#3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41). Rows remain PARTIAL because cultivar, grade, product form, system costs/yield or observation recency still need reconciliation.
+- Generic coconut (Rp/butir) remains non-cultivar-specific; “ayam” is liveweight rather than meat; pepper is not separated into white/black; thick rubber is not assumed equal to latex. Do not count these as exact owner-node matches.
+- Source data are annual historical prices through 2024 in Table 2.1, with limited paddy Jan–Nov 2025 stage series in Table 1.1. Full source values: `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
