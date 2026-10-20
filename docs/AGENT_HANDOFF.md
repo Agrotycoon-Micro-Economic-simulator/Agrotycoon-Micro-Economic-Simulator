@@ -6180,3 +6180,13 @@ The Kementan historical series is conservatively matched to 17 owner rows at cat
 - Found and verified official Ditjen Perkebunan 2024 actual coffee denominator from *Laporan Kinerja Ditjen Perkebunan 2025*, Table 48: TM 976,435 ha; production 813,346 t; reported productivity 833 kg/ha; total area 1,273,918 ha. Arithmetic check: production/TM = ~833.17 kg/ha, consistent with published rounded productivity. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
 - Logged this as one verified national aggregate for generic coffee only; do not relabel as Robusta-only or farm-level saleable yield. The other six 2024 plantation categories still lack verified actual TM denominators in the evidence collected here. Do not substitute total area or projected TM targets.
 - No runtime, code, canonical IDs or economic model approvals changed. Documentation-only; tests not run. Continue with same-year actual TM and production-form matching for oil palm, coconut, rubber, cocoa, tea and sugarcane.
+
+
+## Latest continuation checkpoint — three plantation TM denominators verified (2026-10-20)
+
+Verified from official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025* (https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf):
+- Coffee, Table 48: TM 976,435 ha; production 813,346 t; productivity 833 kg/ha. Generic coffee only, not Robusta-specific.
+- Oil palm, Table 12: TM 12,876,487 ha; production 45,436,197 t; productivity 3,529 kg/ha. Output is labelled CPO, not TBS.
+- Rubber, Table 58: TM 2,242,887 ha; production 2,132,088 t; productivity 951 kg/ha.
+
+The published whole-number productivity values are consistent with production divided by TM after unit conversion. Still unverified: actual 2024 national TM for coconut, cocoa, tea and sugarcane. Never substitute projected/target values or total planted area. Product-form, price/cost and owner-row validation remain open; no runtime/canonical IDs/economic approvals changed. Documentation-only; tests not run. Continue researching the four unresolved crops.
