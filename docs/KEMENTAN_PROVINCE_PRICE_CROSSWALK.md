@@ -57,10 +57,10 @@ These values are reproduced as printed national averages. They are historical pr
 |---|---:|---:|---|---:|
 | Bawang merah | 2.8 | 31,673 | Rp/kg | 26 |
 | Bawang putih | 2.9 | 37,287 | Rp/kg | 27 |
-| Buncis | 2.11 | 7,682 | Rp/kg | 29 |
+| Buncis | 2.11 | 12,701 | Rp/kg | 29 |
 | Cabai rawit | 2.13 | 45,698 | Rp/kg | 31 |
 | Kentang | 2.16 | 16,790 | Rp/kg | 34 |
-| Tomat sayur | 2.20 | 7,701 | Rp/kg | 38 |
+| Tomat sayur | 2.20 | 11,955 | Rp/kg | 38 |
 | Kelapa tua belum dikupas | 2.29 | 3,422 | Rp/butir | 47 |
 | Kopi robusta | 2.32 | 38,789 | Rp/kg | 50 |
 | Kakao | 2.33 | 47,270 | Rp/kg | 51 |
@@ -101,3 +101,10 @@ These values are reproduced as printed national averages. They are historical pr
 4. Do not infer a missing provincial value from national average, neighboring provinces, or an adjacent product category.
 5. Do not use generic “lada” for both white and black pepper; do not use Robusta for Arabica; do not use Pisang Ambon for Cavendish; do not use live chicken for carcass meat; do not use live duck for duck eggs; do not use thick rubber for liquid latex without a conversion study.
 6. No runtime values or IDs are changed by this research checkpoint. Tests are not applicable to these documentation-only changes and were not run.
+
+
+## 2026-10-20 — broader province-table coverage checkpoint
+
+Table-of-contents and page-level table checks identify exact broad producer-price series for additional owner rows beyond the first 17-row mapping: #8 Tomat sayur (Table 2.20, p.38), #14 Pepaya (2.24, p.42), #16 Kubis/kol (2.18, p.36), #17 Wortel (2.21, p.39), #18 Buncis (2.11, p.29), #19 Ketimun (2.17, p.35), #39 Kakao (2.33, p.51), #40 Kelapa sawit (2.30, p.48), #42 Pala (2.36, p.54), and #48 Karet getah tebal (2.31, p.49). Together with previously mapped rows, this yields 27 owner rows with category-level historical producer-price series (the two owner rows #1/#2 may also consult generic mature-coconut prices, but remain a cultivar/benchmark mismatch and are not included in the 27 count). This is evidence of price series only; it is not a verified economic model.
+
+Exact 2024 national averages confirmed in the detailed tables include bawang merah Rp31,673/kg (p.26), bawang putih Rp37,287/kg (p.27), buncis Rp12,701/kg (p.29), cabai rawit Rp45,698/kg (p.31), tomat sayur Rp11,955/kg (p.38), kelapa tua unpeeled Rp3,422/butir (p.47), kelapa sawit Rp2,105/kg (p.48), karet getah tebal Rp9,301/kg (p.49), kopi robusta Rp38,789/kg (p.50), kakao Rp47,270/kg (p.51), lada/merica Rp80,189/kg (p.52), cengkeh biji kering Rp105,062/kg (p.53), sapi potong Rp76,040/kg liveweight (p.56), kambing Rp137,258/kg liveweight (p.58), ayam Rp34,741/kg liveweight (p.60), and telur ayam ras Rp34,045/kg (p.62). Table values are annual 2024 producer-price averages, not 2026 prices.
