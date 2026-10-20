@@ -246,3 +246,10 @@ A second crosswalk records table numbers and printed pages from *Statistik Harga
 ### 2026-10-20 — Kementan production-statistics source registered
 
 Located the official *Statistik Pertanian / Agricultural Statistics 2025* source, covering five-year series across farming production/population, upstream inputs, downstream trade, prices and consumption. Scope and evidence-use limits are recorded in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`. This is source discovery, not numeric extraction; counts of exact observations, cost metrics, productivity metrics and validated models do not increase. Production totals must not be treated as yield without a matching harvested-area/population denominator. Complete models remain 0/60 and runtime approvals remain 0/60. Documentation-only; tests not run.
+
+
+### 2026-10-20 — production source locator pass
+
+A table-of-contents locator pass was recorded in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`. It identifies Kementan production/area targets for secondary crops (Tables 2.1.1–2.1.13, printed pp.109–121), livestock production/population (Table 2.4.1 and population Tables 2.4.2–2.4.15, pp.270–284), and plantation production/productivity (including Tables 2.3.30 and 2.3.34–2.3.39, pp.250, 254–259). BPS *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* is also registered as a focused source for the plantation rows. This work located tables but did not transcribe numeric rows because the 11.57 MB Kementan PDF could not be opened in full by the extraction viewer. No observation counts are increased by source navigation.
+
+Checkpoint remains: 60/60 owner rows in the audit matrix; 27 owner rows mapped to category-level historical price evidence; 0/60 complete validated economic models; 0/60 runtime approvals. No canonical IDs or game parameters changed. Documentation-only; tests not run.
