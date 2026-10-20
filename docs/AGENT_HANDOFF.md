@@ -6190,3 +6190,14 @@ Verified from official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025
 - Rubber, Table 58: TM 2,242,887 ha; production 2,132,088 t; productivity 951 kg/ha.
 
 The published whole-number productivity values are consistent with production divided by TM after unit conversion. Still unverified: actual 2024 national TM for coconut, cocoa, tea and sugarcane. Never substitute projected/target values or total planted area. Product-form, price/cost and owner-row validation remain open; no runtime/canonical IDs/economic approvals changed. Documentation-only; tests not run. Continue researching the four unresolved crops.
+
+
+## Continuation checkpoint — coconut/cocoa denominators verified; tea unresolved (2026-10-20)
+
+New official evidence from Ditjen Perkebunan, Laporan Kinerja Ditjen Perkebunan 2025: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf
+- Coconut, Table 18: 2024 TM 2,502,062 ha; production 2,792,228 t; published productivity 1,116 kg/ha; computed 1,115.96 kg/ha.
+- Cocoa, Table 63: 2024 TM 863,095 ha; production 617,112 t; published productivity 715 kg/ha; computed 715.1 kg/ha.
+- Tea is not promoted: indexed LAKIN snippet gives 116,030 t and TM 75,447 ha, while BPS lists 118.90 thousand t. Reconcile source series and verify table directly before calculating productivity.
+- Sugarcane LAKIN reports 2024 harvested area 520,823 ha, GKP 2,465,514 t, and cane 33,216,613 t. This is not evidence of a TM denominator; do not conflate cane and sugar output. BPS total-area table is not a TM/yield denominator: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html.
+
+**State:** research docs updated on feature branch only. No runtime/code/canonical IDs or economic approvals changed; tests not run. Next: directly reconcile tea table/source series; inspect BPS Statistik Tanaman Perkebunan Semusim Indonesia 2024 and/or Ditjenbun 2024–2026 Volume I for sugarcane area-status table; then re-fetch all three docs and verify branch HEAD. Continue to leave main untouched.
