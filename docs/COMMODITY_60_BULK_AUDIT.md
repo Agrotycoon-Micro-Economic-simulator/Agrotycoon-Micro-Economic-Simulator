@@ -293,3 +293,14 @@ Matched all eight national 2024 seasonal-vegetable production records against th
 Production source: https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2024.html?year=2024. Harvested-area source: https://www.bps.go.id/id/statistics-table/3/VTNWM01VdGhTelZTTTNSS1NFSkVZazkzWjJKcWR6MDkjMw%3D%3D/harvested-area-of-temporary-vegetable-and-fruit-crops-by-type-of-crops----2024.html?year=2024.
 
 These are national aggregate production-to-area ratios, not verified farm-level or saleable yields. Losses, grade, costs, price, farm geography and production-cycle definitions remain unmatched. No runtime values or canonical IDs changed; no complete economic model is approved. Documentation-only; tests not run.
+
+
+### 2026-10-20 — BPS plantation production matched to total planted area (denominator gate remains open)
+
+Matched the seven 2024 national production values for oil palm, coconut, rubber, coffee, cocoa, tea and sugarcane to the BPS 2024 national total-area values. Production values are in thousand tonnes and total planted area is in thousand hectares, both at Indonesia level. Exact area values and source URLs are recorded in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`.
+
+Sources:
+- Production: https://www.bps.go.id/id/statistics-table/2/MjU2NiMy/produksi-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman--ribu-ton-.html (BPS table updated 2026-08-27).
+- Total area: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html (BPS table updated 2026-03-06).
+
+This adds **7 matched production/total-area pairs**, not seven validated productivity metrics. BPS metadata says plantation productivity is production divided by harvested area / area of producing plants; total planted area is not an acceptable substitute. The next denominator task is to extract the matching producing-area (TM) series for the same crops, year, geography and production basis. Generic coffee remains non-Robusta-specific; coconut, rubber, palm, cocoa, tea and cane product-form gates remain unresolved. No unit economics, owner-row validation, or runtime approvals follow from this match. No runtime or canonical-ID changes; documentation-only; tests not run.
