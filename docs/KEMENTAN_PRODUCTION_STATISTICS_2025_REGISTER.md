@@ -169,3 +169,13 @@ A follow-up search found an official Ditjen Perkebunan actual-data series that s
 **Calculation check:** 813,346 tonnes ÷ 976,435 ha = approximately 833.17 kg/ha, consistent with the published whole-number 833 kg/ha. This is a national aggregate for generic coffee, not a Robusta-only value and not a farm-level guarantee. Do not silently relabel it as Robusta productivity.
 
 For the other six matched plantation categories (oil palm, coconut, rubber, cocoa, tea, sugarcane), the same-year national TM denominator has **not yet been independently verified in the source evidence collected in this pass**. Their production/total-area pairs remain registered but are not productivity observations. Do not use projected TM targets as actual area or calculate yield from total planted area.
+
+
+### 2026-10-20 — verified 2024 TM denominators: oil palm and rubber
+
+Official Ditjen Perkebunan, *Laporan Kinerja Ditjen Perkebunan 2025*, provides these actual 2024 national values:
+
+- **Oil palm:** TM 12,876,487 ha; production 45,436,197 tonnes; published productivity 3,529 kg/ha; total area 16,833,985 ha. Table 12, production label is **CPO**, so retain the product-form caveat: this is not fresh fruit bunch (TBS) yield and must not be silently used as TBS productivity. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
+- **Rubber:** TM 2,242,887 ha; production 2,132,088 tonnes; published productivity 951 kg/ha; total area 3,149,277 ha. Table 58. Calculation check: 2,132,088,000 kg / 2,242,887 ha ≈ 950.6 kg/ha, consistent with rounded 951 kg/ha. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
+
+**Still unverified in this pass:** 2024 actual national TM denominator for coconut, cocoa, tea and sugarcane. Do not fill those with projections, targets, or total planted area. These two new denominator records do not resolve all product-form, farm-level, price/cost, or owner-row gates. No runtime/model approval follows.
