@@ -191,3 +191,10 @@ Official Ditjen Perkebunan, *Laporan Kinerja Ditjen Perkebunan 2025* (https://di
 - **Sugarcane:** BPS national total-area table reports 520.82 thousand ha for 2024, but this is not a verified TM denominator. The LAKIN 2025 table gives actual 2024 harvested area 520,823 ha and production GKP 2,465,514 t / cane 33,216,613 t, with productivity 4.73 t/ha GKP and 63.78 t/ha cane. These are harvested-area/production statistics, not a TM record; preserve the cane-versus-sugar output distinction.
 
 BPS area table: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html. LAKIN is the primary source for the coconut/cocoa producing-area figures. Total area and harvested area must not be silently relabelled TM. No runtime, canonical IDs or economic approvals changed; documentation-only and tests not run.
+
+
+### Tea follow-up — direct PDF verification (2026-10-20)
+
+The official LAKIN PDF has now been searched directly, not merely via an indexed excerpt. Table 68, printed page 206 (PDF page 221), reports 2024 tea: TBM 2,740 ha; TM 75,447 ha; TTM/TR 19,363 ha; total area 97,551 ha; production 116,030 tonnes; productivity 1,538 kg/ha. Calculation 116,030,000 / 75,447 ≈ 1,538.2 kg/ha confirms the rounded productivity. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf.
+
+**Series caveat remains:** BPS's 2024 plantation production table lists tea at 118.90 thousand tonnes, which differs from LAKIN's 116,030 t. The LAKIN TM/productivity pair is verified within that source, but do not blend it with BPS production/area series or treat the discrepancy as resolved. Reconcile definitions/source compilation before using a cross-source yield. Sugarcane remains a seasonal crop: LAKIN reports 2024 harvested area 520,823 ha, GKP 2,465,514 t (4.73 t/ha), and cane 33,216,613 t (63.78 t/ha); this is harvested-area evidence, not TM. Do not conflate cane with sugar output.
