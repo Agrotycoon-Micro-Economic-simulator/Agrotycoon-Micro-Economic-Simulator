@@ -117,3 +117,17 @@ Registered the official *Statistik Pertanian / Agricultural Statistics 2025* sou
 Added a table-level locator map to `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md` for Kementan *Statistik Pertanian 2025*: secondary-crop production/area tables (2.1.1–2.1.13, printed pp.109–121), livestock production/population table 2.4.1 and population series 2.4.2–2.4.15 (pp.270–284), plus plantation production/productivity tables (including 2.3.30 and 2.3.34–2.3.39, pp.250 and 254–259). This is a source-navigation improvement only; the large PDF could not be opened in full by the extraction viewer and no numeric rows were transcribed in this pass. Therefore extracted observation, cost, and yield counts remain unchanged.
 
 Also registered BPS *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* (released 2026-08-31, revised 2026-09-16) as a focused next source for area/production and trade for oil palm, coffee, cocoa, rubber, tea, cloves, coconut, cashew, sago, nutmeg and pepper. Official page: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html. Numeric extraction and product-form matching remain pending. No runtime changes; tests not run.
+
+
+## 2026-10-20 — additional BPS production source families
+
+Two additional official source families were verified and mapped to the owner inventory:
+
+| Source ID | Official publication | Scope | Relevant owner rows | Limits |
+|---|---|---|---|---|
+| BPS-HORTI-2025 | BPS, *Statistik Hortikultura 2025*, released 2026-06-12. https://www.bps.go.id/id/publication/2026/06/12/43da5ec30fc7d87985e108a5/statistik-hortikultura-2025.html | ATAP 2025 for 18 strategic horticultural commodities; includes production, harvested area, number of productive plants and supporting consumption/trade data | #5–#8, #11–#12, #14, #16–#20, where the specific commodity is included | Only 18 strategic commodities; do not assume every owner commodity is covered. Verify cultivar/form and the exact table/visual before extracting values. |
+| BPS-ESTATE-SEASONAL-2025 | BPS, *Statistik Tanaman Perkebunan Semusim Indonesia 2025 (Tebu dan Tembakau)*, released 2026-08-31 and revised 2026-09-16. https://www.bps.go.id/id/publication/2026/08/31/aa1f04245928352fdf4cb63f/statistik-tanaman-perkebunan-semusim-indonesia-2025-tebu-dan-tembakau.html | Area and production by province and management status for sugarcane and tobacco; export/import by HS code | #44 Tebu | Sugarcane tonnage does not equal recoverable sugar; mill recovery, payment formula, harvest/transport costs and cane quality still need separate evidence. |
+
+The existing BPS permanent-estate source covers area/production by province and export/import for oil palm, coffee, cocoa, rubber, tea, clove, coconut, cashew, sago, nutmeg, pepper and kemiri sunan. Official source: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html.
+
+These are source registrations only. No table values were transcribed in this update, so extracted observation counts and complete-model counts remain unchanged. Keep all figures classified as missing until a numeric table row and its unit, period, geography, and product basis are recorded. No runtime changes; tests not run.
