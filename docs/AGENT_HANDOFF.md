@@ -6151,3 +6151,11 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 ## Owner-row mapping follow-up — 2026-10-20
 
 The Kementan historical series is conservatively matched to 17 owner rows at category-level producer-price evidence only: #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41. The corresponding audit rows are marked PARTIAL where not already partial. This is not a count of fully validated rows; complete economic models = 0, economically verified = 0, runtime approvals = 0. Exact historical series and unit caveats remain in `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
+
+## Latest checkpoint — provincial producer-price table crosswalk (2026-10-20)
+
+- Active branch `feat/production-tier-taxonomy`; last known pre-update HEAD was `75e623794430f368dea28a86294208a43fd7ffd1`. Keep `main` untouched; prior comparison showed branch diverged (500 ahead / 2 behind). Recheck branch HEAD and compare after writes. No local checkout is available in this runtime.
+- Created `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md` from the official 185-page Kementan *Statistik Harga Komoditas Pertanian 2025* PDF. It lists provincial table numbers/pages, units, product forms, exact 2024 national footer values and selected province values, plus mismatch gates.
+- Broad historical producer-price series now map to 27 owner rows. This is price coverage only; complete economic models 0, economically verified rows 0, runtime approvals 0. The book says its producer prices are BPS-sourced; annual table series are through 2024. Do not call them 2026 prices.
+- Newly mapped owner rows: #8 tomato, #14 papaya, #16 cabbage, #17 carrot, #18 buncis, #19 cucumber, #39 cacao, #40 oil palm, #42 nutmeg, #48 thick rubber. Exact product-form mismatches remain explicit, particularly banana cultivars, coconut grades, live chicken vs meat, live duck vs eggs, Robusta vs Arabica, generic pepper vs white/black pepper, and thick rubber vs liquid latex.
+- No runtime or ID changes. Documentation-only; tests not run. Next: batch-extract relevant province/year cells for all 27 mapped rows, then build cost/yield bundles from SEP/Kementan production statistics. Do not extrapolate missing provincial cells or infer cost/profit from price alone.
