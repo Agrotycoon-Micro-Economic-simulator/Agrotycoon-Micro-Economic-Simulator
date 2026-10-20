@@ -6146,3 +6146,8 @@ Read this file, `docs/IMPLEMENTATION_STATUS_2026-10-17.md`, `docs/HISTORICAL_DAT
 - Extracted Table 2.1 (printed p.19): 26 national producer-price categories × 4 annual values (2021–2024) = 104 exact cells. Extracted Table 1.1 (printed p.3): 27 non-dash annual paddy prices by farmer/mill stage, quality and year, including limited Jan–Nov 2025 averages. Full ledger: `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
 - These are historical producer prices, not costs or complete margins. Table 2.1 latest year is 2024. Do not promote liveweight prices to meat prices, generic mature-coconut price to the locked owner benchmark, or any historical average to a 2026 quote. No runtime values/IDs changed.
 - Progress for this tranche: 131 numeric price cells; no increase to fully verified owner rows or complete models (both remain 0); runtime approvals 0. Documentation-only; tests not run. Next: bulk-match source categories to the 60-row owner inventory with explicit exact/partial/nonmatch statuses, then extract province-level series from the same book only where they materially improve form/stage matching; continue seeking original BPS 2025 monthly tables and SEP livestock/fishery cost tables.
+
+
+## Owner-row mapping follow-up — 2026-10-20
+
+The Kementan historical series is conservatively matched to 17 owner rows at category-level producer-price evidence only: #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41. The corresponding audit rows are marked PARTIAL where not already partial. This is not a count of fully validated rows; complete economic models = 0, economically verified = 0, runtime approvals = 0. Exact historical series and unit caveats remain in `docs/KEMENTAN_2025_PRICE_BULK_EXTRACTION.md`.
