@@ -304,3 +304,10 @@ Sources:
 - Total area: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html (BPS table updated 2026-03-06).
 
 This adds **7 matched production/total-area pairs**, not seven validated productivity metrics. BPS metadata says plantation productivity is production divided by harvested area / area of producing plants; total planted area is not an acceptable substitute. The next denominator task is to extract the matching producing-area (TM) series for the same crops, year, geography and production basis. Generic coffee remains non-Robusta-specific; coconut, rubber, palm, cocoa, tea and cane product-form gates remain unresolved. No unit economics, owner-row validation, or runtime approvals follow from this match. No runtime or canonical-ID changes; documentation-only; tests not run.
+
+
+### 2026-10-20 — verified TM denominator for coffee, 2024
+
+Official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025*, Table 48, provides a matched 2024 coffee production/producing-area pair: production 813,346 tonnes; TM 976,435 ha; TBM 186,453 ha; TTM/TR 111,030 ha; total area 1,273,918 ha; reported productivity 833 kg/ha. Source: https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf. The reported value is consistent with 813,346 / 976,435 = approximately 833.17 kg/ha rounded to a whole number.
+
+This is one verified national aggregate for generic coffee, not a Robusta-only yield and not farm-level saleable yield. For oil palm, coconut, rubber, cocoa, tea and sugarcane, matching 2024 actual TM denominators remain unverified. Do not substitute total planted area or projected TM targets. No runtime/model approval follows; documentation-only, tests not run.
