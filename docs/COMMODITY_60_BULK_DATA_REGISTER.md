@@ -110,3 +110,10 @@ The official Kementan 2025 price book exposes provincial producer-price tables f
 ## Kementan production/population source — 2026-10-20
 
 Registered the official *Statistik Pertanian / Agricultural Statistics 2025* source and its scope in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`. This source covers five-year series including production/population, upstream inputs, trade, prices and consumption. Source discovery is not numeric extraction; no observation counts or economic-model counts are increased by this registration. Production totals must not be treated as yield, unit cost, or profit without a matching denominator and system definition.
+
+
+## 2026-10-20 — production-statistics table locator pass
+
+Added a table-level locator map to `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md` for Kementan *Statistik Pertanian 2025*: secondary-crop production/area tables (2.1.1–2.1.13, printed pp.109–121), livestock production/population table 2.4.1 and population series 2.4.2–2.4.15 (pp.270–284), plus plantation production/productivity tables (including 2.3.30 and 2.3.34–2.3.39, pp.250 and 254–259). This is a source-navigation improvement only; the large PDF could not be opened in full by the extraction viewer and no numeric rows were transcribed in this pass. Therefore extracted observation, cost, and yield counts remain unchanged.
+
+Also registered BPS *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* (released 2026-08-31, revised 2026-09-16) as a focused next source for area/production and trade for oil palm, coffee, cocoa, rubber, tea, cloves, coconut, cashew, sago, nutmeg and pepper. Official page: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html. Numeric extraction and product-form matching remain pending. No runtime changes; tests not run.
