@@ -59,3 +59,24 @@ The source search identified two official BPS publications that should be used a
 The BPS permanent-estate publication *Statistik Tanaman Perkebunan Tahunan Indonesia 2025* was also verified as covering area/production by province and export/import for oil palm, coffee, cocoa, rubber, tea, clove, coconut, cashew, sago, nutmeg, pepper and kemiri sunan. Source: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html.
 
 **Extraction status:** source scope verified, but this update did not transcribe numeric rows from these publications. Therefore exact observation counts, yield counts and complete-model counts must not increase. Numeric extraction still requires table/figure locator, period, geography, unit, product form and denominator. Tests not run; no runtime changes.
+
+
+## Numeric extraction tranche — BPS food-crop aggregates, 2024
+
+This tranche records numeric observations from official BPS releases/table search results. Values are **national annual aggregates**, not farm-level economics and not runtime parameters.
+
+| Owner row | Indicator | Value as published | Period / geography | Unit / product basis | Source |
+|---|---|---:|---|---|---|
+| #3 Padi | Harvested area | approximately 10.05 million | 2024 / Indonesia | ha | BPS, *Panen dan Produksi Padi Nasional (ATEP) 2024*, released 2025-02-13: https://kupangkota.bps.go.id/id/pressrelease/2025/02/13/488/pada-2024--luas-panen-padi-di-indonesia-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html |
+| #3 Padi | Paddy production | 53.14 million | 2024 / Indonesia | tonnes, gabah kering giling (GKG) | Same BPS release above |
+| #3 Padi | Rice production for food consumption | 30.62 million | 2024 / Indonesia | tonnes, rice equivalent as reported by BPS | Same BPS release above |
+| #4 Jagung | Harvested area | 2.55 million | 2024 / Indonesia | ha | BPS, *Luas Panen dan Produksi Jagung di Indonesia 2024*, released 2025-08-15: https://www.bps.go.id/id/publication/2025/08/15/2bb49a0af17ec89ac16971de/luas-panen-dan-produksi-jagung-di-indonesia-2024.html |
+| #4 Jagung | Production | 20.48 million | 2024 / Indonesia | tonnes, shelled dry maize at 28% moisture content | Same BPS publication above |
+
+**Evidence classification and limits**
+
+- Extraction count for this tranche: **2 commodity records / 5 numeric indicators** (three paddy indicators, two maize indicators). Published rounded values are preserved as rounded; do not manufacture extra precision.
+- BPS reports the maize series as dry shelled maize at 28% moisture. Do not compare it directly with a different moisture basis without a documented conversion.
+- The paddy GKG series and rice-equivalent output are different product bases; do not combine or treat rice output as paddy output.
+- National annual aggregates do not identify provincial or farm-level yield, costs, sale price, loss rates, or profit. No yield has been derived in this tranche, and no economic model is validated by these figures alone.
+- These are 2024 observations, not current 2026 prices or output. No game data, canonical IDs, or runtime parameters changed. Tests not run (documentation-only).
