@@ -103,3 +103,25 @@ Extracted eight national production values from the official BPS statistics tabl
 - These are national production totals, not farm-level yields. No yield calculation is made because the matching harvested-area denominator is not recorded in this tranche.
 - Production totals alone do not establish saleable grade, harvest losses, costs, farm-gate price, or profit. Product-level models remain unvalidated and no values are approved for runtime.
 - Data year is 2024; this is not a current-price series. No game data, canonical IDs or runtime parameters changed. Documentation-only; tests not run.
+
+
+## Numeric extraction tranche — BPS annual plantation crops, 2024
+
+Extracted the national Indonesia row from BPS, *Produksi Tanaman Perkebunan Menurut Provinsi dan Jenis Tanaman (Ribu Ton), 2024*, last updated 2026-08-27. Official table: https://www.bps.go.id/id/statistics-table/2/MjU2NiMy/produksi-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman--ribu-ton-.html
+
+| Crop as published by BPS | Production | Period / geography | Published unit | Owner-row matching note |
+|---|---:|---|---|---|
+| Kelapa sawit | 45,436.20 | 2024 / Indonesia | thousand tonnes | #40 candidate; preserve the source's production form and confirm it before use as TBS output |
+| Kelapa | 2,792.23 | 2024 / Indonesia | thousand tonnes | Generic coconut only; does not separate owner-locked coconut cultivars or fresh-nut unit basis (#1/#2) |
+| Karet | 2,132.09 | 2024 / Indonesia | thousand tonnes | #48 candidate; do not assume equivalence to wet latex or thick rubber without the source's product-form definition |
+| Kopi | 813.35 | 2024 / Indonesia | thousand tonnes | Generic coffee; not robusta-specific, so comparator only for #37 until cultivar/form is matched |
+| Kakao | 617.11 | 2024 / Indonesia | thousand tonnes | Cocoa production aggregate; product form/stage must be confirmed before matching an owner row |
+| Teh | 118.90 | 2024 / Indonesia | thousand tonnes | Tea aggregate; product form/stage must be confirmed before matching an owner row |
+| Tebu | 2,465.51 | 2024 / Indonesia | thousand tonnes | Cane production, not sugar output or farmer net revenue |
+
+**Evidence classification and limits**
+
+- Extraction count: **7 crop records / 7 numeric production indicators**. Values are transcribed from the BPS table's national row; decimal comma notation is normalized to decimal points while retaining the published unit of thousand tonnes.
+- This table is distinct from BPS's separate *Produksi Perkebunan Besar Tahunan* table, which covers large plantations only. The values above come from the provincial table whose publication notes combine plantation-company survey data with smallholder plantation data to obtain Indonesian totals. Do not substitute the large-plantation-only figures.
+- These are annual national production aggregates, not yields or saleable output. No harvested-area denominator, grade/rejection rate, matched farm-gate price or cost bundle is inferred here. Owner-row matches with different commodity forms remain provisional/comparator-only.
+- No game data, canonical IDs or runtime parameters changed. Documentation-only; tests not run.
