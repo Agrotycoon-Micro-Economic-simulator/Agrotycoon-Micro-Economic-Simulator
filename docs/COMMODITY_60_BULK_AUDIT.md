@@ -321,3 +321,14 @@ From official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025* (https:
 - Rubber, Table 58: TM 2,242,887 ha; production 2,132,088 t; published productivity 951 kg/ha; total area 3,149,277 ha. Production/TM arithmetic yields approximately 950.6 kg/ha, consistent with the published rounded figure.
 
 Coffee remains verified separately (TM 976,435 ha; production 813,346 t; productivity 833 kg/ha; generic coffee, not Robusta-only). Coconut, cocoa, tea and sugarcane still have no verified actual 2024 national TM denominator in the evidence gathered here. Exclude projected/target TM values and do not derive productivity from total area. Product form, price/cost and economic model gates remain open; no runtime or canonical IDs changed. Documentation-only; tests not run.
+
+
+### 2026-10-20 — coconut and cocoa TM checks; tea/sugarcane qualifications
+
+Official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2025* (https://ditjenbun.pertanian.go.id/template/uploads/2026/03/LAKIN-DITJENBUN-2025.pdf) reports for 2024:
+- Coconut, Table 18: TM 2,502,062 ha; production 2,792,228 t; productivity 1,116 kg/ha; computed ratio ≈1,115.96 kg/ha.
+- Cocoa, Table 63: TM 863,095 ha; production 617,112 t; productivity 715 kg/ha; computed ratio ≈715.1 kg/ha.
+
+Tea remains **unverified pending source reconciliation**: an indexed LAKIN excerpt gives production 116,030 t and TM 75,447 ha, whereas BPS total-area table lists 2024 production 118.90 thousand t. Do not publish the derived ratio until this difference is resolved directly against the source tables. Sugarcane's LAKIN table provides 2024 harvested area 520,823 ha and separate outputs of GKP 2,465,514 t and cane 33,216,613 t; it does not establish a TM denominator in this evidence. Do not treat harvested area as TM or cane as sugar output. BPS total-area figures (including sugarcane 520.82 thousand ha) remain total-area, not productivity denominators: https://www.bps.go.id/id/statistics-table/2/MjU2NSMy/luas-areal-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman.html.
+
+No runtime/code/canonical IDs or economic approvals changed. Documentation-only; tests not run. Price/cost and product-form validation gates remain open.
