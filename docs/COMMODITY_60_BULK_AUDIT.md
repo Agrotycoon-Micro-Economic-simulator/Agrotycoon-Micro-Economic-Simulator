@@ -32,18 +32,18 @@ Evidence labels:
 | 5 | Cabai Rawit | BPS producer price + SEP/crop studies | cultivar, kg, season, spoilage | PARTIAL; historical producer evidence only |
 | 6 | Bawang Merah | BPS/Kementan historical producer prices + crop stats | seed bulb vs cured harvest | PARTIAL; 2021–2024 national producer-price series, exact form/grade still pending |
 | 7 | Kentang | BPS/Kementan historical producer prices + crop stats | variety, grade, altitude | PARTIAL; 2021–2024 national producer-price series, variety/grade still pending |
-| 8 | Tomat | BPS producer price + crop stats | grade, season, post-harvest loss | PENDING |
+| 8 | Tomat | Kementan/BPS producer price + crop stats | grade, season, post-harvest loss | PARTIAL; table 2.20 p.38 has 2020–2024 provincial producer prices |
 | 9 | Ketela Rambat / Ubi Jalar | BPS/Kementan historical producer prices + crop stats | fresh tuber, variety | PARTIAL; 2021–2024 national producer-price series, variety still pending |
 | 10 | Singkong | BPS/Kementan historical producer prices + crop stats | fresh roots vs industrial/starch basis | PARTIAL; 2021–2024 national producer-price series, buyer/product basis pending |
 | 11 | Pisang | BPS/Kementan historical producer prices + crop stats | cultivar, bunch/kg, grade | PARTIAL; generic banana price is Rp/sisir; cultivar/runtime collision remains |
 | 12 | Mangga | BPS/Kementan historical producer prices + orchard studies | cultivar, bearing age, kg/tree | PARTIAL; national annual producer-price series exists, cultivar/grade still pending |
 | 13 | Kedelai | BPS producer price + crop stats | moisture, grade, seed vs consumption | PARTIAL; national producer price sample exists |
-| 14 | Pepaya | BPS producer price + crop stats | cultivar, harvest frequency | PENDING |
+| 14 | Pepaya | Kementan/BPS producer price + crop stats | cultivar, harvest frequency | PARTIAL; table 2.24 p.42 has 2020–2024 provincial producer prices |
 | 15 | Kacang Tanah | BPS/Kementan historical producer prices + crop stats | in-shell vs shelled | PARTIAL; national annual price series exists, in-shell/shelled basis pending |
-| 16 | Kubis / Kol | BPS producer price + crop stats | grade, altitude, spoilage | PENDING |
-| 17 | Wortel | BPS producer price + crop stats | grade, altitude, washed/unwashed | PENDING |
-| 18 | Buncis | BPS producer price + crop stats | fresh pods, grade | PENDING; runtime ID missing |
-| 19 | Timun | BPS producer price + crop stats | fresh cucumber, grade | PENDING |
+| 16 | Kubis / Kol | Kementan/BPS producer price + crop stats | grade, altitude, spoilage | PARTIAL; table 2.18 p.36 has 2020–2024 provincial producer prices |
+| 17 | Wortel | Kementan/BPS producer price + crop stats | grade, altitude, washed/unwashed | PARTIAL; table 2.21 p.39 has 2020–2024 provincial producer prices |
+| 18 | Buncis | Kementan/BPS producer price + crop stats | fresh pods, grade | PARTIAL; table 2.11 p.29 has 2020–2024 provincial producer prices; runtime ID missing |
+| 19 | Timun | Kementan/BPS producer price + crop stats | fresh cucumber, grade | PARTIAL; table 2.17 p.35 has 2020–2024 provincial producer prices |
 | 20 | Jambu Biji | BPS producer price + crop stats | cultivar, grade, harvest frequency | PENDING; runtime ID missing |
 | 21 | Bawang Putih | BPS/Kementan historical producer prices + import/trade data | local/imported, cured bulbs | PARTIAL; national annual producer-price series exists, local/imported split pending |
 | 22 | Porang | BPS/Ministry + peer-reviewed agronomy | corm age/size, wet/dry chips, glucomannan | PENDING; runtime ID missing |
@@ -63,16 +63,16 @@ Evidence labels:
 | 36 | Ayam Kampung (Daging) | BPS livestock + native chicken studies | native chicken vs broiler, live/carcass | PARTIAL; native-chicken egg series is not meat evidence |
 | 37 | Kopi Robusta | BPS/Kementan historical producer prices + trade/quality sources | Robusta, cherry/green bean/roasted | PARTIAL; national price series exists, cherry/green-bean basis pending |
 | 38 | Kopi Arabika | BPS plantation + trade/quality sources | Arabica, cherry/green bean/roasted | PENDING |
-| 39 | Kakao | BPS plantation + processing/trade sources | wet bean, fermented dry bean, cocoa liquor | PENDING |
-| 40 | Sawit (TBS) | BPS plantation + provincial FFB pricing rules | FFB/TBS, age, extraction rate | PENDING |
+| 39 | Kakao | Kementan/BPS plantation + processing/trade sources | wet bean, fermented dry bean, cocoa liquor | PARTIAL; table 2.33 p.51 has 2020–2024 provincial prices; moisture/fermentation basis unresolved |
+| 40 | Sawit (TBS) | Kementan/BPS plantation + provincial FFB pricing rules | FFB/TBS, age, extraction rate | PARTIAL; table 2.30 p.48 has provincial prices; confirm equivalence to TBS pricing formula |
 | 41 | Cengkeh | BPS/Kementan historical producer prices + production stats | wet vs dry cloves, moisture/grade | PARTIAL; dry-clove national price series exists, moisture/grade basis pending |
-| 42 | Pala (Biji) | BPS plantation price + production stats | wet fruit, dried seed, kernel, mace | PARTIAL; production context only |
+| 42 | Pala (Biji) | Kementan/BPS plantation price + production stats | wet fruit, dried seed, kernel, mace | PARTIAL; table 2.36 p.54 has provincial prices, but product form unresolved |
 | 43 | Vanili Kering | BPS plantation + curing studies | cured dry beans, recovery rate, grade | PENDING |
 | 44 | Tebu | BPS plantation + sugar-industry sources | cane tonnage, sugar recovery, mill payment | PENDING |
 | 45 | Teh Pucuk Basah | BPS plantation + tea factory data | fresh leaf, plucking standard, factory yield | PENDING |
 | 46 | Lada Putih | BPS plantation + trade sources | white pepper, moisture, grade | PENDING |
 | 47 | Lada Hitam | BPS plantation + trade sources | black pepper, moisture, grade | PENDING |
-| 48 | Karet (Lateks) | BPS plantation + rubber market sources | latex, wet slab, dry rubber content | PENDING |
+| 48 | Karet (Lateks) | Kementan/BPS plantation + rubber market sources | latex, wet slab, dry rubber content | PARTIAL; table 2.31 p.49 covers thick rubber, not automatically liquid latex |
 | 49 | Cokelat Olahan | BPS industry + manufacturer cost evidence | product recipe, cocoa content, packaging | PENDING; Tier 3/4 output |
 | 50 | Gula Aren (Cair) | Kementan/technical studies + market sources | sap volume, Brix/concentration, yield | PENDING |
 | 51 | Bijih Besi | ESDM/mining reports + official benchmark | ore grade, moisture, recovery, mine gate | PENDING |
@@ -236,3 +236,8 @@ Interpretation gate: this source adds historical producer-price coverage but doe
 ### Owner-row matching update — Kementan Table 2.1 / Table 1.1
 
 The extracted historical producer-price tables now provide category-level price series for 17 owner rows: #3 Padi (Table 1.1 GKP/GKG by stage), #4 Jagung, #5 Cabai Rawit, #6 Bawang Merah, #7 Kentang, #9 Ubi Jalar, #10 Singkong, #11 Pisang (generic; Rp/sisir), #12 Mangga, #13 Kedelai, #15 Kacang Tanah, #21 Bawang Putih, #25 Ayam Petelur (egg price, Rp/kg), #27 Sapi Potong (liveweight), #29 Kambing (liveweight), #37 Kopi Robusta, and #41 Cengkeh Biji Kering. The source series is historical (Table 2.1 through 2024); it does not supply matched cost/yield bundles. Other source categories are only generic comparators or have product-form mismatch. Therefore this expands historical price coverage, not economic verification: complete models 0, economically verified rows 0, runtime approvals 0.
+
+
+### 2026-10-20 — detailed Kementan provincial tables
+
+A second crosswalk records table numbers and printed pages from *Statistik Harga Komoditas Pertanian 2025*. Category-level historical price series now map to 27 owner rows, including newly confirmed #8, #14, #16, #17, #18, #19, #39, #40, #42 and #48. This is price-evidence coverage only. #1/#2 generic coconut, #24 Cavendish versus Ambon, #33 duck eggs versus live ducks, #36 native chicken versus generic live chicken, and #46/#47 white versus black pepper remain product-form mismatches. See `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md` for exact table/page/unit crosswalk and selected province values.
