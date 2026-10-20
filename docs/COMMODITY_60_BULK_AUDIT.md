@@ -284,3 +284,12 @@ This adds 8 crop records / 8 production indicators to the numeric production reg
 Transcribed seven national 2024 production indicators from the BPS table *Produksi Tanaman Perkebunan Menurut Provinsi dan Jenis Tanaman (Ribu Ton)* into `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`: oil palm 45,436.20; coconut 2,792.23; rubber 2,132.09; coffee 813.35; cocoa 617.11; tea 118.90; and sugarcane 2,465.51, all in thousand tonnes. Source: https://www.bps.go.id/id/statistics-table/2/MjU2NiMy/produksi-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman--ribu-ton-.html
 
 The source is the national row of the provincial plantation-production table, not the separate large-plantation-only series. Product-form gates remain active: generic coconut is not cultivar-specific; generic coffee is not a robusta-only series; rubber, palm, cocoa and tea need explicit output-stage matching; sugarcane tonnage is not sugar output. This tranche adds 7 crop records / 7 production indicators, but does not add verified economic models or runtime approvals. No game data or canonical IDs changed. Documentation-only; tests not run.
+
+
+### 2026-10-20 — matched BPS seasonal-vegetable production and harvested area
+
+Matched all eight national 2024 seasonal-vegetable production records against the corresponding BPS harvested-area table. The production and area observations are both for Indonesia, 2024, and the same crop categories. Derived aggregate ratios (production quintals ÷ harvested hectares) are: #5 cabai rawit 81.76 q/ha; #6 bawang merah 110.47 q/ha; #7 kentang 188.25 q/ha; #8 tomat 195.40 q/ha; #16 kubis 228.66 q/ha; #17 wortel 183.42 q/ha; #19 ketimun 104.37 q/ha; #21 bawang putih 74.16 q/ha. The equivalent kg/ha figures are unit conversions, not separate observations.
+
+Production source: https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2024.html?year=2024. Harvested-area source: https://www.bps.go.id/id/statistics-table/3/VTNWM01VdGhTelZTTTNSS1NFSkVZazkzWjJKcWR6MDkjMw%3D%3D/harvested-area-of-temporary-vegetable-and-fruit-crops-by-type-of-crops----2024.html?year=2024.
+
+These are national aggregate production-to-area ratios, not verified farm-level or saleable yields. Losses, grade, costs, price, farm geography and production-cycle definitions remain unmatched. No runtime values or canonical IDs changed; no complete economic model is approved. Documentation-only; tests not run.
