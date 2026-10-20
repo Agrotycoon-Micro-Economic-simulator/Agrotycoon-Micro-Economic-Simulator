@@ -241,3 +241,8 @@ The extracted historical producer-price tables now provide category-level price 
 ### 2026-10-20 — detailed Kementan provincial tables
 
 A second crosswalk records table numbers and printed pages from *Statistik Harga Komoditas Pertanian 2025*. Category-level historical price series now map to 27 owner rows, including newly confirmed #8, #14, #16, #17, #18, #19, #39, #40, #42 and #48. This is price-evidence coverage only. #1/#2 generic coconut, #24 Cavendish versus Ambon, #33 duck eggs versus live ducks, #36 native chicken versus generic live chicken, and #46/#47 white versus black pepper remain product-form mismatches. See `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md` for exact table/page/unit crosswalk and selected province values.
+
+
+### 2026-10-20 — Kementan production-statistics source registered
+
+Located the official *Statistik Pertanian / Agricultural Statistics 2025* source, covering five-year series across farming production/population, upstream inputs, downstream trade, prices and consumption. Scope and evidence-use limits are recorded in `docs/KEMENTAN_PRODUCTION_STATISTICS_2025_REGISTER.md`. This is source discovery, not numeric extraction; counts of exact observations, cost metrics, productivity metrics and validated models do not increase. Production totals must not be treated as yield without a matching harvested-area/population denominator. Complete models remain 0/60 and runtime approvals remain 0/60. Documentation-only; tests not run.
