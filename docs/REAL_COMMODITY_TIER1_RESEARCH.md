@@ -594,3 +594,23 @@ Source: Ditjen Perkebunan, *Laporan Kinerja Direktorat Jenderal Perkebunan Tahun
 The report states national nutmeg production of 38,150 tonnes (2020), 41,444 tonnes (2023 peak), 39,558 tonnes (2024), and 39,573 tonnes (2025). Reported productivity decreases from 447 kg/ha (2020) to 373 kg/ha (2025), about 16.6%. The provincial table distinguishes immature area (TBM), mature producing area (TM), nonproductive/damaged area (TTM/TR), total area, production and productivity.
 
 Interpretation: the production indicator is dried nutmeg seed, not fresh fruit, mace, or whole fruit. Do not divide production by total planted area if the productivity denominator is mature producing area (TM). This source gives macro context only; it does not provide a complete farm input ledger, farmgate price, labor costs, harvest cycle, or per-tree yield. Exact BPS monthly nutmeg producer-price rows remain unextracted. Status remains **cost_yield_partial / not verified for game**. No game parameter changed.
+
+## 2026-10-20 — BPS SEP 2024 bulk extraction checkpoint
+
+## BPS SEP 2024 — bulk Tier 1 evidence extracted from shared tables
+
+Official source and publication metadata: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan*, Catalogue 5101026, publication 05100.25001, released 24 January 2025. https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html. PDF was opened; table of contents, product-form notes and exact table values were inspected.
+
+| Owner row | Table / printed page | Producer price (Rp/kg) | Production cost per unit (Rp/kg) | Productivity | Table-basis total cost | Evidence status |
+|---:|---|---:|---:|---|---|---|
+| #3 Padi | 2.1 / p.15 | 5,760 | 3,590 | 46.35 ku/ha (4,635 kg/ha derived) | Rp15,287,590/ha | cost_yield_partial |
+| #4 Jagung | 2.2 / p.16 | 4,970 | 3,130 | 42.94 ku/ha (4,294 kg/ha derived) | Rp11,486,060/ha | cost_yield_partial |
+| #6 Bawang Merah | 2.3 / p.17 | 20,630 | 11,620 | 0.73 kg/m² (7,300 kg/ha derived) | Rp75,286,090/ha | cost_yield_partial |
+| #5 Cabai Rawit | 2.7 / p.21 | 28,350 | 15,730 | 0.37 kg/m² (3,700 kg/ha derived) | Rp34,607,540/ha | cost_yield_partial |
+| #40 Sawit/TBS | 2.8 / p.22 | 2,120 | 1,060 | 12,437.86 kg/100 trees | Rp10,112,640/100 trees | cost_yield_partial |
+| #48 Karet/Lateks | 2.9 / p.23 | 7,300 | 2,400 | 842.57 kg/100 trees | Rp1,643,870/100 trees | cost_yield_partial |
+| #1/#2 generic coconut (not cultivar-specific) | 2.10 / p.24 | 2,650 | 1,110 | 6,072.41 kg/100 trees | Rp4,642,550/100 trees | cost_yield_partial; cultivar/unit mismatch |
+
+The source table's total production value, total cost and income are reported in thousand Rp per hectare or per 100 trees; unit prices and unit costs are reported in thousand Rp/kg. The table's reported income is not accepted as net profit for game use because BPS notes that some cost/subsidy imputations remain unestimated and the table does not independently reconcile every loss, rejection, unsold output, capital depreciation and logistics item required by the game's unit-economics gate. The coconut survey unit is kg of fresh coconut; it neither splits Kelapa Super/Biasa nor replaces the owner benchmark of Rp13,000/butir for direct customer sales.
+
+BPS 2025 price PDFs remain unextracted in this pass: the crop/estate publication page is accessible but the 19.36 MB download endpoint returned cache miss; the 16.32 MB livestock/fishery PDF exceeded the web extractor's >10 MiB limit. SEP livestock tables remain pending due a cache-miss download endpoint. Do not infer cost or yield for soybean, layer chicken, broiler chicken, cattle or any other row from this crop/estate publication.
