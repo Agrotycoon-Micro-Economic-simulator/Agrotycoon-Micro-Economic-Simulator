@@ -1492,3 +1492,10 @@ Audit baseline: `9b93c431d14fcdca0d102f70c2e5d0fceef978c1` (documentation checkp
 ## 2026-10-20 — conservative owner-row match count
 
 A first source-category crosswalk maps historical producer-price evidence to 17 owner rows (#3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #15, #21, #25, #27, #29, #37, #41). These rows are only PARTIAL, not verified: the source's latest Table 2.1 year is 2024 and product form/cultivar/grade/system costs still require reconciliation. Full models remain 0; economically verified rows 0; runtime approvals 0. The source adds historical price evidence only.
+
+## 2026-10-20 — expanded provincial price-table coverage
+
+- Extracted and cross-referenced the Kementan *Statistik Harga Komoditas Pertanian 2025* provincial producer-price tables. The crosswalk now records table numbers, printed pages, product forms and unit gates for 27 owner rows with broad historical price-series evidence: `docs/KEMENTAN_PROVINCE_PRICE_CROSSWALK.md`.
+- Newly added row-level table references: #8 tomato, #14 papaya, #16 cabbage, #17 carrot, #18 green beans, #19 cucumber, #39 cacao, #40 oil palm, #42 nutmeg and #48 thick rubber. The detailed tables expose provincial annual values 2020–2024; this does not mean every province/year cell is available.
+- Corrected table attribution in the crosswalk: Table 2.11 Buncis national 2024 Rp12,701/kg; Table 2.20 Tomat Sayur national 2024 Rp11,955/kg. These are historical producer averages, not 2026 quotes.
+- Model completeness remains 0/60; economically verified rows 0/60; runtime-approved rows 0/60. No runtime values, commodity IDs or owner-locked coconut benchmark changed. Documentation-only; tests not run.
