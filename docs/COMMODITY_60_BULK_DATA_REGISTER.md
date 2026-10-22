@@ -356,3 +356,44 @@ BPS telah menerbitkan *Statistik Perusahaan Peternakan Unggas 2025* pada 14 Agus
 - Saat ini yang terverifikasi hanya metadata dan cakupan publikasi. Belum ada angka tabel 2025 yang diekstrak dalam batch ini; jangan menandai biaya, output, atau laba 2025 sebagai tersedia hanya berdasarkan abstrak.
 - Populasi tetap perusahaan berbadan usaha, bukan peternak rakyat/UTP. Jangan gabungkan dengan BPS SEP UTP tanpa penanda populasi dan definisi unit.
 - Source hierarchy untuk unggas kini: (1) tabel BPS 2025 untuk benchmark perusahaan tahun data 2025 setelah ekstraksi; (2) BPS 2024 perusahaan untuk pembanding historis; (3) BPS SEP 2024 untuk struktur biaya UTP yang tabelnya relevan; (4) harga produsen resmi bertanggal untuk pasar farmgate. Tiap sumber memiliki unit analisis berbeda.
+
+
+## Ekstraksi angka tabel BPS perusahaan unggas 2025 — selesai untuk agregat nasional (2026-10-22)
+
+**Sumber PDF yang berhasil diakses:** salinan pratinjau publikasi BPS *Statistik Perusahaan Peternakan Unggas 2025*, katalog 5304004, publikasi 05100.26020, Volume 26 (2026), 80 halaman. Halaman metadata resmi BPS: https://www.bps.go.id/id/publication/2026/08/14/9ee194861fe1a53d5ca7953d/statistik-perusahaan-peternakan-unggas-2025.html. PDF pratinjau yang dapat dibaca: https://cdn.gnfi.net/goodstats/uploads/publications/files/2026/08/14/statistik-perusahaan-peternakan-unggas-2025-0pxHmLnrC2.pdf. Tabel yang diekstrak: Tabel 3.10, 3.14, dan 3.15 (halaman cetak 39–46; halaman PDF 55–64). BPS menyatakan cakupan pencacahan lengkap perusahaan unggas berbadan hukum/berbadan usaha yang aktif, dengan keadaan usaha Januari–Desember 2025; angka 2025 bertanda sementara.
+
+### Agregat biaya perusahaan unggas nasional (Tabel 3.10; juta rupiah)
+
+| Komponen biaya | 2025* (juta Rp) | 2024 pembanding dalam publikasi yang sama (juta Rp) |
+|---|---:|---:|
+| Upah pekerja | 2.635.445,52 | 2.372.302,22 |
+| Bahan bakar dan pelumas | 997.382,40 | 234.263,40 |
+| Listrik dan air | 880.064,75 | 1.166.274,09 |
+| Pakan | 16.260.903,47 | 16.710.999,84 |
+| Obat-obatan | 1.053.288,70 | 1.210.709,61 |
+| Pembelian DOC | 2.482.357,87 | 1.364.105,11 |
+| Lainnya | 996.736,94 | 1.572.231,35 |
+| **Total pengeluaran** | **25.306.179,66** | **24.630.885,62** |
+
+Angka sumber dinyatakan dalam juta rupiah; setara total biaya nasional sekitar Rp25,306 triliun pada 2025. Penjumlahan tujuh komponen 2025 = 25.306.179,65 juta rupiah, berbeda 0,01 juta rupiah (Rp10.000) dari total terbitan 25.306.179,66; ini dipertahankan sebagai selisih pembulatan/tabel kecil, bukan diperbaiki diam-diam. Pakan sekitar 64,26% dari total pengeluaran 2025 jika memakai total terbitan sebagai penyebut.
+
+### Nilai produksi, penerimaan dan laba/rugi agregat (Tabel 3.14–3.15; juta rupiah)
+
+| Indikator perusahaan unggas nasional | 2025* (juta Rp) | 2024 pembanding dalam publikasi yang sama (juta Rp) |
+|---|---:|---:|
+| Produksi utama | 44.181.034,08 | 36.338.170,17 |
+| Produksi lainnya (termasuk penjualan kotoran ternak dan lainnya) | 2.900.270,15 | 769.963,78 |
+| Penerimaan lain | 2.736.408,42 | 1.731.740,47 |
+| **Jumlah nilai produksi/penerimaan** | **49.817.712,65** | **38.839.874,42** |
+| **Total pengeluaran** | **25.306.179,66** | **24.630.885,62** |
+| **Laba/rugi terbitan** | **24.511.532,99** | **14.209.044,80** |
+
+Pemeriksaan aritmetika: 49.817.712,65 − 25.306.179,66 = 24.511.532,99 juta rupiah (cocok untuk 2025). Untuk pembanding 2024 pada Tabel 3.15, nilai produksi tercetak 38.839.930,42 juta, sementara Tabel 3.14 mencetak total 38.839.874,42 juta; selisih Rp56 juta. Tabel 3.15 menghitung laba 14.209.044,80 juta dengan angka produksi 38.839.930,42 dikurangi pengeluaran 24.630.885,62. Karena ada selisih antartabel 2024, gunakan nilai 2025 sebagai agregat utama, dan pertahankan 2024 sebagai data pembanding dengan catatan mismatch tabel.
+
+### Batas penggunaan dalam simulasi
+- Ini adalah agregat perusahaan unggas berbadan usaha, bukan unit economics per ekor untuk broiler, layer, ayam buras, bebek, atau puyuh. Jangan membagi total nasional dengan populasi tanpa menyamakan denominator, cakupan perusahaan, produk utama/ikutan, dan periode.
+- Jangan menganggap laba agregat perusahaan sebagai margin bersih peternak rakyat. Tidak mewakili UTP/rumah tangga peternakan.
+- Angka 2025 bertanda sementara. Untuk Tier 1–4, angka ini hanya benchmark makro/validasi silang; HPP per unit, harga farmgate, siklus produksi, FCR, mortalitas, output layak jual dan biaya kandang masih memerlukan tabel produk/jenis usaha dan bukti peternak yang cocok.
+- Perbedaan terhadap ringkasan Kementan yang lebih lama (angka agregat 2024 Rp36,82 triliun penerimaan/Rp22,84 triliun pengeluaran/Rp13,98 triliun laba) tidak diselaraskan secara paksa. Publikasi BPS 2025 menyajikan pembanding 2024 yang berbeda; simpan seri dan definisi sumber masing-masing sampai penyebab perbedaan dapat diperiksa.
+
+Sumber tabel: BPS, *Statistik Perusahaan Peternakan Unggas 2025*, Tabel 3.10 (pp. 39–40), Tabel 3.14–3.15 (pp. 46–47), PDF pratinjau di atas. **Tidak ada parameter runtime yang diubah; matriks 60 komoditas × Tier 1–4 tetap belum lengkap.**
