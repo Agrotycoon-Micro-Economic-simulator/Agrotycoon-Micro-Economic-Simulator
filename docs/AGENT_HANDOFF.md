@@ -1,3 +1,13 @@
+## Latest checkpoint — owner reaffirmed coconut blueprint (2026-10-22)
+
+- Feature branch: `feat/production-tier-taxonomy`. Documentation commits in this unit: `1d068e29e0fca8d7b73b38183ffbc91b888f0992` (tier-standard rule) and `9a7da9276e0d06cce9690a540eb6f646d6a8763e` (this handoff checkpoint). The feature branch comparison against `main` reports diverged, 571 commits ahead and 2 behind; do not merge/rebase automatically. `main` was not targeted.
+- Owner explicitly reconfirmed that personal coconut/es-kelapa prices are locked and the approved coconut chain is the modeling blueprint for all other commodity tiers. Preserved: whole coconut direct sale Rp13,000/butir; es kelapa Rp5,000/gelas; 4 glasses/coconut; no milk; harvest labor Rp500/butir; observed producer-to-collector price Rp3,400/butir. Do not conflate these distinct market stages. See `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+- Updated `docs/COMMODITY_CHAIN_TIER_STANDARD.md`: copy the modeling structure, not coconut prices/recipe/yield into other commodities. Every other commodity requires its own evidence; unknowns stay unknown. No runtime parameters changed.
+- Verification: fetched the tier standard again and confirmed the new rule exists; fetched commit `9a7da9276e0d06cce9690a540eb6f646d6a8763e`. No local checkout/test runner is available through this connection; tests not run. Documentation-only changes.
+- Next concrete task: continue bulk extraction of official BPS 2025 crop/estate and livestock/fishery producer-price tables through accessible official endpoints or verified official alternatives; add exact table/page, period, region, unit, grade/form and market-stage provenance to `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, then reconcile the observations against the 60-row audit. Do not promote incomplete models to runtime.
+
+---
+
 Latest continuation checkpoint — BPS SEP 2024 bulk crop/estate tables (2026-10-20)
 
 - Current remote branch at start: feat/production-tier-taxonomy; HEAD resolved from the branch ref: 9c75174547dd3fb9f9369f0e173159f9fb6aaccf (commit message: “Record bulk commodity evidence checkpoint”). Remote comparison against main: 479 ahead / 2 behind; main SHA remains 612451c03be59dd8cacd3b13adb8a79a46e51be2. No merge/rebase or main-branch write. This work uses GitHub's remote file API; there is no local repository checkout available in this runtime, so a local working-tree status cannot be inspected. A git ls-remote attempt failed because DNS resolution for github.com is unavailable.
