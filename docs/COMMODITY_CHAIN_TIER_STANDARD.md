@@ -42,3 +42,10 @@ Terapkan ke semua komoditas dengan alur: (a) identifikasi sisa/produk afkir; (b)
 - Tier 3: lapak/ritel/food-service; resep/kemasan langsung dan harga jual.
 - Tier 4: semua hasil olahan utama **serta** pemanfaatan residu yang aman (pakan, kompos, bibit, minyak, bahan manufaktur, atau penggunaan lain hanya jika sesuai komoditas dan ada bukti kelayakan).
 - Untuk tiap node: input IDs/tiers, formula kuantitas, yield, biaya proses, susut, transport, kapasitas, harga sumber, dan provenance. Harga/biaya/yield yang belum diketahui tetap null; jangan isi dengan perkiraan yang disamarkan sebagai data.
+
+
+## Owner instruction — coconut/es-kelapa is the immutable Tier 1–4 reference blueprint (2026-10-22)
+
+The owner explicitly reconfirmed that the personal coconut and es-kelapa prices must not be changed. Preserve the existing values exactly: whole coconut direct-to-customer Rp13,000/butir; es kelapa Rp5,000/gelas; one coconut yields four glasses; no milk; harvest labor Rp500/butir; observed producer-to-collector coconut price Rp3,400/butir. These are distinct observations/scenarios and must not overwrite one another or be replaced by national averages. The detailed consumables recipe and limitations remain governed by `docs/ES_KELAPA_OWNER_BENCHMARK.md`.
+
+Use the approved coconut chain as the **modeling and evidence-structure blueprint** for every other commodity's Tier 1–4 chain: distinguish producer/input stage, intermediary/distribution, retail/food-service, and processing/by-product paths where applicable; capture quantities, yields, loss, labor, energy, capex, operating costs, price stage, revenue, and margin; compare buying inputs against own-production/processing when evidence permits. This does **not** mean copying coconut's rupiah prices, recipe, yields, or four-glass conversion to unrelated commodities. Each commodity must use its own source-backed quantities and prices, with unknowns left unknown. The coconut values are locked owner data; other commodity values require independent provenance and validation. No runtime parameter is approved by this instruction alone.
