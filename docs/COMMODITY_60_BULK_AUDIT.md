@@ -368,3 +368,12 @@ Extracted three more annual national summary series, all Rp/kg and sourced by th
 - **Mangga**, Table 2.23, printed p. 41: 2020 9,669; 2021 9,852; 2022 10,931; 2023 11,251; 2024 14,607.
 
 The full register contains source IDs and annual series. All six candidate crop rows extracted across the two checkpoints remain **price-evidence only**; they do not complete a Tier 1–4 business model. Grade/variety specificity, matched farm costs, yield, post-harvest loss and processing conversion remain separate evidence gates. No runtime values changed; owner coconut benchmark remains locked; tests not run.
+
+
+## Consolidated producer-price extraction — Table 2.1 (2026-10-22)
+
+Extracted the full 26-row national annual summary from Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025*, Table 2.1, printed p. 19 / PDF p. 45, source credited to BPS. The table reports 2021–2024 prices and 2023–2024 growth. The exact 26 rows × 4 annual values (104 observations), units, growth and source IDs are recorded in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`.
+
+The consolidated table adds comparable producer-stage evidence across grains/legumes, roots, horticulture, plantation crops and livestock: maize, mung bean, soybean, peanut, potato, red chili, bird's-eye chili, garlic, banana, citrus, salak, robusta coffee, pepper, rubber, dried clove, cattle, buffalo, goat, pig, generic live chicken and layer eggs, while also independently cross-checking previously recorded singkong, ubi jalar, shallot, mango and coconut observations. Source units are preserved: Rp/kg for most crops, Rp/sisir for banana, Rp/butir for mature coconut, Rp/kg liveweight for livestock, and Rp/kg for eggs.
+
+**Important:** Table 2.1 is a national producer-price summary, not retail price, farm cost, yield, loss, FCR, processing conversion or profit evidence. Generic chicken/cattle/banana labels do not automatically map to specific production systems/cultivars. The 2024 national producer coconut value Rp3,422/butir remains separate from the owner's Rp13,000 direct-retail whole coconut and all other owner-locked es kelapa parameters. No owner values are overwritten. No runtime parameters or canonical IDs changed; tests not run.
