@@ -397,3 +397,35 @@ Pemeriksaan aritmetika: 49.817.712,65 − 25.306.179,66 = 24.511.532,99 juta rup
 - Perbedaan terhadap ringkasan Kementan yang lebih lama (angka agregat 2024 Rp36,82 triliun penerimaan/Rp22,84 triliun pengeluaran/Rp13,98 triliun laba) tidak diselaraskan secara paksa. Publikasi BPS 2025 menyajikan pembanding 2024 yang berbeda; simpan seri dan definisi sumber masing-masing sampai penyebab perbedaan dapat diperiksa.
 
 Sumber tabel: BPS, *Statistik Perusahaan Peternakan Unggas 2025*, Tabel 3.10 (pp. 39–40), Tabel 3.14–3.15 (pp. 46–47), PDF pratinjau di atas. **Tidak ada parameter runtime yang diubah; matriks 60 komoditas × Tier 1–4 tetap belum lengkap.**
+
+
+## Bulk numeric extraction — Kementan Pusdatin price publication (2026-10-22)
+
+**Accessible official alternative found:** Kementerian Pertanian, Pusat Data dan Sistem Informasi Pertanian, *Statistik Harga Komoditas Pertanian Tahun 2025*, published 2025-12-29, 183 pages. Official detail page: https://satudata.pertanian.go.id/details/publikasi/947. Official PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. The PDF's extracted text is readable, unlike the previously attempted BPS SEP 2025 price PDFs. The publication states producer-price observations are sourced from BPS and defines farm-gate producer price as the transaction between farmer/producer and buyer/collector (tengkulak); source methodology samples 3–4 farmers per commodity and records the modal or average price, with a simple monthly provincial average. See printed pp. xix–xxi (PDF pp. 19–21).
+
+### Exact extracted national series
+
+| Source observation ID | Owner row match | Table / printed page | Period | Value (Rp/kg) | Interpretation / gate |
+|---|---|---|---|---:|---|
+| KEMENTAN-HARGA-2025-T2.6-ID | #10 Singkong (candidate) | Table 2.6, p. 24 | 2020 | 3,121 | National row, fresh ketela pohon; not tapioca/starch or processed product |
+| KEMENTAN-HARGA-2025-T2.6-ID | #10 Singkong (candidate) | Table 2.6, p. 24 | 2021 | 3,158 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.6-ID | #10 Singkong (candidate) | Table 2.6, p. 24 | 2022 | 3,250 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.6-ID | #10 Singkong (candidate) | Table 2.6, p. 24 | 2023 | 3,539 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.6-ID | #10 Singkong (candidate) | Table 2.6, p. 24 | 2024 | 4,826 | Same series and basis; table's reported 2023–2024 growth 36.34% |
+| KEMENTAN-HARGA-2025-T2.7-ID | #9 Ubi Jalar (candidate) | Table 2.7, p. 25 | 2020 | 4,626 | National row, ketela rambat; not processed flour |
+| KEMENTAN-HARGA-2025-T2.7-ID | #9 Ubi Jalar (candidate) | Table 2.7, p. 25 | 2021 | 4,519 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.7-ID | #9 Ubi Jalar (candidate) | Table 2.7, p. 25 | 2022 | 4,815 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.7-ID | #9 Ubi Jalar (candidate) | Table 2.7, p. 25 | 2023 | 5,023 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.7-ID | #9 Ubi Jalar (candidate) | Table 2.7, p. 25 | 2024 | 6,401 | Same series and basis; table's reported 2023–2024 growth 27.43% |
+| KEMENTAN-HARGA-2025-T2.8-ID | #6 Bawang Merah (candidate) | Table 2.8, p. 26 | 2020 | 26,684 | National row; variety/grade not separately specified in table title |
+| KEMENTAN-HARGA-2025-T2.8-ID | #6 Bawang Merah (candidate) | Table 2.8, p. 26 | 2021 | 23,914 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.8-ID | #6 Bawang Merah (candidate) | Table 2.8, p. 26 | 2022 | 27,084 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.8-ID | #6 Bawang Merah (candidate) | Table 2.8, p. 26 | 2023 | 26,919 | Same series and basis |
+| KEMENTAN-HARGA-2025-T2.8-ID | #6 Bawang Merah (candidate) | Table 2.8, p. 26 | 2024 | 31,673 | Same series and basis; table's reported 2023–2024 growth 17.66% |
+
+**Aggregation caution:** These table rows are the publication's national summary values; they are not owner-specific prices, guaranteed current quotations, weighted estimates of all Indonesian transactions, or prices for every grade/variety. Preserve the annual series and source definitions. They establish producer-price evidence only—not matched costs, yield, loss, or profit. They must not alter the owner-locked coconut/es-kelapa values.
+
+### Bulk source coverage added
+- Exact numeric price observations added in this checkpoint: 15 annual-series values across 3 crop rows (singkong, ubi jalar, bawang merah).
+- The PDF's contents list also identifies reusable provincial series for beans, soybean, peanut, garlic, spinach, green beans, red chili, bird's-eye chili, long bean, water spinach, potato, cucumber, cabbage, eggplant, tomato, carrot, citrus, mango, papaya, Ambon banana, watermelon, coconut, oil palm, rubber, robusta coffee, cocoa, pepper, clove, nutmeg, candlenut, beef cattle, goats, chicken, ducks and eggs. These are only candidate tables until each exact row is extracted and reconciled.
+- Next bulk pass: extract the national summary table and provincial series for the remaining owner-matched crops/plantations and livestock, preserving missing cells as missing; then join only matched SEP cost/yield evidence. No runtime promotion.
