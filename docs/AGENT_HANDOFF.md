@@ -6320,3 +6320,12 @@ For sugarcane, do not require/substitute an annual-crop TM denominator when the 
 - BPS page metadata and Kementan summary were reviewed; actual full BPS PDF table could not be retrieved via web page open in this pass (403). Therefore discrepancy is not resolved; no claim of full-table verification.
 - Tests not run; docs-only. No runtime parameters changed.
 - Next: resume extracting verified absolute company data only if full tables can be accessed, otherwise pivot to crosswalking existing verified BPS SEP / official price records to the canonical commodity inventory and identify exact data gaps. Keep 60 × 4 matrix and runtime approval status explicitly incomplete.
+
+
+## Checkpoint — latest BPS poultry enterprise publication identified (2026-10-22)
+
+- Branch remains `feat/production-tier-taxonomy`; base HEAD `fd721149420c6dd856133215ea617c5a494f8628`; register commit `07b3d6a561e18755b54256696ad9c110c6875de7`; `main` untouched.
+- Found official BPS publication *Statistik Perusahaan Peternakan Unggas 2025*, released 2026-08-14, catalogue 5304004/publication 05100.26020. It covers company workforce, flock/population, annual expenditures and receipts for data year 2025: https://www.bps.go.id/id/publication/2026/08/14/9ee194861fe1a53d5ca7953d/statistik-perusahaan-peternakan-unggas-2025.html.
+- Added source hierarchy to data register: use 2025 company tables as latest enterprise benchmark after exact extraction; retain 2024 as historic comparator; use SEP UTP separately for smallholder holdings; use dated producer-price series for farmgate price. Do not mix populations.
+- Limitation: official BPS page fetch returned 403 during this pass; no 2025 numeric table was extracted. Metadata/source discovery only, not numeric completion. No runtime values changed; tests not run.
+- Next: attempt official BPS publication download from accessible catalog endpoints or acquire an accessible mirror of the 2025 PDF; extract actual table cells (with table/page, units, population and period). If inaccessible, continue the 60-row crosswalk and exact row-level evidence gaps using sources already accessible. Do not loop repeatedly on the same blocked URL.
