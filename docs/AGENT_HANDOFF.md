@@ -6309,3 +6309,14 @@ For sugarcane, do not require/substitute an annual-crop TM denominator when the 
 - Correction to previous conversational arithmetic: the individually listed expense shares sum to 100.00% for both broiler and layer; a prior attempted remainder grouping was erroneous. Register now explicitly says use individual component rows, not the incorrect combined remainders.
 - Tests not run; documentation-only; no runtime parameters changed.
 - Next: obtain the actual PDF tables and validate the layer Rp26 discrepancy and denominators, then crosswalk validated values into commodity IDs. Do not infer production cycles, mortality, FCR, saleable output, or Tier 1–4 costs from percentages alone. Full 60 × 4 matrix still incomplete.
+
+
+## Checkpoint — poultry layer source arithmetic mismatch (2026-10-22)
+
+- Branch `feat/production-tier-taxonomy`; starting HEAD `8c81a38b359dda94812f0ead259ee85a1f9e80df`; register commit `8649cfcd1c032f7d4226b3f8f00fc000e78e544b`; `main` untouched.
+- Rechecked the official BPS publication metadata and Kementan summary. BPS says the publication covers company-level poultry establishment information, workforce, animals kept and production costs for data year 2024; released 2025-08-15: https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/statistik-perusahaan-peternakan-unggas-2024.html.
+- Confirmed broiler arithmetic: Rp33,053 output value − Rp28,837 cost = Rp4,216 reported profit per bird.
+- Layer arithmetic mismatch remains: Rp925,548 output value − Rp583,481 cost = Rp342,067, but published average profit is Rp342,093 per bird-year. Difference Rp26; simple rounding to nearest rupiah cannot explain it. Register now explicitly stores calculated and published values separately, flags source mismatch, and prohibits runtime use until table definitions/aggregation are resolved.
+- BPS page metadata and Kementan summary were reviewed; actual full BPS PDF table could not be retrieved via web page open in this pass (403). Therefore discrepancy is not resolved; no claim of full-table verification.
+- Tests not run; docs-only. No runtime parameters changed.
+- Next: resume extracting verified absolute company data only if full tables can be accessed, otherwise pivot to crosswalking existing verified BPS SEP / official price records to the canonical commodity inventory and identify exact data gaps. Keep 60 × 4 matrix and runtime approval status explicitly incomplete.
