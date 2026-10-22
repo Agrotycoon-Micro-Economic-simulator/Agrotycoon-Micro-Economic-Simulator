@@ -1,3 +1,15 @@
+## Latest checkpoint — 26-row consolidated producer-price table extracted (2026-10-22)
+
+- Active branch: `feat/production-tier-taxonomy`. No `main` writes, merge/rebase, runtime/code/ID changes. Previous branch comparison reported 578 ahead / 2 behind; re-check before integration.
+- Official source: Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025*, Table 2.1, printed p. 19 / PDF p. 45; source credited to BPS. Official publication page https://satudata.pertanian.go.id/details/publikasi/947 ; PDF https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf.
+- Extracted the complete 26-row national producer-price summary for 2021–2024: 104 exact numeric values across grains/legumes, root crops, horticulture, plantation products and livestock. All values, units, growth rates, source IDs and cautions are appended to `docs/COMMODITY_60_BULK_DATA_REGISTER.md`; summary and gates are in `docs/COMMODITY_60_BULK_AUDIT.md`. Table includes maize, mung bean, soybean, peanut, singkong, ubi jalar, potato, red chili, bird's-eye chili, shallot, garlic, mango, banana, citrus, salak, mature coconut, robusta coffee, pepper, rubber, dried clove, cattle, buffalo, goat, pig, generic live chicken, and layer eggs.
+- Previously extracted five-year provincial-table series for singkong, ubi jalar, shallot, tomato, carrot and mango remain recorded. The Table 2.1 values cross-check the 2021–2024 values for overlapping series.
+- Source-stage caution: these are national producer-price summaries, not retail prices or farm costs/yields/losses/profits. Generic commodity labels are not enough to establish cultivar or production-system mapping. The national 2024 mature coconut producer price Rp3,422/butir is distinct from the owner-locked direct sale Rp13,000/butir; preserve all personal coconut/es kelapa values, recipe, yield and labor exactly.
+- Commits in this continuation: `87da8cd642bd9ae96594204ecd396ee2299f769e` (register; 26 rows/104 observations) and `69ede39624458de4596bdcd8e8b34bf442bb640d` (audit summary). Handoff refresh is being committed now. No tests run because there is no local checkout/test runner in this connection.
+- Next bulk step: extract relevant rows from the same PDF's provincial tables (e.g. garlic, mung bean, soybean, peanut, potato, red chili, bird's-eye chili, banana, citrus, salak, coffee, pepper, rubber, clove, and animal rows) only where regional detail helps the owner-row match. Then prioritize matched SEP cost/yield evidence; do not overstate price coverage as complete unit economics and do not promote runtime parameters without cost, output, loss, and process evidence.
+
+---
+
 ## Latest checkpoint — six crop price series extracted (2026-10-22)
 
 - Active branch: `feat/production-tier-taxonomy`; no main-branch writes, no merge/rebase, no runtime changes. Prior branch comparison reported 571 ahead / 2 behind main; re-check before any future integration.
