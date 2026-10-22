@@ -215,3 +215,26 @@ All values above are converted from the source table's “000 Rupiah” to rupia
 
 ### Use in game model
 These SEP observations can support a **dated baseline farm scenario** for padi, maize, shallot, several chili categories, and coconut after the source's unit and period definitions are reconciled with production quantity. They do not by themselves fill the 60 commodity rows or all four game tiers. A farm production cost is a Tier 1 node only if the owner's commodity-chain mapping explicitly identifies it as the raw producer node; downstream processing, trading, retail and other tiers need separate stage-specific input/output recipes and prices.
+
+
+## Batch ekstraksi biaya peternakan BPS SEP 2024 — sapi potong dan broiler (2026-10-22)
+
+Sumber primer: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan*, publikasi 05200.25001, katalog 5301012, rilis 24 Januari 2025. [Halaman publikasi resmi BPS](https://www.bps.go.id/assets/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian--sep--2024-subsektor-peternakan.html). Tabel mengukur usaha pertanian perorangan (UTP); angka di tabel sumber dalam ribu rupiah, di bawah dikonversi menjadi rupiah.
+
+| Komoditas dan tabel | Basis observasi | Nilai produksi | Biaya produksi | Pendapatan SEP |
+|---|---|---:|---:|---:|
+| Sapi potong / 2.1 | Per ekor | Rp3.290.370 | Rp716.120 | Rp2.574.260 |
+| Sapi perah / 2.2 | Per ekor | Rp10.141.120 | Rp5.094.660 | Rp5.046.460 |
+| Ayam ras pedaging FS / 2.10 | Per 5.000 ekor final stock | Rp152.008.050 | Rp126.445.080 | Rp28.639.720 |
+
+**Komponen biaya utama yang diekstrak:**
+- **Sapi potong, per ekor:** total pakan Rp342.250 (termasuk hijauan Rp138.750, konsentrat/pabrikan Rp72.500, pakan lain Rp127.920; pakan jagung Rp3.080); pemeliharaan kesehatan Rp35.800; upah Rp70.870; BBM/pelumas Rp107.920; listrik/air Rp14.200; lahan Rp85.690; jasa peternakan Rp14.850; pengeluaran lain Rp44.550. Angka upah dan sewa lahan mencakup komponen perkiraan biaya tenaga kerja tak dibayar dan perkiraan sewa lahan sendiri/bebas sewa.
+- **Sapi perah, per ekor:** biaya produksi Rp5.094.660; pakan Rp4.074.740 atau sekitar 79,98% dari total biaya (jagung Rp20.380; hijauan Rp564.650; konsentrat/pabrikan Rp2.465.240; pakan lain Rp1.024.480). Nilai produksi mencakup pertambahan bobot, produksi selain ternak hidup terutama susu, dan produk ikutan; jangan menyamakan dengan penjualan susu saja.
+- **Ayam broiler FS, per 5.000 ekor:** pakan Rp81.754.620; kesehatan Rp2.616.790; upah Rp3.932.750; BBM/pelumas Rp999.400; listrik/air Rp2.114.580; lahan Rp1.198.090; jasa peternakan Rp77.800; pengeluaran lain Rp1.661.670; pembelian DOC Rp32.089.370. Nilai produksi ternak hidup yang dijual tercatat Rp149.077.700 dari total produksi Rp152.008.050.
+
+**Batas interpretasi:** tabel adalah rata-rata struktur usaha pada unit dan basis yang disebut, bukan otomatis satu siklus standar game. Untuk broiler, periode pemeliharaan, mortalitas, bobot panen, FCR, harga DOC/feed yang dibeli, dan definisi jumlah final stock harus dicocokkan sebelum mengonversi menjadi HPP/kg. Untuk sapi potong, nilai pendapatan SEP termasuk pertambahan bobot dan produk ikutan; ini bukan otomatis margin penjualan satu ekor di pasar. Jangan gabungkan unit per ekor dengan per 5.000 ekor tanpa normalisasi yang eksplisit.
+
+### Cakupan bukti setelah batch SEP ini
+- Data biaya/nilai produksi primer sudah diekstrak untuk beberapa tanaman pangan, hortikultura, kelapa, sapi potong, sapi perah, dan ayam broiler.
+- Ini memperbaiki ketersediaan bukti Tier 1 untuk sejumlah komoditas, tetapi belum membuktikan cakupan lengkap 60 komoditas atau semua empat tier game.
+- Belum ada parameter runtime yang dipromosikan; perlu verifikasi terhadap peta 60 komoditas, bentuk produk, waktu produksi, satuan output, kehilangan, dan biaya distribusi/processing.
