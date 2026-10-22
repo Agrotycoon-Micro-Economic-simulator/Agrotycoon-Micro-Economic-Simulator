@@ -358,3 +358,13 @@ Exact national-row series extracted from Tables 2.6–2.8:
 Each is an annual historical producer-price series, not a live 2026 quote, owner observation, retail price, or cost/profit model. Variety/grade details are not fully specified by these table titles; preserve that limitation. Exact provenance and source URL are in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`.
 
 Coverage effect: 3 additional owner-row candidate price series now have five annual values each. This does **not** change the global 60-row matrix or establish any complete Tier 1–4 model. No runtime parameters, recipes, canonical IDs, or owner-locked coconut/es-kelapa values changed. Tests not run; documentation-only update.
+
+
+### Additional producer-price rows from the same official PDF (2026-10-22)
+
+Extracted three more annual national summary series, all Rp/kg and sourced by the publication to BPS:
+- **Tomat sayur**, Table 2.20, printed p. 38: 2020 7,331; 2021 7,546; 2022 7,817; 2023 8,522; 2024 11,955.
+- **Wortel**, Table 2.21, printed p. 39: 2020 8,915; 2021 8,604; 2022 9,217; 2023 9,592; 2024 13,071.
+- **Mangga**, Table 2.23, printed p. 41: 2020 9,669; 2021 9,852; 2022 10,931; 2023 11,251; 2024 14,607.
+
+The full register contains source IDs and annual series. All six candidate crop rows extracted across the two checkpoints remain **price-evidence only**; they do not complete a Tier 1–4 business model. Grade/variety specificity, matched farm costs, yield, post-harvest loss and processing conversion remain separate evidence gates. No runtime values changed; owner coconut benchmark remains locked; tests not run.
