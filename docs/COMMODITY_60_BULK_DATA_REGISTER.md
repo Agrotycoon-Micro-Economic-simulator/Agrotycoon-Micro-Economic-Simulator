@@ -442,3 +442,42 @@ The same official PDF supports three more five-year producer-price series. Each 
 | KEMENTAN-HARGA-2025-T2.23-ID | #12 Mangga (candidate) | Table 2.23, p. 41 | 9,669 | 9,852 | 10,931 | 11,251 | 14,607 | 29.83% |
 
 Limits: these are national summary rows from the annual historical table, not a current quote or weighted national transaction average; no grade/variety is sufficiently specified by the table title for cultivar-specific modeling. Do not use them as retail or processed-product prices and do not infer costs, yields or profits. Owner row mappings remain candidates pending form/stage validation.
+
+
+## Bulk extraction — consolidated national producer-price table (2026-10-22)
+
+**Primary source:** Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025*, Table 2.1, printed p. 19 (PDF page 45), “Perkembangan Rata-rata Harga Produsen Komoditas Pertanian di Indonesia, 2020–2024”; source credited to BPS. The extractable table reports the four annual columns 2021–2024. Units are as printed, including liveweight for livestock. Official PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. The table is a national annual summary, not a regional quote or a cost/profit ledger.
+
+| Source ID / commodity | Unit and form | 2021 | 2022 | 2023 | 2024 | 2023–24 growth (%) |
+|---|---|---:|---:|---:|---:|---:|
+| KEMENTAN-HARGA-2025-T2.1-01 Jagung pipilan | Rp/kg | 5,132 | 5,160 | 5,360 | 5,909 | 10.24 |
+| KEMENTAN-HARGA-2025-T2.1-02 Kacang hijau | Rp/kg | 16,843 | 17,666 | 18,211 | 20,438 | 12.23 |
+| KEMENTAN-HARGA-2025-T2.1-03 Kacang kedelai | Rp/kg | 9,315 | 9,898 | 10,264 | 12,280 | 19.65 |
+| KEMENTAN-HARGA-2025-T2.1-04 Kacang tanah | Rp/kg | 16,029 | 16,888 | 17,685 | 20,525 | 16.06 |
+| KEMENTAN-HARGA-2025-T2.1-05 Ketela pohon / singkong | Rp/kg | 3,158 | 3,250 | 3,539 | 4,826 | 36.34 |
+| KEMENTAN-HARGA-2025-T2.1-06 Ketela rambat / ubi jalar | Rp/kg | 4,519 | 4,815 | 5,023 | 6,401 | 27.43 |
+| KEMENTAN-HARGA-2025-T2.1-07 Kentang | Rp/kg | 10,341 | 11,773 | 13,442 | 16,790 | 24.91 |
+| KEMENTAN-HARGA-2025-T2.1-08 Cabai merah | Rp/kg | 27,859 | 33,325 | 32,418 | 38,943 | 20.13 |
+| KEMENTAN-HARGA-2025-T2.1-09 Cabai rawit | Rp/kg | 32,911 | 41,164 | 39,469 | 45,698 | 15.78 |
+| KEMENTAN-HARGA-2025-T2.1-10 Bawang merah | Rp/kg | 23,914 | 27,084 | 26,919 | 31,673 | 17.66 |
+| KEMENTAN-HARGA-2025-T2.1-11 Bawang putih | Rp/kg | 25,951 | 26,588 | 29,626 | 37,287 | 25.86 |
+| KEMENTAN-HARGA-2025-T2.1-12 Mangga | Rp/kg | 9,852 | 10,931 | 11,251 | 14,607 | 29.83 |
+| KEMENTAN-HARGA-2025-T2.1-13 Pisang | Rp/sisir | 8,224 | 8,330 | 8,584 | 10,790 | 25.71 |
+| KEMENTAN-HARGA-2025-T2.1-14 Jeruk keprok/siam | Rp/kg | 9,474 | 9,624 | 10,235 | 11,802 | 15.31 |
+| KEMENTAN-HARGA-2025-T2.1-15 Salak | Rp/kg | 8,833 | 8,889 | 8,932 | 11,602 | 29.89 |
+| KEMENTAN-HARGA-2025-T2.1-16 Kelapa tua | Rp/butir | 3,248 | 3,283 | 3,291 | 3,422 | 3.97 |
+| KEMENTAN-HARGA-2025-T2.1-17 Kopi robusta | Rp/kg | 20,141 | 21,715 | 25,817 | 38,789 | 50.24 |
+| KEMENTAN-HARGA-2025-T2.1-18 Lada/merica | Rp/kg | 80,527 | 88,548 | 88,319 | 80,189 | -9.21 |
+| KEMENTAN-HARGA-2025-T2.1-19 Karet getah tebal | Rp/kg | 7,725 | 7,958 | 7,400 | 9,301 | 25.69 |
+| KEMENTAN-HARGA-2025-T2.1-20 Cengkeh biji kering | Rp/kg | 77,304 | 91,046 | 99,385 | 105,062 | 5.71 |
+| KEMENTAN-HARGA-2025-T2.1-21 Sapi | Rp/kg berat hidup | 66,538 | 67,742 | 69,611 | 76,040 | 9.24 |
+| KEMENTAN-HARGA-2025-T2.1-22 Kerbau | Rp/kg berat hidup | 66,507 | 67,712 | 72,247 | 76,047 | 5.26 |
+| KEMENTAN-HARGA-2025-T2.1-23 Kambing | Rp/kg berat hidup | 114,313 | 123,865 | 136,040 | 137,258 | 0.90 |
+| KEMENTAN-HARGA-2025-T2.1-24 Babi | Rp/kg berat hidup | 40,154 | 42,173 | 48,448 | 67,890 | 40.13 |
+| KEMENTAN-HARGA-2025-T2.1-25 Ayam | Rp/kg berat hidup | 31,345 | 32,733 | 33,374 | 34,741 | 4.10 |
+| KEMENTAN-HARGA-2025-T2.1-26 Telur ayam ras | Rp/kg | 25,503 | 26,920 | 30,408 | 34,045 | 11.96 |
+
+### Matching and interpretation gates
+- This table adds 26 commodity series × 4 annual values = 104 exact numeric observations from one common national source table. It also provides a cross-check against the separately extracted provincial-table national series for singkong, ubi jalar, bawang merah and mangga; matching values agree for 2021–2024.
+- Rows are candidates, not automatic exact mappings to all 60 owner items. Generic “pisang” does not prove Cavendish, generic “ayam” does not distinguish broiler/layer/village chicken, “sapi” does not distinguish breeding/fattening, and “kelapa tua” is not the owner's direct-retail price. The official Rp3,422/butir for 2024 is a national producer-stage observation and **must remain separate** from the owner's Rp13,000 direct customer sale, Rp5,000 es kelapa glass, four-glasses-per-coconut conversion, no-milk recipe, Rp500 harvest labor, and observed Rp3,400 farmer-to-collector benchmark. Do not replace or normalize the owner data with this national series.
+- Price data alone does not establish farm cost, yield, mortality, FCR, post-harvest loss, processing conversion, fixed capital, or profit. Unknowns stay null. No runtime parameter is authorized by this extraction.
