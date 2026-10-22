@@ -535,3 +535,17 @@ Rows below record Jan 2026 price; growth columns are Jan 2026 vs Dec 2025 and Ja
 | Kayu manis kulit kering | 43,548 | -18.13 | -23.01 |
 
 **Critical interpretation gate:** Table 48's “Kelapa Bulat” is a producer price in Rp/kg. It is not directly comparable to or a replacement for the owner's Rp13,000 per whole coconut (direct retail, Rp/butir), Rp5,000 es kelapa/glass, 4 glasses/coconut, no milk, Rp500 harvest labor, or observed Rp3,400/butir farmer-to-collector. No costs, yield, loss, processing conversion, capital or profit inferred; missing source dashes remain missing; no runtime values approved.
+
+
+### Table 49 — livestock producer prices (2025 monthly series + January 2026)
+Printed p.58 / PDF p.70. Source cited by bulletin: Ditjen PKH, Simponi Ternak; January 2026 download dated 18 February 2026. Columns are Jan–Dec 2025 then Jan 2026. Prices are producer-stage sale prices, not retail prices or farm production costs.
+
+| Commodity | Unit | Jan25 | Feb25 | Mar25 | Apr25 | May25 | Jun25 | Jul25 | Aug25 | Sep25 | Oct25 | Nov25 | Dec25 | Jan26 | Jan26 vs Dec25 % | Jan26 vs Jan25 % |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Sapi hidup | Rp/kg berat hidup | 51,070 | 52,304 | 54,344 | 54,900 | 55,684 | 56,321 | 55,024 | 55,308 | 55,397 | 55,467 | 55,654 | 55,814 | 55,809 | -0.01 | 9.28 |
+| Ayam broiler | Rp/kg berat hidup | 23,639 | 22,365 | 23,101 | 20,772 | 21,175 | 20,944 | 21,379 | 21,909 | 24,579 | 24,055 | 23,641 | 25,274 | 24,278 | -3.94 | 2.70 |
+| Ayam buras | Rp/kg berat hidup | 61,713 | 66,215 | 68,575 | 68,289 | 69,042 | 73,381 | 64,998 | 61,626 | 62,499 | 57,465 | 53,927 | 54,811 | 54,468 | -0.63 | -11.74 |
+| Telur ayam ras | Rp/kg | 26,193 | 26,496 | 26,722 | 25,719 | 25,778 | 26,028 | 26,084 | 25,406 | 26,433 | 26,795 | 26,462 | 27,088 | 26,633 | -1.68 | 1.68 |
+| Telur ayam buras | Rp/butir | 2,432 | 2,861 | 2,542 | 2,383 | 2,243 | 2,542 | 2,259 | 2,415 | 2,391 | 2,440 | 2,323 | 2,479 | 2,479 | 0.00 | 1.93 |
+
+**Scope gate:** do not map generic “sapi” or “ayam” to breed-specific Tier 1–4 models without evidence. This table does not establish feed conversion, mortality, cycle length, yield, housing/energy cost, carcass conversion or profit. No runtime promotion.
