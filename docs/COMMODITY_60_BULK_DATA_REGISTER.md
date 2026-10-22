@@ -238,3 +238,48 @@ Sumber primer: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peterna
 - Data biaya/nilai produksi primer sudah diekstrak untuk beberapa tanaman pangan, hortikultura, kelapa, sapi potong, sapi perah, dan ayam broiler.
 - Ini memperbaiki ketersediaan bukti Tier 1 untuk sejumlah komoditas, tetapi belum membuktikan cakupan lengkap 60 komoditas atau semua empat tier game.
 - Belum ada parameter runtime yang dipromosikan; perlu verifikasi terhadap peta 60 komoditas, bentuk produk, waktu produksi, satuan output, kehilangan, dan biaya distribusi/processing.
+
+
+## Batch validasi peternakan — produksi nasional 2024 dan harga produsen 2025 (2026-10-22)
+
+Sumber produksi: Ditjen Peternakan dan Kesehatan Hewan, *Buku Statistik Peternakan dan Kesehatan Hewan 2024*, tabel 10.2 (angka 2024 ditandai sementara/preliminary). Sumber harga: Pusdatin Kementerian Pertanian, *Statistik Terkini Ekonomi Pertanian — April 2025*, tabel 49, sumber harga Ditjen PKH/SIMPOni Ternak, observasi Maret 2025.
+
+### Produksi nasional 2024 (ribu ton; angka sementara)
+
+| Produk | Produksi 2023 | Produksi 2024* | Satuan sumber |
+|---|---:|---:|---|
+| Daging ayam buras | 143,79 | 156,45 | ribu ton |
+| Daging ayam ras petelur | 190,26 | 187,07 | ribu ton |
+| Daging ayam ras pedaging/broiler | 3.721,64 | 3.835,92 | ribu ton |
+| Daging itik | 33,03 | 33,82 | ribu ton |
+| Daging itik manila | 4,05 | 4,43 | ribu ton |
+| Daging kelinci | 0,13 | 0,25 | ribu ton |
+| Daging puyuh | 1,65 | 1,54 | ribu ton |
+| Telur ayam buras | 214,73 | 236,65 | ribu ton |
+| Telur ayam ras petelur | 6.116,07 | 6.342,71 | ribu ton |
+| Telur itik | 200,21 | 236,48 | ribu ton |
+| Telur itik manila | 28,30 | 32,83 | ribu ton |
+| Telur puyuh | 26,17 | 27,62 | ribu ton |
+| Susu | 787,37 | 808,35 | ribu ton |
+
+*Angka 2024 masih sementara menurut sumber. Produksi nasional hanya untuk menguji skala pasar/konsistensi simulasi, bukan sebagai hasil produksi per peternakan atau siklus.*
+
+Sumber: [Buku Statistik Peternakan dan Kesehatan Hewan 2024 (Ditjen PKH)](https://satudata.pertanian.go.id/assets/docs/publikasi/Buku_Statistik_PKH_2024_.pdf).
+
+### Harga produsen yang tersedia pada seri resmi Maret 2025
+
+| Komoditas | Harga produsen Maret 2025 | Satuan sumber | Tahap |
+|---|---:|---|---|
+| Sapi | Rp54.344 | Rp/kg/BH | Berat hidup |
+| Ayam broiler | Rp23.101 | Rp/kg/BH | Berat hidup |
+| Ayam buras | Rp68.575 | Rp/kg/BH | Berat hidup |
+| Telur ayam ras | Rp26.722 | Rp/kg | Telur |
+| Telur ayam buras | Rp2.542 | Rp/butir | Telur |
+
+Sumber: [Statistik Terkini Ekonomi Pertanian — April 2025, tabel 49](https://satudata.pertanian.go.id/assets/docs/publikasi/Stk_Terkini_Ekonomi_Pertanian_April_2025.pdf). Harga ini bertanggal Maret 2025; tidak boleh dilabeli harga hari ini atau digunakan sebagai harga retail.
+
+### Keputusan integrasi
+- Produksi nasional dan harga produsen menjadi pemeriksaan makro dan bukti harga bertanggal; bukan pengganti struktur biaya per peternakan.
+- Publikasi biaya UTP peternakan BPS dan statistik perusahaan peternakan BPS mewakili populasi usaha yang berbeda. Jangan gabungkan biaya rata-rata UTP dengan volume/harga perusahaan tanpa menandai perbedaan populasi.
+- Untuk telur dan susu, model produksi berulang harus menghitung biaya per periode, output layak jual, mortalitas/afkir, pakan, dan biaya kandang/peralatan. Untuk broiler, harga berat hidup tidak boleh dipakai sebagai harga karkas atau daging eceran.
+- Ini belum melengkapi semua komoditas Tier 1–4; tidak ada nilai baru yang dipromosikan ke runtime.
