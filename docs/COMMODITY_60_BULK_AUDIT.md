@@ -344,3 +344,17 @@ Direct search of official Ditjen Perkebunan *Laporan Kinerja Ditjen Perkebunan 2
 For sugarcane, a TM denominator is not required to use the official harvested-area productivity series. Pusdatin Kementan *Outlook Tebu 2025* reports 2024 (temporary) harvested area 520,823 ha, GKP production 2,465,514 t, cane production 33,216,613 t, GKP productivity 4.73 t/ha, cane productivity 63.78 t/ha and rendemen 7.42%. Ratios check within rounding: GKP ≈4.733 t/ha and cane ≈63.77 t/ha. Source: https://satudata.pertanian.go.id/assets/docs/publikasi/OUTLOOK_TEBU_2025_sign_compressed.pdf.
 
 BPS's 2024 seasonal estate-crops publication records sugar production from sugarcane and area 520.82 thousand ha; Pusdatin/Ditjenbun also reports cane mass separately. Keep sugar (GKP) and raw cane as separate output forms and use harvested area, not projected TM, as the denominator for this annual crop. These are national provisional aggregates, not farm-level yields or unit economics. No runtime/code/canonical IDs or economic approvals changed; tests not run.
+
+
+## Bulk price extraction checkpoint — Kementan Pusdatin 2025 (2026-10-22)
+
+The official Kementan Pusdatin *Statistik Harga Komoditas Pertanian Tahun 2025* PDF is now accessible through the official satudata.pertanian.go.id endpoint. It republishes BPS producer-price series and explicitly defines farm-gate price as a farmer-to-collector/tengkulak transaction; see printed pp. xix–xxi. This is a distinct market stage from retail and must not be conflated with the owner's direct-to-customer coconut benchmark.
+
+Exact national-row series extracted from Tables 2.6–2.8:
+- **Singkong / ketela pohon**, Table 2.6, p. 24: 2020 Rp3,121/kg; 2021 Rp3,158/kg; 2022 Rp3,250/kg; 2023 Rp3,539/kg; 2024 Rp4,826/kg.
+- **Ubi jalar / ketela rambat**, Table 2.7, p. 25: 2020 Rp4,626/kg; 2021 Rp4,519/kg; 2022 Rp4,815/kg; 2023 Rp5,023/kg; 2024 Rp6,401/kg.
+- **Bawang merah**, Table 2.8, p. 26: 2020 Rp26,684/kg; 2021 Rp23,914/kg; 2022 Rp27,084/kg; 2023 Rp26,919/kg; 2024 Rp31,673/kg.
+
+Each is an annual historical producer-price series, not a live 2026 quote, owner observation, retail price, or cost/profit model. Variety/grade details are not fully specified by these table titles; preserve that limitation. Exact provenance and source URL are in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`.
+
+Coverage effect: 3 additional owner-row candidate price series now have five annual values each. This does **not** change the global 60-row matrix or establish any complete Tier 1–4 model. No runtime parameters, recipes, canonical IDs, or owner-locked coconut/es-kelapa values changed. Tests not run; documentation-only update.
