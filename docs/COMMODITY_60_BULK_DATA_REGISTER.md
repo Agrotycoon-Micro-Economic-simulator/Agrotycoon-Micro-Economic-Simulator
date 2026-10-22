@@ -429,3 +429,16 @@ Sumber tabel: BPS, *Statistik Perusahaan Peternakan Unggas 2025*, Tabel 3.10 (pp
 - Exact numeric price observations added in this checkpoint: 15 annual-series values across 3 crop rows (singkong, ubi jalar, bawang merah).
 - The PDF's contents list also identifies reusable provincial series for beans, soybean, peanut, garlic, spinach, green beans, red chili, bird's-eye chili, long bean, water spinach, potato, cucumber, cabbage, eggplant, tomato, carrot, citrus, mango, papaya, Ambon banana, watermelon, coconut, oil palm, rubber, robusta coffee, cocoa, pepper, clove, nutmeg, candlenut, beef cattle, goats, chicken, ducks and eggs. These are only candidate tables until each exact row is extracted and reconciled.
 - Next bulk pass: extract the national summary table and provincial series for the remaining owner-matched crops/plantations and livestock, preserving missing cells as missing; then join only matched SEP cost/yield evidence. No runtime promotion.
+
+
+### Additional exact national series — tomato, carrot, mango (extracted 2026-10-22)
+
+The same official PDF supports three more five-year producer-price series. Each table is sourced to BPS and reported in Rp/kg.
+
+| Source observation ID | Owner row match | Table / printed page | 2020 | 2021 | 2022 | 2023 | 2024 | 2023–24 reported growth |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| KEMENTAN-HARGA-2025-T2.20-ID | #8 Tomat (candidate) | Table 2.20, p. 38 | 7,331 | 7,546 | 7,817 | 8,522 | 11,955 | 40.28% |
+| KEMENTAN-HARGA-2025-T2.21-ID | #17 Wortel (candidate) | Table 2.21, p. 39 | 8,915 | 8,604 | 9,217 | 9,592 | 13,071 | 36.26% |
+| KEMENTAN-HARGA-2025-T2.23-ID | #12 Mangga (candidate) | Table 2.23, p. 41 | 9,669 | 9,852 | 10,931 | 11,251 | 14,607 | 29.83% |
+
+Limits: these are national summary rows from the annual historical table, not a current quote or weighted national transaction average; no grade/variety is sufficiently specified by the table title for cultivar-specific modeling. Do not use them as retail or processed-product prices and do not infer costs, yields or profits. Owner row mappings remain candidates pending form/stage validation.
