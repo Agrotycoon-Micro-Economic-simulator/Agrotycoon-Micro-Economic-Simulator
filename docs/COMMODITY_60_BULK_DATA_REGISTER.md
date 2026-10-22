@@ -329,3 +329,19 @@ Pemeriksaan aritmetika: broiler Rp33.053 − Rp28.837 = Rp4.216; layer Rp925.548
 Ringkasan agregat perusahaan unggas tahun 2024 yang dikutip sumber: pemasukan Rp36,82 triliun; pengeluaran Rp22,84 triliun; keuntungan Rp13,98 triliun; pakan sekitar 67,73% dari pengeluaran. Angka agregat ini tidak boleh dianggap sebagai unit economics khusus broiler/layer.
 
 **Normalisasi komponen:** rincian persentase broiler berjumlah 100,00%; rincian layer berjumlah 100,00%. Jangan membuat baris “biaya lain” dari penjumlahan yang salah pada ringkasan percakapan sebelumnya; gunakan komponen individual di atas.
+
+
+## Validasi denominator ekonomi perusahaan unggas — koreksi nilai layer (2026-10-22)
+
+Sumber primer BPS *Statistik Perusahaan Peternakan Unggas 2024* menerangkan bahwa survei mengumpulkan keterangan perusahaan, tenaga kerja, jumlah ternak yang diusahakan, dan biaya produksi selama tahun 2024 (rilis 15 Agustus 2025). Metadata publikasi: https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/statistik-perusahaan-peternakan-unggas-2024.html. Ringkasan resmi Kementan yang mengutip publikasi tersebut menyajikan:
+- Broiler: nilai produksi Rp33.053/ekor; total biaya Rp28.837/ekor; laba rata-rata Rp4.216/ekor.
+- Layer: nilai produksi Rp925.548/ekor/tahun; total biaya Rp583.481/ekor/tahun; laba rata-rata yang dipublikasikan Rp342.093/ekor/tahun.
+
+### Uji konsistensi
+- Broiler: 33.053 − 28.837 = 4.216 (cocok secara aritmetika).
+- Layer: 925.548 − 583.481 = 342.067, bukan 342.093; selisih Rp26 (sekitar 0,0076% dari laba yang dilaporkan).
+- Selisih ini tidak bisa dijelaskan hanya dengan membulatkan tiga nilai ke rupiah terdekat: toleransi pembulatan dua komponen ±Rp1 hanya menghasilkan rentang sekitar Rp2. Definisi komponen, agregasi rata-rata, atau ketidaktepatan ringkasan perlu diperiksa di tabel sumber.
+- Perlakuan model: simpan laba terbitan dan laba hasil hitung sebagai dua field berbeda, tambahkan flag `source_arithmetic_mismatch`, jangan memilih salah satu secara diam-diam. Jangan jadikan angka layer sebagai runtime parameter sebelum mismatch diselesaikan.
+- BPS mengidentifikasi survei sebagai data perusahaan untuk 2024, bukan peternak rakyat/UTP. Gunakan hanya untuk benchmark skala perusahaan dan jangan mencampurkannya dengan biaya UTP SEP 2024 tanpa label populasi.
+
+Rujukan pendukung: [BPS — Statistik Perusahaan Peternakan Unggas 2024](https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/statistik-perusahaan-peternakan-unggas-2024.html); [ringkasan Kementan yang menyebut nilai produksi, biaya, laba dan komposisi biaya](https://satudata.pertanian.go.id/assets/docs/publikasi/8c2d7ee13490f6d9b056335f292a784a.pdf).
