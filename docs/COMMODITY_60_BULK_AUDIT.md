@@ -1,3 +1,10 @@
+## Checkpoint — official poultry input-price anchors recorded (2026-10-22)
+
+- Added five feed-price observations from Kementan/ Ditjen PKH reporting SPORA: BR1 Rp8,010/kg; BR0 Rp8,451/kg; BR2 Rp7,967/kg; layer P3 Rp6,803/kg; layer concentrate KP3 Rp7,735/kg. Report dated 11 March 2026 and describes February–early March producer-level observations from different counts of feed mills (14–33 depending on feed type).
+- Added DOC price-stage reference reported by Ditjen PKH on 25 January 2026: Kepbadan Pangan Nasional No. 524/2025, Rp7,000/DOC at farmer level and Rp11,000/DOC loco factory. Keep the stages separate.
+- These are input-price anchors, not a matched farm budget. Feed share (reported as roughly 60–70% of poultry cost) is contextual only; no HPP or margin inferred. No runtime change.
+- Sources: https://betcipelang.ditjenpkh.pertanian.go.id/berita/harga-pakan-ternak-catat-penurunan-harga ; https://ditjenpkh.pertanian.go.id/index.php/berita/kementan-perketat-pengawasan-doc-dan-pakan-demi-lindungi-peternak-ayam.
+
 
 
 ## Checkpoint — Table 49 livestock producer-price series extracted (2026-10-22)
