@@ -1,3 +1,9 @@
+## Latest checkpoint — poultry input-price anchors (2026-10-22)
+
+- Added official SPORA feed-price anchors to `docs/COMMODITY_60_BULK_DATA_REGISTER.md`: BR1 Rp8,010/kg, BR0 Rp8,451/kg, BR2 Rp7,967/kg, layer P3 Rp6,803/kg, KP3 Rp7,735/kg; observations reported for February–early March 2026.
+- Added broiler DOC stage-specific prices: Rp7,000/ekor at farmer level and Rp11,000/ekor loco factory, as reported by Ditjen PKH for Kepbadan Pangan Nasional No. 524/2025.
+- These are price anchors, not complete HPP evidence. No runtime changes; tests not run. Next: extract BPS SEP 2024 livestock cost structure and crosswalk only to matching commodity IDs.
+
 ## Latest checkpoint — livestock monthly producer prices extracted (2026-10-22)
 
 - Added Kementan Pusdatin February 2026 bulletin Table 49 to the canonical register: 5 categories × 13 monthly observations (Jan–Dec 2025 plus Jan 2026), with units and monthly/year-over-year growth fields.
