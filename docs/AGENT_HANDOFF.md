@@ -1,3 +1,16 @@
+## Checkpoint — livestock table reconciliation and remaining UTP coverage (2026-10-22)
+
+### New verification status
+The official BPS SEP 2024 livestock publication page confirms the publication scope: it reports livestock-subsector production-cost structure by agricultural business unit. Catalogue 5301012, publication 05200.25001, release 2025-01-24, 8.14 MB. Official page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian--sep--2024-subsektor-peternakan.html. The BPS page returned HTTP 403 to a fresh page-open attempt; search-index metadata confirms the bibliographic record but not any new numerical table. Do not claim the remaining UTP tables have been extracted.
+
+### Known numerical cross-check
+Existing extraction records UTP beef cattle (Table 2.1), native chicken (Table 2.7) and broiler final stock (Table 2.10). Beef cattle and native chicken production minus cost reconcile to reported income within rounding. Broiler Table 2.10 does not: reported production 152,008.05 thousand Rp minus cost 126,445.08 thousand Rp equals 25,562.97 thousand Rp, whereas the table reports income 28,639.72 thousand Rp. Flag for visual inspection of the source PDF page or a second independent official extract; do not silently replace the source value or promote the margin to runtime.
+
+### Remaining extraction queue
+Still unextracted from the original BPS SEP 2024 livestock PDF: UTP tables for dairy cattle, buffalo, pig, goat, sheep, layer duck and Muscovy duck; then relevant UPB tables. Search results include a secondary Scribd text snippet showing some 2017-versus-2024 income chart values, but that is not a substitute for the original table and does not establish a complete cost breakdown. No values from that secondary snippet were promoted. Official publication reference remains the primary source.
+
+No runtime changes. Tests not run. Next: access the original PDF through the official download link or a verifiable mirrored copy, inspect the relevant table images/pages, reconcile Table 2.10, and record each table's exact page, unit, product class, denominator, costs and income before any tier crosswalk.
+
 ## Latest checkpoint — BPS SEP 2024 household livestock cost tables extracted (2026-10-22)
 
 Official BPS publication: Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan, Catalogue 5301012 / Publication 05200.25001, released 2025-01-24. Official page: https://www.bps.go.id/assets/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian--sep--2024-subsektor-peternakan.html. PDF table references were opened and read. SEP covers UTP, UPB and UTL across 38 provinces/514 districts; UTP/UTL reference period 2023-06-01 through 2024-05-31.
