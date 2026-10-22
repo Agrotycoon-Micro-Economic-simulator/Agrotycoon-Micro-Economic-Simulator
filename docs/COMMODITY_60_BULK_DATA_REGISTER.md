@@ -1,3 +1,20 @@
+## Checkpoint — BPS poultry company economics extracted (2026-10-22)
+
+Official source: BPS, *Statistik Perusahaan Peternakan Unggas 2024 / Poultry Establishment Statistics 2024*, Catalogue 5304004, publication 05200.25009, released 15 August 2025. Direct official PDF: https://web-api.bps.go.id/download.php?f=YtBCB0OvFoTnPMMwAsS1E1pnY2VCWkxudmJmRU1rbVNnN0MxTGYzWjNRakFyeXlGLzRVOXU1UjZabVdnVm5OVUZ5YkdvVHV1cVYzamR4d1ZidUhFWE94N0Z3bFJjNzdtcmZmRHJpOWNmYVFUT3BTZjMvUisxNGRNLzhaZ0s0aDlqRGlIWUtVMVlWMUdRS0I3UmlNb2FsYUM3b2VXZUxSbStrc2R5bjJub0VZUkNQSVRDMEYvd3FERXllYjZHSloxNDkvWldOSWhvRCtpcEwvTkhRYzB2RE5nODcyZ0hyK0ZKcXBXOVJuTmNVanFLNG00S3RNdDJPeEJnWTltSHNTSVVIbi9iRTFMeitSY0luY0VjTURzN3B3NGRkaUpKYWZFNXFDY3VBPT0%3D
+
+### Exact BPS 2024 company-level unit economics (preliminary figures)
+
+BPS Figure 2.3, printed page 16 / PDF page 31, reports:
+- **Broiler company:** production value Rp33,053/head; total cost Rp28,837/head; average profit Rp4,216/head/cycle.
+- Broiler cost shares: concentrate 67.33%; DOC 20.97%; wages 6.40%; medicines 1.64%; electricity/water 1.12%; fuel/lubricants 0.49%; corn 0.26%; other feed 0.22%; other expenses 1.56%; paddy grain 0.01%.
+- **Layer company:** production value Rp925,584/head/year; total cost Rp583,491/head/year; average profit Rp342,093/head/year.
+- Layer cost shares: concentrate 50.06%; corn 17.43%; wages 14.96%; other feed 6.46%; medicines 4.92%; other expenses 2.95%; electricity/water 1.46%; fuel/lubricants 0.54%; DOC 0.51%; paddy grain 0.71%.
+- Source labels the figures preliminary. The publication covers formal/legal poultry establishments, with a complete census of active legal entities; it is not automatically representative of small household farms or independent smallholder broiler growers.
+- These company-level averages are useful benchmark anchors, not a matched farm budget for every scale. Do not combine with the separate Kementan SPORA feed-mill producer prices or regulated DOC prices as though they were a single transaction or identical cohort. No breed-specific cycle length, mortality, FCR, carcass conversion, farmgate price, or smallholder production system is inferred from this figure.
+- No runtime values promoted; commodity Tier 1–4 models remain gated on matched system-specific evidence.
+
+Next: obtain and extract the BPS SEP 2024 livestock-subsector publication for individual agricultural units (UTP), to distinguish household/smallholder farm cost structures from formal company statistics; crosswalk each table only to supported owner commodity rows.
+
 # Bulk Data Extraction Register — 60 Owner Commodities
 
 Date: 2026-10-20
