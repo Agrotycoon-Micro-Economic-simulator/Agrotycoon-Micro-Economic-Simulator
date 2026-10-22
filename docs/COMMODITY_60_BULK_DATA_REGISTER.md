@@ -310,3 +310,22 @@ Sumber data tabel: [BPS — Statistik Perusahaan Peternakan Unggas 2024](https:/
 2. Struktur biaya perusahaan tidak boleh dicampur langsung dengan biaya UTP BPS SEP 2024 (contoh broiler Rp126.445.080 per 5.000 ekor final stock) karena unit observasi, skala, dan metode biaya dapat berbeda.
 3. Persentase struktur ongkos saja tidak memberi total biaya, output layak jual, FCR, mortalitas, umur afkir, atau harga telur/ayam. Jangan turunkan HPP/kg atau margin tier dari persentase ini saja.
 4. Data ini baru memperkaya validasi struktur biaya bagi dua rantai unggas. Belum menyatakan model 60 komoditas × Tier 1–4 lengkap; tidak ada nilai yang diaktifkan pada runtime.
+
+
+## Koreksi dan normalisasi angka perusahaan unggas (2026-10-22)
+
+Pemeriksaan ulang ringkasan resmi Kementan yang merujuk publikasi BPS menghasilkan angka absolut yang bisa ditambahkan sebagai anchor per unit:
+
+| Indikator perusahaan | Broiler | Ayam ras petelur |
+|---|---:|---:|
+| Nilai produksi per ekor | Rp33.053 | Rp925.548 per ekor per tahun |
+| Total biaya per ekor | Rp28.837 | Rp583.481 per ekor per tahun |
+| Laba rata-rata | Rp4.216 per ekor | Rp342.093 per ekor per tahun |
+
+Sumber: [Ringkasan resmi Kementan berdasarkan Statistik Perusahaan Peternakan Unggas 2024 (BPS)](https://satudata.pertanian.go.id/assets/docs/publikasi/8c2d7ee13490f6d9b056335f292a784a.pdf); publikasi utama BPS: https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/statistik-perusahaan-peternakan-unggas-2024.html.
+
+Pemeriksaan aritmetika: broiler Rp33.053 − Rp28.837 = Rp4.216; layer Rp925.548 − Rp583.481 = Rp342.067, berbeda Rp26 dari laba yang dipublikasikan Rp342.093. Selisih layer ini harus ditandai sebagai selisih angka sumber/komponen agregat, bukan disesuaikan secara diam-diam. Jangan memaksa persamaan nilai agregat jika pembulatan, komponen produksi ikutan, atau definisi denominator belum diverifikasi di tabel penuh.
+
+Ringkasan agregat perusahaan unggas tahun 2024 yang dikutip sumber: pemasukan Rp36,82 triliun; pengeluaran Rp22,84 triliun; keuntungan Rp13,98 triliun; pakan sekitar 67,73% dari pengeluaran. Angka agregat ini tidak boleh dianggap sebagai unit economics khusus broiler/layer.
+
+**Normalisasi komponen:** rincian persentase broiler berjumlah 100,00%; rincian layer berjumlah 100,00%. Jangan membuat baris “biaya lain” dari penjumlahan yang salah pada ringkasan percakapan sebelumnya; gunakan komponen individual di atas.
