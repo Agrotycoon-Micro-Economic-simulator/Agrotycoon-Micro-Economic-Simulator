@@ -481,3 +481,57 @@ Limits: these are national summary rows from the annual historical table, not a 
 - This table adds 26 commodity series × 4 annual values = 104 exact numeric observations from one common national source table. It also provides a cross-check against the separately extracted provincial-table national series for singkong, ubi jalar, bawang merah and mangga; matching values agree for 2021–2024.
 - Rows are candidates, not automatic exact mappings to all 60 owner items. Generic “pisang” does not prove Cavendish, generic “ayam” does not distinguish broiler/layer/village chicken, “sapi” does not distinguish breeding/fattening, and “kelapa tua” is not the owner's direct-retail price. The official Rp3,422/butir for 2024 is a national producer-stage observation and **must remain separate** from the owner's Rp13,000 direct customer sale, Rp5,000 es kelapa glass, four-glasses-per-coconut conversion, no-milk recipe, Rp500 harvest labor, and observed Rp3,400 farmer-to-collector benchmark. Do not replace or normalize the owner data with this national series.
 - Price data alone does not establish farm cost, yield, mortality, FCR, post-harvest loss, processing conversion, fixed capital, or profit. Unknowns stay null. No runtime parameter is authorized by this extraction.
+
+
+## Kementan monthly producer-price supplement — Feb 2026 edition (extracted 2026-10-22)
+
+Official source: Pusdatin Kementan, *Statistik Terkini Ekonomi Pertanian Februari 2026*, published 2026-02-26. PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/8dd032702c6674502575a41b8020ecba.pdf. Printed Table 47 p.56 covers food-crop producer prices; Table 48 p.57 covers estate-crop producer prices. These are national producer-stage data, not retail prices or cost/profit models.
+
+### Table 47 — food-crop producer prices (Rp/kg)
+Columns: Dec 2024; published 2025 average; monthly Jan–Dec 2025; growth Dec 2025 vs Nov 2025; growth Dec 2025 vs Dec 2024.
+
+| Commodity | Dec24 | Avg25 | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | MoM % | YoY % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Jagung pipilan kering | 4,635 | 4,784 | 4,762 | 4,729 | 4,990 | 4,912 | 4,944 | 5,022 | 5,086 | 5,462 | 5,651 | 5,792 | 5,966 | 5,910 | 27.49 | -0.95 |
+| Kedelai | 9,398 | 10,397 | 9,954 | 9,996 | 10,369 | 9,833 | 9,961 | 9,228 | 9,858 | 10,332 | 10,132 | 9,917 | 10,403 | 10,156 | 8.06 | -2.38 |
+| Kacang hijau | 14,985 | 15,686 | 14,958 | 15,568 | 15,323 | 15,343 | 16,295 | 16,723 | 17,316 | 17,692 | 17,894 | 17,614 | 18,034 | 18,479 | 23.32 | 2.47 |
+| Kacang tanah | 10,828 | 9,981 | 10,574 | 10,874 | 11,048 | 10,933 | 10,462 | 10,693 | 10,919 | 10,948 | 10,551 | 10,537 | 10,617 | 10,692 | -1.25 | 0.71 |
+| Ubi kayu/singkong | 2,966 | 2,926 | 2,834 | 2,852 | 2,815 | 2,995 | 2,795 | 2,890 | 3,142 | 3,078 | 3,136 | 2,997 | 3,036 | 3,220 | 8.56 | 6.04 |
+| Ubi jalar | 4,595 | 4,804 | 4,427 | 4,580 | 4,377 | 4,665 | 4,562 | 4,780 | 5,089 | 5,320 | 5,408 | 5,450 | 5,294 | 5,353 | 16.50 | 1.13 |
+
+### Table 48 — selected estate-crop producer prices (January 2026, Rp/kg)
+Rows below record Jan 2026 price; growth columns are Jan 2026 vs Dec 2025 and Jan 2026 vs Jan 2025, respectively. Source table has text-extraction row/column alignment challenges; visually verify the rendered row before runtime consideration.
+
+| Commodity/product form | Jan26 | MoM % | YoY % |
+|---|---:|---:|---:|
+| TBS kelapa sawit | 3,307 | 4.07 | 1.46 |
+| Kopi arabika | 119,140 | 13.13 | 19.17 |
+| Kopi robusta | 62,705 | 0.79 | 4.58 |
+| Kelapa bulat | 6,077 | 6.40 | 28.24 |
+| Kopra | 14,648 | -0.02 | 30.96 |
+| Gula merah kelapa | 19,456 | -4.96 | 6.81 |
+| Minyak kelapa | 30,244 | 6.83 | 15.25 |
+| Karet lump | 10,398 | -3.31 | -10.50 |
+| Karet slab tebal | 10,749 | -3.99 | -7.53 |
+| Lada putih | 131,925 | 8.33 | 25.10 |
+| Lada hitam | 88,060 | 11.13 | 29.01 |
+| Kakao fermentasi | 71,795 | -6.68 | -36.70 |
+| Kakao non-fermentasi | 52,820 | 2.04 | -48.60 |
+| Tebu | 459 | n/a | -42.63 |
+| Gula putih | 17,975 | -0.77 | -0.72 |
+| Gula merah tebu | 9,226 | 1.06 | -18.42 |
+| Teh hijau kering | 23,500 | 0.00 | 31.03 |
+| Teh pucuk basah | 2,986 | 17.96 | 32.05 |
+| Tembakau daun kering | 35,000 | 27.27 | -1.90 |
+| Tembakau rajang kering | 101,559 | -5.09 | -4.85 |
+| Pala biji kupas kering | 43,730 | -5.30 | -21.58 |
+| Minyak nilam | 580,000 | 1.51 | -59.81 |
+| Nilam daun kering | 4,123 | 1.28 | 1.75 |
+| Gula aren batok | 26,872 | -2.03 | 1.32 |
+| Gula aren semut | 59,957 | 3.09 | 23.97 |
+| Bunga cengkeh kering | 100,167 | 3.27 | 2.30 |
+| Vanili kering | n/a | n/a | n/a |
+| Pinang kupas kering | 12,504 | 4.06 | 67.26 |
+| Kayu manis kulit kering | 43,548 | -18.13 | -23.01 |
+
+**Critical interpretation gate:** Table 48's “Kelapa Bulat” is a producer price in Rp/kg. It is not directly comparable to or a replacement for the owner's Rp13,000 per whole coconut (direct retail, Rp/butir), Rp5,000 es kelapa/glass, 4 glasses/coconut, no milk, Rp500 harvest labor, or observed Rp3,400/butir farmer-to-collector. No costs, yield, loss, processing conversion, capital or profit inferred; missing source dashes remain missing; no runtime values approved.
