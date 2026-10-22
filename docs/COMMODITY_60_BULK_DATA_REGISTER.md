@@ -549,3 +549,26 @@ Printed p.58 / PDF p.70. Source cited by bulletin: Ditjen PKH, Simponi Ternak; J
 | Telur ayam buras | Rp/butir | 2,432 | 2,861 | 2,542 | 2,383 | 2,243 | 2,542 | 2,259 | 2,415 | 2,391 | 2,440 | 2,323 | 2,479 | 2,479 | 0.00 | 1.93 |
 
 **Scope gate:** do not map generic “sapi” or “ayam” to breed-specific Tier 1–4 models without evidence. This table does not establish feed conversion, mortality, cycle length, yield, housing/energy cost, carcass conversion or profit. No runtime promotion.
+
+
+## Livestock input-price evidence — feed and DOC (official Kementan sources, 2026)
+
+### Feed prices observed at feed-producer level
+
+Kementan / Ditjen PKH, “Harga Pakan Ternak Catat Penurunan Harga,” 11 March 2026; article reports SPORA observations from February to early March 2026. This is producer-price evidence from feed mills, not necessarily farm-delivered prices and not a complete time series.
+
+| Feed type | Reported average producer price | Observation context | Coverage reported |
+|---|---:|---|---:|
+| Broiler starter BR1 | Rp8,010/kg | February–early March 2026 report | 33 feed mills |
+| Broiler pre-starter BR0 | Rp8,451/kg | February–early March 2026 report | 30 feed mills |
+| Broiler finisher BR2 | Rp7,967/kg | February–early March 2026 report | 31 feed mills |
+| Layer production feed P3 | Rp6,803/kg | February–early March 2026 report | 32 feed mills |
+| Layer production concentrate KP3 | Rp7,735/kg | February–early March 2026 report | 14 feed mills |
+
+Source: https://betcipelang.ditjenpkh.pertanian.go.id/berita/harga-pakan-ternak-catat-penurunan-harga. The same report says feed may account for about 60–70% of poultry business costs; treat that as a sector-level statement, not a universal share for every farm, scale or production system.
+
+### DOC regulated-price reference
+
+Ditjen PKH, “Kementan Perketat Pengawasan DOC dan Pakan demi Lindungi Peternak Ayam,” 25 January 2026, reports Kepbadan Pangan Nasional No. 524/2025 setting broiler DOC prices at Rp7,000/chick at farmer level and Rp11,000/chick loco factory. These are distinct transaction stages and must not be blended. Source: https://ditjenpkh.pertanian.go.id/index.php/berita/kementan-perketat-pengawasan-doc-dan-pakan-demi-lindungi-peternak-ayam.
+
+**Modeling gate:** feed and DOC values are input-price anchors only. Do not derive full broiler HPP or margin without matched feed consumption/FCR, cycle length, mortality, liveweight gain, vaccine/medicine, energy, labor, litter, transport, housing depreciation, financing and sale-price stage. Record region, date, delivered-vs-mill price, flock size and contract/integrator terms when a farm-level source is found. No runtime promotion.
