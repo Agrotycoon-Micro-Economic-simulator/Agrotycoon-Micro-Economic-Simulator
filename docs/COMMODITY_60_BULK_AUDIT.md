@@ -1,3 +1,11 @@
+
+
+## Checkpoint — Table 49 livestock producer-price series extracted (2026-10-22)
+
+- Extracted 5 livestock/egg categories × 13 monthly observations (Jan–Dec 2025 and Jan 2026) from Kementan Pusdatin *Statistik Terkini Ekonomi Pertanian Februari 2026*, Table 49, printed p.58/PDF p.70: cattle liveweight, broiler liveweight, native chicken liveweight, layer eggs (Rp/kg), and native-chicken eggs (Rp/butir).
+- Source cited: Ditjen PKH / Simponi Ternak; bulletin notes Jan 2026 download on 18 February 2026. Monthly values and growth columns are recorded in the data register.
+- Selling-price evidence only. No costs, FCR, mortality, cycle length, carcass conversion, capital or profit established. Do not treat generic animal categories as breed-specific models or promote to runtime.
+- Official PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/Statistik_Terkini_EKonomi_Pertanian_Februari_2026_sign.pdf.
 ## Checkpoint — newer monthly producer-price evidence (2026-10-22)
 
 - Official Kementan Pusdatin February 2026 statistical bulletin added to the data register: Table 47 (6 food-crop rows, monthly 2025 and published annual average) and Table 48 (29 estate-crop product forms with January 2026 values and growth fields). Source PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/8dd032702c6674502575a41b8020ecba.pdf.
