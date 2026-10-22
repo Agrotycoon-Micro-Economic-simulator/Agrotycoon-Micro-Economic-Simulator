@@ -1,3 +1,14 @@
+## Latest checkpoint — official Kementan price series extracted (2026-10-22)
+
+- Branch: `feat/production-tier-taxonomy`; all writes remain on this non-main branch. No merge/rebase; prior comparison reported diverged from main (571 ahead / 2 behind), so preserve that caution until rechecked.
+- Found an accessible official alternative to the inaccessible BPS price PDFs: Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025*, official publication page https://satudata.pertanian.go.id/details/publikasi/947 and PDF https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. The PDF is text-extractable.
+- Extracted exact annual national producer-price series from BPS-sourced tables: singkong Table 2.6 p.24 (2020–2024: Rp3,121; 3,158; 3,250; 3,539; 4,826/kg), ubi jalar Table 2.7 p.25 (Rp4,626; 4,519; 4,815; 5,023; 6,401/kg), and bawang merah Table 2.8 p.26 (Rp26,684; 23,914; 27,084; 26,919; 31,673/kg). Full source metadata and limitations are recorded in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`; audit summary is in `docs/COMMODITY_60_BULK_AUDIT.md`.
+- Source methodology (printed pp. xix–xxi) defines producer price as farm-gate farmer-to-collector/tengkulak transaction and describes a simple monthly provincial average based on 3–4 sampled farmers. These are historical annual producer-price series, not current retail quotes or complete economics. Variety/grade detail is incomplete. Do not treat these as costs/yields/profits.
+- Commits made in this unit: `5810b63f948853ab16b3745faa7f7cbdf590de61` (register), `e971df68cf7ed97ff9f84a034f00abb800e7a03e` (audit). No runtime/code/ID changes; owner coconut/es-kelapa benchmark remains locked exactly; no tests run because there is no local checkout/test runner in this connection.
+- Next: continue extracting the national summary and provincial tables from the same official PDF for all matching rows, especially additional crops/plantations and livestock/eggs; preserve units, periods, table/page, form, grade, region and source method. Then join comparable SEP costs/yield/loss evidence. Do not promote incomplete rows to runtime. Verify remote branch HEAD and re-check divergence before any future write.
+
+---
+
 ## Latest checkpoint — owner reaffirmed coconut blueprint (2026-10-22)
 
 - Feature branch: `feat/production-tier-taxonomy`. Documentation commits in this unit: `1d068e29e0fca8d7b73b38183ffbc91b888f0992` (tier-standard rule) and `9a7da9276e0d06cce9690a540eb6f646d6a8763e` (this handoff checkpoint). The feature branch comparison against `main` reports diverged, 571 commits ahead and 2 behind; do not merge/rebase automatically. `main` was not targeted.
