@@ -572,3 +572,26 @@ Source: https://betcipelang.ditjenpkh.pertanian.go.id/berita/harga-pakan-ternak-
 Ditjen PKH, “Kementan Perketat Pengawasan DOC dan Pakan demi Lindungi Peternak Ayam,” 25 January 2026, reports Kepbadan Pangan Nasional No. 524/2025 setting broiler DOC prices at Rp7,000/chick at farmer level and Rp11,000/chick loco factory. These are distinct transaction stages and must not be blended. Source: https://ditjenpkh.pertanian.go.id/index.php/berita/kementan-perketat-pengawasan-doc-dan-pakan-demi-lindungi-peternak-ayam.
 
 **Modeling gate:** feed and DOC values are input-price anchors only. Do not derive full broiler HPP or margin without matched feed consumption/FCR, cycle length, mortality, liveweight gain, vaccine/medicine, energy, labor, litter, transport, housing depreciation, financing and sale-price stage. Record region, date, delivered-vs-mill price, flock size and contract/integrator terms when a farm-level source is found. No runtime promotion.
+
+
+## Livestock input-price evidence — feed and DOC (official Kementan sources, 2026)
+
+### Feed prices observed at feed-producer level
+
+Kementan / Ditjen PKH, “Harga Pakan Ternak Catat Penurunan Harga,” 11 March 2026; reports SPORA observations from February to early March 2026. This is producer-price evidence from feed mills, not necessarily farm-delivered prices and not a complete time series.
+
+| Feed type | Reported average producer price | Context | Reported mill coverage |
+|---|---:|---|---:|
+| Broiler starter BR1 | Rp8,010/kg | Feb–early Mar 2026 | 33 |
+| Broiler pre-starter BR0 | Rp8,451/kg | Feb–early Mar 2026 | 30 |
+| Broiler finisher BR2 | Rp7,967/kg | Feb–early Mar 2026 | 31 |
+| Layer production feed P3 | Rp6,803/kg | Feb–early Mar 2026 | 32 |
+| Layer production concentrate KP3 | Rp7,735/kg | Feb–early Mar 2026 | 14 |
+
+Source: https://betcipelang.ditjenpkh.pertanian.go.id/berita/harga-pakan-ternak-catat-penurunan-harga. The report says feed may represent around 60–70% of poultry costs; this is contextual sector-level information, not a universal share for every farm or tier.
+
+### DOC regulated-price reference
+
+Ditjen PKH, “Kementan Perketat Pengawasan DOC dan Pakan demi Lindungi Peternak Ayam,” 25 January 2026, reports Kepbadan Pangan Nasional No. 524/2025 setting broiler DOC prices at Rp7,000/chick at farmer level and Rp11,000/chick loco factory. These are different transaction stages and must not be blended. Source: https://ditjenpkh.pertanian.go.id/index.php/berita/kementan-perketat-pengawasan-doc-dan-pakan-demi-lindungi-peternak-ayam.
+
+**Modeling gate:** these are input-price anchors only. Do not derive complete HPP or margin without matched feed consumption/FCR, cycle length, mortality, liveweight gain, medicine/vaccines, energy, labor, litter, transport, housing depreciation, financing and sale-price stage. Record region, date, delivered-vs-mill price, flock size and contract terms when farm-level evidence is found. No runtime promotion.
