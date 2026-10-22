@@ -6340,3 +6340,12 @@ For sugarcane, do not require/substitute an annual-crop TM denominator when the 
 - Tes: tidak dijalankan; perubahan dokumentasi dan ekstraksi sumber saja.
 - File diubah: `docs/COMMODITY_60_BULK_DATA_REGISTER.md`; handoff ini menyusul sebagai commit terpisah.
 - Berikutnya: ekstrak tabel Tabel 3.9 biaya pakan per jenis pakan dan tabel 3.11/3.12 kuantitas serta nilai produk menurut jenis usaha dari PDF yang sama; cocokkan unit dan denominator sebelum crosswalk ke ID komoditas. Lalu lanjutkan pemetaan bukti per baris ke inventori 60 komoditas; jangan mengklaim matriks 60 × 4 lengkap.
+
+
+## Owner reaffirmation — preserve coconut benchmark as Tier 1–4 blueprint (2026-10-22)
+
+- Owner explicitly reconfirmed: do not change any of the personal coconut/es-kelapa benchmark prices; use the approved coconut chain as the modeling blueprint for all other commodities' Tier 1–4 work.
+- Preserved values per `docs/ES_KELAPA_OWNER_BENCHMARK.md`: whole coconut direct sale Rp13,000/butir; es kelapa Rp5,000/gelas; four glasses per coconut; no milk; harvest labor Rp500/butir; owner-observed producer-to-collector price Rp3,400/butir. These observations represent different market stages/scenarios and must remain distinct. Keep the existing consumables calculations and their stated exclusions intact.
+- Added the explicit rule to `docs/COMMODITY_CHAIN_TIER_STANDARD.md` in commit `1d068e29e0fca8d7b73b38183ffbc91b888f0992`: reuse the coconut chain's modeling structure, not its rupiah prices, recipe, yield, or conversion factors for unrelated commodities. Every other commodity needs independent provenance; unknown values remain unknown; no runtime parameter is approved by this documentation change.
+- Repository access used GitHub's remote file API; no local checkout or local test runner is available in this runtime. This checkpoint records a documentation-only change. Tests not run. `main` was not targeted by either write.
+- Next concrete action: continue bulk extraction of BPS 2025 producer-price tables for crop/estate and livestock/fishery rows; prioritize getting numeric tables through an accessible official endpoint or verified official alternative. Add only exact observations with table/page, observation period, region, unit, grade/product form, market stage and URL to `docs/COMMODITY_60_BULK_DATA_REGISTER.md` and map them into `docs/COMMODITY_60_BULK_AUDIT.md`. Do not promote data into runtime until matched cost/yield/loss evidence is sufficient.
