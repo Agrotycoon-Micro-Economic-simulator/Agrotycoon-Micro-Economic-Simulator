@@ -345,3 +345,14 @@ Sumber primer BPS *Statistik Perusahaan Peternakan Unggas 2024* menerangkan bahw
 - BPS mengidentifikasi survei sebagai data perusahaan untuk 2024, bukan peternak rakyat/UTP. Gunakan hanya untuk benchmark skala perusahaan dan jangan mencampurkannya dengan biaya UTP SEP 2024 tanpa label populasi.
 
 Rujukan pendukung: [BPS — Statistik Perusahaan Peternakan Unggas 2024](https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/statistik-perusahaan-peternakan-unggas-2024.html); [ringkasan Kementan yang menyebut nilai produksi, biaya, laba dan komposisi biaya](https://satudata.pertanian.go.id/assets/docs/publikasi/8c2d7ee13490f6d9b056335f292a784a.pdf).
+
+
+## Sumber terbaru ditemukan — statistik perusahaan unggas tahun data 2025 (rilis 2026)
+
+BPS telah menerbitkan *Statistik Perusahaan Peternakan Unggas 2025* pada 14 Agustus 2026 (Katalog 5304004, Publikasi 05100.26020). Abstrak resmi menyatakan publikasi mencakup seluruh perusahaan peternakan unggas Indonesia, dengan jumlah pekerja, jumlah ternak, pengeluaran dan penerimaan setahun selama 2025. Sumber resmi: https://www.bps.go.id/id/publication/2026/08/14/9ee194861fe1a53d5ca7953d/statistik-perusahaan-peternakan-unggas-2025.html.
+
+### Status penggunaan
+- Ini adalah sumber yang lebih baru untuk benchmark perusahaan unggas daripada publikasi tahun data 2024. Saat angka tabel 2025 berhasil diekstrak, gunakan sebagai seri terbaru perusahaan; pertahankan seri 2024 untuk perbandingan antar-tahun.
+- Saat ini yang terverifikasi hanya metadata dan cakupan publikasi. Belum ada angka tabel 2025 yang diekstrak dalam batch ini; jangan menandai biaya, output, atau laba 2025 sebagai tersedia hanya berdasarkan abstrak.
+- Populasi tetap perusahaan berbadan usaha, bukan peternak rakyat/UTP. Jangan gabungkan dengan BPS SEP UTP tanpa penanda populasi dan definisi unit.
+- Source hierarchy untuk unggas kini: (1) tabel BPS 2025 untuk benchmark perusahaan tahun data 2025 setelah ekstraksi; (2) BPS 2024 perusahaan untuk pembanding historis; (3) BPS SEP 2024 untuk struktur biaya UTP yang tabelnya relevan; (4) harga produsen resmi bertanggal untuk pasar farmgate. Tiap sumber memiliki unit analisis berbeda.
