@@ -283,3 +283,30 @@ Sumber: [Statistik Terkini Ekonomi Pertanian — April 2025, tabel 49](https://s
 - Publikasi biaya UTP peternakan BPS dan statistik perusahaan peternakan BPS mewakili populasi usaha yang berbeda. Jangan gabungkan biaya rata-rata UTP dengan volume/harga perusahaan tanpa menandai perbedaan populasi.
 - Untuk telur dan susu, model produksi berulang harus menghitung biaya per periode, output layak jual, mortalitas/afkir, pakan, dan biaya kandang/peralatan. Untuk broiler, harga berat hidup tidak boleh dipakai sebagai harga karkas atau daging eceran.
 - Ini belum melengkapi semua komoditas Tier 1–4; tidak ada nilai baru yang dipromosikan ke runtime.
+
+
+## Perusahaan unggas — struktur biaya dan laba per ekor (tahun data 2024; publikasi BPS 2025)
+
+Sumber utama: BPS, *Statistik Perusahaan Peternakan Unggas 2024*, katalog 5304004, rilis 15 Agustus 2025. Ringkasan resmi Kementan yang merujuk struktur ongkos BPS menyediakan rincian persentase berikut. Persentase adalah komposisi ongkos perusahaan, bukan struktur biaya peternak rakyat/UTP; laba per ekor adalah angka rata-rata publikasi dan perlu dicocokkan dengan definisi output dan populasi sebelum dipakai sebagai parameter permainan.
+
+| Komponen | Ayam ras pedaging / broiler | Ayam ras petelur / layer |
+|---|---:|---:|
+| Pakan konsentrat | 67,33% | 50,06% |
+| DOC/anak ayam | 20,97% | 0,51% |
+| Upah/gaji | 6,40% | 14,96% |
+| Obat-obatan | 1,64% | 4,92% |
+| BBM/pelumas | 0,49% | 0,54% |
+| Listrik/air | 1,12% | 1,46% |
+| Jagung | 0,26% | 17,43% |
+| Gabah | 0,01% | 0,71% |
+| Pakan lain | 0,22% | 6,46% |
+| Pengeluaran lain | 1,56% | 2,95% |
+| Laba rata-rata yang dikutip sumber | Rp4.216/ekor broiler | Rp342.093/ekor layer/tahun |
+
+Sumber data tabel: [BPS — Statistik Perusahaan Peternakan Unggas 2024](https://www.bps.go.id/id/publication/2025/08/15/64e7d72b5b7a74cb36e02ee6/poultry-establishment-statistics-2024.html); ringkasan struktur ongkos resmi Kementan: https://satudata.pertanian.go.id/assets/docs/publikasi/8c2d7ee13490f6d9b056335f292a784a.pdf.
+
+### Pemeriksaan metodologi sebelum konversi menjadi HPP game
+1. Angka laba broiler per ekor dan layer per ekor/tahun tidak sebanding langsung: siklus broiler pendek, sedangkan layer menghasilkan telur berulang sepanjang masa produksi.
+2. Struktur biaya perusahaan tidak boleh dicampur langsung dengan biaya UTP BPS SEP 2024 (contoh broiler Rp126.445.080 per 5.000 ekor final stock) karena unit observasi, skala, dan metode biaya dapat berbeda.
+3. Persentase struktur ongkos saja tidak memberi total biaya, output layak jual, FCR, mortalitas, umur afkir, atau harga telur/ayam. Jangan turunkan HPP/kg atau margin tier dari persentase ini saja.
+4. Data ini baru memperkaya validasi struktur biaya bagi dua rantai unggas. Belum menyatakan model 60 komoditas × Tier 1–4 lengkap; tidak ada nilai yang diaktifkan pada runtime.
