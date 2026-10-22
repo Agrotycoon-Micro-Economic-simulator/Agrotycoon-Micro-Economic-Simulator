@@ -1,3 +1,11 @@
+## Latest checkpoint — livestock monthly producer prices extracted (2026-10-22)
+
+- Added Kementan Pusdatin February 2026 bulletin Table 49 to the canonical register: 5 categories × 13 monthly observations (Jan–Dec 2025 plus Jan 2026), with units and monthly/year-over-year growth fields.
+- Categories: cattle liveweight, broiler liveweight, native chicken liveweight, layer eggs (Rp/kg), native-chicken eggs (Rp/butir). Source line: Ditjen PKH / Simponi Ternak; download date 18 February 2026.
+- Price series only; no cost/yield/FCR/mortality/cycle-length/capital/profit evidence. No runtime changes; tests not run because no local checkout/test runner.
+- Source: https://satudata.pertanian.go.id/assets/docs/publikasi/Statistik_Terkini_EKonomi_Pertanian_Februari_2026_sign.pdf, Table 49, printed p.58/PDF p.70.
+- Next task: crosswalk these five categories to the 60 owner rows without broadening product identity; prioritize independently sourced feed, chick/pullet, veterinary, mortality, weight gain, and housing/energy data for animal tiers, then visually QA Table 48 estate rows before runtime consideration.
+
 ## Latest checkpoint — February 2026 bulletin producer prices recorded (2026-10-22)
 
 - Active branch remains `feat/production-tier-taxonomy`. No write to `main`, merge, or rebase.
