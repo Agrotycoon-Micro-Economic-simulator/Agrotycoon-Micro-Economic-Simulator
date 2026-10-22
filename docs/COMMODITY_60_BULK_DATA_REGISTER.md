@@ -131,3 +131,47 @@ Two additional official source families were verified and mapped to the owner in
 The existing BPS permanent-estate source covers area/production by province and export/import for oil palm, coffee, cocoa, rubber, tea, clove, coconut, cashew, sago, nutmeg, pepper and kemiri sunan. Official source: https://www.bps.go.id/id/publication/2026/08/31/917571f773e8dde67bf24f13/statistik-tanaman-perkebunan-tahunan-indonesia-2025-kelapa-sawit-kopi-kakao-karet-teh-dan-komoditas-perkebunan-unggulan.html.
 
 These are source registrations only. No table values were transcribed in this update, so extracted observation counts and complete-model counts remain unchanged. Keep all figures classified as missing until a numeric table row and its unit, period, geography, and product basis are recorded. No runtime changes; tests not run.
+
+
+## Batch ekstraksi BPS hortikultura — 2024 (ditambahkan 2026-10-22)
+
+Sumber resmi BPS: [Luas panen tanaman sayuran dan buah-buahan semusim menurut jenis tanaman, 2024](https://www.bps.go.id/id/statistics-table/3/VTNWM01VdGhTelZTTTNSS1NFSkVZazkzWjJKcWR6MDkjMw%3D%3D/harvested-area-of-temporary-vegetable-and-fruit-crops-by-type-of-crops----2024.html?year=2024) dan [Produksi tanaman sayuran dan buah-buahan semusim menurut jenis tanaman, 2024](https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2024.html?year=2024). Kedua tabel diperbarui 10 Juni 2025. Angka produksi tabel BPS bersatuan kuintal (1 kuintal = 100 kg); luas panen dalam hektare. Ekuivalen produktivitas dihitung sebagai produksi × 100 / luas panen.
+
+| Komoditas | Luas panen nasional 2024 | Produksi nasional 2024 | Produktivitas aritmetis nasional |
+|---|---:|---:|---:|
+| Bawang merah | 188,796.36 ha | 20,857,208.27 kuintal | 11047 kg/ha (ekuivalen) |
+| Bawang putih | 5,317.78 ha | 394,380.19 kuintal | 7416 kg/ha (ekuivalen) |
+| Cabai rawit | 191,884.29 ha | 15,687,569.77 kuintal | 8176 kg/ha (ekuivalen) |
+| Kentang | 67,487.54 ha | 12,704,492.21 kuintal | 18825 kg/ha (ekuivalen) |
+| Ketimun | 38,246.93 ha | 3,991,993.48 kuintal | 10437 kg/ha (ekuivalen) |
+| Kubis | 63,672.35 ha | 14,559,335.48 kuintal | 22866 kg/ha (ekuivalen) |
+| Tomat | 58,995.13 ha | 11,527,914.77 kuintal | 19540 kg/ha (ekuivalen) |
+| Wortel | 37,162.65 ha | 6,816,552.67 kuintal | 18342 kg/ha (ekuivalen) |
+
+**Interpretasi dan batas pemakaian:** ini adalah rasio agregat nasional, bukan hasil panen tipikal petani, bukan hasil per siklus yang sudah disesuaikan musim/varietas, dan bukan produktivitas yang boleh langsung dipakai untuk Tier 1–4. Angka ini dapat menjadi *sanity check* makro untuk rentang produktivitas model setelah satuan dan sistem produksi cocok; tidak menyediakan biaya benih, pupuk, pestisida, tenaga kerja, sewa lahan, kehilangan, harga jual, atau laba.
+
+## Batch harga produsen Bapanas — Januari 2026 (snapshot resmi)
+
+Sumber: [Bapanas, Harga Pangan Tingkat Produsen Periode Januari 2026 (PDF)](https://data.badanpangan.go.id/nfs_storage/public/publication/documents/1775015364.pdf), halaman infografik 18 pada hasil PDF. Angka berikut dicatat sebagai harga nasional produsen pada periode tersebut, bukan harga retail dan bukan harga saat ini.
+
+| Produk dan tahap persis | Harga nasional Januari 2026 | Satuan | Catatan pembandingan |
+|---|---:|---|---|
+| Gabah Kering Panen (GKP), tingkat petani | Rp6.884 | Rp/kg | Tidak sama dengan GKG atau beras |
+| Jagung pipilan kering | Rp5.810 | Rp/kg | Kadar air/standar mutu perlu dicocokkan sebelum pemodelan |
+| Cabai merah besar | Rp21.445 | Rp/kg | Jangan disamakan dengan cabai rawit atau cabai keriting |
+| GKG, tingkat penggilingan | Rp7.980 | Rp/kg | Tahap penggilingan, bukan harga petani GKP |
+| Kedelai biji kering (seri pertama pada infografik) | Rp9.418 | Rp/kg | PDF juga menampilkan angka kedelai Rp14.370 pada panel berbeda; identitas panel/seri harus diverifikasi sebelum memakai angka kedua |
+| Bawang merah | Rp23.915 | Rp/kg | Harga produsen nasional; bukan harga benih bawang |
+| Gula konsumsi petani | Rp15.213 | Rp/kg | Produk dan tahap harus dicocokkan dengan definisi komoditas dalam game |
+| Beras medium | Rp13.012 | Rp/kg | Produk olahan, bukan gabah |
+| Cabai merah keriting | Rp24.578 | Rp/kg | Bukan cabai rawit merah |
+| Sapi hidup | Rp52.883 | Rp/kg berat hidup | Tidak sama dengan daging karkas/eceran |
+| Cabai rawit merah | Rp34.122 | Rp/kg | Tidak sama dengan cabai merah besar/keriting |
+| Ayam ras hidup | Rp22.971 | Rp/kg berat hidup/ekor hidup sesuai label infografik | Satuan tepat harus dipastikan dari metadata seri sebelum mengonversi ke harga per kg |
+
+**Catatan mutu data:** infografik menampilkan dua angka kedelai pada panel berbeda dan label ayam ras menggunakan frasa satuan yang perlu diklarifikasi. Keduanya ditandai untuk verifikasi terhadap tabel/metadata sumber sebelum dipakai untuk kalkulasi. Tidak ada nilai yang dipromosikan ke runtime.
+
+### Perubahan cakupan batch ini
+- Diekstrak secara eksplisit: 8 pasangan luas panen–produksi hortikultura nasional untuk 2024, ditambah rasio kg/ha yang dihitung dari satuan BPS.
+- Dicatat: 12 panel/observasi harga produsen dari infografik Bapanas Januari 2026; 2 catatan membutuhkan verifikasi label/seri sebelum digunakan untuk model.
+- Model HPP/laba lengkap yang disahkan: **tetap 0/60**. Batch ini memperkaya bukti harga/produktivitas, tetapi tidak mengisi biaya input, kehilangan, dan biaya tetap per komoditas.
