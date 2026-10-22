@@ -1,3 +1,9 @@
+## Checkpoint — newer monthly producer-price evidence (2026-10-22)
+
+- Official Kementan Pusdatin February 2026 statistical bulletin added to the data register: Table 47 (6 food-crop rows, monthly 2025 and published annual average) and Table 48 (29 estate-crop product forms with January 2026 values and growth fields). Source PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/8dd032702c6674502575a41b8020ecba.pdf.
+- This expands price chronology only. It does not establish farm costs, yields, mortality, FCR, processing conversion, fixed capital, losses, or profit. Table 48 extracted text has row/column alignment risk and requires visual QA before any runtime consideration.
+- Coconut producer price is shown per kg, not per whole coconut. Owner-locked Rp13,000/butir direct retail and es kelapa parameters remain unchanged. No runtime promotion; tests not run.
+
 # 60-Commodity Bulk Evidence Audit
 
 Status: **bulk audit initiated; no economic parameters promoted to runtime**. Date: 2026-10-19. Branch: `feat/production-tier-taxonomy`.
