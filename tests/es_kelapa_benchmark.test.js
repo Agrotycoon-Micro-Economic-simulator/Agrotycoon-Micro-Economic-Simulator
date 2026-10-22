@@ -10,10 +10,10 @@ vm.runInNewContext(source + "\nwindow.__benchmark = { DATA, LEARN };", { window 
 const { DATA, LEARN } = window.__benchmark;
 
 assert.equal(DATA.wholePrice, 13000, "preserve owner's direct whole-coconut sale price");
-assert.deepEqual(JSON.parse(JSON.stringify(DATA.priceTengkulak)), { biasa: 3500, super: 5000 }, "preserve configured collector prices by coconut grade");
-assert.equal(DATA.pricePasarTua, 3500, "preserve configured mature-coconut market benchmark");
-assert.equal(DATA.buyFromFarmer, 3500, "preserve configured purchase price from another farmer");
-assert.equal(DATA.buyFromTengkulak, 5000, "preserve configured purchase price from a collector");
+assert.deepEqual(JSON.parse(JSON.stringify(DATA.priceTengkulak)), { biasa: 3500, super: 5000 }, "preserve current game collector-price parameters by grade; not owner field-price observations");
+assert.equal(DATA.pricePasarTua, 3500, "preserve current game mature-coconut market parameter; not a verified owner transaction");
+assert.equal(DATA.buyFromFarmer, 3500, "preserve current game purchase-from-farmer parameter");
+assert.equal(DATA.buyFromTengkulak, 5000, "preserve current game purchase-from-collector parameter");
 assert.equal(DATA.es.price, 5000, "preserve owner's es-kelapa sale price");
 assert.equal(DATA.es.glassesPerCoconut, 4, "preserve four glasses per coconut");
 assert.equal(DATA.shop.iceKarung.price / DATA.shop.iceKarung.portions, 500, "ice cost per glass");
