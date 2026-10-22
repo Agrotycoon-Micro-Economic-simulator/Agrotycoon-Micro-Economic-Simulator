@@ -175,3 +175,43 @@ Sumber: [Bapanas, Harga Pangan Tingkat Produsen Periode Januari 2026 (PDF)](http
 - Diekstrak secara eksplisit: 8 pasangan luas panen–produksi hortikultura nasional untuk 2024, ditambah rasio kg/ha yang dihitung dari satuan BPS.
 - Dicatat: 12 panel/observasi harga produsen dari infografik Bapanas Januari 2026; 2 catatan membutuhkan verifikasi label/seri sebelum digunakan untuk model.
 - Model HPP/laba lengkap yang disahkan: **tetap 0/60**. Batch ini memperkaya bukti harga/produktivitas, tetapi tidak mengisi biaya input, kehilangan, dan biaya tetap per komoditas.
+
+
+## Batch ekstraksi biaya produksi BPS SEP 2024 — nilai per unit usaha (2026-10-22)
+
+Sumber primer: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024: Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan*, katalog 5101026, publikasi 05100.25001, rilis 24 Januari 2025. [Halaman publikasi BPS](https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan-hortikultura-dan-perkebunan.html). Angka pada tabel di bawah berasal dari tabel 2.1–2.7 dan 2.10; nilai tabel dinyatakan dalam **ribu rupiah**. Nilai per hektar tidak boleh diperlakukan sebagai per siklus tanpa memeriksa periode referensi dan definisi tabel.
+
+| Komoditas / tabel SEP | Basis tabel | Nilai produksi (Rp) | Biaya produksi (Rp) | Pendapatan SEP (Rp) | Harga produsen per satuan (Rp/kg) | Biaya per satuan (Rp/kg) |
+|---|---|---:|---:|---:|---:|---:|
+| Padi / 2.1 | per hektar, UTP, panen sendiri | 26.369.860 | 15.287.590 | 11.082.110 | 5.760 | 3.590 |
+| Jagung / 2.2 | per hektar, UTP, panen sendiri | 20.943.600 | 11.486.060 | 9.457.540 | 4.970 | 3.130 |
+| Bawang merah / 2.3 | per hektar, UTP, panen sendiri | 141.997.490 | 75.286.090 | 66.711.410 | 20.630 | 11.620 |
+| Cabai hijau / 2.4 | per hektar, UTP, panen sendiri | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification |
+| Cabai merah besar / 2.5 | per hektar, UTP, panen sendiri | 159.090.370 | 60.775.690 | value requires following table line | value requires following table line | value requires following table line |
+| Cabai merah keriting / 2.6 | per hektar, UTP, panen sendiri | 135.680.790 | 54.709.620 | value requires following table line | value requires following table line | value requires following table line |
+| Cabai rawit / 2.7 | per hektar, UTP, panen sendiri | 103.548.290 | 34.607.540 | 68.940.750 | see exact row below table | see exact row below table |
+| Kelapa / 2.10 | per 100 pohon, UTP, panen sendiri | 12.788.560 | 4.642.550 | 8.146.040 | see exact row below table | see exact row below table |
+
+**Penting untuk interpretasi:**
+- UTP = usaha pertanian perorangan. Data bukan otomatis representasi perusahaan pertanian atau semua jenis petani.
+- Pendapatan pada publikasi adalah nilai produksi dikurangi biaya produksi dalam cakupan tabel; jangan disamakan dengan laba akuntansi setelah seluruh biaya modal, pajak, pembiayaan, kehilangan pascapanen, dan biaya distribusi.
+- Tabel kelapa menggunakan basis **100 pohon**, bukan hektare atau per butir. Biaya per pohon hanya dapat dihitung dengan membagi nilai tabel per 100 pohon; biaya per butir tetap membutuhkan jumlah buah yang dipanen pada periode yang sama.
+- Harga petani padi pada tabel ini adalah harga per satuan produksi tabel SEP; jangan disamakan langsung dengan seri GKP Bapanas tanpa memastikan bentuk gabah/beras dan basis kualitas.
+- Beberapa baris harga/biaya satuan tidak ditulis di tabel ringkas di atas karena ekstraksi perlu memastikan angka pada baris lanjutan tabel; jangan mengisi dengan kalkulasi silang atau perkiraan.
+
+### Rincian biaya yang berhasil diekstrak (Rp per hektar, kecuali kelapa Rp per 100 pohon)
+
+| Komoditas | Benih | Pupuk | Pestisida | Upah + jasa pertanian | BBM/gas/pelumas | Listrik/air | Sewa lahan / estimasi | Pengeluaran lain |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Padi | 689.970 | 2.100.150 | 798.000 | 5.056.400 | 331.890 | 139.480 | 5.619.140 | 552.560 |
+| Jagung | 1.375.300 | 2.188.370 | 654.630 | 2.421.520 | 318.650 | 120.610 | 3.979.700 | 427.290 |
+| Bawang merah | 21.520.430 | 8.323.310 | 15.588.880 | 12.790.500 | 1.755.760 | 409.700 | 11.644.370 | 3.253.150 |
+| Cabai merah besar | 4.434.150 | 11.489.800 | 12.913.160 | 15.195.080 | 1.638.910 | 442.400 | 11.050.840 | value needs next-line verification |
+| Cabai merah keriting | 4.002.020 | 11.463.510 | 11.530.030 | 12.266.530 | 2.457.780 | 199.590 | 9.329.330 | value needs next-line verification |
+| Cabai rawit | 2.748.150 | 5.649.830 | 4.812.020 | 7.573.010 | 1.318.600 | 316.060 | 9.566.240 | 2.623.640 |
+| Kelapa | 40.520 | 119.310 | 75.080 | 1.468.070 | 198.350 | 4.040 | 2.554.870 | 182.300 |
+
+All values above are converted from the source table's “000 Rupiah” to rupiah by multiplying by 1,000. The BPS source notes that imputation for some cost/subsidy variables has not yet been estimated. Cabai hijau's table and the incomplete tail rows are intentionally marked for another exact extraction pass rather than filled with guessed values.
+
+### Use in game model
+These SEP observations can support a **dated baseline farm scenario** for padi, maize, shallot, several chili categories, and coconut after the source's unit and period definitions are reconciled with production quantity. They do not by themselves fill the 60 commodity rows or all four game tiers. A farm production cost is a Tier 1 node only if the owner's commodity-chain mapping explicitly identifies it as the raw producer node; downstream processing, trading, retail and other tiers need separate stage-specific input/output recipes and prices.
