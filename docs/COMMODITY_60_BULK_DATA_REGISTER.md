@@ -186,10 +186,10 @@ Sumber primer: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024: Nilai dan Biaya 
 | Padi / 2.1 | per hektar, UTP, panen sendiri | 26.369.860 | 15.287.590 | 11.082.110 | 5.760 | 3.590 |
 | Jagung / 2.2 | per hektar, UTP, panen sendiri | 20.943.600 | 11.486.060 | 9.457.540 | 4.970 | 3.130 |
 | Bawang merah / 2.3 | per hektar, UTP, panen sendiri | 141.997.490 | 75.286.090 | 66.711.410 | 20.630 | 11.620 |
-| Cabai hijau / 2.4 | per hektar, UTP, panen sendiri | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification | table value needs exact row verification |
-| Cabai merah besar / 2.5 | per hektar, UTP, panen sendiri | 159.090.370 | 60.775.690 | value requires following table line | value requires following table line | value requires following table line |
-| Cabai merah keriting / 2.6 | per hektar, UTP, panen sendiri | 135.680.790 | 54.709.620 | value requires following table line | value requires following table line | value requires following table line |
-| Cabai rawit / 2.7 | per hektar, UTP, panen sendiri | 103.548.290 | 34.607.540 | 68.940.750 | see exact row below table | see exact row below table |
+| Cabai hijau / 2.4 | per hektar, UTP, panen sendiri | 96.295.280 | 40.216.900 | 56.078.370 | 19.780 | 10.750 |
+| Cabai merah besar / 2.5 | per hektar, UTP, panen sendiri | 159.090.370 | 60.775.690 | 98.314.680 | 27.810 | 13.340 |
+| Cabai merah keriting / 2.6 | per hektar, UTP, panen sendiri | 135.680.790 | 54.709.620 | 80.971.170 | 29.490 | 17.880 |
+| Cabai rawit / 2.7 | per hektar, UTP, panen sendiri | 103.548.290 | 34.607.540 | 68.940.750 | 28.350 | 15.730 |
 | Kelapa / 2.10 | per 100 pohon, UTP, panen sendiri | 12.788.560 | 4.642.550 | 8.146.040 | see exact row below table | see exact row below table |
 
 **Penting untuk interpretasi:**
@@ -206,12 +206,12 @@ Sumber primer: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024: Nilai dan Biaya 
 | Padi | 689.970 | 2.100.150 | 798.000 | 5.056.400 | 331.890 | 139.480 | 5.619.140 | 552.560 |
 | Jagung | 1.375.300 | 2.188.370 | 654.630 | 2.421.520 | 318.650 | 120.610 | 3.979.700 | 427.290 |
 | Bawang merah | 21.520.430 | 8.323.310 | 15.588.880 | 12.790.500 | 1.755.760 | 409.700 | 11.644.370 | 3.253.150 |
-| Cabai merah besar | 4.434.150 | 11.489.800 | 12.913.160 | 15.195.080 | 1.638.910 | 442.400 | 11.050.840 | value needs next-line verification |
-| Cabai merah keriting | 4.002.020 | 11.463.510 | 11.530.030 | 12.266.530 | 2.457.780 | 199.590 | 9.329.330 | value needs next-line verification |
+| Cabai merah besar | 4.434.150 | 11.489.800 | 12.913.160 | 15.195.080 | 1.638.910 | 442.400 | 11.050.840 | 3.611.360 |
+| Cabai merah keriting | 4.002.020 | 11.463.510 | 11.530.030 | 12.266.530 | 2.457.780 | 199.590 | 9.329.330 | 3.460.840 |
 | Cabai rawit | 2.748.150 | 5.649.830 | 4.812.020 | 7.573.010 | 1.318.600 | 316.060 | 9.566.240 | 2.623.640 |
 | Kelapa | 40.520 | 119.310 | 75.080 | 1.468.070 | 198.350 | 4.040 | 2.554.870 | 182.300 |
 
-All values above are converted from the source table's “000 Rupiah” to rupiah by multiplying by 1,000. The BPS source notes that imputation for some cost/subsidy variables has not yet been estimated. Cabai hijau's table and the incomplete tail rows are intentionally marked for another exact extraction pass rather than filled with guessed values.
+All values above are converted from the source table's “000 Rupiah” to rupiah by multiplying by 1,000. The BPS source notes that imputation for some cost/subsidy variables has not yet been estimated. Tabel cabai hijau, harga/biaya per satuan untuk cabai merah besar, cabai merah keriting, dan cabai rawit sudah diverifikasi pada baris lanjutan masing-masing tabel. Catatan sumber tetap menyatakan imputasi biaya/subsidi untuk beberapa variabel belum diestimasi oleh BPS.
 
 ### Use in game model
 These SEP observations can support a **dated baseline farm scenario** for padi, maize, shallot, several chili categories, and coconut after the source's unit and period definitions are reconciled with production quantity. They do not by themselves fill the 60 commodity rows or all four game tiers. A farm production cost is a Tier 1 node only if the owner's commodity-chain mapping explicitly identifies it as the raw producer node; downstream processing, trading, retail and other tiers need separate stage-specific input/output recipes and prices.
