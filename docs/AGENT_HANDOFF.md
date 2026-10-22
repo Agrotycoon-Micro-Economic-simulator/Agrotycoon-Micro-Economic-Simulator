@@ -1,3 +1,12 @@
+## Latest checkpoint — February 2026 bulletin producer prices recorded (2026-10-22)
+
+- Active branch remains `feat/production-tier-taxonomy`. No write to `main`, merge, or rebase.
+- Added Kementan Pusdatin *Statistik Terkini Ekonomi Pertanian Februari 2026*, Table 47: six food-crop producer-price rows with Dec-2024 baseline, published 2025 average, monthly 2025 series and growth fields; Table 48: January 2026 producer prices/growth fields for 29 estate-crop forms. Register and audit updated.
+- Table 48 text extraction can misalign wrapped rows; visual PDF row-level verification remains required before use. Prices are not cost/yield/profit models. Unknowns remain null; no runtime promotion.
+- Owner-locked coconut/es kelapa benchmarks remain unchanged: Rp13,000 per whole coconut at direct retail, Rp5,000/glass, four glasses/coconut, no milk, Rp500 harvest labor, and observed Rp3,400/butir farmer-to-collector. National producer “Kelapa Bulat” Rp/kg is a different unit and stage.
+- No runtime code changed. Tests not run; work was through GitHub remote file API without local checkout/test runner.
+- Next task: visually verify Table 48 PDF rows and extract Table 49 livestock producer prices; then prioritize matched official/field cost-and-yield evidence before any Tier 1–4 economics or runtime parameters are considered.
+
 ## Latest checkpoint — 26-row consolidated producer-price table extracted (2026-10-22)
 
 - Active branch: `feat/production-tier-taxonomy`. No `main` writes, merge/rebase, runtime/code/ID changes. Previous branch comparison reported 578 ahead / 2 behind; re-check before integration.
