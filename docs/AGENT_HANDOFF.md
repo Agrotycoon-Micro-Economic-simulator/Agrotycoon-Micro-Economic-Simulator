@@ -6299,3 +6299,13 @@ For sugarcane, do not require/substitute an annual-crop TM denominator when the 
 - Important caveat documented: company-level percentages and average profit are not directly interchangeable with SEP UTP costs; broiler per-bird profit and layer per-bird-per-year profit are different periods; percentages alone cannot establish HPP/kg, mortality, FCR, saleable output, or full margins.
 - Tests not run (documentation-only); no runtime data activated.
 - Next: obtain the actual BPS publication tables (not only the infographic summary) and extract absolute annual output, input expenditure, production volume, and unit basis for company broiler/layer operations. Then reconcile with SEP UTP and commodity inventory IDs; keep unresolved measures explicitly flagged. Full 60 × 4 economic matrix remains incomplete.
+
+
+## Checkpoint — absolute poultry unit economics and arithmetic correction (2026-10-22)
+
+- Starting HEAD `c861f17266e1ca152f1b4617bede2c326e835464`; register commit `96ca235e4bca83c5f2ead4f410c280001d3c1c44`; branch `feat/production-tier-taxonomy`; `main` untouched.
+- Added company-level anchor figures from Kementan's official summary sourced to BPS *Statistik Perusahaan Peternakan Unggas 2024*: broiler output value Rp33,053/bird, cost Rp28,837/bird, profit Rp4,216/bird; layer output value Rp925,548/bird/year, cost Rp583,481/bird/year, published profit Rp342,093/bird/year. Layer subtraction yields Rp342,067, Rp26 different from published profit; discrepancy is explicitly flagged and not silently reconciled.
+- Added aggregate enterprise poultry values cited by same official summary: receipts Rp36.82 trillion, expenses Rp22.84 trillion, profit Rp13.98 trillion, feed ~67.73% of expenses. These are aggregate enterprise figures, not per-unit inputs.
+- Correction to previous conversational arithmetic: the individually listed expense shares sum to 100.00% for both broiler and layer; a prior attempted remainder grouping was erroneous. Register now explicitly says use individual component rows, not the incorrect combined remainders.
+- Tests not run; documentation-only; no runtime parameters changed.
+- Next: obtain the actual PDF tables and validate the layer Rp26 discrepancy and denominators, then crosswalk validated values into commodity IDs. Do not infer production cycles, mortality, FCR, saleable output, or Tier 1–4 costs from percentages alone. Full 60 × 4 matrix still incomplete.
