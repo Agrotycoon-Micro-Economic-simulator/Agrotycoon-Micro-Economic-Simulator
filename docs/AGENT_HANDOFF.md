@@ -1,3 +1,20 @@
+## Latest checkpoint — six crop price series extracted (2026-10-22)
+
+- Active branch: `feat/production-tier-taxonomy`; no main-branch writes, no merge/rebase, no runtime changes. Prior branch comparison reported 571 ahead / 2 behind main; re-check before any future integration.
+- Official accessible source: Kementan Pusdatin, *Statistik Harga Komoditas Pertanian Tahun 2025* (published 2025-12-29), publication page https://satudata.pertanian.go.id/details/publikasi/947 and PDF https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf. This official PDF is readable through text extraction and republishes BPS producer-price series.
+- Six five-year annual national producer-price series (Rp/kg) recorded in `docs/COMMODITY_60_BULK_DATA_REGISTER.md` and summarized in `docs/COMMODITY_60_BULK_AUDIT.md`:
+  - Singkong, Table 2.6 p.24: 3,121 / 3,158 / 3,250 / 3,539 / 4,826 (2020–2024).
+  - Ubi jalar, Table 2.7 p.25: 4,626 / 4,519 / 4,815 / 5,023 / 6,401.
+  - Bawang merah, Table 2.8 p.26: 26,684 / 23,914 / 27,084 / 26,919 / 31,673.
+  - Tomat sayur, Table 2.20 p.38: 7,331 / 7,546 / 7,817 / 8,522 / 11,955.
+  - Wortel, Table 2.21 p.39: 8,915 / 8,604 / 9,217 / 9,592 / 13,071.
+  - Mangga, Table 2.23 p.41: 9,669 / 9,852 / 10,931 / 11,251 / 14,607.
+- Source methodology (printed pp. xix–xxi) defines producer price as farm-gate transaction from farmer to collector/tengkulak, based on sampled farmers and simple monthly provincial averaging. These annual national rows are not live quotes, retail prices, weighted national transaction averages, or full economic models. Grade/variety, costs, yield, losses and processing conversions remain gates. Do not change any runtime parameter from these alone.
+- Commits this continuation: `5810b63f948853ab16b3745faa7f7cbdf590de61` (register initial series), `e971df68cf7ed97ff9f84a034f00abb800e7a03e` (audit), `673480290eb429396c31acb7b57bd3dc746c493f` (three more series in register), `fda35d32b73d7af0570652e60d47616e9f44b118` (audit extension). The handoff is being refreshed now. No tests run because this connector has no local checkout/test runner.
+- Next task: keep bulk extraction moving through this same PDF for other owner-matched crops/plantations and livestock/eggs, then join comparable SEP cost/yield/loss evidence. Do not stop at source discovery and do not promote incomplete models. Preserve the owner's locked coconut/es-kelapa benchmark exactly.
+
+---
+
 ## Latest checkpoint — official Kementan price series extracted (2026-10-22)
 
 - Branch: `feat/production-tier-taxonomy`; all writes remain on this non-main branch. No merge/rebase; prior comparison reported diverged from main (571 ahead / 2 behind), so preserve that caution until rechecked.
