@@ -1,3 +1,21 @@
+## Checkpoint — BPS SEP 2024 household livestock cost tables extracted (2026-10-22)
+
+Official source: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan*, Catalogue 5301012 / Publication 05200.25001, released 24 January 2025. Official publication page: https://www.bps.go.id/assets/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian--sep--2024-subsektor-peternakan.html. Direct PDF linked from that page. The publication distinguishes individual agricultural holdings (UTP), legal agricultural corporations (UPB), and other agricultural holdings (UTL); national survey coverage is 38 provinces and 514 districts/cities. Reference period for UTP/UTL is 1 June 2023–31 May 2024.
+
+### Extracted UTP benchmarks
+
+| BPS table / printed page | Unit and commodity | Production (thousand Rp) | Production cost (thousand Rp) | Reported income (thousand Rp) | Feed cost (thousand Rp; share of costs) | Other relevant cost anchors |
+|---|---|---:|---:|---:|---:|---|
+| Table 2.1 / p.14 | per head, beef cattle | 3,290.37 | 716.12 | 2,574.26 | 342.25 (47.79%) | health 35.80 (5.00%); labor 70.87 (9.90%); fuel/lubricants 107.92 (15.07%); land 85.69 (11.97%) |
+| Table 2.7 / p.20 | per head, ordinary native chicken | 34.15 | 15.61 | 18.53 | 10.94 (70.05%) | health 0.27 (1.74%); labor 0.41 (2.66%); land 2.59 (16.58%) |
+| Table 2.10 / p.23 | per 5,000 heads, broiler final stock (FS) | 152,008.05 | 126,445.08 | 28,639.72 | 81,754.62 (64.66%) | DOC purchase 32,089.37 (25.38%); health 2,616.79 (2.07%); wages 3,932.75 (3.11%); electricity/water 2,114.58 (1.67%); land 1,198.09 (0.95%) |
+
+All monetary values above are in thousand rupiah as printed by BPS; they have not been silently converted into rupiah or per-head values. For the broiler FS table, divide by 5,000 only for a separately labelled arithmetic normalization, and retain the original source denominator in the register. The table says income is production minus production costs, but the printed figures do not reconcile: 152,008.05 − 126,445.08 = 25,562.97, not the reported 28,639.72. Treat the broiler income figure as a source-reconciliation exception and do not promote it as a validated margin until visually checked against the original table/image or clarified by BPS. Table 2.1 and 2.7 reconcile to within rounding.
+
+### Modeling gate and next action
+
+These UTP observations are national survey averages for defined livestock types and units, not breed/region/scale-specific recipes. Keep native chicken distinct from commercial broiler; keep beef-cattle “per head” unit separate from production-cycle or liveweight price denominators. No Tier 1–4 runtime values promoted. Next: visually QA the broiler Table 2.10 source image/number inconsistency, extract the remaining UTP livestock tables (dairy cattle, buffalo, pig, goat, sheep, layer duck, Muscovy duck) and relevant UPB tables, then crosswalk only to exact owner inventory rows.
+
 ## Checkpoint — BPS poultry company economics extracted (2026-10-22)
 
 Official source: BPS, *Statistik Perusahaan Peternakan Unggas 2024 / Poultry Establishment Statistics 2024*, Catalogue 5304004, publication 05200.25009, released 15 August 2025. Direct official PDF: https://web-api.bps.go.id/download.php?f=YtBCB0OvFoTnPMMwAsS1E1pnY2VCWkxudmJmRU1rbVNnN0MxTGYzWjNRakFyeXlGLzRVOXU1UjZabVdnVm5OVUZ5YkdvVHV1cVYzamR4d1ZidUhFWE94N0Z3bFJjNzdtcmZmRHJpOWNmYVFUT3BTZjMvUisxNGRNLzhaZ0s0aDlqRGlIWUtVMVlWMUdRS0I3UmlNb2FsYUM3b2VXZUxSbStrc2R5bjJub0VZUkNQSVRDMEYvd3FERXllYjZHSloxNDkvWldOSWhvRCtpcEwvTkhRYzB2RE5nODcyZ0hyK0ZKcXBXOVJuTmNVanFLNG00S3RNdDJPeEJnWTltSHNTSVVIbi9iRTFMeitSY0luY0VjTURzN3B3NGRkaUpKYWZFNXFDY3VBPT0%3D
