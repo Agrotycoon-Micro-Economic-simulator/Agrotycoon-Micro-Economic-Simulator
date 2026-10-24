@@ -1,3 +1,15 @@
+## Latest checkpoint — BPS SEP 2024 UTP table extraction (2026-10-24)
+
+- Active branch: `feat/production-tier-taxonomy`. All writes in this continuation are to this feature branch only; `main` untouched. No merge/rebase and no runtime code/parameters changed.
+- Corrected source-access status: the BPS publication page's “Unduh Publikasi” link resolves to the official 134-page SEP 2024 livestock PDF. The page-fetch failure did not mean the PDF was unavailable. Official publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html.
+- Numeric extraction added to `docs/COMMODITY_60_BULK_DATA_REGISTER.md` and audit summary to `docs/COMMODITY_60_BULK_AUDIT.md`: UTP Table 2.2 dairy cattle (production Rp10,141.12k/head; cost Rp5,094.66k/head; derived difference Rp5,046.46k; feed Rp4,074.74k / 79.98% of cost); Table 2.3 beef buffalo (production Rp3,697.39k; cost Rp533.97k; derived difference Rp3,163.42k; feed Rp143.84k / 26.94%); Table 2.5 meat goat (production Rp660.93k; cost Rp155.39k; derived difference Rp505.54k; feed Rp57.85k / 37.23%). All figures are national 2024 UTP survey averages per head, in thousand rupiah; “derived difference” is production minus cost, not claimed as separately transcribed income.
+- Unresolved quality gate: broiler Table 2.10 previously transcribed production Rp152,008.05k/5,000 heads and cost Rp126,445.08k imply Rp25,562.97k difference, conflicting with published income transcribed as Rp28,639.72k. Keep both and do not promote the margin until visual QA. UTP, UPB and UTL remain separate. No full cycle/FCR/mortality/housing data inferred.
+- Commits created in this continuation: register `42dbd6b921a3174aeae020868964b56ef92d1460`; audit `dc8c91510f58612c221f307053ad056bf694011d`. The handoff refresh follows as its own commit.
+- Tests: not run; documentation-only GitHub edits, no local checkout/test runner. Coconut/es-kelapa owner-locked values unchanged.
+- Next task: extract Table 2.4 pig, 2.6 sheep, 2.7 native chicken, 2.8 layer duck, 2.9 Muscovy duck and visually inspect Table 2.10; then capture UPB Tables 3.1–3.6 and UTL Table 4.1. Reconcile each production-cost-income row and record arithmetic discrepancies before deriving margins. Keep input-price anchors separate from farm-delivered prices; do not promote runtime values without matched cost/output/process evidence.
+
+---
+
 ## Checkpoint — livestock table reconciliation and remaining UTP coverage (2026-10-22)
 
 ### New verification status
