@@ -724,3 +724,18 @@ National 2024 totals transcribed from the Indonesia row. The BPS production tabl
 | Ikan lainnya | 496,206 | 14,398,554,065 | 29,017 |
 
 **Data-quality / model gate:** the table lists “Gurame” as the first commodity but the national row is “-” in both tables; preserve as unavailable rather than treating dash as a confirmed zero. Values above were calculated from two separately published BPS tables and rounded to the nearest Rp/kg; they are not directly transcribed price observations. Do not use as Tier-specific selling prices, profit, HPP, FCR, survival rate, cycle length, feed recipe, or capital assumptions. Crosswalk only where the owner's exact inventory contains the matching aquaculture species and production form. Keep capture fisheries distinct from aquaculture. The SEP 2024 fishery publication remains the primary pending source for cost structure; no numeric SEP fishery costs were extracted in this step. No runtime promotion.
+
+
+## New official company-level aquaculture source indexed (2026-10-24)
+
+BPS, *Statistik Perusahaan Budidaya Ikan 2024* (Catalogue 5403011; Publication 05200.25013; released 5 December 2025; 28.05 MB), official page:
+https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html
+
+The official abstract states the publication includes company input/output, workforce and wages, production volume, production value, and production costs. It covers legal-entity aquaculture companies across brackish-water grow-out, marine grow-out, freshwater grow-out, and hatcheries. In 2024, 654 active aquaculture companies were covered: 444 mainly brackish-water grow-out, 43 marine grow-out, 99 hatcheries, and 68 freshwater grow-out.
+
+This is a useful **formal-company / higher-scale evidence lane**, separate from household/individual holding data (UTP) and from the SEP fisheries publication. The linked 28.05 MB PDF could not be extracted through the current web retrieval path (official download returned cache miss); therefore no commodity-level cost, output, wage, or margin values are transcribed here. Do not infer these from company counts. The source is queued for table extraction using an alternate official access path or indexed table text.
+
+Related official source: BPS *Statistik Perusahaan Penangkapan Ikan 2024* also covers company-level input/output, workforce, volume/value of production and production costs; keep capture fisheries separate from aquaculture:
+https://perpustakaan.bps.go.id/opac/search?media=soft&page=528&subyek%5B0%5D=2
+
+No runtime values promoted. This source metadata does not establish any Tier 1–4 model by itself.
