@@ -1,3 +1,12 @@
+## Latest continuation — pig UTP table extracted (2026-10-24)
+
+- Completed BPS SEP 2024 UTP Table 2.4 extraction and reconciliation. Pig per-head national average: production Rp1,732.79 thousand; cost Rp518.55 thousand; published income Rp1,214.24 thousand; feed Rp377.24 thousand (72.75% of cost). Income reconciles exactly to production minus cost. Added source and component breakdown to register/audit.
+- Commits: register `71b9df47f2e747a88399c7f7286cdbd3bc48182a`; audit `fc7fa67e4522e3d58a4103ec044a75e6869794de`. Earlier same-session commits include `d7daa799ad678a743d170abb20521ff104c83981` (sheep/poultry register), `a3370aad771248320a8d1ae17bb887750a2962dd` (sheep/poultry audit), `e3ea6f764818f820b7fe818d95af8c1731287eb5` (handoff).
+- UTP Table 2.4 pig arithmetic is closed. Table 2.10 broiler discrepancy remains unresolved and must not be silently corrected: production 152,008.05k minus cost 126,445.08k = 25,562.97k vs published income 28,639.72k, difference 3,076.75k. Native chicken and Muscovy tables each show 0.01k rounding difference; published income retained.
+- Next: inspect the table image for Table 2.10; extract UPB Tables 3.1–3.6 and UTL Table 4.1. Preserve UTP/UPB/UTL separation and do not infer cycle/FCR/mortality or promote runtime values from aggregate averages alone. Tests not run; no local checkout/test runner. No runtime changes and owner coconut/es-kelapa values remain locked.
+
+---
+
 ## Continuation checkpoint — UTP sheep and poultry extraction (2026-10-24, later update)
 
 - Added further official BPS SEP 2024 UTP table values to `docs/COMMODITY_60_BULK_DATA_REGISTER.md` and audit to `docs/COMMODITY_60_BULK_AUDIT.md`: sheep (production 689.79k Rp/head, cost 242.91k, income 446.88k, feed 135.42k / 55.75%); native chicken (34.15k, 15.61k, published income 18.53k, feed 10.94k / 70.05%; 0.01k rounding difference); layer duck per 1,000 heads (140,316.23k production, 75,420.46k cost, 64,895.77k income, 60,009.13k feed / 79.57%); Muscovy duck (39.80k, 20.75k, published income 19.06k, feed 15.56k / 74.98%; 0.01k rounding difference); broiler FS per 5,000 final-stock heads (152,008.05k production, 126,445.08k cost, 28,639.72k published income, 81,754.62k feed / 64.66%). All figures are national UTP 2024 averages; k = thousand rupiah.
