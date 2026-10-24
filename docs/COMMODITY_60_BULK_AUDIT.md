@@ -472,3 +472,8 @@ Verified additional 2024 national UTP values from the official BPS SEP livestock
 - Broiler final stock, Table 2.10, per 5,000 heads: production Rp152,008.05k; cost Rp126,445.08k; published income Rp28,639.72k; feed Rp81,754.62k (64.66%). Production minus cost is Rp25,562.97k, leaving an unresolved Rp3,076.75k discrepancy versus the published income.
 
 Source tables are printed pp.19–23 (PDF pp.36–40) of the official BPS SEP 2024 livestock publication. These are UTP national averages, not UPB formal-company data or farm-specific Tier models. Preserve distinct denominators (per head, per 1,000 heads, per 5,000 final-stock heads) and the BPS-reported income values; do not silently overwrite source figures with calculated differences. Broiler discrepancy stays an explicit data-quality blocker pending visual/source QA. No runtime changes; owner benchmark unchanged; tests not run.
+
+
+## Audit addendum — pig UTP Table 2.4 (2026-10-24)
+
+BPS SEP 2024 Table 2.4, printed p.17 / PDF p.34: per-head production Rp1,732.79k, cost Rp518.55k, published income Rp1,214.24k, feed cost Rp377.24k (72.75% of cost). Arithmetic reconciles exactly. Published feed components include corn Rp24.21k, forage Rp38.26k, concentrate/manufactured feed Rp143.92k, and other feeds Rp170.86k. This closes the previously queued UTP pig-table extraction; it does not provide the missing cycle, liveweight, mortality or farm-level cost structure needed for a complete tier model. No runtime changes; tests not run.
