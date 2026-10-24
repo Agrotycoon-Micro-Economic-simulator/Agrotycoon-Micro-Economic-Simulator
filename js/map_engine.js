@@ -1,23 +1,70 @@
-// ===== MAP ENGINE PROTOTYPE (gaya Sim Companies) =====
+// ===== MAP ENGINE v2: sprite gambar terkompres (556KB total) =====
+// File yang ada: tile_kebun, tile_rumah, tile_toko, detail_rumah, detail_toko, truk
+// Fallback: tile_pasar (emoji), detail_kebun (zoom dari tile_kebun)
 const MapEngine=(function(){
 const TILE=64;
+const ASSETS={
+ kebun:'assets/img/tile_kebun.png',
+ rumah:'assets/img/tile_rumah.png',
+ toko:'assets/img/tile_toko.png',
+ d_rumah:'assets/img/detail_rumah.jpg',
+ d_toko:'assets/img/detail_toko.jpg',
+ truk:'assets/img/truk.png'
+};
+const IMG={};
+let trukSprite=null;
+
+function loadAssets(done){
+ const keys=Object.keys(ASSETS);let n=0;
+ keys.forEach(k=>{
+  const im=new Image();
+  im.onload=()=>{
+   IMG[k]=im;
+   if(k==='truk')trukSprite=chromaKey(im);
+   if(++n===keys.length)done&&done();
+  };
+  im.onerror=()=>{
+   console.warn('Asset gagal dimuat:',ASSETS[k]);
+   if(++n===keys.length)done&&done();
+  };
+  im.src=ASSETS[k];
+ });
+}
+
+function chromaKey(im){
+ const c=document.createElement('canvas');
+ c.width=im.width;c.height=im.height;
+ const x=c.getContext('2d');
+ x.drawImage(im,0,0);
+ const d=x.getImageData(0,0,c.width,c.height);
+ for(let i=0;i<d.data.length;i+=4){
+  if(d.data[i]>238&&d.data[i+1]>238&&d.data[i+2]>238)d.data[i+3]=0;
+ }
+ x.putImageData(d,0,0);
+ return c;
+}
+
 const canvas=document.getElementById('map-canvas');
 const ctx=canvas.getContext('2d');
 const wrap=document.getElementById('map-wrap');
-const detailBox=document.getElementById('tile-detail');
 const hudGold=document.getElementById('hud-gold');
 const hudOwned=document.getElementById('hud-owned');
 const btnPasar=document.getElementById('btn-pasar');
+const dv=document.getElementById('detail-view');
+const dvBg=document.getElementById('dv-bg');
+const dvTitle=document.getElementById('dv-title');
+const dvHot=document.getElementById('dv-hotspots');
+const dvToast=document.getElementById('dv-toast');
 
-let W=16,H=16;                 // ukuran world dalam tile (1 tile = 1 Ha), bisa expand
-let cam={x:120,y:300,zoom:1};  // kamera (pan+zoom)
+let W=16,H=16;
+let cam={x:120,y:300,zoom:1};
 let gold=5000000;
-let tiles={};                  // "x,y" -> {owner,type,...}
+let tiles={};
 let vehicles=[];
 let selected=null;
 let pasarInduk=null;
 let npcAcc=0;
-let payloadStock=0;            // butir siap jual
+let payloadStock=0;
 
 const ROAD_Y=8, MARKET={x:14,y:8};
 const key=(x,y)=>x+','+y;
@@ -37,6 +84,7 @@ function init(){
  tiles[key(4,7)]={owner:'player',type:'toko'};
  tiles[key(6,6)]={owner:'npc',type:'kebun'};
  tiles[key(7,7)]={owner:'npc',type:'kebun'};
+ loadAssets(()=>{});
  requestAnimationFrame(loop);
 }
 
@@ -46,10 +94,12 @@ function pathBetween(a,b){
 }
 
 function sendTruck(){
- if(payloadStock<=0){alert('Tidak ada stok siap jual. Klik kebun lalu Panen.');return;}
+ if(payloadStock<=0){toast('Tidak ada stok. Masuk kebun → Panen dulu.');return;}
  const home={x:4,y:7};
  vehicles.push({x:px(home).x,y:px(home).y,home:home,path:pathBetween(home,MARKET),i:1,state:'toMarket',payload:payloadStock,npc:false});
+ payloadStock=0;
 }
+
 function spawnNpc(){
  vehicles.push({x:px(MARKET).x,y:px(MARKET).y,home:MARKET,path:pathBetween(MARKET,pasarInduk),i:1,state:'npcToPasar',payload:200,npc:true});
 }
@@ -60,6 +110,7 @@ function loop(ts){
  update(dt);draw();updateHud();
  requestAnimationFrame(loop);
 }
+
 function update(dt){
  const sp=0.12*dt;
  vehicles=vehicles.filter(v=>{
@@ -71,22 +122,26 @@ function update(dt){
  });
  if(pasarInduk){npcAcc+=dt;if(npcAcc>6000){npcAcc=0;spawnNpc();}}
 }
+
 function onArrive(v){
  if(v.i<v.path.length)return;
  const cur={x:Math.floor(v.x/TILE),y:Math.floor(v.y/TILE)};
  const rev=v.payload*3500;
  if(v.state==='toMarket'||v.state==='npcToPasar'){
   gold+=rev;floatGold('+'+rev.toLocaleString('id-ID'),v.x,v.y);
-  if(v.state==='toMarket')payloadStock=0;
   v.state=(v.state==='toMarket')?'return':'npcReturn';
   v.path=pathBetween(cur,v.home);v.i=1;
  }
 }
+
 function floatGold(txt,wx,wy){
- const d=document.createElement('div');d.className='float-gold';d.textContent=txt;
+ const d=document.createElement('div');
+ d.className='float-gold';d.textContent=txt;
  d.style.left=(wx*cam.zoom-cam.x)+'px';d.style.top=(wy*cam.zoom-cam.y)+'px';
  wrap.appendChild(d);setTimeout(()=>d.remove(),1300);
 }
+
+function toast(t){dvToast.textContent=t;dvToast.style.display='block';setTimeout(()=>dvToast.style.display='none',2500);}
 
 function draw(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -100,20 +155,99 @@ function draw(){
   ctx.fillStyle=(t&&t.owner==='player')?'#AED581':(t&&t.owner==='npc')?'#7CB342':'#558B2F';
   ctx.fillRect(sx,sy,s-1,s-1);
   if(t){
-   if(t.type==='jalan'){ctx.fillStyle='#616161';ctx.fillRect(sx,sy,s-1,s-1);}
-   let icon=t.type==='pasar'?'🏬':t.type==='pasarInduk'?'🏬':t.type==='kebun'?'🌴':t.type==='rumah'?'🏠':t.type==='toko'?'🏪':'';
-   if(icon){ctx.font=Math.floor(s*0.5)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(icon,sx+s/2,sy+s/2);}
+   if(t.type==='jalan'){
+    ctx.fillStyle='#616161';ctx.fillRect(sx,sy,s-1,s-1);
+    ctx.fillStyle='#EEE';ctx.fillRect(sx,sy+s/2-1,s-1,2);
+    continue;
+   }
+   // Pilih gambar atau fallback emoji
+   const imgKey=(t.type==='kebun'||t.type==='pasarInduk')?'kebun':t.type;
+   if(IMG[imgKey]){
+    ctx.drawImage(IMG[imgKey],sx,sy,s,s);
+   }else{
+    // Fallback emoji (untuk pasar, pasarInduk, atau tile tanpa gambar)
+    const emojiMap={pasar:'🏬',pasarInduk:'🏬',rumah:'🏠',toko:'🏪',kebun:'🌴'};
+    ctx.font=Math.floor(s*0.5)+'px serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(emojiMap[t.type]||'',sx+s/2,sy+s/2);
+   }
+   if(t.owner==='npc'){ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(sx,sy,s-1,s-1);}
   }
-  if(selected&&selected.x===x&&selected.y===y){ctx.strokeStyle='#FFEB3B';ctx.lineWidth=3;ctx.strokeRect(sx+1,sy+1,s-3,s-3);}
+  if(selected&&selected.x===x&&selected.y===y){
+   ctx.strokeStyle='#FFEB3B';ctx.lineWidth=3;
+   ctx.strokeRect(sx+1,sy+1,s-3,s-3);
+  }
  }
  vehicles.forEach(v=>{
-  if(v.x<0||v.y<0||v.x>W*TILE||v.y>H*TILE)return; // HIDE kalau lewat batas map
-  ctx.font=Math.floor(26*z)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(v.npc?'🚛':'🚚',v.x*z-cam.x,v.y*z-cam.y);
+  if(v.x<0||v.y<0||v.x>W*TILE||v.y>H*TILE)return;
+  const sx=v.x*z-cam.x,sy=v.y*z-cam.y;
+  if(trukSprite){
+   ctx.drawImage(trukSprite,sx-16*z,sy-16*z,32*z,32*z);
+  }else{
+   ctx.font=Math.floor(26*z)+'px serif';
+   ctx.textAlign='center';ctx.textBaseline='middle';
+   ctx.fillText(v.npc?'🚛':'🚚',sx,sy);
+  }
  });
 }
 
-// ===== INTERAKSI =====
+// ===== INTERIOR DETAIL VIEW =====
+const HOTSPOTS={
+ kebun:[
+  {x:18,y:66,label:'🥥 Tumpukan Kelapa',act:()=>{const h=(tiles[key(3,7)]?tiles[key(3,7)].trees:0)*20;payloadStock+=h;toast('Panen +'+h+' butir masuk gudang toko.');}},
+  {x:26,y:38,label:'🛖 Gubuk Pekerja',act:()=>toast('Kuli panen: upah Rp 500/butir (sync ke game utama segera).')},
+  {x:48,y:50,label:'🌴 Pohon Panjat',act:()=>toast('10 pohon produktif. Siklus panen 30 hari.')}
+ ],
+ rumah:[
+  {x:6,y:62,label:'🍚 Dapur',act:()=>toast('Stok dapur: beras 2kg, telur 1kg, minyak 1L.')},
+  {x:40,y:62,label:'🪑 Meja Keluarga',act:()=>toast('Biaya hidup harian: Rp 19.650 (sync ke game utama).')},
+  {x:78,y:64,label:'🛏 Tempat Tidur',act:()=>toast('Tidur = ganti hari. Sinkronisasi ke core engine: tahap berikutnya.')}
+ ],
+ toko:[
+  {x:20,y:62,label:'🧊 Coolbox Es',act:()=>toast('Es: 40 porsi (mencair jika tanpa kulkas besar).')},
+  {x:50,y:58,label:'🥥 Stok Kelapa',act:()=>toast('Stok siap jual: '+payloadStock+' butir.')},
+  {x:37,y:17,label:'🥤 Rak Cup',act:()=>toast('Cup plastik: 52 pcs.')},
+  {x:80,y:55,label:'🍰 Etalase',act:()=>toast('Es terjual hari ini: 0 gelas (sandbox).')}
+ ]
+};
+
+function openDetail(x,y){
+ const t=tiles[key(x,y)];
+ if(!t||t.owner!=='player'){return;}
+ // Pilih scene: kalau ada gambar pakai, kalau tidak pakai kebun zoom
+ if(t.type==='rumah'&&IMG.d_rumah){
+  dvBg.src=ASSETS.d_rumah;
+ }else if(t.type==='toko'&&IMG.d_toko){
+  dvBg.src=ASSETS.d_toko;
+ }else if(t.type==='kebun'){
+  // Fallback: pakai tile_kebun zoom + overlay hijau gelap
+  if(IMG.kebun){
+   dvBg.src=ASSETS.kebun;
+   dvBg.style.objectFit='cover';
+   dvBg.style.filter='brightness(0.85) saturate(1.2)';
+  }else{
+   dvBg.style.display='none';
+   dv.style.background='linear-gradient(180deg,#4CAF50 0%,#2E7D32 100%)';
+  }
+ }else{
+  toast('Lahan kosong. Belum ada bangunan.');return;
+ }
+ dvBg.style.display='block';
+ dvBg.style.filter=(t.type==='kebun')?'brightness(0.85) saturate(1.2)':'';
+ dvTitle.textContent=t.type==='kebun'?'🌴 Kebun Kelapa — Desa Warisan':t.type==='rumah'?'🏠 Rumah Keluarga':t.type==='toko'?'🏪 Warung Es Kelapa':'';
+ dvHot.innerHTML='';
+ (HOTSPOTS[t.type]||[]).forEach(h=>{
+  const b=document.createElement('button');
+  b.className='hotspot';b.style.left=h.x+'%';b.style.top=h.y+'%';b.textContent=h.label;
+  b.onclick=h.act;
+  dvHot.appendChild(b);
+ });
+ dv.style.display='block';
+}
+
+function closeDetail(){dv.style.display='none';}
+
+// ===== INTERAKSI PETA =====
 let drag=null;
 canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,cx:cam.x,cy:cam.y,moved:false};});
 canvas.addEventListener('pointermove',e=>{
@@ -126,7 +260,12 @@ canvas.addEventListener('pointerup',e=>{
  if(drag&&!drag.moved){
   const r=canvas.getBoundingClientRect();
   const wx=(e.clientX-r.left+cam.x)/cam.zoom,wy=(e.clientY-r.top+cam.y)/cam.zoom;
-  selectTile(Math.floor(wx/TILE),Math.floor(wy/TILE));
+  const tx=Math.floor(wx/TILE),ty=Math.floor(wy/TILE);
+  selected={x:tx,y:ty};
+  const t=tiles[key(tx,ty)];
+  if(t&&t.owner==='player')openDetail(tx,ty);
+  else if(!t)offerBuy(tx,ty);
+  else toast(t.type==='pasar'?'Pasar desa: tempat truk menjual.':t.type==='jalan'?'Jalan logistik.':'Lahan NPC: tidak dijual.');
  }
  drag=null;
 });
@@ -136,34 +275,21 @@ canvas.addEventListener('wheel',e=>{
 },{passive:false});
 
 function isAdjacentOwned(x,y){
- return [[1,0],[-1,0],[0,1],[0,-1]].some(d=>{const t=tiles[key(x+d[0],y+d[1])];return t&&t.owner==='player';});
+ return [[1,0],[-1,0],[0,1],[0,-1]].some(d=>{
+  const t=tiles[key(x+d[0],y+d[1])];
+  return t&&t.owner==='player';
+ });
 }
-function selectTile(x,y){
- selected={x,y};
- const t=tiles[key(x,y)];let h='';
- if(t&&t.owner==='player'){
-  if(t.type==='kebun')h='<h3>🌴 Kebun Kelapa (1 Ha)</h3><p>Pohon: '+t.trees+' | Siap panen: '+t.trees*20+' butir</p><button class="btn btn-success" onclick="MapEngine.harvest()">🌾 Panen Semua</button>';
-  else if(t.type==='rumah')h='<h3>🏠 Rumah</h3><p>Pusat keluarga & konsumsi harian.</p>';
-  else if(t.type==='toko')h='<h3>🏪 Toko Es Kelapa</h3><p>Stok siap jual: '+payloadStock+' butir</p>';
-  else if(t.type==='pasarInduk')h='<h3>🏬 Pasar Induk Anda</h3><p>NPC datang membeli tiap beberapa detik.</p>';
-  else h='<h3>🟩 Lahan Anda (1 Ha)</h3><p>Kosong. Siap dibangun.</p>';
- }else if(!t){
-  h='<h3>🟩 Lahan Kosong (1 Ha)</h3>';
-  h+=isAdjacentOwned(x,y)?'<p>Harga: Rp 2.000.000</p><button class="btn btn-primary" onclick="MapEngine.buyTile('+x+','+y+')">Beli</button>':'<p>Terlalu jauh. Beli lahan yang menempel dulu.</p>';
- }else{
-  h='<h3>'+(t.type==='pasar'?'🏬 Pasar Desa':t.type==='jalan'?'🛣️ Jalan Logistik':'🌾 Lahan NPC')+'</h3>';
- }
- h+='<br><br><button class="btn" onclick="MapEngine.closeDetail()">Tutup</button>';
- detailBox.innerHTML=h;detailBox.style.display='block';
+
+function offerBuy(x,y){
+ if(!isAdjacentOwned(x,y)){toast('Terlalu jauh. Beli lahan yang menempel dulu.');return;}
+ if(gold<2000000){toast('Uang tidak cukup (Rp 2.000.000/Ha).');return;}
+ gold-=2000000;
+ tiles[key(x,y)]={owner:'player',type:'kosong'};
+ if(ownedCount()>=25&&W<64){W+=8;H+=8;}
+ toast('Lahan dibeli! Klik lagi untuk bangun.');
 }
-function closeDetail(){detailBox.style.display='none';selected=null;}
-function harvest(){payloadStock+= (tiles[key(3,7)]?tiles[key(3,7)].trees*20:0);closeDetail();selectTile(4,7);}
-function buyTile(x,y){
- if(gold<2000000){alert('Uang tidak cukup.');return;}
- gold-=2000000;tiles[key(x,y)]={owner:'player',type:'kosong'};
- if(ownedCount()>=25&&W<64){W+=8;H+=8;} // map membesar seiring ekspansi
- closeDetail();
-}
+
 function buildPasarInduk(){
  if(ownedCount()<5){alert('Minimal 5 Ha dulu.');return;}
  if(gold<50000000){alert('Butuh Rp 50.000.000.');return;}
@@ -174,6 +300,7 @@ function buildPasarInduk(){
  tiles[spot[0]]={owner:'player',type:'pasarInduk'};
  pasarInduk={x:cx,y:cy};
 }
+
 function updateHud(){
  hudGold.textContent=gold.toLocaleString('id-ID');
  hudOwned.textContent=ownedCount();
@@ -181,5 +308,5 @@ function updateHud(){
 }
 
 init();
-return {sendTruck,buildPasarInduk,buyTile,harvest,closeDetail};
+return {sendTruck,buildPasarInduk,closeDetail};
 })();
