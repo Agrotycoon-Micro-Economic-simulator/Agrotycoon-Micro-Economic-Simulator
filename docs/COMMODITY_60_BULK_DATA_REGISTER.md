@@ -761,3 +761,12 @@ A separate BPS statistics table independently corroborates the 2024 formal aquac
 https://www.bps.go.id/assets/statistics-table/2/MTEyOSMy/jumlah-perusahaan-budidaya-perikanan-menurut-jenis-budidaya.html
 
 No fish-price numeric rows or company cost rows were extracted in this QA step. No economic model completeness or runtime approval count changes.
+
+
+## Historical fish producer-price fallback — mullets, 2024 (2026-10-24)
+
+A search-indexed text extraction of BPS *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2024*, Table 2.1.4, “Harga Produsen Ikan Belanak Menurut Provinsi (Rp/Kg), 2024,” exposes the national row for January–April: January Rp24,226/kg; February Rp24,337/kg; March Rp24,372/kg; April Rp24,386/kg. The table labels the series in Rp/kg and shows the national row. This is historical producer-price evidence for **ikan belanak**, not a 2025 observation and not interchangeable with aquaculture prices or other fish species.
+
+Source record: BPS publication page (catalogue 7103013, released 22 April 2025, data year 2024): https://www.bps.go.id/id/publication/2025/04/22/a193ac1aa4e9cb09fbd82001/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.html. Table text was discoverable via an indexed PDF copy at https://assets.dataindonesia.id/2025/09/20/1758375725357-43-statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.pdf; direct PDF retrieval returned 403 in this session, so this is an index-text extraction and should be rechecked against the page image before production use.
+
+Use these four values as a **provisional historical source row**, clearly tagged with year, species, transaction stage and verification caveat. Do not use as current 2025/26 pricing or as evidence for lele/nila/patin/other species. No unit economics or runtime approval changes.
