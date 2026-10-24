@@ -748,3 +748,16 @@ Indexed BPS, *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perika
 BPS metadata defines producer price for fish as the average Rp/kg received by the fisher/aquaculture producer on the first sale to a buyer or collector, before distribution costs, levies, or intermediary margins. This helps define a comparable transaction stage, but the specific 2025 monthly rows still need extraction by commodity and province. Metadata source: https://sirusa.bps.go.id/metadata/variabel/308935. Do not substitute this definition with the separate 2024 output-value ÷ output-volume ratio; the latter is only an implied value cross-check.
 
 No numeric 2025 fish price observation was added in this step. Preserve product form, capture vs aquaculture, province, month, and unit when extracting the publication. No runtime promotion.
+
+
+## 2026-10-24 — producer-price metadata scope QA and company-count cross-check
+
+A scope check on BPS metadata URL https://sirusa.bps.go.id/metadata/variabel/308935 shows the variable “Harga Ikan per Kilogram di Tingkat Produsen” is associated in its metadata record with **Survei Data Perikanan Kota Tangerang 2025**. Its definition is useful for interpreting the transaction stage (producer's first sale before distribution cost/levies/intermediary margin), but this specific metadata record must **not** be cited as proof that the same variable's values are the national 38-province monthly series in BPS publication 7103013. Keep those as separate source records until their table-level linkage is demonstrated.
+
+The official publication page for *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025* confirms the broader publication covers rural producer prices monthly in 38 provinces; the numeric fish-price observations still need extraction from the publication itself:
+https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html
+
+A separate BPS statistics table independently corroborates the 2024 formal aquaculture company frame: 654 active companies (444 brackish-water grow-out/tambak, 99 hatcheries, 68 freshwater, 43 marine). This is a count cross-check only, not unit economics:
+https://www.bps.go.id/assets/statistics-table/2/MTEyOSMy/jumlah-perusahaan-budidaya-perikanan-menurut-jenis-budidaya.html
+
+No fish-price numeric rows or company cost rows were extracted in this QA step. No economic model completeness or runtime approval count changes.
