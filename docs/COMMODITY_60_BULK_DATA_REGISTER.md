@@ -686,3 +686,14 @@ Source: official BPS *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Petern
 ## BPS SEP 2024 UTP Table 2.4 — pig unit economics (2026-10-24)
 
 Table 2.4, printed p.17 / PDF p.34, reports national UTP averages per head (thousand rupiah): production 1,732.79; production cost 518.55; published income 1,214.24; feed cost 377.24 (72.75% of production cost). Production minus cost reconciles exactly to the published income (1,732.79 − 518.55 = 1,214.24). Feed components reported: corn 24.21, forage 38.26, concentrate/manufactured feed 143.92, other feed 170.86. These are aggregate annual survey values, not a specified pig production cycle or tier recipe. Source: official BPS *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan*, Table 2.4, https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html. No runtime promotion; coconut benchmark unchanged; tests not run.
+
+
+## SEP livestock stratum period metadata and pending table extraction (2026-10-24)
+
+| Stratum | Reference period in BPS SEP livestock tables/manual | Modeling/QA implication |
+|---|---|---|
+| UTP | Table set is presented as 2024 SEP survey results; verify each table's own reference notes before comparing | Do not infer cycle length or convert annual totals into cycle costs without denominator evidence. |
+| UPB | Calendar year 2023 | Must retain 2023 basis; not a same-period comparator to UTP or UTL by default. |
+| UTL | 1 June 2023–31 May 2024 | Rolling 12-month window differs from UPB calendar year and may differ from UTP table reference conventions. |
+
+Methodology note: the BPS UPB/UTL fieldwork manual describes costs as goods/services actually purchased or paid and used during the period, with imputed unpaid labor and own/free land rent as specific exceptions. Keep reported cost definitions and imputed components explicit when crosswalking to a game HPP model. Official publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html. The official download endpoint returned a cache miss in this continuation; no UPB/UTL values are added from search snippets. UPB Tables 3.1–3.6 and UTL Table 4.1 remain pending direct extraction/visual QA. No runtime promotion; tests not run.
