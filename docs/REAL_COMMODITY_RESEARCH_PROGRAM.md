@@ -1,3 +1,10 @@
+
+
+## 2026-10-24 — UTP/UPB/UTL separation gate and extraction queue
+
+The official BPS technical notes confirm that SEP 2024 has three separate holding strata (UTP, UPB, UTL) and different frame/design treatment. UTP is surveyed with stratified two-stage sampling; the limited, identified UPB list frame is enumerated completely. Therefore, preserve stratum identity in every observation and do not combine the strata into a single comparable unit-economics record without explicit methodological qualification.
+
+Current livestock work closes UTP tables 2.2–2.10 where recorded, with Table 2.10 broiler arithmetic still unresolved. The next research step is to capture UPB Tables 3.1–3.6 and UTL Table 4.1 from the official 2024 livestock publication with the original printed page, production unit/denominator, product stage, production value, cost, income and cost components. A web-indexed snippet or a table title alone is not sufficient evidence. Keep missing values null; do not infer farm cycle, FCR, mortality, liveweight or local Tier recipes from annual aggregate totals. No runtime promotion until source and model gates are met.
 # Real Commodity Research Program — Master Blueprint First
 
 Status: research specification created on 2026-10-18. No commodity prices, yields, costs, recipes, or profitability values are finalized by this document. Research proceeds in owner-requested order: all Tier 1 nodes first, then all Tier 2 nodes, then Tier 3 and Tier 4 transformation routes.
