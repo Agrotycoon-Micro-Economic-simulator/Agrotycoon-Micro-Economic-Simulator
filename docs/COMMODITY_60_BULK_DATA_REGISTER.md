@@ -770,3 +770,27 @@ A search-indexed text extraction of BPS *Statistik Harga Produsen Pertanian Subs
 Source record: BPS publication page (catalogue 7103013, released 22 April 2025, data year 2024): https://www.bps.go.id/id/publication/2025/04/22/a193ac1aa4e9cb09fbd82001/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.html. Table text was discoverable via an indexed PDF copy at https://assets.dataindonesia.id/2025/09/20/1758375725357-43-statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.pdf; direct PDF retrieval returned 403 in this session, so this is an index-text extraction and should be rechecked against the page image before production use.
 
 Use these four values as a **provisional historical source row**, clearly tagged with year, species, transaction stage and verification caveat. Do not use as current 2025/26 pricing or as evidence for lele/nila/patin/other species. No unit economics or runtime approval changes.
+
+
+## 2026-10-24 — producer-price evidence scope: mullet and aquaculture-company census
+
+### Verified indexed table: mullet producer prices, 2024
+
+BPS, *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2024*, Table 2.1.4, “Harga Produsen Ikan Belanak Menurut Provinsi (Rp/Kg), 2024,” national row:
+
+| Period | National producer price (Rp/kg) | Evidence status |
+|---|---:|---|
+| January 2024 | 24,226 | Search-indexed table text; original PDF table still needs visual verification |
+| February 2024 | 24,337 | Search-indexed table text; original PDF table still needs visual verification |
+| March 2024 | 24,372 | Search-indexed table text; original PDF table still needs visual verification |
+| April 2024 | 24,386 | Search-indexed table text; original PDF table still needs visual verification |
+
+Official publication record: https://www.bps.go.id/id/publication/2025/04/22/a193ac1aa4e9cb09fbd82001/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.html . The publication describes monthly rural producer-price surveys across 38 provinces. Table values are historical 2024 producer prices for mullet, not current local prices, aquaculture farm-gate prices, costs, HPP, or profits. Empty provincial cells must remain missing, not zero. Indexed table evidence: https://assets.dataindonesia.id/2025/09/20/1758375725357-43-statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.pdf .
+
+### Official aquaculture-company source identified; no unit-cost figures extracted yet
+
+BPS, *Statistik Perusahaan Budidaya Ikan 2024*, catalogue 5403011 / publication 05200.25013, released 5 December 2025. The publication covers company inputs/outputs, labor and wages, production volume/value, and production costs. It reports 654 active incorporated aquaculture companies in 2024: 444 brackish-water grow-out, 99 hatcheries, 68 freshwater grow-out, and 43 marine grow-out. These are counts, not unit economics. Do not extrapolate company averages to household/UTP producers or infer a commodity-specific cost per kg from the count data. Official source: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html .
+
+### 2025 price-series and cost-table extraction gate
+
+The official BPS 2025 producer-price publication exists (released 24 April 2026) and covers monthly rural producer-price observations in 38 provinces, but no numeric 2025 fish table was extracted in this pass: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html . The SEP 2024 fishery-cost publication confirms that it contains cost structures by agricultural holding unit, but numeric tables remain unextracted: https://www.bps.go.id/id/publication/2025/01/23/9d6edb0cfc82283e01d19a77/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-perikanan.html . Keep these as research leads, not model-ready cost evidence.
