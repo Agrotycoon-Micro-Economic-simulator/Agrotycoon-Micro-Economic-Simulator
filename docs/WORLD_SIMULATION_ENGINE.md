@@ -55,3 +55,33 @@ Each import batch includes raw file, importer version, source metadata, validati
 5. Generated in-game bulletin with causal explanation and player trade choices.
 6. A scenario audit view that shows which data and parameters caused each effect.
 Expand to provinces, commodities, and more event families only after tests pass.
+
+
+## Map prototype assessment — `peta.html` / `js/map_engine.js` (2026-10-24)
+
+### Decision
+Reuse the prototype's **visual interaction concept** (tile grid, click-to-inspect land, drag-to-pan, wheel zoom, road/market/truck presentation) as a reference for a future integrated map. Do **not** treat the current implementation as production-ready or connect it to player economy without refactoring and regression tests. Keep it isolated from runtime state until the integration contract is implemented.
+
+### Existing behavior verified from source
+- `peta.html` loads `js/map_engine.js` as a standalone page. It does not load the main game's state/economy modules.
+- Map engine creates private in-memory state (`gold=5,000,000`, local `tiles`, `payloadStock`, `vehicles`) and does not persist it into the main `S` save object or the main ledger.
+- Prototype starts with 16×16 tiles, one-tile-per-hectare display, fixed road and market, a 10-tree coconut plot, house and shop; land purchase is hard-coded at Rp2,000,000 per tile and central market at Rp50,000,000.
+- Truck revenue is hard-coded as payload × Rp3,500. This is a fixed sale-stage assumption, not linked to current commodity/grade/market or cost basis.
+
+### Blocking defects before reuse
+1. **Duplicate cash systems:** map HUD balance is disconnected from the main game's `S.gold`; purchases and revenue cannot be reconciled in `S.ledger` or monthly accounting.
+2. **NPC revenue bug:** `onArrive` credits player gold for both player truck (`toMarket`) and NPC truck (`npcToPasar`). NPC trade should not directly increase player cash unless an explicit player-owned transaction occurs.
+3. **Repeat-harvest exploit:** `harvest()` adds `trees × 20` to `payloadStock` without tree-cycle/cooldown checks, labor expense, or inventory validation; repeated clicks create stock.
+4. **Duplicate shipment exploit:** repeated `sendTruck()` calls can dispatch the same payload before the first truck arrives; each truck can then credit the same stock value.
+5. **No authoritative stock/production model:** harvest yield is fixed per click and not debited from main inventory; it bypasses `DATA.yieldBiasa`, `S.trees`, `S.stock`, harvest-day rules, and the labor cost contract.
+6. **No persistence or migration:** camera, owned tiles, buildings, vehicles and market are reset on reload; there is no save-schema migration or recovery test.
+7. **Land/market economics are disconnected:** tile purchase, market construction, road access, and land ownership are not tied to `S.landSystem`, `LAND_TIERS`, transaction costs, or finance/credit.
+8. **Interaction/scale limitations:** zoom changes around the canvas origin rather than the pointer; pan is unbounded; expanding W/H does not build a coherent new road/network; pathfinding is a fixed route template rather than graph/pathfinding with congestion or travel costs.
+9. **No map regression tests:** current tests cover the main game and browser smoke path, but there is no dedicated map engine test or integration test in the inspected test inventory.
+
+### Safe integration plan
+- Phase A: retain this as a prototype/reference only; do not advertise map trades as real game transactions.
+- Phase B: define a single adapter contract to the main state: authoritative cash `S.gold`, land/plot IDs, ownership, inventory, production cycle, transaction ledger, and save/migration rules. Map must call domain functions rather than mutate money/stock directly.
+- Phase C: implement tile ownership and building actions as validated commands with cost, adjacency, unlock, capacity and rollback checks; separate player and NPC accounts; shipments reserve stock on dispatch and settle exactly once on delivery.
+- Phase D: add tests for pan/zoom/click selection, land-purchase bounds, save/load, harvest cooldown/labor, stock reservation, one-time delivery, NPC non-player accounting, and market-construction affordability; then run existing browser smoke/E2E suite.
+- Preserve the current educational target: map should teach land opportunity cost, production capacity, transport cost/time, market access and margin after logistics—not only provide a decorative canvas.
