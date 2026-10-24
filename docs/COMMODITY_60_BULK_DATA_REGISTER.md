@@ -643,3 +643,24 @@ Source: https://betcipelang.ditjenpkh.pertanian.go.id/berita/harga-pakan-ternak-
 Ditjen PKH, “Kementan Perketat Pengawasan DOC dan Pakan demi Lindungi Peternak Ayam,” 25 January 2026, reports Kepbadan Pangan Nasional No. 524/2025 setting broiler DOC prices at Rp7,000/chick at farmer level and Rp11,000/chick loco factory. These are different transaction stages and must not be blended. Source: https://ditjenpkh.pertanian.go.id/index.php/berita/kementan-perketat-pengawasan-doc-dan-pakan-demi-lindungi-peternak-ayam.
 
 **Modeling gate:** these are input-price anchors only. Do not derive complete HPP or margin without matched feed consumption/FCR, cycle length, mortality, liveweight gain, medicine/vaccines, energy, labor, litter, transport, housing depreciation, financing and sale-price stage. Record region, date, delivered-vs-mill price, flock size and contract terms when farm-level evidence is found. No runtime promotion.
+
+
+## BPS SEP 2024 livestock tables — direct PDF extraction checkpoint (2026-10-24)
+
+The official publication's “Unduh Publikasi” link is accessible and resolves to the BPS-hosted 134-page PDF; the earlier web-page fetch failure was not evidence that the PDF itself was unavailable. Publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html. The downloaded PDF's extracted text identifies catalogue 5301012 and contains separate UTP, UPB, and UTL sections. Direct PDF endpoint (BPS web-api): https://web-api.bps.go.id/download.php?f=a+kJZ2Ypn1%2Fvo%2BxWvqvBp0lPUzZxMVUyNjdaaGhxZURXNXh3UHBaYVNTbHlQS2xJYm04OTErYW9vaVN3YnRHWGVDTkpCZmJ6NUFTYzdkdWxoRElKSXdTbWd0T0dNOS84UVB2TjBYdkJLaC9UYVRQWFNyYmxJbDc4THErbUFZek5BdmVJeXRTakE4cHFWYll0OStDbm9QUmM5ZmR6OFBkRWZxMVBVYUxxWmpLaGVxV3pFYmFneGg1SThFYzVRN0srelViZ0ZQajFiaUZNODFUSXNMK0J4NFZqY2pQNm1xVTdaclBJcEIrd3daeTloTzlXdzUwcitMVGc5R0kySHNvWlFZeEdsWFlDb0tjRnNoZzJXaEgyMWs1aG0vc2hoakl5a21HYjVCbVVqcjBkWW5BYTh2U2V4RTh4enBNPQ%3D%3D.
+
+### Additional numeric rows verified from UTP tables
+
+All values below are BPS-reported **thousand rupiah per stated production unit**, reference year 2024; they are national UTP averages, not a Tier 1–4 recipe or a local farm quote.
+
+| Table / commodity | Production (thousand Rp) | Production cost (thousand Rp) | Income (thousand Rp) | Feed cost (thousand Rp) | Feed share of total cost | Notes |
+|---|---:|---:|---:|---:|---:|---|
+| 2.2 Dairy cattle, per head | 10,141.12 | 5,094.66 | 5,046.46 (calculated: production minus cost) | 4,074.74 | 79.98% | Milk/other non-live output 6,977.85; forage 564.65; concentrate/manufactured feed 2,465.24. |
+| 2.3 Beef buffalo, per head | 3,697.39 | 533.97 | 3,163.42 (calculated: production minus cost) | 143.84 | 26.94% | Production mostly livestock weight gain (3,685.36). |
+| 2.5 Meat goat, per head | 660.93 | 155.39 | 505.54 (calculated: production minus cost) | 57.85 | 37.23% | Production includes weight gain 648.61 and by-products 7.77. |
+
+Source locations in the PDF: Table 2.2 printed p.15 (PDF page 32), Table 2.3 printed p.16 (PDF page 33), Table 2.5 printed p.18 (PDF page 35). The income values marked “calculated” are arithmetic from the table's displayed production and cost totals; they are not being presented as separately transcribed BPS income figures. For dairy, do not confuse the reported feed subcategories with a complete feed recipe. Table 2.2 shows feed components do not necessarily add cleanly due to survey classification/rounding; retain published total feed cost and shares as the primary values.
+
+**Remaining extraction queue:** Table 2.4 pig, Table 2.6 sheep, Table 2.7 native chicken, Table 2.8 layer duck, Table 2.9 Muscovy duck, Table 2.10 broiler final stock, then UPB tables 3.1–3.6 and UTL table 4.1. Broiler Table 2.10 discrepancy remains open: production Rp152,008.05 thousand minus cost Rp126,445.08 thousand = Rp25,562.97 thousand, while the published income line was previously transcribed as Rp28,639.72 thousand. Do not silently reconcile or promote that margin until visual table QA.
+
+**Evidence gate:** these aggregate survey tables do not establish animal cycle length, output timing, flock mortality, feed conversion, regional variance, scale effects or sale-stage comparability. Preserve UTP / UPB / UTL as separate strata. No runtime values promoted; owner-locked coconut/es-kelapa values unchanged; tests not run (remote GitHub documentation-only operation; no local test runner).
