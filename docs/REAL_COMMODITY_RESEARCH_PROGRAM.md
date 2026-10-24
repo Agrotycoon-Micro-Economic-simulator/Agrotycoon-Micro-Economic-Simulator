@@ -346,3 +346,17 @@ Next bulk actions: (1) obtain a locally accessible copy of the two BPS 2025 prod
 - This is a valid additional source family for the 60-row bulk crosswalk where the owner inventory includes fisheries/aquaculture commodities. This step only indexes the source; no fisheries numeric rows were extracted, and no commodity is promoted to verified based on metadata alone.
 - Next extraction must capture each table's holding stratum, period, species/product form, output unit, production value, cost, published income, feed/seed/fry and other cost categories, plus table/page reference. Keep capture fisheries distinct from aquaculture and do not infer cycle/FCR from aggregate costs.
 - The official livestock PDF download remains blocked by a cache-miss in this tool pass; broiler Table 2.10 and UPB/UTL livestock tables remain unresolved. No runtime promotion; no owner-locked coconut changes; tests not run.
+
+
+## 2026-10-24 — BPS aquaculture output/value batch added
+
+Added a shared BPS 2024 aquaculture production/value crosswalk for ten categories: patin, lele, nila, ikan mas, kakap, bandeng, rumput laut, kerapu, udang, and other fish. Source tables are published separately in tonnes and thousand rupiah, with a combined province × commodity table also available. The register records national-row values and a calculated implied Rp/kg ratio, explicitly marked as a cross-check rather than a transaction price.
+
+This is useful shared output/value evidence for matching exact owner-listed aquaculture rows, but it is not unit economics: no costs, profit, farm-stage price, seed/fry, feed quantity, FCR, survival, cycle duration, infrastructure, or tier-scale assumptions are inferred. A dash for national gurame remains unavailable, not zero. Capture fisheries and aquaculture remain separate.
+
+Sources:
+- https://www.bps.go.id/id/statistics-table/2/MTUxMyMy/produksi-perikananbudidayamenurut-komoditas-utama.html
+- https://www.bps.go.id/id/statistics-table/2/MTUxNCMy/nilai-produksi-perikanan-budidaya-menurut-komoditas-utama.html
+- https://www.bps.go.id/id/statistics-table/3/YUVSTWJDOUlaRFpXYWsxcmVUY3hkMWxpY0hoVFVUMDkjMyMwMDAw/volume-produksi-dan-nilai-produksi-perikanan-budidaya-menurut-provinsi-dan-komoditas-utama.html
+
+Next: extract actual SEP 2024 fishery cost tables if the publication PDF can be reached; in parallel, retrieve the livestock PDF via an alternate official BPS endpoint and visually resolve broiler UTP Table 2.10 before adding UPB Tables 3.1–3.6 / UTL Table 4.1. Then continue the coordinated 60-row crosswalk. No runtime promotion; no tests run.
