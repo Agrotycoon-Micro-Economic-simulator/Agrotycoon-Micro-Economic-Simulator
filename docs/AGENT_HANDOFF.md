@@ -1,3 +1,13 @@
+## Continuation checkpoint — UTP sheep and poultry extraction (2026-10-24, later update)
+
+- Added further official BPS SEP 2024 UTP table values to `docs/COMMODITY_60_BULK_DATA_REGISTER.md` and audit to `docs/COMMODITY_60_BULK_AUDIT.md`: sheep (production 689.79k Rp/head, cost 242.91k, income 446.88k, feed 135.42k / 55.75%); native chicken (34.15k, 15.61k, published income 18.53k, feed 10.94k / 70.05%; 0.01k rounding difference); layer duck per 1,000 heads (140,316.23k production, 75,420.46k cost, 64,895.77k income, 60,009.13k feed / 79.57%); Muscovy duck (39.80k, 20.75k, published income 19.06k, feed 15.56k / 74.98%; 0.01k rounding difference); broiler FS per 5,000 final-stock heads (152,008.05k production, 126,445.08k cost, 28,639.72k published income, 81,754.62k feed / 64.66%). All figures are national UTP 2024 averages; k = thousand rupiah.
+- Broiler Table 2.10 arithmetic still does not reconcile: production minus cost = 25,562.97k, Rp3,076.75k below published income. Preserve source and arithmetic separately pending QA. Do not silently change published income.
+- This continuation's additional commits: register `d7daa799ad678a743d170abb20521ff104c83981`; audit `a3370aad771248320a8d1ae17bb887750a2962dd`. Earlier in this same continuation: register `42dbd6b921a3174aeae020868964b56ef92d1460`, audit `dc8c91510f58612c221f307053ad056bf694011d`, handoff `2bcf3978bc966158c3e4d8316153463f0312c3c5`.
+- Source is the official BPS SEP 2024 livestock PDF, Tables 2.6–2.10, printed pp.19–23 / PDF pp.36–40; publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html.
+- Tests not run; documentation-only changes. No runtime parameters changed; coconut/es-kelapa owner benchmark preserved. Next: extract pig Table 2.4 with arithmetic QA; then UPB Tables 3.1–3.6 and UTL Table 4.1, preserving the separate survey strata.
+
+---
+
 ## Latest checkpoint — BPS SEP 2024 UTP table extraction (2026-10-24)
 
 - Active branch: `feat/production-tier-taxonomy`. All writes in this continuation are to this feature branch only; `main` untouched. No merge/rebase and no runtime code/parameters changed.
