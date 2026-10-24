@@ -1,3 +1,10 @@
+
+
+## Methodology gate — SEP 2024 holding types remain separate (2026-10-24)
+
+The BPS technical notes define three distinct agricultural-holding strata: UTP (an individual holding managed by one person with technical, legal and economic responsibility, without a separate legal entity), UPB (an agricultural corporation with legal entity), and UTL (other agricultural holdings). SEP 2024 sampling design is not interchangeable across these strata: UTP uses a stratified two-stage sample because holdings tend to cluster in settlements, while UPB uses complete enumeration of the identified list frame because the population is limited and more dispersed. Source: BPS, *Penjelasan Teknis Survei Ekonomi Pertanian 2024*, official BPS-hosted copy discoverable at https://web-api.bps.go.id/download.php?f=zGrhkeTcLs1vRIKvSznvQWhQUk1LUVFsc2NaVndZZjl2NHc2dCtwNloveDBQZUxrd3FZRTRjdmZUbUREaGRBK2M5amVEZDNWc1V2L1BVOVMyYy84b3I5WmRGZUxTZXZKN216RDFhS1N3YUh5VnBGNDNpcTF3VDRJRGh3RkgrN3pBamNONE1SbHpwSjJZM2VzS1lkeGV2T1I4NDNRVDF3UnJGZFVveDRab3pwTk9QSFNPenVTVUVqYUZna3pBdU93SmpodGJ6SlNmS1dPQU5jZlA5NUsyYUQ4MVJ2WVFZNVZTbHV2YktEMjdqUE5yMEYvL2tnVEdYQUhwaGJOUmRFZ05xb3o2a0F4S2thTmZJd3RyRzFySE9vNy9sL3VqMmJaWEVuTDVDTnkxbU5JTGJUUWcwaml4TFdnQnYwPQ%3D%3D.
+
+**Interpretation rule:** do not pool UTP, UPB and UTL cost/profit values into one “national average” or treat differences as pure scale effects. Preserve holding type, reference period, commodity/product form, table/page, denominator, production stage, and reported income. The existing UTP livestock rows are not UPB/UTL evidence. UPB Tables 3.1–3.6 and UTL Table 4.1 remain open until their actual table values and page references are captured from the official livestock publication. Search-result snippets alone are not accepted as extraction. No runtime changes; no tests run.
 ## Checkpoint — livestock table reconciliation and remaining UTP coverage (2026-10-22)
 
 ### New verification status
