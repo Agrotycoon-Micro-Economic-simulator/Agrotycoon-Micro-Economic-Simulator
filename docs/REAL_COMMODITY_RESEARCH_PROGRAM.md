@@ -390,3 +390,15 @@ BPS's official 2024 aquaculture establishment statistics table corroborates the 
 ## 2026-10-24 — historical price fallback while 2025 volume is blocked
 
 An indexed extraction of BPS 2024 producer-price publication Table 2.1.4 (“Harga Produsen Ikan Belanak Menurut Provinsi (Rp/Kg), 2024”) exposes national January–April values for ikan belanak: Rp24,226/kg, Rp24,337/kg, Rp24,372/kg, and Rp24,386/kg. Record as 2024 historical producer prices only. BPS publication page: https://www.bps.go.id/id/publication/2025/04/22/a193ac1aa4e9cb09fbd82001/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.html. The indexed table text was surfaced from a PDF mirror whose direct fetch returned 403; source-image QA remains required. Do not extrapolate missing months, label these as 2025 prices, or apply them to different species or production systems. Keep the national 2025 publication's actual numeric table extraction as an open priority.
+
+## 2026-10-24 — fishery source extraction checkpoint
+
+### Evidence newly recorded
+1. BPS 2024 mullet producer-price table: national row for January–April 2024 is Rp24,226; Rp24,337; Rp24,372; and Rp24,386 per kg. Evidence is search-indexed text and requires visual verification against the original table. It is not a current local price or aquaculture cost/profit measure. Official publication: https://www.bps.go.id/id/publication/2025/04/22/a193ac1aa4e9cb09fbd82001/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2024.html .
+2. BPS *Statistik Perusahaan Budidaya Ikan 2024* confirms 654 active incorporated aquaculture companies: brackish grow-out 444, hatchery 99, freshwater grow-out 68, marine grow-out 43. Its abstract says input/output, labor/wage, production volume/value and production costs are covered, but no numerical cost table was extracted here. Source: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html .
+
+### Next extraction sequence
+- Obtain the BPS 2025 producer-price publication's actual PDF/table data and extract named fish species, month, province/national row, unit, price stage, printed page and exact source link. Never substitute 2024 observations for 2025/2026.
+- Obtain the numeric tables in *Statistik Perusahaan Budidaya Ikan 2024* and SEP 2024 subsector fisheries publication. Capture species/activity, holding stratum (UPB versus UTP/UTL), denominator, production period, output volume/value, costs, labor and feed/seed/energy components where printed.
+- Visually validate table values against page images whenever only search snippets are accessible. Search-result snippets are leads, not sufficient final validation for runtime use.
+- Keep producer-price series, value/volume ratios, corporate establishment cost structures, and household holding cost structures as separate evidence classes. No full unit-economics model or runtime approval until one commodity-stage row has compatible output unit, production cycle, yield, and matched cost bundle.
