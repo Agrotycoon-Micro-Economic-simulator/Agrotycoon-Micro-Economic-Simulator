@@ -5817,3 +5817,10 @@ The older historical tail of this handoff was retained in Git history at parent 
 - Broiler UTP Table 2.10 remains blocked on the Rp3,076.75k discrepancy. UPB Tables 3.1–3.6 and UTL Table 4.1 remain pending direct extraction/visual QA.
 - Commits in this continuation: `6d07596b883712ddae51cecaf4030e4049d965db` updates `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md`; `4e9280f3a0acfe8e031adeda379049cbaec8d006` updates `docs/COMMODITY_60_BULK_DATA_REGISTER.md`. Documentation-only. No runtime or map files changed. No tests run; no local checkout available.
 - Next: retrieve the official PDF through an accessible direct download/alternate official mirror and visually inspect the table pages; only then append numeric UPB/UTL rows and resolve the broiler table. Continue the 60-row crosswalk after preserving strata, units, periods, and cost scope. Never modify `main` or map prototype files.
+
+
+## Continuation checkpoint — fisheries source indexed, livestock extraction still blocked (2026-10-24)
+
+- Verified official BPS SEP 2024 fisheries publication metadata (catalogue 5401009; publication 05200.25002; released 23 Jan 2025; listed PDF size 6.94 MB): https://www.bps.go.id/id/publication/2025/01/23/9d6edb0cfc82283e01d19a77/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-perikanan.html. Added it to the shared source queue for fisheries/aquaculture rows in the 60-commodity register. This is source indexing only; no numeric fisheries rows have been claimed.
+- Re-attempted the official BPS livestock download through its publication-page link. Web extraction returns cache miss; no new table values could be visually checked. Keep UTP broiler Table 2.10 discrepancy and UPB Tables 3.1–3.6 / UTL Table 4.1 open.
+- No runtime or map files changed. No tests run; no local checkout available. Next: extract fisheries tables from official PDF if accessible, while finding an alternate direct/official route to the livestock PDF and then verifying the outstanding tables. Preserve source periods, holding strata, units, cost scope, and published-vs-calculated differences.
