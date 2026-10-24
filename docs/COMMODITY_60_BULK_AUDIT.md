@@ -484,3 +484,17 @@ Source tables are printed pp.19–23 (PDF pp.36–40) of the official BPS SEP 20
 ## Audit addendum — pig UTP Table 2.4 (2026-10-24)
 
 BPS SEP 2024 Table 2.4, printed p.17 / PDF p.34: per-head production Rp1,732.79k, cost Rp518.55k, published income Rp1,214.24k, feed cost Rp377.24k (72.75% of cost). Arithmetic reconciles exactly. Published feed components include corn Rp24.21k, forage Rp38.26k, concentrate/manufactured feed Rp143.92k, and other feeds Rp170.86k. This closes the previously queued UTP pig-table extraction; it does not provide the missing cycle, liveweight, mortality or farm-level cost structure needed for a complete tier model. No runtime changes; tests not run.
+
+
+## Aquaculture output/value anchors added to the 60-row matrix (2026-10-24)
+
+BPS's 2024 statistical tables sourced to KKP provide national aquaculture production volumes and production values by main commodity. The crosswalk is recorded in `docs/COMMODITY_60_BULK_DATA_REGISTER.md` with the original units and calculated implied Rp/kg values for patin, lele, nila, ikan mas, kakap, bandeng, rumput laut, kerapu, udang and “ikan lainnya.”
+
+These calculated ratios are **implied production value per kg**, not observed transaction prices, profit, or farm-gate price quotes. The production table reports tonnes and the value table thousand rupiah, so the quotient is numerically Rp/kg; it still requires product-stage and methodology reconciliation before it can support a game price. “Gurame” is shown as a dash in the national row in both tables and is treated as unavailable, not zero.
+
+Official sources:
+- BPS, *Produksi Perikanan Budidaya Menurut Komoditas Utama (Ton), 2024*: https://www.bps.go.id/id/statistics-table/2/MTUxMyMy/produksi-perikananbudidayamenurut-komoditas-utama.html
+- BPS, *Nilai Produksi Perikanan Budidaya Menurut Komoditas Utama (Ribu Rupiah), 2024*: https://www.bps.go.id/id/statistics-table/2/MTUxNCMy/nilai-produksi-perikanan-budidaya-menurut-komoditas-utama.html
+- BPS, *Volume Produksi dan Nilai Produksi Perikanan Budidaya Menurut Provinsi dan Komoditas Utama, 2024*: https://www.bps.go.id/id/statistics-table/3/YUVSTWJDOUlaRFpXYWsxcmVUY3hkMWxpY0hoVFVUMDkjMyMwMDAw/volume-produksi-dan-nilai-produksi-perikanan-budidaya-menurut-provinsi-dan-komoditas-utama.html
+
+This expands output/value evidence only; it does not change 60-row economic-model completeness, tier recipes, costs, yields, or runtime approvals. The official SEP 2024 fishery cost publication remains queued for direct table extraction. No runtime changes; no tests run.
