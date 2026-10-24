@@ -378,3 +378,10 @@ Indexed BPS *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikan
 BPS's variable metadata defines producer fish price as the amount received by the fisher/aquaculture producer at the first sale to a buyer/collector, before distribution cost, levies, and intermediary margins. This gives the price evidence an explicit transaction-stage standard. The actual 2025 monthly commodity/province observations remain unextracted; do not treat the metadata itself as a numeric quote. Keep this series distinct from the 2024 production-value/volume ratios, which are calculated national output-value cross-checks.
 
 Metadata: https://sirusa.bps.go.id/metadata/variabel/308935. Next: extract monthly producer-price observations and align exact commodity, capture/aquaculture status, province, month, unit, and product form. No runtime promotion.
+
+
+## 2026-10-24 — source-scope correction for fish producer prices
+
+Do not assume BPS variable metadata https://sirusa.bps.go.id/metadata/variabel/308935 is the metadata record for the national 38-province 2025 producer-price publication: the page identifies its related activity as “Survei Data Perikanan Kota Tangerang 2025.” Use its definition only as a transaction-stage reference unless linkage to the national publication is proven. The separate national publication page confirms monthly producer-price data across 38 provinces, but its numeric species/month/province values still need extraction: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html.
+
+BPS's official 2024 aquaculture establishment statistics table corroborates the 654-company count split (tambak 444, hatchery 99, freshwater 68, marine 43): https://www.bps.go.id/assets/statistics-table/2/MTEyOSMy/jumlah-perusahaan-budidaya-perikanan-menurut-jenis-budidaya.html. This is metadata/frame context only. No numeric fish prices or company cost tables extracted; no runtime promotion.
