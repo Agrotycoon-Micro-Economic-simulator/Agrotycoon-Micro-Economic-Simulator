@@ -507,3 +507,8 @@ Indexed BPS *Statistik Perusahaan Budidaya Ikan 2024* (Catalogue 5403011 / Publi
 This source is a promising company-level evidence lane for formal/larger-scale aquaculture, not a proxy for UTP household farms. The official PDF download route currently returns a web cache miss, so this step records source metadata only; it does not claim table-level costs or commodity economics have been extracted. Capture-fishery companies are a separate source and must not be pooled with aquaculture.
 
 Next extraction priority: obtain the BPS company publication through an alternate official endpoint or table-indexed text; meanwhile continue attempts to access the SEP 2024 fishery cost tables. No runtime promotion, no complete model count increase, tests not run.
+
+
+## Audit note — fish producer-price metadata scope (2026-10-24)
+
+BPS metadata variable https://sirusa.bps.go.id/metadata/variabel/308935 is associated with the activity “Survei Data Perikanan Kota Tangerang 2025.” Its first-sale producer-price definition may inform transaction-stage interpretation, but that specific metadata record does not prove national 38-province coverage. Keep it separate from the national BPS 2025 producer-price publication until a table-level linkage is verified. The publication page confirms monthly rural producer-price coverage across 38 provinces, but numeric fish observations remain unextracted. BPS's separate company-count table confirms 654 active aquaculture companies in 2024, only a frame count—not cost/profit evidence. No runtime or model-validation status changes.
