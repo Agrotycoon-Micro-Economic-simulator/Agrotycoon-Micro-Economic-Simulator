@@ -498,3 +498,12 @@ Official sources:
 - BPS, *Volume Produksi dan Nilai Produksi Perikanan Budidaya Menurut Provinsi dan Komoditas Utama, 2024*: https://www.bps.go.id/id/statistics-table/3/YUVSTWJDOUlaRFpXYWsxcmVUY3hkMWxpY0hoVFVUMDkjMyMwMDAw/volume-produksi-dan-nilai-produksi-perikanan-budidaya-menurut-provinsi-dan-komoditas-utama.html
 
 This expands output/value evidence only; it does not change 60-row economic-model completeness, tier recipes, costs, yields, or runtime approvals. The official SEP 2024 fishery cost publication remains queued for direct table extraction. No runtime changes; no tests run.
+
+
+## Official formal-aquaculture company source queued (2026-10-24)
+
+Indexed BPS *Statistik Perusahaan Budidaya Ikan 2024* (Catalogue 5403011 / Publication 05200.25013; released 5 Dec 2025). Its official abstract confirms coverage of company inputs/outputs, workers and wages, production volume/value, and production costs. The 2024 frame contains 654 active legal-entity aquaculture companies: 444 mainly brackish-water grow-out, 43 marine grow-out, 99 hatcheries, and 68 freshwater grow-out. Official source: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html.
+
+This source is a promising company-level evidence lane for formal/larger-scale aquaculture, not a proxy for UTP household farms. The official PDF download route currently returns a web cache miss, so this step records source metadata only; it does not claim table-level costs or commodity economics have been extracted. Capture-fishery companies are a separate source and must not be pooled with aquaculture.
+
+Next extraction priority: obtain the BPS company publication through an alternate official endpoint or table-indexed text; meanwhile continue attempts to access the SEP 2024 fishery cost tables. No runtime promotion, no complete model count increase, tests not run.
