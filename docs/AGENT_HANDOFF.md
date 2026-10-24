@@ -1,3 +1,14 @@
+## Latest checkpoint — map prototype assessed (2026-10-24)
+
+- Reviewed `peta.html` (`2037dcf5f4a36a326e087e1a543d737c2a1bed71`), `js/map_engine.js` (`5c125d164db08e7f9f069a08c914b7f8419cdd38`), main state/economy/accounting modules, browser smoke and harvest tests, and world-simulation architecture docs.
+- Decision: **the concept is reusable; do not integrate the current code as-is**. Reusable UX: 1 Ha tile map, click-to-inspect land, pan/zoom, road/market visuals and trucks. Main blocker: the map is an isolated prototype with private cash/stock/land state, hard-coded Rp3,500/unit sales and Rp2m/Ha acquisition, no save integration, and no ledger reconciliation.
+- Concrete defects documented in `docs/WORLD_SIMULATION_ENGINE.md` and `docs/IMPLEMENTATION_STATUS_2026-10-17.md`: NPC truck sales incorrectly credit player cash; repeated harvest generates stock without maturity/cycle/labor/inventory checks; repeated truck dispatch can sell the same payload multiple times; map state disappears on reload; pan/zoom/network expansion need work; no dedicated map tests found. No runtime code changed in this review.
+- Commits: architecture decision `cc4d93b0a437d66a0a4667478347bfa5461d4b06`; implementation status `bfa4d57dc2331427d289ffba49bb65ae7bf9483d`. Handoff refresh follows in its own commit.
+- Next implementation gate: define one adapter to authoritative `S.gold`, `S.stock`, `S.trees`, `S.landSystem`, `S.ledger` and save/migration; implement validated map commands; reserve stock on dispatch and settle delivery exactly once; isolate NPC accounts; add map unit/integration/browser tests. Keep map prototype non-authoritative until those tests pass.
+- Existing livestock research remains open: verify broiler UTP Table 2.10 discrepancy; proceed with UPB Tables 3.1–3.6 and UTL Table 4.1. Keep survey strata separate. No runtime values promoted, coconut owner benchmark unchanged. Tests not run; no local checkout/test runner.
+
+---
+
 ## Latest continuation — pig UTP table extracted (2026-10-24)
 
 - Completed BPS SEP 2024 UTP Table 2.4 extraction and reconciliation. Pig per-head national average: production Rp1,732.79 thousand; cost Rp518.55 thousand; published income Rp1,214.24 thousand; feed Rp377.24 thousand (72.75% of cost). Income reconciles exactly to production minus cost. Added source and component breakdown to register/audit.
