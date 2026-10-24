@@ -460,3 +460,15 @@ Additional 2024 national UTP results transcribed from the table totals:
 “Derived difference” is explicitly calculated as published production minus published cost, not an independently transcribed income row. These figures are national survey averages per head in UTP, not Tier-specific live production recipes or local transaction prices. Keep the UTP sample separate from formal agricultural corporations (UPB) and other agricultural holdings (UTL). Do not infer feed quantity/FCR, cycle duration, mortality, weight, housing or price stage from these totals alone.
 
 Open arithmetic/data-quality issue remains for UTP broiler Table 2.10 (printed p.23): production Rp152,008.05 thousand per 5,000 final-stock heads minus cost Rp126,445.08 thousand = Rp25,562.97 thousand, while the previously transcribed published income value is Rp28,639.72 thousand. This is unresolved; no margin promotion until the displayed table is visually checked. No runtime changes; owner coconut benchmark unchanged; tests not run.
+
+
+## Audit addendum — sheep and poultry UTP tables (2026-10-24)
+
+Verified additional 2024 national UTP values from the official BPS SEP livestock PDF:
+- Meat sheep, Table 2.6, per head: production Rp689.79k; cost Rp242.91k; published income Rp446.88k; feed Rp135.42k (55.75% of cost). Arithmetic reconciles.
+- Native chicken, Table 2.7, per head: production Rp34.15k; cost Rp15.61k; published income Rp18.53k; feed Rp10.94k (70.05%). Production minus cost is Rp18.54k, a Rp0.01k rounding gap; preserve the published income.
+- Layer duck, Table 2.8, per 1,000 heads: production Rp140,316.23k; cost Rp75,420.46k; published income Rp64,895.77k; feed Rp60,009.13k (79.57%). Arithmetic reconciles.
+- Muscovy duck / itik Manila, Table 2.9, per head: production Rp39.80k; cost Rp20.75k; published income Rp19.06k; feed Rp15.56k (74.98%). Production minus cost is Rp19.05k, a Rp0.01k rounding gap; preserve the published income.
+- Broiler final stock, Table 2.10, per 5,000 heads: production Rp152,008.05k; cost Rp126,445.08k; published income Rp28,639.72k; feed Rp81,754.62k (64.66%). Production minus cost is Rp25,562.97k, leaving an unresolved Rp3,076.75k discrepancy versus the published income.
+
+Source tables are printed pp.19–23 (PDF pp.36–40) of the official BPS SEP 2024 livestock publication. These are UTP national averages, not UPB formal-company data or farm-specific Tier models. Preserve distinct denominators (per head, per 1,000 heads, per 5,000 final-stock heads) and the BPS-reported income values; do not silently overwrite source figures with calculated differences. Broiler discrepancy stays an explicit data-quality blocker pending visual/source QA. No runtime changes; owner benchmark unchanged; tests not run.
