@@ -697,3 +697,30 @@ Table 2.4, printed p.17 / PDF p.34, reports national UTP averages per head (thou
 | UTL | 1 June 2023–31 May 2024 | Rolling 12-month window differs from UPB calendar year and may differ from UTP table reference conventions. |
 
 Methodology note: the BPS UPB/UTL fieldwork manual describes costs as goods/services actually purchased or paid and used during the period, with imputed unpaid labor and own/free land rent as specific exceptions. Keep reported cost definitions and imputed components explicit when crosswalking to a game HPP model. Official publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html. The official download endpoint returned a cache miss in this continuation; no UPB/UTL values are added from search snippets. UPB Tables 3.1–3.6 and UTL Table 4.1 remain pending direct extraction/visual QA. No runtime promotion; tests not run.
+
+
+## BPS 2024 aquaculture production/value crosswalk — bulk evidence only (2026-10-24)
+
+Official BPS statistical tables sourced to the Ministry of Marine Affairs and Fisheries (KKP) expose 2024 aquaculture output volume and production value by province and main commodity. These are complementary output/value anchors, not a farm budget or a substitute for the SEP 2024 fishery cost tables.
+
+Sources:
+- Production volume, tonnes: https://www.bps.go.id/id/statistics-table/2/MTUxMyMy/produksi-perikananbudidayamenurut-komoditas-utama.html
+- Production value, thousand rupiah: https://www.bps.go.id/id/statistics-table/2/MTUxNCMy/nilai-produksi-perikanan-budidaya-menurut-komoditas-utama.html
+- Combined province × commodity volume/value table: https://www.bps.go.id/id/statistics-table/3/YUVSTWJDOUlaRFpXYWsxcmVUY3hkMWxpY0hoVFVUMDkjMyMwMDAw/volume-produksi-dan-nilai-produksi-perikanan-budidaya-menurut-provinsi-dan-komoditas-utama.html
+
+National 2024 totals transcribed from the Indonesia row. The BPS production table is in tonnes; value table is thousand Rp. The final column is an arithmetic implied unit value calculated as (thousand Rp)/(tonne), numerically equivalent to Rp/kg. It is **not** labelled as an observed farm-gate price and should only be used as a cross-check pending method/product-stage reconciliation.
+
+| Aquaculture commodity | Production (tonnes) | Production value (thousand Rp) | Implied value (Rp/kg, calculated) |
+|---|---:|---:|---:|
+| Patin | 381,969 | 7,806,188,701 | 20,437 |
+| Lele | 1,157,755 | 23,480,176,919 | 20,281 |
+| Nila | 1,563,327 | 43,220,360,928 | 27,646 |
+| Ikan mas | 523,796 | 15,276,148,494 | 29,164 |
+| Kakap | 10,563 | 519,999,083 | 49,228 |
+| Bandeng | 792,864 | 17,676,236,525 | 22,294 |
+| Rumput laut | 9,853,604 | 24,287,266,362 | 2,465 |
+| Kerapu | 16,063 | 1,492,770,473 | 92,932 |
+| Udang | 958,463 | 63,478,642,288 | 66,230 |
+| Ikan lainnya | 496,206 | 14,398,554,065 | 29,017 |
+
+**Data-quality / model gate:** the table lists “Gurame” as the first commodity but the national row is “-” in both tables; preserve as unavailable rather than treating dash as a confirmed zero. Values above were calculated from two separately published BPS tables and rounded to the nearest Rp/kg; they are not directly transcribed price observations. Do not use as Tier-specific selling prices, profit, HPP, FCR, survival rate, cycle length, feed recipe, or capital assumptions. Crosswalk only where the owner's exact inventory contains the matching aquaculture species and production form. Keep capture fisheries distinct from aquaculture. The SEP 2024 fishery publication remains the primary pending source for cost structure; no numeric SEP fishery costs were extracted in this step. No runtime promotion.
