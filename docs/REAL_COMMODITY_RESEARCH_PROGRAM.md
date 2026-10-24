@@ -369,3 +369,12 @@ Added BPS *Statistik Perusahaan Budidaya Ikan 2024* as a formal-company research
 Official source: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html
 
 The PDF download route returned cache miss in this retrieval path; no numeric table data were extracted in this checkpoint. Keep this company census distinct from individual/household SEP UTP evidence and keep capture-fishery companies separate. Next step: obtain the official PDF or its searchable text through another official BPS route and extract per-commodity output, cost components, labor, and unit denominators; do not promote metadata or company counts into economic assumptions.
+
+
+## 2026-10-24 — 2025 fishery producer-price transaction stage clarified
+
+Indexed BPS *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025* (released 24 April 2026; monthly survey across 38 provinces). Official publication: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html.
+
+BPS's variable metadata defines producer fish price as the amount received by the fisher/aquaculture producer at the first sale to a buyer/collector, before distribution cost, levies, and intermediary margins. This gives the price evidence an explicit transaction-stage standard. The actual 2025 monthly commodity/province observations remain unextracted; do not treat the metadata itself as a numeric quote. Keep this series distinct from the 2024 production-value/volume ratios, which are calculated national output-value cross-checks.
+
+Metadata: https://sirusa.bps.go.id/metadata/variabel/308935. Next: extract monthly producer-price observations and align exact commodity, capture/aquaculture status, province, month, unit, and product form. No runtime promotion.
