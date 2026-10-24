@@ -360,3 +360,12 @@ Sources:
 - https://www.bps.go.id/id/statistics-table/3/YUVSTWJDOUlaRFpXYWsxcmVUY3hkMWxpY0hoVFVUMDkjMyMwMDAw/volume-produksi-dan-nilai-produksi-perikanan-budidaya-menurut-provinsi-dan-komoditas-utama.html
 
 Next: extract actual SEP 2024 fishery cost tables if the publication PDF can be reached; in parallel, retrieve the livestock PDF via an alternate official BPS endpoint and visually resolve broiler UTP Table 2.10 before adding UPB Tables 3.1–3.6 / UTL Table 4.1. Then continue the coordinated 60-row crosswalk. No runtime promotion; no tests run.
+
+
+## 2026-10-24 — formal aquaculture cost source added to research queue
+
+Added BPS *Statistik Perusahaan Budidaya Ikan 2024* as a formal-company research lane. Its official abstract confirms input/output, labor/wages, production volume/value and production-cost coverage. BPS reports 654 active legal-entity companies in 2024, comprising 444 mainly brackish-water grow-out companies, 43 marine grow-out, 99 hatcheries, and 68 freshwater grow-out.
+
+Official source: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html
+
+The PDF download route returned cache miss in this retrieval path; no numeric table data were extracted in this checkpoint. Keep this company census distinct from individual/household SEP UTP evidence and keep capture-fishery companies separate. Next step: obtain the official PDF or its searchable text through another official BPS route and extract per-commodity output, cost components, labor, and unit denominators; do not promote metadata or company counts into economic assumptions.
