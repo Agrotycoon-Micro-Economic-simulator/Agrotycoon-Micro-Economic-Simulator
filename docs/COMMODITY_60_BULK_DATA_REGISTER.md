@@ -739,3 +739,12 @@ Related official source: BPS *Statistik Perusahaan Penangkapan Ikan 2024* also c
 https://perpustakaan.bps.go.id/opac/search?media=soft&page=528&subyek%5B0%5D=2
 
 No runtime values promoted. This source metadata does not establish any Tier 1–4 model by itself.
+
+
+## Producer-price source and transaction-stage definition refreshed — BPS 2025 (2026-10-24)
+
+Indexed BPS, *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025*, Catalogue 7103013 / Publication 06200.26009, released 24 April 2026, 16.32 MB. The publication reports rural producer prices collected monthly across 38 provinces. Official page: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html.
+
+BPS metadata defines producer price for fish as the average Rp/kg received by the fisher/aquaculture producer on the first sale to a buyer or collector, before distribution costs, levies, or intermediary margins. This helps define a comparable transaction stage, but the specific 2025 monthly rows still need extraction by commodity and province. Metadata source: https://sirusa.bps.go.id/metadata/variabel/308935. Do not substitute this definition with the separate 2024 output-value ÷ output-volume ratio; the latter is only an implied value cross-check.
+
+No numeric 2025 fish price observation was added in this step. Preserve product form, capture vs aquaculture, province, month, and unit when extracting the publication. No runtime promotion.
