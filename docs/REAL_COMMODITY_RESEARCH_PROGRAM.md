@@ -338,3 +338,11 @@ Next bulk actions: (1) obtain a locally accessible copy of the two BPS 2025 prod
 - The manual describes costs as goods/services actually purchased/paid and used during the period, with specific exceptions for imputed unpaid labor and own/free land rent. This scope matters when comparing published cost totals to a game model that separately values owner labor or land.
 - UTP Table 2.10 broiler discrepancy remains unresolved. UPB Tables 3.1–3.6 and UTL Table 4.1 remain queued pending direct table extraction/visual QA. No values guessed, no runtime promotion, no owner-locked coconut benchmark changes, and no tests run (no local checkout).
 - Sources: official publication page https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html ; BPS *Pedoman Survei Ekonomi Pertanian 2024* UPB/UTL fieldwork manual (search-indexed copy; use as methodology reference, not as numeric table source).
+
+
+## Cross-subsector official-source indexing — fisheries SEP 2024 (2026-10-24)
+
+- Identified and verified the official BPS publication *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Perikanan*: catalogue 5401009, publication 05200.25002, released 23 January 2025, file listed as 6.94 MB. The publication describes cost structure by commodity and agricultural holding type. Official page: https://www.bps.go.id/id/publication/2025/01/23/9d6edb0cfc82283e01d19a77/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-perikanan.html.
+- This is a valid additional source family for the 60-row bulk crosswalk where the owner inventory includes fisheries/aquaculture commodities. This step only indexes the source; no fisheries numeric rows were extracted, and no commodity is promoted to verified based on metadata alone.
+- Next extraction must capture each table's holding stratum, period, species/product form, output unit, production value, cost, published income, feed/seed/fry and other cost categories, plus table/page reference. Keep capture fisheries distinct from aquaculture and do not infer cycle/FCR from aggregate costs.
+- The official livestock PDF download remains blocked by a cache-miss in this tool pass; broiler Table 2.10 and UPB/UTL livestock tables remain unresolved. No runtime promotion; no owner-locked coconut changes; tests not run.
