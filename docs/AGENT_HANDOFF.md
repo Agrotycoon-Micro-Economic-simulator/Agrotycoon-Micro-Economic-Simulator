@@ -5843,3 +5843,12 @@ The older historical tail of this handoff was retained in Git history at parent 
 - Official PDF download returned cache miss through this web retrieval path. No numeric company table values were extracted; no claim that this source solves the fishery-cost blocker. See the source entry in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, with corresponding audit/program updates.
 - Next: seek the PDF/searchable text through another official BPS endpoint, then transcribe table numbers with table/page, species/product form, denominator, reference period, and cost breakdown. Keep legal-entity company data separate from UTP/UTL and capture fisheries separate from aquaculture. Continue attempting SEP 2024 fishery cost extraction and livestock Table 2.10 visual QA.
 - Docs-only commits so far in this continuation: register `450896638e6883df5219b31f632e5aea61e0fc01`; audit `b17cd03cbf05a4c5cda47dc5ffdb859ddb583b67`; program `3f698a2552514d5fa0615079e6fe9a3c4ca10365`. Update this handoff after any further work. No runtime/map files changed; no tests run; owner coconut/es-kelapa values unchanged.
+
+
+## Continuation checkpoint — fishery price-stage source added (2026-10-24)
+
+- Added BPS *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025*, released 24 April 2026, monthly survey across 38 provinces: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html.
+- BPS metadata defines fish producer price as what the fisher/aquaculture producer receives at the first sale to a buyer/collector, before distribution costs, levies, and intermediary margins: https://sirusa.bps.go.id/metadata/variabel/308935.
+- This defines the comparable price stage, but no 2025 numeric monthly observation was extracted in this step. Do not confuse it with the previously recorded national production-value ÷ volume ratios, which are only implied-value cross-checks.
+- Updated `docs/COMMODITY_60_BULK_DATA_REGISTER.md` (commit `d98cb411eb049b168dc7fb40aa28346a8d830e1e`) and `docs/REAL_COMMODITY_RESEARCH_PROGRAM.md` (commit `ecd3d1966b42a7ab305cce8b435a1fe757415c34`). Continue by extracting exact monthly producer prices by commodity/province and the official aquaculture company cost tables. The SEP 2024 fishery cost PDF remains unextracted; broiler Table 2.10 reconciliation remains open.
+- Documentation-only; no runtime/map changes; no tests run; no local checkout. Keep owner-locked coconut/es-kelapa values unchanged.
