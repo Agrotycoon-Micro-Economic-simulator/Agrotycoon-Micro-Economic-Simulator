@@ -1499,3 +1499,17 @@ A first source-category crosswalk maps historical producer-price evidence to 17 
 - Newly added row-level table references: #8 tomato, #14 papaya, #16 cabbage, #17 carrot, #18 green beans, #19 cucumber, #39 cacao, #40 oil palm, #42 nutmeg and #48 thick rubber. The detailed tables expose provincial annual values 2020–2024; this does not mean every province/year cell is available.
 - Corrected table attribution in the crosswalk: Table 2.11 Buncis national 2024 Rp12,701/kg; Table 2.20 Tomat Sayur national 2024 Rp11,955/kg. These are historical producer averages, not 2026 quotes.
 - Model completeness remains 0/60; economically verified rows 0/60; runtime-approved rows 0/60. No runtime values, commodity IDs or owner-locked coconut benchmark changed. Documentation-only; tests not run.
+
+
+## Map prototype review — `peta.html` (2026-10-24)
+
+**Decision: reuse the concept, not the current implementation as-is.** The tile-map UX is a useful starting point for land/plot selection, drag-pan, zoom, road access, market buildings and truck visualization. Source review covered `peta.html`, `js/map_engine.js`, `js/state.js`, `js/data.js`, `js/economy.js`, `js/akuntansi.js`, existing browser smoke and harvest tests, and `docs/WORLD_SIMULATION_ENGINE.md`.
+
+Blocking issues found:
+- Map maintains private `gold=5,000,000` and private inventory/land/vehicle state; it does not use authoritative main-game `S.gold`, `S.stock`, `S.trees`, `S.landSystem`, `S.ledger` or save migration. This would create two economies and unbalanced accounting.
+- NPC truck arrival incorrectly credits the player's cash; the player truck and NPC truck both use the same hard-coded `payload × Rp3,500` revenue path.
+- Harvest can be repeated without maturity/cycle/labor/stock checks. Repeated dispatches can sell the same payload more than once before the first truck arrives.
+- Fixed prices and tile costs are not tied to commodity market stage, regional costs, current land contracts, or the approved economic model. The Rp50m market requirement also sits outside the main finance system.
+- Reload discards map ownership/buildings; zoom is not cursor-anchored; pan bounds and expanding road/network are incomplete. No dedicated map regression tests were found in the inspected test inventory.
+
+Safe path: keep the page as a visual prototype until an adapter uses one source of truth for cash, land, production, inventory, transactions and persistence. Then implement validated commands and tests for stock reservation/one-time delivery, NPC isolation, harvest cooldown and labor, land purchase/adjacency, affordability, save/load, pan/zoom and browser integration. No runtime code was changed in this review; tests not run. See the detailed architecture decision in `docs/WORLD_SIMULATION_ENGINE.md`.
