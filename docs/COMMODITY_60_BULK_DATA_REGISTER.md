@@ -664,3 +664,20 @@ Source locations in the PDF: Table 2.2 printed p.15 (PDF page 32), Table 2.3 pri
 **Remaining extraction queue:** Table 2.4 pig, Table 2.6 sheep, Table 2.7 native chicken, Table 2.8 layer duck, Table 2.9 Muscovy duck, Table 2.10 broiler final stock, then UPB tables 3.1–3.6 and UTL table 4.1. Broiler Table 2.10 discrepancy remains open: production Rp152,008.05 thousand minus cost Rp126,445.08 thousand = Rp25,562.97 thousand, while the published income line was previously transcribed as Rp28,639.72 thousand. Do not silently reconcile or promote that margin until visual table QA.
 
 **Evidence gate:** these aggregate survey tables do not establish animal cycle length, output timing, flock mortality, feed conversion, regional variance, scale effects or sale-stage comparability. Preserve UTP / UPB / UTL as separate strata. No runtime values promoted; owner-locked coconut/es-kelapa values unchanged; tests not run (remote GitHub documentation-only operation; no local test runner).
+
+
+## Additional BPS SEP 2024 UTP poultry and sheep rows (2026-10-24)
+
+Further direct PDF extraction, national UTP averages for reference year 2024. Values are in thousand rupiah per stated unit; “income” below is the published Table C value unless noted.
+
+| Table / commodity | Unit | Production | Production cost | Published income | Feed cost | Feed share of cost | QA note |
+|---|---|---:|---:|---:|---:|---:|---|
+| 2.6 Meat sheep | per head | 689.79 | 242.91 | 446.88 | 135.42 | 55.75% | Production minus cost = 446.88; reconciles. |
+| 2.7 Native chicken (ayam kampung biasa) | per head | 34.15 | 15.61 | 18.53 | 10.94 | 70.05% | Difference is 18.54; 0.01 gap likely rounding. Preserve published income. |
+| 2.8 Layer duck | per 1,000 heads | 140,316.23 | 75,420.46 | 64,895.77 | 60,009.13 | 79.57% | Production minus cost = 64,895.77; reconciles. |
+| 2.9 Muscovy duck (itik Manila) | per head | 39.80 | 20.75 | 19.06 | 15.56 | 74.98% | Published income differs by 0.01 from subtraction (19.05); retain published value and flag rounding. |
+| 2.10 Broiler FS final stock | per 5,000 heads | 152,008.05 | 126,445.08 | 28,639.72 | 81,754.62 | 64.66% | Does not reconcile: subtraction gives 25,562.97, difference from published income = 3,076.75. Keep unresolved pending visual/source QA. |
+
+Source: official BPS *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan*, UTP Tables 2.6–2.10, printed pp.19–23 (PDF pages 36–40); official publication page https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html. Text extraction confirms Table 2.10 explicitly reports total production 152,008.05, costs 126,445.08, feed 81,754.62 and published income 28,639.72 (thousand Rp per 5,000 final-stock heads); do not “correct” BPS's income figure silently.
+
+**Modeling limits:** UTP national averages are descriptive anchors, not farm-specific Tier 1–4 inputs. Per-head or per-1,000/5,000-head units differ; normalize only when the denominator and production stage are preserved. No cycle length, mortality, feed conversion, weight target, housing configuration, local input prices, or contract/integrator terms are inferred. No runtime promotion; owner coconut/es-kelapa values unchanged; tests not run.
