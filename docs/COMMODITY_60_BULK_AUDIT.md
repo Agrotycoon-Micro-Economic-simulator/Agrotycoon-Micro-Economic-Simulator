@@ -446,3 +446,17 @@ Extracted the full 26-row national annual summary from Kementan Pusdatin, *Stati
 The consolidated table adds comparable producer-stage evidence across grains/legumes, roots, horticulture, plantation crops and livestock: maize, mung bean, soybean, peanut, potato, red chili, bird's-eye chili, garlic, banana, citrus, salak, robusta coffee, pepper, rubber, dried clove, cattle, buffalo, goat, pig, generic live chicken and layer eggs, while also independently cross-checking previously recorded singkong, ubi jalar, shallot, mango and coconut observations. Source units are preserved: Rp/kg for most crops, Rp/sisir for banana, Rp/butir for mature coconut, Rp/kg liveweight for livestock, and Rp/kg for eggs.
 
 **Important:** Table 2.1 is a national producer-price summary, not retail price, farm cost, yield, loss, FCR, processing conversion or profit evidence. Generic chicken/cattle/banana labels do not automatically map to specific production systems/cultivars. The 2024 national producer coconut value Rp3,422/butir remains separate from the owner's Rp13,000 direct-retail whole coconut and all other owner-locked es kelapa parameters. No owner values are overwritten. No runtime parameters or canonical IDs changed; tests not run.
+
+
+## Audit addendum — direct extraction from BPS SEP 2024 UTP tables (2026-10-24)
+
+The official BPS SEP 2024 livestock PDF is accessible via the publication page's “Unduh Publikasi” link (134 pages). This corrects the earlier access limitation: the page fetch had failed, but the PDF download link itself resolves and its text is extractable. Official publication page: https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-peternakan.html.
+
+Additional 2024 national UTP results transcribed from the table totals:
+- Dairy cattle (Table 2.2; printed p.15): production Rp10,141.12 thousand/head; cost Rp5,094.66 thousand/head; derived difference Rp5,046.46 thousand/head; feed cost Rp4,074.74 thousand/head (79.98% of cost).
+- Beef buffalo (Table 2.3; printed p.16): production Rp3,697.39 thousand/head; cost Rp533.97 thousand/head; derived difference Rp3,163.42 thousand/head; feed cost Rp143.84 thousand/head (26.94%).
+- Meat goat (Table 2.5; printed p.18): production Rp660.93 thousand/head; cost Rp155.39 thousand/head; derived difference Rp505.54 thousand/head; feed cost Rp57.85 thousand/head (37.23%).
+
+“Derived difference” is explicitly calculated as published production minus published cost, not an independently transcribed income row. These figures are national survey averages per head in UTP, not Tier-specific live production recipes or local transaction prices. Keep the UTP sample separate from formal agricultural corporations (UPB) and other agricultural holdings (UTL). Do not infer feed quantity/FCR, cycle duration, mortality, weight, housing or price stage from these totals alone.
+
+Open arithmetic/data-quality issue remains for UTP broiler Table 2.10 (printed p.23): production Rp152,008.05 thousand per 5,000 final-stock heads minus cost Rp126,445.08 thousand = Rp25,562.97 thousand, while the previously transcribed published income value is Rp28,639.72 thousand. This is unresolved; no margin promotion until the displayed table is visually checked. No runtime changes; owner coconut benchmark unchanged; tests not run.
