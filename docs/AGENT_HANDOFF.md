@@ -1,3 +1,11 @@
+
+## Non-map continuation — SEP strata and next evidence gate (2026-10-24)
+
+- Reviewed the latest non-map research sequence and the existing commodity audit, register, tier standard, unit-economics contract and research program; also rechecked Library blueprint search results for `harga komoditi.docx`, `data game.docx`, and `data peternakan dan pertanian.docx`.
+- Added a methodology gate to the audit and research program: UTP, UPB and UTL remain separate. BPS technical notes distinguish UTP stratified two-stage sampling from complete enumeration of the identified UPB list frame. Do not pool these strata or treat their margins as directly comparable without qualification.
+- UPB Tables 3.1–3.6 and UTL Table 4.1 remain unextracted in this checkpoint; only a table title/search snippet is not accepted as numeric evidence. Next step is to capture the actual values/page references from the official BPS livestock PDF, while separately resolving UTP broiler Table 2.10 arithmetic.
+- The latest ten non-map commits reviewed were the BPS extraction/audit/handoff sequence: UTP cattle/buffalo/goat; sheep/native chicken/ducks/broiler; pig; and their register/audit/handoff checkpoints. The three map-review commits are intentionally excluded from the work queue.
+- No map files or runtime code changed. No tests run; no local checkout is available through this runtime. Coconut/es-kelapa owner values remain locked.
 ## Latest checkpoint — map prototype assessed (2026-10-24)
 
 - Reviewed `peta.html` (`2037dcf5f4a36a326e087e1a543d737c2a1bed71`), `js/map_engine.js` (`5c125d164db08e7f9f069a08c914b7f8419cdd38`), main state/economy/accounting modules, browser smoke and harvest tests, and world-simulation architecture docs.
