@@ -402,3 +402,16 @@ An indexed extraction of BPS 2024 producer-price publication Table 2.1.4 (“Har
 - Obtain the numeric tables in *Statistik Perusahaan Budidaya Ikan 2024* and SEP 2024 subsector fisheries publication. Capture species/activity, holding stratum (UPB versus UTP/UTL), denominator, production period, output volume/value, costs, labor and feed/seed/energy components where printed.
 - Visually validate table values against page images whenever only search snippets are accessible. Search-result snippets are leads, not sufficient final validation for runtime use.
 - Keep producer-price series, value/volume ratios, corporate establishment cost structures, and household holding cost structures as separate evidence classes. No full unit-economics model or runtime approval until one commodity-stage row has compatible output unit, production cycle, yield, and matched cost bundle.
+
+
+## 2026-10-25 — official-source access test and fallback plan
+
+The official BPS records were opened again. *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025* metadata confirms catalogue 7103013, publication 06200.26009, release 24 April 2026, 16.32 MB and monthly rural observations across 38 provinces. Its official download failed retrieval because the response exceeded the tool's 10 MiB limit. *Statistik Perusahaan Budidaya Ikan 2024* (catalogue 5403011, publication 05200.25013, 28.05 MB) contains input/output, labor/wages, production volume/value and costs, but the official download returned a cache miss. The official SEP 2024 fishery-cost publication page also returned a cache miss. No numeric values were extracted from these failed attempts.
+
+### Fallback extraction protocol
+1. Search official BPS AllStats/search index for individual table titles and exact species/activity names, rather than repeatedly downloading the entire large PDF.
+2. For each candidate, capture the numeric row, units, period, geographical level, production stage, holding type, printed page, table title and official source URL.
+3. If values are exposed only in indexed text, classify them as provisional and require visual verification before runtime use.
+4. For aquaculture companies, separate hatchery from grow-out and freshwater, brackish and marine activities. Do not divide aggregate costs by aggregate production unless both refer to the same activity and denominator.
+5. For SEP, preserve UTP/UPB/UTL strata and their survey-design differences; do not merge holding types into a synthetic average without explicit justification.
+6. Keep price-only records separate from complete unit economics. A full commodity model requires matched price/output, yield or cycle, and production costs with a clear denominator.
