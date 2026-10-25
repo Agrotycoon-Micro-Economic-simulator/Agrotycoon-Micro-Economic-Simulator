@@ -794,3 +794,22 @@ BPS, *Statistik Perusahaan Budidaya Ikan 2024*, catalogue 5403011 / publication 
 ### 2025 price-series and cost-table extraction gate
 
 The official BPS 2025 producer-price publication exists (released 24 April 2026) and covers monthly rural producer-price observations in 38 provinces, but no numeric 2025 fish table was extracted in this pass: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html . The SEP 2024 fishery-cost publication confirms that it contains cost structures by agricultural holding unit, but numeric tables remain unextracted: https://www.bps.go.id/id/publication/2025/01/23/9d6edb0cfc82283e01d19a77/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-perikanan.html . Keep these as research leads, not model-ready cost evidence.
+
+
+## 2026-10-25 — official publication access QA (numeric extraction blocked)
+
+### Official 2025 producer-price publication
+
+Confirmed official metadata for *Statistik Harga Produsen Pertanian Subsektor Peternakan dan Perikanan 2025*: catalogue 7103013, publication 06200.26009, release 24 April 2026, 16.32 MB. BPS states that monthly producer-price data cover rural areas in 38 provinces. The official “Unduh Publikasi” link was opened, but the web retrieval failed with a response-size error (>10 MiB); no numeric 2025 fish table was obtained in this pass. Therefore, do not enter any 2025 species/month values from this access attempt. Official record: https://www.bps.go.id/id/publication/2026/04/24/471c9fc5982e7c8927c362f8/statistik-harga-produsen-pertanian-subsektor-peternakan-dan-perikanan-2025.html .
+
+### Official aquaculture company publication
+
+Confirmed official metadata for *Statistik Perusahaan Budidaya Ikan 2024*: catalogue 5403011, publication 05200.25013, released 5 December 2025, 28.05 MB. The publication abstract explicitly covers company input/output, labor and wages, production volume/value, and production costs. The official download attempt returned a cache-miss retrieval error; no numeric cost/output table was obtained in this pass. This is an access limitation, not evidence that the tables are absent. Official record: https://www.bps.go.id/id/publication/2025/12/05/9e66e7740d8ef066adb18bfc/statistik-perusahaan-budidaya-ikan-2024.html .
+
+### SEP 2024 fishery-cost publication
+
+The official publication record states it contains fishery-subsector agricultural business cost structures disaggregated by agricultural holding unit. Opening the publication record returned a cache miss, and no numerical table was extracted. Official record: https://www.bps.go.id/id/publication/2025/01/23/9d6edb0cfc82283e01d19a77/hasil-survei-ekonomi-pertanian-sep-2024-subsektor-perikanan.html .
+
+### QA disposition
+
+These are verified official source records but still **not numeric cost/yield evidence**. Keep the 2025 fish price series and both fishery cost datasets pending. Continue with an accessible table/search-index route or obtain the official PDFs through a supported download path; capture printed page and table title and visually reconcile each value. No model/runtime status changes.
