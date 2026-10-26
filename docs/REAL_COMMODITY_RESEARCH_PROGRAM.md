@@ -443,7 +443,7 @@ Official BPS publication: [Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai d
 |---|---|---:|---:|---:|---:|---:|---:|
 | UPB, Table 3.1 (printed p.27) | Oil palm, per 100 trees | 29,772.24 | 14,435.11 | 15,453.08 | 2.25 | 1.38 | 13,502.29 kg/100 trees |
 | UTL, Table 4.1 (printed p.31) | Cayenne pepper, per hectare | 207,483.01 | 99,094.45 | 108,388.56 | 37.67 | 22.95 | 0.56 kg/m² |
-| UTL, Table 4.2 (printed p.31) | Oil palm, per 100 trees | 25,143.89 | 13,218.16 | 12,046.95 | 2.07 | 1.29 | 12,443.49 kg/100 trees |
+| UTL, Table 4.2 (printed p.32) | Oil palm, per 100 trees | 25,143.89 | 13,218.16 | 12,046.95 | 2.07 | 1.29 | 12,443.49 kg/100 trees |
 
 Cost structure highlights:
 - **UPB oil palm:** fertilizer 3,619.73 (25.08% of costs); wages/agricultural services 5,666.89 (39.26%); fuel/lubricants 795.38 (5.51%); rent and estimated rent for own/rent-free land 2,256.19 (15.63%).
