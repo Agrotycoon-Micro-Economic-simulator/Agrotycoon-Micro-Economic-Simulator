@@ -813,3 +813,19 @@ The official publication record states it contains fishery-subsector agricultura
 ### QA disposition
 
 These are verified official source records but still **not numeric cost/yield evidence**. Keep the 2025 fish price series and both fishery cost datasets pending. Continue with an accessible table/search-index route or obtain the official PDFs through a supported download path; capture printed page and table title and visually reconcile each value. No model/runtime status changes.
+
+
+## 2026-10-26 — BPS Central Kalimantan household aquaculture cost tables (historical fallback)
+
+Official provincial BPS source: *Angka Provinsi Kalimantan Tengah — Hasil Survei ST2013 Subsektor Rumah Tangga Usaha Budidaya Ikan, 2014*, catalogue 5106014.62, published by BPS Provinsi Kalimantan Tengah. The PDF was directly opened and its table text inspected. The cost tables are **historical 2014 per-cycle household aquaculture benchmarks for Central Kalimantan**, not national averages and not current prices. Monetary figures below are thousand rupiah as printed. Keep product units/area denominators separate; the patin table uses per m² while the other three tables use 100 m² or hectare.
+
+| Table / printed page (PDF page) | Commodity and denominator | Output volume | Production value (000 Rp) | Production cost (000 Rp) | Reported business surplus (000 Rp) | Feed cost (000 Rp; % cost) | Seed cost (000 Rp; % cost) | Labor cost incl. imputed unpaid labor (000 Rp; % cost) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| 17.1 / p.23 (PDF p.43) | Bandeng, per hectare per cycle | 287.62 kg | 2,949.60 | 2,169.73 | 779.87 (26.44% of production value) | 65.96 (3.04%) | 450.25 (20.75%) | 599.41 (27.63%) |
+| 17.2 / p.24 (PDF p.44) | Nila, per 100 m² per cycle | 233.73 kg plus broodstock output | 8,353.03 | 5,565.87 | 2,787.16 (33.37% of production value) | 2,012.54 (36.16%) | 681.22 (12.24%) | 1,544.53 (27.75%) |
+| 17.3 / p.25 (PDF p.45) | Lele, per 100 m² per cycle | 178.91 kg plus broodstock output | 3,921.06 | 3,461.26 | 459.80 (11.73% of production value) | 1,362.77 (39.37%) | 659.92 (19.07%) | 856.01 (24.73%) |
+| 17.4 / p.26 (PDF p.46) | Patin broodstock, per m² per cycle | 402.18 kg broodstock output | 6,749.07 | 5,230.24 | 1,518.83 (22.50% of production value) | 3,070.44 (58.71%) | 513.17 (9.82%) | 1,047.70 (20.03%) |
+
+These table rows are suitable as **historical, regional cost-structure anchors only**. They include estimated unpaid labor and other costs such as land, depreciation, credit interest, energy and fisheries services; do not treat “surplus usaha” as a clean cash-only margin. Product and denominator caveats are material: bandeng output is per hectare; nila and lele per 100 m²; patin is specifically broodstock per m², not market-size food fish. No unit-cost or hectare conversion should be applied across those unlike bases without a separately stated calculation and explicit assumptions. Do not merge these 2014 regional observations with BPS 2024 national value/volume ratios or BPS formal-company records as if they were one cohort. No game runtime values promoted.
+
+Source PDF (official BPS provincial publication, table text and pages verified): https://web-api.bps.go.id/download.php?f=afbY+JcKhB4Q9ggMv1ZrvXlIU20wTE0wOTduVUV2Y1pLdkhEcnMzem9EOHZVWmoxS04yNEdqQ0RsVTk0OTVHN295bFVwVlVjbHlVdnpkenV4TiswTmd5NURlUWd0MzdzK0w4c3QyNW1NZkdiSGlROEtRSCtBWWFGTllTMU5neHV3QWRONjJhNTRXVytpQ0padlEyY3FpSlk1bG9obEdDaDJMU3JldzNzbC9TVzB3UTh0YmtRZUpHdDBKMFdmRjFkTXB3alVlcmEwMEpldlhXcVpNM3ZKdmc2UUY3ck5LTTZpL016RHRlbTJuOTJWcVYydnZJM2pZbUZtVVdTMzdwR0lSOC9heTZBeHBBTlQrdTVYcmJaVitjL2YvOHdPSW5SS2tIOGJtM1VLYldIL3FVc2ZoQW1kU0VnVTZGelpXK0FjSTJUMGc5OHQ3WmdOTks2bFpRbUZFdmdYdndCWFZIbXl5d041Zz09
