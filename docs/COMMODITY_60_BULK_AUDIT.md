@@ -547,3 +547,25 @@ New numeric evidence extracted from the official BPS Provinsi Kalimantan Tengah 
 Arithmetic check: reported surplus reconciles to production value minus production cost for all four tables. Reported surplus percentages are 26.44%, 33.37%, 11.73%, and 22.50% respectively. The report's cost totals include estimated unpaid labor and other costs; surplus is not a cash-only margin. Denominators are non-interchangeable (hectare, 100 m², m²) and the patin row is broodstock, not table-size fish. Treat this as a regional historical cross-check and method template; do not promote directly into the 60-commodity runtime or conflate with 2024 national aquaculture output/value ratios or formal-company statistics.
 
 Official source PDF: https://web-api.bps.go.id/download.php?f=afbY+JcKhB4Q9ggMv1ZrvXlIU20wTE0wOTduVUV2Y1pLdkhEcnMzem9EOHZVWmoxS04yNEdqQ0RsVTk0OTVHN295bFVwVlVjbHlVdnpkenV4TiswTmd5NURlUWd0MzdzK0w4c3QyNW1NZkdiSGlROEtRSCtBWWFGTllTMU5neHV3QWRONjJhNTRXVytpQ0padlEyY3FpSlk1bG9obEdDaDJMU3JldzNzbC9TVzB3UTh0YmtRZUpHdDBKMFdmRjFkTXB3alVlcmEwMEpldlhXcVpNM3ZKdmc2UUY3ck5LTTZpL016RHRlbTJuOTJWcVYydnZJM2pZbUZtVVdTMzdwR0lSOC9heTZBeHBBTlQrdTVYcmJaVitjL2YvOHdPSW5SS2tIOGJtM1VLYldIL3FVc2ZoQW1kU0VnVTZGelpXK0FjSTJUMGc5OHQ3WmdOTks2bFpRbUZFdmdYdndCWFZIbXl5d041Zz09
+
+## 2026-10-26 — SEP 2024 UTP crop and estate tables extracted, with reconciliation QA
+
+Ten official BPS SEP 2024 tables were directly read from the 124-page official PDF: UTP Tables 2.1–2.10, printed pp.15–24. These provide national-average 2024 production value and cost structure for paddy, maize, shallot, green chili, big red chili, curly red chili, cayenne pepper, oil palm, rubber and coconut. Full source rows, denominator, unit-price fields and cost shares are recorded in the bulk data register.
+
+| Commodity | Production value (000 Rp) | Cost (000 Rp) | Published income (000 Rp) | Income/value |
+|---|---:|---:|---:|---:|
+| Paddy, per ha | 26,369.86 | 15,287.59 | 11,082.11 | 42.03% |
+| Maize, per ha | 20,943.60 | 11,486.06 | 9,457.54 | 45.16% |
+| Shallot, per ha | 141,997.49 | 75,286.09 | 66,711.41 | 46.98% |
+| Green chili, per ha | 96,295.28 | 40,216.90 | 56,078.37 | 58.24% |
+| Big red chili, per ha | 159,090.37 | 60,775.69 | 98,314.68 | 61.80% |
+| Curly red chili, per ha | 135,680.79 | 54,709.62 | 80,971.17 | 59.67% |
+| Cayenne pepper, per ha | 103,548.29 | 34,607.54 | 68,940.75 | 66.58% |
+| Oil palm, per 100 trees | 24,378.94 | 10,112.64 | 14,266.32 | 58.51% |
+| Rubber, per 100 trees | 5,438.61 | 1,643.87 | 3,794.75 | 69.77% |
+| Coconut, per 100 trees | 12,788.56 | 4,642.55 | 8,146.04 | 63.70% |
+
+Percentages above are calculated as the source's published income divided by production value; they are not a claim of net profit after every economic opportunity cost beyond the survey's cost definition. Green chili has a 0.01 thousand Rp mismatch between displayed production-minus-cost and published income; preserve source income rather than silently correcting it. BPS notes some cost/subsidy imputations are not yet estimated. Keep these UTP records separate from UPB/UTL and do not infer harvest cycles, per-plant yield, current local prices or transformation recipes from annual averages. No runtime values approved.
+
+Official source: https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html
+PDF: https://web-api.bps.go.id/download.php?f=c8PKr3LM32mtv1hwb+JMyW1SOTRVdy9JeXpENmNBK2ozMEkzaVFyZUtHeWpRb3RQUmNPMnA3TDBoT3lWV0MySFNoRTNISlFrdmd4SEhNd2oxWXY4UU9jZEcydXBFeUV6djY2NEEyay9XSXdiQ0NZWVlOcmpESkxBV2tJUjB0T0VOd0NFOG1UZUhBSEJVekdibzZ2M2xzcTdsZ0VscERjRnZHWUtoV3JyKzZlblZXRHgrQzh6ci9BcjMzNWRYblhaeG90aGs3NzZJUHk0VGNtQlo1YlVjT2lsWG16RlJDTDE4dWJJVXk1V2QwL0lYd3M5MHpNMnRvMmcxL3dFd0tiNnFIRzJvL3VmdDVVT2ZDZTJaLzFWSEtLTWpGbTEwMjdXSkZSWElkeDlsOXhnc3NydkdTMThUVU1kS0pOQjkxV01RWHVCNUx6cmN0V1pNQTdXWTFNazE0Y0g2Q1VrOGZLRERoRytybTd4SDRNQU4zMm1XM2JsYXJKMndSazNrcGR3MlY0enpHRHc2WUZpcENucE1kczRMb0t2ZUNYUUN6cDgvaFZUL0s2anlYb01Xa042eHlIWElaWjQ1YTg9
