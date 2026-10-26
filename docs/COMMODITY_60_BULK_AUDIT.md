@@ -569,3 +569,28 @@ Percentages above are calculated as the source's published income divided by pro
 
 Official source: https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html
 PDF: https://web-api.bps.go.id/download.php?f=c8PKr3LM32mtv1hwb+JMyW1SOTRVdy9JeXpENmNBK2ozMEkzaVFyZUtHeWpRb3RQUmNPMnA3TDBoT3lWV0MySFNoRTNISlFrdmd4SEhNd2oxWXY4UU9jZEcydXBFeUV6djY2NEEyay9XSXdiQ0NZWVlOcmpESkxBV2tJUjB0T0VOd0NFOG1UZUhBSEJVekdibzZ2M2xzcTdsZ0VscERjRnZHWUtoV3JyKzZlblZXRHgrQzh6ci9BcjMzNWRYblhaeG90aGs3NzZJUHk0VGNtQlo1YlVjT2lsWG16RlJDTDE4dWJJVXk1V2QwL0lYd3M5MHpNMnRvMmcxL3dFd0tiNnFIRzJvL3VmdDVVT2ZDZTJaLzFWSEtLTWpGbTEwMjdXSkZSWElkeDlsOXhnc3NydkdTMThUVU1kS0pOQjkxV01RWHVCNUx6cmN0V1pNQTdXWTFNazE0Y0g2Q1VrOGZLRERoRytybTd4SDRNQU4zMm1XM2JsYXJKMndSazNrcGR3MlY0enpHRHc2WUZpcENucE1kczRMb0t2ZUNYUUN6cDgvaFZUL0s2anlYb01Xa042eHlIWElaWjQ1YTg9
+\n\n
+
+## SEP 2024 — UPB and UTL comparison checkpoint (2026-10-26)
+
+Official BPS publication: [Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan](https://www.bps.go.id/id/publication/2025/01/24/8faa8436999bb9b54ba0b7a9/hasil-survei-ekonomi-pertanian--sep--2024--nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan--hortikultura--dan-perkebunan.html), Catalogue 5101026, publication 05100.25001. The indexed table text was cross-checked against the same publication PDF. All values below are **thousand rupiah (000 Rp)** and are survey averages, not a retail price list.
+
+| Survey stratum / table | Commodity and denominator | Production value | Production cost | Published income | Producer price (000 Rp/kg) | Unit cost (000 Rp/kg) | Productivity |
+|---|---|---:|---:|---:|---:|---:|---:|
+| UPB, Table 3.1 (printed p.27) | Oil palm, per 100 trees | 29,772.24 | 14,435.11 | 15,453.08 | 2.25 | 1.38 | 13,502.29 kg/100 trees |
+| UTL, Table 4.1 (printed p.31) | Cayenne pepper, per hectare | 207,483.01 | 99,094.45 | 108,388.56 | 37.67 | 22.95 | 0.56 kg/m² |
+| UTL, Table 4.2 (printed p.31) | Oil palm, per 100 trees | 25,143.89 | 13,218.16 | 12,046.95 | 2.07 | 1.29 | 12,443.49 kg/100 trees |
+
+Cost structure highlights:
+- **UPB oil palm:** fertilizer 3,619.73 (25.08% of costs); wages/agricultural services 5,666.89 (39.26%); fuel/lubricants 795.38 (5.51%); rent and estimated rent for own/rent-free land 2,256.19 (15.63%).
+- **UTL cayenne pepper:** seeds 9,422.05 (9.51%); fertilizer 12,582.54 (12.70%); pesticides 5,653.63 (5.71%); wages/agricultural services 15,373.35 (15.51%); rent/estimated rent 44,069.58 (44.47%).
+- **UTL oil palm:** fertilizer 3,026.97 (22.90%); wages/agricultural services 4,598.78 (34.79%); fuel/lubricants 175.62 (1.33%); rent/estimated rent 3,927.80 (29.72%).
+
+Interpretation rules:
+1. Do not pool UTP, UPB, and UTL averages. The oil-palm observations are a useful stratum comparison, not evidence that one stratum's costs can be substituted into another's game recipe.
+2. The table's unit is **per 100 trees** for oil palm and **per hectare** for cayenne pepper. Do not compare totals without normalizing denominator and production stage.
+3. UTL Table 4.2 published income (12,046.95) is preserved as printed; production value minus production cost gives 11,925.73, a 121.22 thousand Rp difference. Flag for source/table QA; do not silently replace the published figure. The other tables' displayed income should likewise be kept source-faithful.
+4. These are 2024 survey estimates of production value/cost, not collector, wholesale, or retail transaction prices, and not approved runtime Tier 1–4 prices or HPP recipes.
+5. BPS notes rounding differences and that some cost/subsidy imputations are not yet estimated.
+
+Next research step: extract comparable producer/collector/wholesale/retail price observations with date, geography, unit, quality/grade, and market stage; keep the user's locked coconut/es-kelapa business anchors separate from national survey averages.
