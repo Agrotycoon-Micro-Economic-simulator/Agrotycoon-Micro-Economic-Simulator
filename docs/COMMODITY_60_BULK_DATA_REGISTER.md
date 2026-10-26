@@ -876,3 +876,14 @@ Interpretation rules:
 5. BPS notes rounding differences and that some cost/subsidy imputations are not yet estimated.
 
 Next research step: extract comparable producer/collector/wholesale/retail price observations with date, geography, unit, quality/grade, and market stage; keep the user's locked coconut/es-kelapa business anchors separate from national survey averages.
+
+
+## 2026-10-26 — UTL Table 4.2 source-level QA: oil-palm income discrepancy remains open
+
+The official BPS SEP 2024 PDF's indexed text for Table 4.2 was checked directly (printed page 32; other records had incorrectly labelled it page 31). The table reports, for other agricultural holdings (UTL), self-harvested oil palm per 100 trees: production value 25,143.89 thousand Rp; production cost 13,218.16 thousand Rp; published income 12,046.95 thousand Rp; producer price 2.07 thousand Rp/kg; unit cost 1.29 thousand Rp/kg; productivity 12,443.49 kg/100 trees. Source table text also shows income as 91.14% in its percentage column.
+
+Arithmetic QA: 25,143.89 − 13,218.16 = 11,925.73 thousand Rp, which is 121.22 thousand Rp below the published income. This gap is too large to describe as display rounding. The indexed PDF text confirms the displayed published value but does not establish whether the source table has an arithmetic, transcription, or definition issue. Preserve all printed values, flag the discrepancy, and do not silently substitute the calculated difference or promote the income/margin to runtime.
+
+Primary source: BPS, *Hasil Survei Ekonomi Pertanian (SEP) 2024 — Nilai dan Biaya Produksi Beberapa Komoditas Utama pada Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan*, Table 4.2, printed p.32, official PDF https://web-api.bps.go.id/download.php?f=c8PKr3LM32mtv1hwb+JMyW1SOTRVdy9JeXpENmNBK2ozMEkzaVFyZUtHeWpRb3RQUmNPMnA3TDBoT3lWV0MySFNoRTNISlFrdmd4SEhNd2oxWXY4UU9jZEcydXBFeUV6djY2NEEyay9XSXdiQ0NZWVlOcmpESkxBV2tJUjB0T0VOd0NFOG1UZUhBSEJVekdibzZ2M2xzcTdsZ0VscERjRnZHWUtoV3JyKzZlblZXRHgrQzh6ci9BcjMzNWRYblhaeG90aGs3NzZJUHk0VGNtQlo1YlVjT2lsWG16RlJDTDE4dWJJVXk1V2QwL0lYd3M5MHpNMnRvMmcxL3dFd0tiNnFIRzJvL3VmdDVVT2ZDZTJaLzFWSEtLTWpGbTEwMjdXSkZSWElkeDlsOXhnc3NydkdTMThUVU1kS0pOQjkxV01RWHVCNUx6cmN0V1pNQTdXWTFNazE0Y0g2Q1VrOGZLRERoRytybTd4SDRNQU4zMm1XM2JsYXJKMndSazNrcGR3MlY0enpHRHc2WUZpcENucE1kczRMb0t2ZUNYUUN6cDgvaFZUL0s2anlYb01Xa042eHlIWElaWjQ1YTg9
+
+Next verification: inspect the rendered PDF page/table image and technical notes for the definition of “income”; if the table layout still gives no explanation, seek an independent official BPS extract or clarification. Until then, mark the value as source-reported / arithmetic-unreconciled.
