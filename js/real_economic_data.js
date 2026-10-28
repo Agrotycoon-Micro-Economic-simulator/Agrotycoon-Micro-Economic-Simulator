@@ -97,6 +97,19 @@ window.REAL_ECONOMIC_DATA={
   {feed:"Pakan layer",rpKg:7371,period:"2026-09",source:"spora"},
   {feed:"Konsentrat layer",rpKg:8345,period:"2026-09",source:"spora"}
  ],
+
+ riceNationalFoodDemand:{
+  geography:"Indonesia",referenceYear:2024,
+  sources:{
+   perCapitaConsumption:{publisher:"Badan Pusat Statistik (BPS)",title:"Rata-Rata Konsumsi per Kapita Seminggu Beberapa Macam Bahan Makanan Penting, 2015-2024",url:"https://www.bps.go.id/id/statistics-table/1/MjMxNiMx/rata-rata-konsumsi-per-kapita-seminggu-beberapa-macam-bahan-makanan-penting--2015-2024.html",releaseOrUpdate:"2026-07-17",table:"Beras lokal/ketan, 2024 column",unit:"kg/person/week",value:1.521,qualityStatus:"official_statistic",note:"Survey household consumption category; not total rice availability or total national food requirement."},
+   production:{publisher:"Badan Pusat Statistik (BPS)",title:"Luas Panen dan Produksi Padi di Indonesia 2024 (Angka Tetap)",url:"https://www.bps.go.id/id/pressrelease/2025/02/03/2414/pada-2024--luas-panen-padi-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html",releaseDate:"2025-02-03",table:"National final 2024 estimates, abstract",qualityStatus:"official_statistic",values:{harvestedAreaHa:10050000,paddyProductionGkgTon:53140000,riceProductionForFoodTon:30620000},note:"Harvested area is annual harvested area, not unique physical land area; GKG paddy production and rice production for food consumption are different product forms."}
+  },
+  observed:{weeklyPerCapitaKg:1.521,unit:"kg/person/week",itemDefinition:"beras lokal/ketan",period:"2024",source:"perCapitaConsumption"},
+  derived:{annualPerCapitaKg:79.092,formula:"1.521 kg/person/week * 52 weeks/year",unit:"kg/person/year",status:"derived_from_official_statistic",caveat:"Annualized weekly household consumption; not a comprehensive national rice requirement estimate."},
+  nationalAnnualConsumptionEstimateTon:null,populationDenominator:null,
+  production:{harvestedAreaHa:10050000,paddyProductionGkgTon:53140000,riceProductionForFoodTon:30620000,period:"2024",source:"production"},
+  status:"partial_official_data_population_and_full_demand_definition_required"
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
