@@ -5998,3 +5998,18 @@ Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satu
 1. Run browser smoke test: recommended purchase of one cup pack must deduct Rp15,000 and add exactly 50 cups; manual purchase must do the same. Check ice and sugar quantities and cash totals.
 2. Audit accounting classification in `spend()` / daily report: raw material purchases currently increase `dayLog.expense` immediately although materials remain in stock, and CAPEX is also included in the same expense total. Correct business gross-profit reporting by separating purchases/inventory, consumed HPP, operating expense, CAPEX, and personal living cost, while preserving cash flow.
 3. Wire the recipe/production planner into a playable production action; current `js/commodity_transformation.js` provides planning/calculation APIs but must be checked for actual UI/runtime integration.
+
+## 2026-10-28 — Runtime accounting correction: purchases versus expenses
+
+### Code changed
+- `js/economy.js`: `spend()` still records the full cash outflow immediately, but no longer adds business inventory purchases (`BELANJA`) or fixed-asset purchases (`CAPEX`) straight to `S.dayLog.expense`. Household grocery packs remain inventory until consumed; household personal costs and operating expenses such as harvest labor remain recognized as expenses.
+- `js/akuntansi.js`: monthly margin no longer subtracts raw-material purchases as if every purchased unit had already been consumed. The report now labels the result as a margin **before HPP, depreciation, and household costs**, and explicitly presents raw-material purchases as cash outflow rather than immediate expense.
+- This is a correction to recognition timing, not a claim that full accrual accounting is finished. Runtime still lacks reliable historical cost layers for coconut and warung material inventory, sale-linked HPP, and asset depreciation. Therefore this margin must not be presented as final accounting profit.
+
+### Verification performed
+- Static source assertions checked that `spend()` excludes `business_purchase` and `asset_purchase` from immediate expense recognition while preserving cash-out tracking.
+- Static source assertions checked that the monthly margin formula is `monthGross - monthBusinessExpense`, raw-material purchases are explicitly labelled as cash movement, and the margin label discloses missing HPP/depreciation.
+- No JavaScript runtime/syntax test, browser playthrough, or automated test suite was available through the connected repository tools. Those tests remain unrun; do not report the gameplay accounting as runtime-verified.
+
+### Next implementation task
+Implement inventory cost layers and sale-linked HPP for coconut and warung materials, keeping harvest labor separate from coconut inventory valuation as required by the owner. Only after HPP is recorded at actual consumption/sale should reports call the result accounting profit. Then test cash, stock, HPP, and report totals with a controlled purchase-and-sale scenario.
