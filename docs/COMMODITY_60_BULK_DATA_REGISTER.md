@@ -1051,3 +1051,8 @@ The same report explicitly notes that Jan–Jul production uses BPS KSA while Au
 ## Maize feed-industry source title and method clarification (2026-10-28)
 
 The 8,844,096-tonne projection source is not titled simply *Buku Jagung 2025*. The exact cover title is *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024*, Direktorat Pakan Ditjen PKH, Vol. 6 Tahun 2025. Table 26 reports the 2025 feed-industry requirement projection by region from SiJagung. The ~8.25 Mt figure in Kementan Pusdatin's *Buletin Konsumsi Pangan* Figure 5.4 is a separate 2025 projection based on the industry's reported purchase/absorption series. These are method/vintage-distinct industry-only projections; preserve both, do not add them, and do not treat either as the broader 13.603 Mt all-channel feed need (industry plus independent farmers).
+
+
+### Feed-industry projection provenance clarification (2026-10-28)
+
+The 8,844,096 t figure is from Ditjen PKH, Direktorat Pakan, *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024*, Vol. 6 Tahun 2025, Table 26 (2025 requirement projection reported through SiJagung), not a generic unqualified “Buku Jagung” figure. The ~8.25 Mt estimate in Kementan Pusdatin's bulletin is a different purchase/absorption projection series. Keep both source metadata and the unresolved method/vintage difference; neither equals total all-channel feed need of approximately 13.603 Mt, and neither is added to national total need.
