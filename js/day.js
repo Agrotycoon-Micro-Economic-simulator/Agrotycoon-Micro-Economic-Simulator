@@ -131,8 +131,12 @@ function finishDay(){
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
  if(stockClass()==='busuk'&&stockQty()>0){
   const q=stockQty();S.stats.rotten+=q;
-  const rottenValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
-  if(rottenValue>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan kelapa busuk',[{account:'Persediaan Kelapa (susut)',amount:rottenValue}]);
+  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
+  const openCoconutValue=Math.max(0,Number(S.quarterCost)||0)*Math.max(0,4-(Number(S.quarterUsed)||0))/4;
+  const rottenComponents=[];
+  if(stockValue>0)rottenComponents.push({account:'Persediaan Kelapa (susut)',amount:stockValue});
+  if(openCoconutValue>0)rottenComponents.push({account:'Persediaan Kelapa Dalam Proses (susut)',amount:openCoconutValue});
+  if(rottenComponents.length&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan kelapa busuk',rottenComponents);
   else ledger('RUGI','Kelapa busuk '+q+' butir',0);
   L.lossRot=q;S.stock={biasa:0,super:0};S.stockCostValue=0;S.quarterUsed=0;S.quarterCost=0;
  }
