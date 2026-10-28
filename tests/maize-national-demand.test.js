@@ -22,6 +22,25 @@ assert.equal(production2025.moisturePct, 14);
 assert.match(production2025.source.url, /bps\.go\.id/);
 assert.equal(production2025.source.qualityStatus, "official_statistic_final");
 assert.equal(window.REAL_ECONOMIC_DATA.maizeNationalBalanceEstimate2025, null, "do not infer a national balance without stocks, trade, losses and aligned scope");
+const balance = window.REAL_ECONOMIC_DATA.maizeNationalDemand.nationalBalanceProjection2025;
+assert.ok(balance, "official 2025 maize balance projection exists");
+assert.equal(balance.beginningStockTon, 3579102);
+assert.equal(balance.productionJpkAt14MoistureTon, 16194055);
+assert.equal(balance.lossOrSpillageTon, 748165);
+assert.equal(balance.netProductionTon, 15445889);
+assert.equal(balance.importsTon, 906040);
+assert.equal(balance.exportsTon, 76959);
+assert.equal(balance.totalAvailabilityTon, 19854073);
+assert.equal(balance.totalNeedTon, 14720163);
+assert.equal(balance.projectedEndingBalanceTon, 5133909);
+assert.equal(balance.lossRatePct, 4.62);
+assert.equal(balance.status, "official_projection");
+assert.equal(balance.source, "nationalBalance2025");
+assert.equal(balance.arithmeticAudit.netProductionDifferenceTon, -1);
+assert.equal(balance.arithmeticAudit.availabilityDifferenceTon, 1);
+assert.equal(balance.arithmeticAudit.balanceDifferenceTon, -1);
+assert.equal(balance.arithmeticAudit.status, "source_arithmetic_discrepancies_preserved");
+assert.match(balance.note, /projection/i);
 
 const data = window.REAL_ECONOMIC_DATA.maizeNationalDemand;
 
