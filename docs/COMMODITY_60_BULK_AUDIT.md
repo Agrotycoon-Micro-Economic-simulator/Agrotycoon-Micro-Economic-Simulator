@@ -762,3 +762,10 @@ These are likely display/source arithmetic inconsistencies, not meaningful econo
 ## Library note quality gate — historical DOCX design/scenario records (2026-10-28)
 
 The three substantive Library DOCX notes were cross-checked against the current source-ledger approach: `data game.docx` is a 223-page historical design archive; `harga komoditi.docx` is a 45-page worked chain-economics scenario file; `data peternakan dan pertanian.docx` is a 17-page mixed-source commodity summary. These files contain useful owner assumptions and feature ideas, but not every number is a matched official observation. In particular, batch sizes, coproduct yields, farm cost totals, BEP and profit estimates must be independently reconciled before runtime use. They do not supersede current branch contracts, owner-locked coconut business values, or official-source entries. No figures were promoted from these documents in this checkpoint.
+
+
+## Feed-industry projection discrepancy — source identity clarified (2026-10-28)
+
+The 8,844,096 t source is the Direktorat Pakan Ditjen PKH publication *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025), Table 26, a 2025 feed-industry requirement projection reported through SiJagung. The separate ~8.25 Mt value in Kementan Pusdatin's *Buletin Konsumsi Pangan* Figure 5.4 is a projection from the industry purchase/absorption series. This makes method/vintage difference plausible, but the source does not establish that the series are fully comparable or which is the definitive planning number. Keep `feedIndustryProjectionReconciliationStatus` unresolved, retain both values and provenance, and never add either industry-only projection to the 13.603 Mt all-channel feed-use estimate (which also includes independent farmers).
+
+Runtime metadata in `maizeNationalDemand.sources.feedIndustryDemand2025` now uses the exact publication title, volume, publication year 2025 and reference-data year 2024. The regression test verifies these fields and the SiJagung provenance note.
