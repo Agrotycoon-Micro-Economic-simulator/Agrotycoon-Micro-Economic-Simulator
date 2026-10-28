@@ -6397,3 +6397,10 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - Added regression assertions for year, area, moisture basis, source quality and the null balance guard in `tests/maize-national-demand.test.js`. `maizeNationalBalanceEstimate2025` stays `null`; do not subtract projected 2025 national need (~14.72 Mt) from production and call the difference a surplus until stock, imports/exports, post-harvest losses and exact product/use definitions are source-aligned.
 - Mirrored this data and its caveat in the register, audit and national-economy plan. CI run 40718376449 passed the previous moisture-basis test before this additional production assertion was added; verify the latest Actions run for commit `c5307aea4b1b2c97ba13b70f2ab27e281c47dd1f` before claiming the new assertion passed.
 - Next: check latest CI; then research official 2025 maize stock/trade/loss balance definitions if available. If not source-verifiable, retain the balance as null and proceed to the unresolved BPS SEP 2024 UTP broiler Table 2.10 / UTL oil-palm / UPB-UTL extraction queue. No map files touched.
+
+
+## Continuation checkpoint — final 2025 maize output (2026-10-28)
+
+- Runtime now includes BPS final 2025 maize output: 2.71 million ha harvested area; 16.16 million tonnes at 14% moisture. Official release 2026-02-02: https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html. Compared to 2024 final 15.14 Mt at 14% moisture, output rises 1.02 Mt (about 6.74%).
+- `maizeNationalBalanceEstimate2025` deliberately remains null. Do not infer surplus/deficit until the rounded 2025 total-demand projection, conflicting feed-industry projections, stocks, trade and losses are reconciled.
+- Added test assertions for the 2025 production source and null balance guard. The URL regex has just been corrected; verify the latest Actions run before claiming the latest test passed.
