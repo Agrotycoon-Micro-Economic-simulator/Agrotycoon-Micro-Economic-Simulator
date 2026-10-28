@@ -6126,3 +6126,29 @@ Run `node --test tests/accounting-inventory.test.js` in a real repository checko
 
 ### Next step
 Run `node --test tests/accounting-inventory.test.js` in a repository checkout, add an opened-coconut spoilage/write-off case, and reconcile the state-derived balance sheet with raw inventory and work-in-process journal balances.
+
+
+## 2026-10-28 — Bounded 60-commodity market engine foundation
+
+### Owner requirements made explicit
+- Product HPP is componentized: coconut cost, ice, syrup sugar, and plastic cup stay in separate inventory/COGS accounts. The sales total may sum them for total HPP, but the underlying cost lines must never be merged or lose component identity.
+- The 60-commodity catalog is intended to be the playable market catalog, with a price floor and ceiling for every commodity. Prices must fluctuate with transaction activity across all active players, like Sim Companies.
+
+### Code changes
+- `js/market_engine.js` added and loaded by the existing script reference in `index.html`. It validates the 60-item catalog, initializes each current price inside its configured floor/ceiling, aggregates buy/sell transaction flow by commodity, applies bounded price movement, and exposes `MARKET_ENGINE.reprice(sharedTransactions)` and `getPrice(commodityId)`.
+- `js/commodities.js` already contained all 60 entries and `marketFloor`, `marketCeiling`, and `marketPrice`. The bounds are now explicitly tagged `provisional_game_balance`: floor = 50% of basePrice and ceiling = 200% of basePrice. These are temporary game-balancing bounds, **not validated real-world price limits**, and must be calibrated from the project's cited data before final economy tuning.
+- `tests/market-engine.test.js` added coverage for all 60 bounded catalog entries, upward/downward price pressure, hard floor/ceiling enforcement, and malformed transaction rejection.
+- `tests/accounting-inventory.test.js` now asserts the es-kelapa HPP journal keeps coconut (Rp875/glass), ice (Rp500), syrup (Rp400), and cup (Rp300) as four distinct credit lines. Total recorded HPP remains their sum, Rp2,075 per glass under the current configured inputs.
+
+### Important boundary: shared-player market is not yet live
+- The pricing engine can aggregate a server-supplied transaction feed, but it does **not** create cross-player sharing by itself. The current static browser game has no verified authoritative shared transaction service wired into this module. A backend transaction ledger/feed (e.g. an authorized Supabase-backed market) must be connected before claiming that one player's trade changes prices for every other active player.
+- Until that server integration exists, do not describe local browser transactions as global market data. Server-side validation, transaction idempotency, active-player definition, time window/decay, and anti-manipulation controls remain required.
+
+### Verification status
+- Source inspection confirmed 60 catalog rows, existing floor/ceiling fields, and the HPP journal's separate component accounts. The new Node test files were added/updated, but the connected GitHub workflow tools did not provide a local `node --test` execution in this step. Do not claim the committed tests passed; they remain to be run in a repository checkout/CI.
+- No browser/E2E run was performed. No `main` changes or map-file changes were made.
+
+### Next implementation task
+1. Run `node --test tests/accounting-inventory.test.js tests/market-engine.test.js` in CI/local checkout and fix any failures.
+2. Connect the market engine to an authoritative shared transaction feed; only then wire all player buy/sell paths into it.
+3. Replace provisional 50%/200% bounds with documented, commodity-specific floors and ceilings backed by period/geography/source evidence, while preserving the owner's coconut retail baseline (Rp13,000) as a separate business price rather than a national market quote.
