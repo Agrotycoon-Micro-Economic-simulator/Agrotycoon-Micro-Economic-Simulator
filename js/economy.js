@@ -28,9 +28,16 @@ function spend(cat,desc,amt,field,detail){
   credit:value,
   basis:'cash'
  });
- // Cash purchases are not automatically expenses: business stock is expensed when consumed/sold,
- // and CAPEX is an asset. HPP/asset depreciation are not yet fully integrated into runtime reports.
- if(!['household_inventory_purchase','business_purchase','asset_purchase'].includes(mapping.classification))S.dayLog.expense+=value;
+ // Separate profit-and-loss expense from cash movements. Stock purchases remain inventory;
+ // CAPEX remains an asset. Consumed business HPP is not yet fully costed in this prototype.
+ if(mapping.classification==='business_expense'){
+  S.dayLog.expense=(Number(S.dayLog.expense)||0)+value;
+  S.dayLog.businessExpense=(Number(S.dayLog.businessExpense)||0)+value;
+ }else if(mapping.classification==='household_personal'){
+  S.dayLog.expense=(Number(S.dayLog.expense)||0)+value;
+  S.dayLog.livingExpense=(Number(S.dayLog.livingExpense)||0)+value;
+ }
+ if(mapping.classification==='business_purchase')S.dayLog.businessPurchases=(Number(S.dayLog.businessPurchases)||0)+value;
  S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+value;
  if(field)S.dayLog[field]+=value;
 }
