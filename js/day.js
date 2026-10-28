@@ -120,10 +120,19 @@ function finishDay(){
   if(payroll.count)ledger("SDM","Rekap payroll "+payroll.count+" karyawan",0,{paid:payroll.paid,unpaid:payroll.unpaid});
  }
  if(typeof AgroFinance!=="undefined")AgroFinance.accrueDay();
- // Advance the seeded world economy before incrementing the in-game clock.
+ // Advance the seeded regional simulation and the data-only NPC market before incrementing the clock.
  if(typeof AgroWorldSim!=='undefined'){
   const worldEvents=AgroWorldSim.updateDay(S.day);
   worldEvents.forEach(ev=>ledger('DUNIA_SIMULASI',ev.headline+' — '+ev.region,0,{type:ev.type,classification:ev.classification,affected:ev.affected}));
+ }
+ if(typeof BACKGROUND_ECONOMY!=='undefined'&&typeof MARKET_ENGINE!=='undefined'){
+  // Restore this save's prices before repricing. This is a local NPC simulation, not a global player market.
+  if(S.marketPrices&&typeof S.marketPrices==='object'){
+   MARKET_ENGINE.catalog.forEach(item=>{const p=Number(S.marketPrices[item.id]);if(Number.isFinite(p)&&p>=item.marketFloor&&p<=item.marketCeiling)item.marketPrice=p;});
+  }
+  const marketTick=BACKGROUND_ECONOMY.tick({day:S.day,activePlayers:1,policies:S.marketPolicies||{}});
+  S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
+  S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
  }
  const mOld=monthOf(S.day);
  S.day++;
