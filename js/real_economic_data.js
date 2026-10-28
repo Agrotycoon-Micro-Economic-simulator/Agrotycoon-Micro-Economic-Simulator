@@ -133,6 +133,20 @@ window.REAL_ECONOMIC_DATA={
   directHouseholdConsumptionTonnage:null,
   status:"official_provisional_direct_food_consumption_2024_plus_rounded_national_demand_projection_2025"
  },
+
+ maizeProduction2024:{
+  geography:"Indonesia",
+  source:{publisher:"Badan Pusat Statistik (BPS)",title:"Luas Panen dan Produksi Jagung di Indonesia 2024",url:"https://www.bps.go.id/id/publication/2025/08/15/2bb49a0af17ec89ac16971de/luas-panen-dan-produksi-jagung-di-indonesia-2024.html",releaseDate:"2025-08-15",catalogue:"5203036",publicationNumber:"05100.25006",method:"KSA jagung combined with 2024 Ubinan survey and SKJG2020 conversion survey",qualityStatus:"official_statistic"},
+  referenceYear:2024,
+  harvestedAreaHa:2550000,
+  harvestedAreaUnit:"hectare",
+  productionAt28MoistureTon:20480000,
+  productionAt14MoistureTon:15140000,
+  unit:"tonne/year",
+  status:"official_statistic_distinct_moisture_bases",
+  derivedAudit:{simpleMoistureOnlyEstimateAt14MoistureTon:17146047,formula:"20.48 million tonnes * (1 - 0.28) / (1 - 0.14)",status:"derived_audit_only",note:"Simple moisture mass-balance conversion does not reproduce BPS's separately published 15.14 million tonne estimate. BPS says its production estimates combine KSA, the 2024 Ubinan survey and SKJG2020; do not replace the official 14%-moisture figure with this arithmetic or infer that the two published values are interchangeable."},
+  note:"Both moisture-basis values are reported by the same BPS 2024 publication. Keep each with its own moisture definition. Do not compare either directly with national demand without aligning moisture basis, losses, product scope and reference period."
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
