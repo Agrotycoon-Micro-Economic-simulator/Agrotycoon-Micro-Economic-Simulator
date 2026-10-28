@@ -181,3 +181,5 @@ Required evidence lifecycle:
 - The derived annualized household value is 79.092 kg/person/year (= 1.521 × 52), explicitly marked derived. National annual consumption remains null pending a source-matched population denominator and compatible demand definition.
 - Sources, release/update dates, units, metric boundaries, and caveats are recorded in the data register and audit. This does not yet drive daily NPC demand: seasonal adjustment, stocks/losses, and stage-compatible market flow remain implementation gates.
 - Test limitation: no local checkout or Node runner was available in this session; the attempted Git clone failed because this runtime could not resolve github.com. Do not mark Node tests as passed. Add/execute a targeted assertion in a working checkout/CI next.
+
+- Added tests/rice-national-demand.test.js to assert official-source provenance, units, the 1.521 × 52 annualization, production metrics, and the null guard for national annual demand. Added the test to .github/workflows/targeted-regression.yml so the branch push workflow executes it. Execution result remains pending until CI status is retrieved; no local execution claim.
