@@ -167,15 +167,17 @@ function showReport(L,net){
  h+='<tr><td><b>Total Kotor</b></td><td class="pos"><b>'+safeRp(L.gross||0)+'</b></td></tr></table>';
  h+='<h4>📤 Pengeluaran Detail</h4><table><tr><th>Item</th><th>Nilai</th></tr>';
  L.dailyExpenses.forEach(d=>{h+='<tr><td>'+(d.item||'-')+'</td><td class="neg">-'+safeRp(d.amt||0)+'</td></tr>';});
- h+='<tr><td>🛒 Belanja bahan</td><td class="neg">-'+safeRp(L.shopping||0)+'</td></tr>';
- h+='<tr><td>👷 Kuli panen</td><td class="neg">-'+safeRp(L.labor||0)+'</td></tr>';
- h+='<tr><td>🏪 CAPEX</td><td class="neg">-'+safeRp(L.capex||0)+'</td></tr>';
- h+='<tr><td><b>Total Pengeluaran</b></td><td class="neg"><b>'+safeRp(L.expense||0)+'</b></td></tr></table>';
+ h+='<tr><td>🛒 Pembelian stok (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.shopping||0)+'</td></tr>';
+ h+='<tr><td>🏪 CAPEX/investasi (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.capex||0)+'</td></tr>';
+ h+='<tr><td>👷 Biaya usaha tercatat (termasuk upah panen)</td><td class="neg">-'+safeRp(L.businessExpense||L.labor||0)+'</td></tr>';
+ h+='<tr><td>🏠 Biaya hidup yang diakui</td><td class="neg">-'+safeRp(L.livingExpense||0)+'</td></tr>';
+ h+='<tr><td><b>Total beban yang diakui</b></td><td class="neg"><b>'+safeRp(L.expense||0)+'</b></td></tr></table>';
  h+='<h4>📦 Bahan Terpakai</h4><p>🥥 '+(L.materials.kelapa||0)+' |  '+(L.materials.ice||0)+' | 🍯 '+(L.materials.sugar||0)+' | 🥤 '+(L.materials.cup||0)+'</p>';
  if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi</p>';
  const netNum=net||0;
- h+='<h3 style="margin-top:15px">NET PROFIT: <span class="'+(netNum<0?'neg':'pos')+'">'+safeRp(netNum)+'</span></h3>';
- h+='<p><b>🤖 AI:</b> "Kamu hari ini '+(netNum>=0?'untung':'rugi')+' bersih '+safeRp(Math.abs(netNum))+'. '+(netNum>=0?'Pertahankan.':'Evaluasi belanja & cuaca.')+'"</p>';
+ h+='<h3 style="margin-top:15px">Surplus setelah beban tercatat: <span class="'+(netNum<0?'neg':'pos')+'">'+safeRp(netNum)+'</span></h3>';
+ h+='<p><b>Catatan akuntansi:</b> ini belum merupakan laba bersih final karena HPP persediaan usaha yang terpakai/terjual dan penyusutan aset belum dihitung lengkap. Pembelian stok dan CAPEX tetap mengurangi kas, tetapi tidak langsung dibebankan seluruhnya.</p>';
+ h+='<p><b>🤖 AI:</b> "Surplus sementara hari ini '+safeRp(netNum)+'. Jangan menyebutnya laba bersih final sebelum HPP bahan terpakai dan penyusutan dihitung."</p>';
  h+='<button class="btn btn-primary" onclick="closeModal()">☀ Bangun (Hari '+(S.day||1)+')</button>';
  showModal(h);
 }
