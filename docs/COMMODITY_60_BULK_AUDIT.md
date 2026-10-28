@@ -685,3 +685,5 @@ A stronger compatible source for national demand was found after the initial BPS
 - Population 284,438,800 is the 2025 mid-year projection cited to BPS Proyeksi Penduduk Indonesia 2020–2050 based on SP2020. It is a projection denominator, not a census count.
 - Sources: Bapanas consumption dataset https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional; Kementan Pusdatin, Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025, Tables 4.5–4.6, https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf.
 - Keep annual household per-capita consumption, total national demand (household + non-household), stock, production, imports, and projected balance as distinct metrics. Do not use 2024 production numbers as though they describe the 2025 forecast.
+
+- Schema correction after review: `nationalAnnualConsumptionEstimateTon` remains `null` because the official 30,975,843-ton figure includes both household and non-household demand and should not be mislabeled as household consumption. The published total is stored in `nationalDemandProjection.totalNeedTon`.
