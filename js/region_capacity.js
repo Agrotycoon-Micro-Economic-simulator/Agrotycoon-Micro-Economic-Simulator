@@ -5,6 +5,10 @@
  */
 (function (root) {
   "use strict";
+  const OFFICIAL_BENCHMARKS = Object.freeze({
+    riceHarvestedAreaHa: { value: 10050000, year: 2024, metric: "annual harvested area, not unique physical land area", source: "https://www.bps.go.id/id/pressrelease/2025/02/03/2414/pada-2024--luas-panen-padi-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html" },
+    oilPalmAreaHa: { value: 16830000, year: 2024, metric: "provisional planted area", source: "https://satudata.pertanian.go.id/assets/docs/publikasi/Buku_Analisis_Kinerja_Perdagangan_Kelapa_Sawit_2025_-_tte_sign.pdf" }
+  });
   const DEFAULTS = Object.freeze({
     population: 5000000,
     minimumNonBusinessShare: 0.98,
@@ -13,6 +17,7 @@
     activeConsumerShare: 0.92,
     region: "Indonesia — skenario permainan",
     calibrationStatus: "provisional_game_scenario",
+    officialBenchmarks: OFFICIAL_BENCHMARKS,
     landUseHa: {
       rice: null, horticulture: null, plantation: null, livestock: null,
       aquaculture: null, mining: null, industry: null, markets: null,
@@ -78,6 +83,6 @@
     };
   }
   root.REGION_CAPACITY = {
-    version: "0.1.0", defaults: DEFAULTS, normalize, allocate, producerCap, snapshot
+    version: "0.1.1", defaults: DEFAULTS, officialBenchmarks: OFFICIAL_BENCHMARKS, normalize, allocate, producerCap, snapshot
   };
 })(typeof window !== "undefined" ? window : globalThis);
