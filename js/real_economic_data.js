@@ -111,7 +111,7 @@ window.REAL_ECONOMIC_DATA={
   derived:{annualPerCapitaKg:79.092,formula:"1.521 kg/person/week * 52 weeks/year",unit:"kg/person/year",status:"derived_from_official_statistic",caveat:"Annualized weekly household consumption; not a comprehensive national rice requirement estimate."},
   perCapitaAnnualBapanas:{value:92.1,unit:"kg/person/year",commodity:"beras",period:2024,source:"bapanasConsumption2024",qualityStatus:"official_statistic"},
   populationDenominator:{value:284438800,unit:"persons",year:2025,source:"bpsPopulationProjection2020_2050_midyear",qualityStatus:"official_projection"},
-  nationalAnnualConsumptionEstimateTon:30975843,
+  nationalAnnualConsumptionEstimateTon:null,
   nationalDemandProjection:{year:2025,totalNeedTon:30975843,householdNeedTon:22527000,nonHouseholdNeedTon:8448844,unit:"tonne/year",status:"official_projection",note:"Published total differs by 1 tonne from the sum of displayed components; preserve source total and flag discrepancy."},
   nationalBalanceProjection2025:{beginningStockTon:8402277,paddyProductionGkgTon:54453100,riceProductionTon:31376296,importsTon:514804,totalAvailabilityTon:40293371,householdNeedTon:22527000,nonHouseholdNeedTon:8448844,totalNeedTon:30975843,projectedBalanceTon:9317528,unit:"tonne",status:"official_projection",source:"nationalFoodBalance2025"},
   production:{harvestedAreaHa:10050000,paddyProductionGkgTon:53140000,riceProductionForFoodTon:30620000,period:"2024",source:"production"},
