@@ -183,3 +183,12 @@ Required evidence lifecycle:
 - Test limitation: no local checkout or Node runner was available in this session; the attempted Git clone failed because this runtime could not resolve github.com. Do not mark Node tests as passed. Add/execute a targeted assertion in a working checkout/CI next.
 
 - Added tests/rice-national-demand.test.js to assert official-source provenance, units, the 1.521 × 52 annualization, production metrics, and the null guard for national annual demand. Added the test to .github/workflows/targeted-regression.yml so the branch push workflow executes it. Execution result remains pending until CI status is retrieved; no local execution claim.
+
+
+## 2026-10-28 — national rice demand model advanced from partial to sourced forecast
+
+- Extended `js/real_economic_data.js` with the Bapanas 2024 per-capita rice consumption observation (92.1 kg/person/year) and Kementan/Bapanas 2025 national balance projection, including population projection, household/non-household demand components, beginning stock, projected production, imports, availability and balance.
+- Official source: Bapanas dataset row 224, 2024 rice = 92.1 kg/person/year (published 2025-01-31); Kementan Pusdatin *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Tables 4.5–4.6, updated 2025-06-02. Links are preserved in runtime provenance.
+- Retained the BPS 2024 final production observations separately from the 2025 projection. The weekly BPS household item remains distinct from the Bapanas annual per-capita metric.
+- Data quality issue recorded: Table 4.6 published total need 30,975,843 t differs by 1 t from displayed components (22,527,000 + 8,448,844 = 30,975,844). Runtime preserves original published values and flags the discrepancy.
+- Added/updated `tests/rice-national-demand.test.js` for new data fields. Test execution and CI outcome must be verified; do not claim passing until logs/status confirm it.
