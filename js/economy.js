@@ -221,18 +221,23 @@ function sellTengkulak(){
 function confirmSellTengkulak(jual,rev){
  closeModal();
  if(!jual){say('Tengkulak','🧑‍💼','"Yaudah, lain kali aja ya Bos."');save();render();return;}
- earn('PENJUALAN','Jual tengkulak '+stockQty()+' butir',rev,{biasa:S.stock.biasa,super:S.stock.super});
- S.dayLog.sales.tengkulak=stockQty();S.dayLog.sales.tengkulakRev=rev;
- S.stats.tengkulak+=stockQty();S.stock={biasa:0,super:0};
+ const soldQty=stockQty();
+ const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):soldQty*3500;
+ if(stockValue>0)recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}]);
+ earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',rev,{biasa:S.stock.biasa,super:S.stock.super});
+ S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=rev;
+ S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
  say('Tengkulak','🧑‍💼','"Makasih Bos! Saya angkut semua ya."');
  save();render();
 }
 function sellPasar(){
  if(stockClass()!=='tua'){msg('⚠️ Pasar hanya membeli kelapa tua.');return;}
  const q=stockQty(),rev=q*DATA.pricePasarTua;
+ const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
+ if(stockValue>0)recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}]);
  earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev);
  S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
- S.stock={biasa:0,super:0};
+ S.stock={biasa:0,super:0};S.stockCostValue=0;
  say('Pedagang','👩‍🌾','Yang tua saya ambil untuk santan.');
  save();render();
 }
