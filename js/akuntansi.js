@@ -40,18 +40,21 @@ if(!S || S.ledger.length === 0){
  const monthGross=sumClass('business_revenue');
  const monthPurchases=sumClass('business_purchase');
  const monthBusinessExpense=sumClass('business_expense');
+ const monthCogs=sumClass('business_cogs');
  const monthKitchen=sumClass('household_kitchen');
  const monthInventoryPurchases=sumClass('household_inventory_purchase');
  const monthPersonal=sumClass('household_personal');
- const monthBusinessResult=monthGross-monthBusinessExpense;
+ const monthBusinessResult=monthGross-monthCogs-monthBusinessExpense;
  const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,accCashMovement(entry)),0);
  const monthCashOut=monthLedger.reduce((sum,entry)=>sum+Math.max(0,-accCashMovement(entry)),0);
  const monthNetCash=monthCashIn-monthCashOut;
  const monthOpeningCash=(Number(S.gold)||0)-monthNetCash;
  
  // HITUNG ASET
- const stockValue = stockQty() * 3500;
- const bahanWarung = ((S.warung.ice||0)*500) + ((S.warung.sugar||0)*400) + ((S.warung.cups||0)*400);
+ const stockValue = (Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):stockQty()*3500) + Math.max(0,Number(S.quarterCost)||0)*Math.max(0,4-(Number(S.quarterUsed)||0))/4;
+ const bahanWarung = Math.max(0,Number(S.warung.iceCost)||(Number(S.warung.ice)||0)*(DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions))
+  + Math.max(0,Number(S.warung.sugarCost)||(Number(S.warung.sugar)||0)*(DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions))
+  + Math.max(0,Number(S.warung.cupsCost)||(Number(S.warung.cups)||0)*(DATA.shop.cupPack.price/DATA.shop.cupPack.pcs));
  const livingStockValue = ['rice','egg','oil','mie','tempe','sayur','lauk'].reduce((sum,key)=>{
   const qty=Math.max(0,Math.floor(Number(S.livingStock&&S.livingStock[key])||0));
   const price=Math.max(0,Number(DATA.living&&DATA.living[key]&&DATA.living[key].price)||0);
@@ -78,8 +81,9 @@ if(!S || S.ledger.length === 0){
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Penjualan (kredit: Penjualan)</td><td class="pos">'+rp(monthGross)+'</td></tr>';
  h+='<tr><td>Pembelian bahan baku (arus kas; belum otomatis menjadi beban)</td><td>'+rp(monthPurchases)+'</td></tr>';
+ h+='<tr><td>HPP penjualan (kelapa utuh/es kelapa, transaksi baru)</td><td class="neg">-'+rp(monthCogs)+'</td></tr>';
  h+='<tr><td>Beban usaha lain</td><td class="neg">-'+rp(monthBusinessExpense)+'</td></tr>';
- h+='<tr><td><b>Margin usaha sebelum HPP, penyusutan, dan biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
+ h+='<tr><td><b>Margin usaha setelah HPP tercatat, sebelum penyusutan dan biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
  h+='<tr><td>Beban dapur (persediaan yang dikonsumsi, termasuk transaksi lama)</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
  h+='<tr><td>Pembelian persediaan rumah tangga (arus kas; bukan beban saat pembelian)</td><td>'+rp(monthInventoryPurchases)+'</td></tr>';
  h+='<tr><td>Pengeluaran pribadi/rumah tangga lainnya</td><td class="neg">-'+rp(monthPersonal)+'</td></tr>';
@@ -90,7 +94,7 @@ if(!S || S.ledger.length === 0){
  h+='<tr><td>Kas keluar</td><td class="neg">-'+rp(monthCashOut)+'</td></tr>';
  h+='<tr><td><b>Kas akhir hasil rekonsiliasi</b></td><td><b>'+rp(monthOpeningCash+monthCashIn-monthCashOut)+'</b></td></tr>';
  h+='<tr><td><b>Saldo kas aktual (S.gold)</b></td><td><b>'+rp(S.gold)+'</b></td></tr></table>';
- h+='<p class="accounting-note">Transaksi lama tanpa metadata diklasifikasikan secara terbatas berdasarkan kategori/uraian; transaksi yang tidak dapat dipastikan tidak dimasukkan ke kelompok usaha/rumah tangga. Pembelian bahan baku dan CAPEX tidak langsung mengurangi margin saat kas dibelanjakan. Angka margin ini belum merupakan laba akuntansi penuh: HPP berdasarkan biaya historis persediaan yang benar-benar terjual, penyusutan, dan transaksi nonkas belum seluruhnya terintegrasi.</p></div>';
+ h+='<p class="accounting-note">Transaksi lama tanpa metadata diklasifikasikan secara terbatas berdasarkan kategori/uraian. HPP penjualan kelapa utuh/es kelapa dicatat untuk transaksi baru berdasarkan biaya rata-rata persediaan kelapa dan biaya unit bahan warung; transaksi lama tidak memiliki HPP historis yang direkonstruksi. Pembelian bahan baku dan CAPEX tidak langsung mengurangi margin saat kas dibelanjakan. Angka margin belum merupakan laba akuntansi penuh karena HPP susut, komoditas lain, dan penyusutan aset belum terintegrasi seluruhnya.</p></div>';
  
  h+='<div class="panel"><h3>⚖️ Neraca Posisi Keuangan</h3>';
  h+='<h4 style="color:#2E7D32;margin:10px 0">A. ASET LANCAR (Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
