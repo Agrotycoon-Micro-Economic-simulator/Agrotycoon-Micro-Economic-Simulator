@@ -55,6 +55,7 @@ jobs:
           node tests/payroll_accounting.test.js
           node tests/production_tiers.test.js
           node tests/real_economic_data.test.js
+          node tests/rice-national-demand.test.js
           node tests/unit_economics.test.js
           node tests/world_simulation.test.js
           node tests/browser_smoke.test.js
