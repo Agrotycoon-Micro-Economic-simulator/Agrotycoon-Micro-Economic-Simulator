@@ -17,7 +17,7 @@ function defaultState(){
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
  };
 }
-function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
+function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cogsByAccount:{},cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
  materials:{kelapa:0,ice:0,sugar:0,cup:0},
  sales:{es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0},lost:0,
  dailyExpenses:[],weather:'panas',buyerCount:0};}
@@ -36,6 +36,7 @@ function loadSaved(){
    if(!Number.isFinite(S.quarterCost))S.quarterCost=(Number(S.quarterUsed)||0)>0?3500:0;
    if(!S.dayLog)S.dayLog=newDayLog();
    if(!Number.isFinite(S.dayLog.cogs))S.dayLog.cogs=0;
+   if(!S.dayLog.cogsByAccount||typeof S.dayLog.cogsByAccount!=='object')S.dayLog.cogsByAccount={};
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.tutorialSeen)S.tutorialSeen={};
    if(typeof S.soundEnabled!=='boolean')S.soundEnabled=true;
