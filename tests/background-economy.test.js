@@ -38,6 +38,11 @@ test('market tick reports local simulation honestly and updates bounded prices',
   assert.equal(result.scope, 'local-player-feed-plus-npc');
   assert.equal(result.npcTransactionCount, 120);
   assert.ok(result.priceUpdates.length > 0);
+  const unverified = econ.tick({ day: 12, sharedTransactions: [] });
+  assert.equal(unverified.marketIsGloballyShared, false);
+  assert.equal(unverified.scope, 'unverified-feed-plus-npc');
+  const verified = econ.tick({ day: 13, sharedTransactions: [], sharedFeedVerified: true });
+  assert.equal(verified.marketIsGloballyShared, true);
   for (const item of context.MARKET_ENGINE.catalog) {
     assert.ok(item.marketPrice >= item.marketFloor && item.marketPrice <= item.marketCeiling);
   }
