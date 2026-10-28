@@ -200,3 +200,8 @@ Required evidence lifecycle:
 The newest 100 commits on the feature branch were reviewed by page-wise GitHub history retrieval. The most recent work covers component-level HPP reporting, transaction-driven bounded market prices, NPC demand/supply and policy effects, regional producer/population capacity, and official rice demand/balance inputs. Treat these as implemented code/documentation checkpoints, not verified release-ready behavior: recent Targeted Regression Tests runs fail before reaching the new rice test.
 
 Run 40711465568 fails at `tests/accounting_ledger.test.js` because `js/akuntansi.js` dereferences `DATA.shop.iceKarung` while `DATA.shop` is absent in the runtime test context. Defensive guard committed in `450dcfb7367718c52c05bcef5eba91e15b9701d2`; verify the resulting CI run before advancing. Until CI is green, do not promote new national-demand or commodity unit-economics work as validated. Preserve the existing distinction between official 2025 rice balance projection and 2024 observed production.
+
+
+## 2026-10-28 — Accounting test chain blocks all later regressions
+
+Three successive CI failures have now been traced to the accounting regression harness before the rice regression test executes: missing `DATA.shop` in the test fixture; an expectation that wrongly expensed inventory purchases; and an over-escaped regex for the corrected Rp400,000 business result. Commits `a7f44cbbc87e6038d3a29209b1340f8191d71c63`, `66719dc4a1`, and `7c257e0123b987e9d771504c31a43319784dde62` address those stages. Check the latest Actions run and actual logs. Do not continue to claim the rice/market/HPP suite is validated until the workflow reaches and passes all test commands.
