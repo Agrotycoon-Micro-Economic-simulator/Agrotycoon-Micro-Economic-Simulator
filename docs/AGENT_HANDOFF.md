@@ -5981,3 +5981,20 @@ BPS's *Statistik Harga Produsen Pertanian ... 2025* page states that the publica
 Keep the validated 2020–2024 coconut benchmark as historical/reference data. Do not label it "current 2025/2026 price." Next, retrieve the BPS 2025 PDF or an official BPS table with a direct coconut row and monthly values; then reconcile scope/unit before adding data to the 60-commodity Tier 1–4 matrix. Existing owner-specific values (whole coconut retail Rp13,000/butir, observed purchase reference Rp3,400/butir, es kelapa Rp5,000/glass and roughly four glasses per coconut) remain separate, business-specific inputs.
 
 Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf ; BPS 2025 producer-price publication metadata, https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html .
+
+
+## 2026-10-28 — Runtime fix: warung material pack sizes now follow the catalog
+
+### Code changed
+- `js/economy.js` — material planning, recommended purchase, manual purchase, cost totals, receipt details, and inventory quantities now use `DATA.shop.iceKarung`, `DATA.shop.sugarBloc`, and `DATA.shop.cupPack` for prices and pack yields instead of separate hard-coded values.
+- Corrected a live gameplay inconsistency for plastic cups: the catalog defines 1 pack as 50 cups for Rp15,000, while the purchase UI/runtime previously used 20 cups for Rp8,000. The buying flow now charges Rp15,000 and adds 50 cups per pack, matching `js/data.js` and the starter-package definition. The ice and syrup pack counts/prices are also now read from the catalog to prevent future drift.
+
+### Verification performed
+- Re-fetched the committed `js/economy.js` and checked the material-planning and purchase code for the old cup constants (20 cups/pack and Rp8,000); neither remains in the affected flow.
+- Static assertions confirmed the recommended/manual purchase totals are catalog-driven in all three call sites, cup stock addition uses `DATA.shop.cupPack.pcs`, and the pack size is used in shortage planning and display.
+- No browser playthrough, automated test suite, or JavaScript syntax test was run in this environment. Do not report those as passed; the runtime change still needs an in-game purchase/stock verification.
+
+### Immediate next implementation tasks (not documentation-only)
+1. Run browser smoke test: recommended purchase of one cup pack must deduct Rp15,000 and add exactly 50 cups; manual purchase must do the same. Check ice and sugar quantities and cash totals.
+2. Audit accounting classification in `spend()` / daily report: raw material purchases currently increase `dayLog.expense` immediately although materials remain in stock, and CAPEX is also included in the same expense total. Correct business gross-profit reporting by separating purchases/inventory, consumed HPP, operating expense, CAPEX, and personal living cost, while preserving cash flow.
+3. Wire the recipe/production planner into a playable production action; current `js/commodity_transformation.js` provides planning/calculation APIs but must be checked for actual UI/runtime integration.
