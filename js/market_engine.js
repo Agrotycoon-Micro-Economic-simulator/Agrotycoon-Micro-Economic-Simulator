@@ -5,8 +5,8 @@
 (function (root) {
   "use strict";
 
-  const catalog = Array.isArray(root.COMMODITIES) ? root.COMMODITIES : [];
-  const byId = root.COMMODITY_BY_ID || Object.fromEntries(catalog.map((item) => [item.id, item]));
+  const catalog = typeof COMMODITIES !== "undefined" && Array.isArray(COMMODITIES) ? COMMODITIES : [];
+  const byId = typeof COMMODITY_BY_ID !== "undefined" ? COMMODITY_BY_ID : Object.fromEntries(catalog.map((item) => [item.id, item]));
   const DEFAULT_ELASTICITY = 0.08;
   const MAX_STEP = 0.10;
 
