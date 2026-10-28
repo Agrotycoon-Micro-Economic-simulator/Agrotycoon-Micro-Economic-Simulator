@@ -6248,3 +6248,10 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 1. Tambahkan tes untuk populasi 5 juta, batas pemilik usaha 100 ribu, minimum 4,9 juta nonpengusaha, dan batas tambang 100.
 2. Riset serta catat luas lahan/kapasitas sektor Indonesia dari publikasi resmi bertahun dan definisi yang cocok; baru kemudian isi nilai `landUseHa` dan batas produsen sektor.
 3. Hubungkan inventori lahan/pabrik/warung pemain ke kapasitas produksi nyata per wilayah dan cegah kapasitas melebihi lahan/tenaga kerja/izin.
+
+
+### Data riset wilayah awal — benchmark resmi (belum menjadi batas lahan gameplay)
+- BPS melaporkan luas panen padi Indonesia tahun 2024 sekitar **10,05 juta ha** dengan produksi 53,14 juta ton GKG (angka tetap, rilis 3 Februari 2025): https://www.bps.go.id/id/pressrelease/2025/02/03/2414/pada-2024--luas-panen-padi-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html
+- Publikasi Kementerian Pertanian untuk kelapa sawit mencatat luas areal 2024 sekitar **16,83 juta ha** (angka sementara): https://satudata.pertanian.go.id/assets/docs/publikasi/Buku_Analisis_Kinerja_Perdagangan_Kelapa_Sawit_2025_-_tte_sign.pdf
+- Kedua metrik sengaja disimpan sebagai benchmark berbeda di `REGION_CAPACITY.officialBenchmarks`: luas panen padi tahunan tidak sama dengan luas fisik unik karena lahan dapat panen lebih dari sekali setahun; luas areal sawit merupakan areal perkebunan. Jangan menjumlahkan kedua angka sebagai total lahan nasional.
+- Data tersebut belum diubah menjadi hard cap lahan gameplay. Angka lahan fisik/terpakai, peternakan, perikanan, tambang, pasar, warung, pabrik, tenaga kerja, dan konsumen masih harus dikumpulkan menurut tahun dan definisi yang konsisten. Jumlah usaha manufaktur juga tidak boleh disamakan dengan jumlah pemilik bisnis pada skenario 5 juta NPC.
