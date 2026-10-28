@@ -80,6 +80,12 @@ assert.equal(data.sources.feedIndustryDemand2025.title, "Pemanfaatan Jagung Loka
 assert.equal(data.sources.feedIndustryDemand2025.publicationYear, 2025);
 assert.equal(data.sources.feedIndustryDemand2025.referenceDataYear, 2024);
 assert.match(data.sources.feedIndustryDemand2025.note, /SiJagung/i);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.annualTotalTon, 8844096);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.quarterlyTotalsSumTon, 8844096);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.impliedMonthlyAverageTon, 737008);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.publishedMonthlyAverageTon, 727010);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.monthlyAverageDifferenceTon, -9998);
+assert.equal(data.sources.feedIndustryDemand2025.sourceArithmeticAudit.status, "source_arithmetic_discrepancy_preserved");
 assert.equal(data.alternativeFeedIndustryProjection2025.value, 8250000);
 assert.equal(data.feedIndustryProjectionReconciliationStatus, "unresolved_source_scope_or_vintage_difference");
 assert.equal(data.directHouseholdConsumptionTonnage, null, "do not infer national household tonnage without an explicitly aligned denominator");
