@@ -143,7 +143,7 @@ function finishDay(){
  S.cuaca=rollWeather();
  const net=-L.expense+L.gross;
  const businessResult=(Number(L.gross)||0)-(Number(L.cogs)||0)-(Number(L.businessExpense)||0);
- S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,businessExpense:Number(L.businessExpense)||0,livingExpense:Number(L.livingExpense)||0,businessPurchases:Number(L.businessPurchases)||0,cogs:Number(L.cogs)||0,businessResult,capex:Number(L.capex)||0,net,cashIn:Number(L.cashIn)||0,cashOut:Number(L.cashOut)||0,cashflow:(Number(L.cashIn)||0)-(Number(L.cashOut)||0),
+ S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,businessExpense:Number(L.businessExpense)||0,livingExpense:Number(L.livingExpense)||0,businessPurchases:Number(L.businessPurchases)||0,cogs:Number(L.cogs)||0,cogsByAccount:Object.assign({},L.cogsByAccount||{}),businessResult,capex:Number(L.capex)||0,net,cashIn:Number(L.cashIn)||0,cashOut:Number(L.cashOut)||0,cashflow:(Number(L.cashIn)||0)-(Number(L.cashOut)||0),
   es:L.sales.es,whole:L.sales.whole,lost:L.lost,
   mat:Object.assign({},L.materials),iceMelt:L.lossIcePortions,
   shopping:L.shopping,living:L.living,bills:L.bills,
