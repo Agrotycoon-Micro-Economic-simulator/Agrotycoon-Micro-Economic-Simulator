@@ -122,3 +122,5 @@
   root.MARKET_ENGINE = api;
   initialize();
 })(typeof window !== "undefined" ? window : globalThis);
+
+if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.MARKET_ENGINE;
