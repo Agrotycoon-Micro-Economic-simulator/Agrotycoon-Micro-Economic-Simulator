@@ -43,7 +43,7 @@ if(!S || S.ledger.length === 0){
  const monthKitchen=sumClass('household_kitchen');
  const monthInventoryPurchases=sumClass('household_inventory_purchase');
  const monthPersonal=sumClass('household_personal');
- const monthBusinessResult=monthGross-monthPurchases-monthBusinessExpense;
+ const monthBusinessResult=monthGross-monthBusinessExpense;
  const monthCashIn=monthLedger.reduce((sum,entry)=>sum+Math.max(0,accCashMovement(entry)),0);
  const monthCashOut=monthLedger.reduce((sum,entry)=>sum+Math.max(0,-accCashMovement(entry)),0);
  const monthNetCash=monthCashIn-monthCashOut;
@@ -77,20 +77,20 @@ if(!S || S.ledger.length === 0){
  h+='<div class="panel"><h3>📊 Laporan Usaha dan Rumah Tangga — Bulan '+curMonth+'</h3>';
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Penjualan (kredit: Penjualan)</td><td class="pos">'+rp(monthGross)+'</td></tr>';
- h+='<tr><td>Pembelian bahan baku</td><td class="neg">-'+rp(monthPurchases)+'</td></tr>';
+ h+='<tr><td>Pembelian bahan baku (arus kas; belum otomatis menjadi beban)</td><td>'+rp(monthPurchases)+'</td></tr>';
  h+='<tr><td>Beban usaha lain</td><td class="neg">-'+rp(monthBusinessExpense)+'</td></tr>';
- h+='<tr><td><b>Hasil usaha sebelum biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
+ h+='<tr><td><b>Margin usaha sebelum HPP, penyusutan, dan biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
  h+='<tr><td>Beban dapur (persediaan yang dikonsumsi, termasuk transaksi lama)</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
  h+='<tr><td>Pembelian persediaan rumah tangga (arus kas; bukan beban saat pembelian)</td><td>'+rp(monthInventoryPurchases)+'</td></tr>';
  h+='<tr><td>Pengeluaran pribadi/rumah tangga lainnya</td><td class="neg">-'+rp(monthPersonal)+'</td></tr>';
- h+='<tr><td><b>Hasil setelah pengeluaran rumah tangga</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
+ h+='<tr><td><b>Margin setelah biaya rumah tangga, sebelum HPP dan penyusutan</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
  h+='<h4>Rekonsiliasi kas bulan berjalan</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Kas awal bulan (hasil rekonsiliasi)</td><td>'+rp(monthOpeningCash)+'</td></tr>';
  h+='<tr><td>Kas masuk</td><td class="pos">'+rp(monthCashIn)+'</td></tr>';
  h+='<tr><td>Kas keluar</td><td class="neg">-'+rp(monthCashOut)+'</td></tr>';
  h+='<tr><td><b>Kas akhir hasil rekonsiliasi</b></td><td><b>'+rp(monthOpeningCash+monthCashIn-monthCashOut)+'</b></td></tr>';
  h+='<tr><td><b>Saldo kas aktual (S.gold)</b></td><td><b>'+rp(S.gold)+'</b></td></tr></table>';
- h+='<p class="accounting-note">Transaksi lama tanpa metadata diklasifikasikan secara terbatas berdasarkan kategori/uraian; transaksi yang tidak dapat dipastikan tidak dimasukkan ke kelompok usaha/rumah tangga. Pembelian bahan baku dipisahkan dari beban tenaga kerja. Hasil usaha ini belum otomatis merupakan laba akuntansi penuh/HPP karena pemakaian persediaan, depresiasi, dan transaksi nonkas belum seluruhnya terintegrasi.</p></div>';
+ h+='<p class="accounting-note">Transaksi lama tanpa metadata diklasifikasikan secara terbatas berdasarkan kategori/uraian; transaksi yang tidak dapat dipastikan tidak dimasukkan ke kelompok usaha/rumah tangga. Pembelian bahan baku dan CAPEX tidak langsung mengurangi margin saat kas dibelanjakan. Angka margin ini belum merupakan laba akuntansi penuh: HPP berdasarkan biaya historis persediaan yang benar-benar terjual, penyusutan, dan transaksi nonkas belum seluruhnya terintegrasi.</p></div>';
  
  h+='<div class="panel"><h3>⚖️ Neraca Posisi Keuangan</h3>';
  h+='<h4 style="color:#2E7D32;margin:10px 0">A. ASET LANCAR (Liquid)</h4><table><tr><th>Keterangan</th><th>Nilai</th></tr>';
