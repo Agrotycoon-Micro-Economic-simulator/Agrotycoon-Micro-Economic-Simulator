@@ -76,6 +76,10 @@ assert.equal(data.nationalDemandProjection2025.status, "official_projection_roun
 assert.equal(data.feedIndustryDemandProjection2025.value, 8844096);
 assert.equal(data.feedIndustryDemandProjection2025.status, "official_projection");
 assert.match(data.sources.feedIndustryDemand2025.url, /ditjenpkh\.pertanian\.go\.id/);
+assert.equal(data.sources.feedIndustryDemand2025.title, "Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024");
+assert.equal(data.sources.feedIndustryDemand2025.publicationYear, 2025);
+assert.equal(data.sources.feedIndustryDemand2025.referenceDataYear, 2024);
+assert.match(data.sources.feedIndustryDemand2025.note, /SiJagung/i);
 assert.equal(data.alternativeFeedIndustryProjection2025.value, 8250000);
 assert.equal(data.feedIndustryProjectionReconciliationStatus, "unresolved_source_scope_or_vintage_difference");
 assert.equal(data.directHouseholdConsumptionTonnage, null, "do not infer national household tonnage without an explicitly aligned denominator");
