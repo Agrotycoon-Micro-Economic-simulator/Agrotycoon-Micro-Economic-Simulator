@@ -287,3 +287,8 @@ Run 40719342746 passed on commit `05220f710fa645f43b04dcb2334747ee049060b0`. The
 ## Additional maize feed projection arithmetic audit (2026-10-28)
 
 Ditjen PKH Direktorat Pakan's *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025), Table 26, publishes annual projection 8,844,096 t and quarterly totals that sum to it. Its prose monthly average of 727.01 thousand t does not reconcile: annual/12 = 737,008 t/month, difference -9,998 t/month. Runtime `feedIndustryDemand2025.sourceArithmeticAudit` and `tests/maize-national-demand.test.js` preserve/guard this discrepancy. This does not resolve the separate 8.25 Mt versus 8.844096 Mt method/vintage conflict; retain both industry-only projections and do not add them to the all-channel 13.603 Mt feed-use total.
+
+
+## UTP broiler source discrepancy — later BPS corroboration added (2026-10-28)
+
+BPS *Peternakan Dalam Angka 2025* Table 8.3.10 (printed p.122) reproduces 2024 UTP broiler values per 5,000 final-stock heads: production Rp152,008.05k, cost Rp126,445.06k, published income Rp25,563.00k, feed cost Rp81,754.62k (64.66%). The arithmetic difference is Rp25,562.99k, only Rp0.01k below published income. This conflicts with the earlier SEP 2024 Table 2.10 transcription (cost Rp126,445.08k; income Rp28,639.72k). Added the later table to runtime as research-only `utpBroilerBenchmark2024` and added `tests/utp-broiler-benchmark.test.js`. The official BPS publication metadata is accessible, but its page is blocked on direct open; table text was inspected in a publicly accessible mirror. Keep original Table 2.10 visual verification open and do not promote the benchmark to Tier 1–4 recipes.
