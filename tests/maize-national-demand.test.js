@@ -19,7 +19,7 @@ assert.equal(production2025.referenceYear, 2025);
 assert.equal(production2025.harvestedAreaHa, 2710000);
 assert.equal(production2025.productionAt14MoistureTon, 16160000);
 assert.equal(production2025.moisturePct, 14);
-assert.match(production2025.source.url, /bps\\.go\\.id/);
+assert.match(production2025.source.url, /bps\.go\.id/);
 assert.equal(production2025.source.qualityStatus, "official_statistic_final");
 assert.equal(window.REAL_ECONOMIC_DATA.maizeNationalBalanceEstimate2025, null, "do not infer a national balance without stocks, trade, losses and aligned scope");
 
