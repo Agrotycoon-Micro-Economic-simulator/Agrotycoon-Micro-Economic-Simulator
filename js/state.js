@@ -4,9 +4,9 @@ function defaultState(){
  const trees=[];
  for(let i=0;i<10;i++)trees.push({slot:i,type:'biasa',plantedDay:0,mature:true,lastHarvest:-30});
  return {v:15,name:'',avatar:0,day:1,phase:'pagi',gold:5000000, xp:0, level:1,
-  stock:{biasa:0,super:0},harvestDay:-99,trees,quarterUsed:0,
+  stock:{biasa:0,super:0},stockCostValue:0,harvestDay:-99,trees,quarterUsed:0,quarterCost:0,
   cuaca:'panas',
-  warung:{open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
+  warung:{open:false,ice:0,sugar:0,cups:0,iceCost:0,sugarCost:0,cupsCost:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
   purchases:{seedlingMonth:0,externalCoconutMonth:0},tutorialSeen:{},soundEnabled:true,
   path:null,
   dayLog:newDayLog(),
@@ -17,7 +17,7 @@ function defaultState(){
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
  };
 }
-function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
+function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
  materials:{kelapa:0,ice:0,sugar:0,cup:0},
  sales:{es:0,esRev:0,whole:0,wholeRev:0,tengkulak:0,tengkulakRev:0,pasar:0,pasarRev:0},lost:0,
  dailyExpenses:[],weather:'panas',buyerCount:0};}
@@ -31,14 +31,21 @@ function loadSaved(){
   const r=localStorage.getItem(SAVE_KEY);
   if(r){
    S=JSON.parse(r);
+   if(!S.stock||typeof S.stock!=='object')S.stock={biasa:0,super:0};
+   if(!Number.isFinite(S.stockCostValue))S.stockCostValue=((Number(S.stock.biasa)||0)+(Number(S.stock.super)||0))*3500;
+   if(!Number.isFinite(S.quarterCost))S.quarterCost=(Number(S.quarterUsed)||0)>0?3500:0;
    if(!S.dayLog)S.dayLog=newDayLog();
+   if(!Number.isFinite(S.dayLog.cogs))S.dayLog.cogs=0;
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.tutorialSeen)S.tutorialSeen={};
    if(typeof S.soundEnabled!=='boolean')S.soundEnabled=true;
    if(!S.livingStock)S.livingStock={rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0};
    if(!S.livingUseDays||typeof S.livingUseDays!=='object')S.livingUseDays={};
    ['rice','egg','oil','mie','tempe','sayur','lauk'].forEach(k=>{if(!Number.isFinite(S.livingUseDays[k])||S.livingUseDays[k]<0)S.livingUseDays[k]=0;});
-   if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0};
+   if(!S.warung)S.warung={open:false,ice:0,sugar:0,cups:0,iceCost:0,sugarCost:0,cupsCost:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0};
+   if(!Number.isFinite(S.warung.iceCost))S.warung.iceCost=(Number(S.warung.ice)||0)*(DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions);
+   if(!Number.isFinite(S.warung.sugarCost))S.warung.sugarCost=(Number(S.warung.sugar)||0)*(DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions);
+   if(!Number.isFinite(S.warung.cupsCost))S.warung.cupsCost=(Number(S.warung.cups)||0)*(DATA.shop.cupPack.price/DATA.shop.cupPack.pcs);
    if(typeof S.warung.autoMode!=='boolean')S.warung.autoMode=false;
    if(!Number.isFinite(S.warung.successfulSales))S.warung.successfulSales=0;
    if(!S.stats)S.stats={es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0};
