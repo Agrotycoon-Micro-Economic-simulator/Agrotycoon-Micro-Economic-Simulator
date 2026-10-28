@@ -267,3 +267,8 @@ Added BPS final 2025 maize production (16.16 Mt at 14% moisture; harvested area 
 ## 2026-10-28 — Exact official maize balance projection registered
 
 Added Bapanas/Kementan Table 5.6 (update 2025-06-02) as a separate official 2025 projection: beginning stock 3.579102 Mt, gross production 16.194055 Mt at 14% moisture, loss/spillage 0.748165 Mt, net production 15.445889 Mt, imports 0.906040 Mt, exports 0.076959 Mt, availability 19.854073 Mt, need 14.720163 Mt, and projected ending balance 5.133909 Mt. Three source arithmetic differences of 1 tonne are explicitly stored and tested, not silently corrected. BPS final 2025 output is 16.16 Mt at the same 14% moisture basis, 34,055 t below the earlier balance projection input; the source balance remains a projection and is not recalculated from final output. The new balance schema/test has been committed; verify the latest Actions run before treating it as validated.
+
+
+## 2026-10-28 — Maize balance and feed-source metadata tests passed
+
+GitHub Actions run 40719342746 passed for `05220f710fa645f43b04dcb2334747ee049060b0`. The maize test now checks the exact Table 5.6 projection, all three one-tonne arithmetic discrepancies, and the feed-industry source's correct publication title, reference year, and SiJagung provenance. The ~8.25 Mt bulletin estimate and 8,844,096 t Table 26 projection remain separate because they derive from different projection/reporting series. Do not merge them or recalculate the official balance without rebuilding all source components.
