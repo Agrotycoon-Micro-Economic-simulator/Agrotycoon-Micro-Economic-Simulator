@@ -14,7 +14,8 @@ function defaultState(){
   stats:{es:0,whole:0,tengkulak:0,rotten:0,missedDays:0,lostSales:0},
   livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
   livingUseDays:{rice:0,egg:0,oil:0,mie:0,tempe:0,sayur:0,lauk:0},
-  unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0}
+  unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0},
+  marketPrices:{},marketPolicies:{productionTax:0.05,inputSubsidy:0,importTariff:0.05,interestRate:0.08,logisticsEfficiency:1,foodReserveDemand:0.05},marketLastTick:null
  };
 }
 function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cogsByAccount:{},cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
@@ -25,7 +26,18 @@ function initGameState(){
  const hasSave = localStorage.getItem(SAVE_KEY) !== null;
  if(hasSave){ loadSaved(); } else { loadFresh(); }
 }
-function loadFresh(){ S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
+function restoreMarketPrices(){
+ if(!S||typeof MARKET_ENGINE==='undefined'||!MARKET_ENGINE||!Array.isArray(MARKET_ENGINE.catalog))return;
+ if(!S.marketPrices||typeof S.marketPrices!=='object')S.marketPrices={};
+ MARKET_ENGINE.catalog.forEach(item=>{
+  const saved=Number(S.marketPrices[item.id]);
+  if(Number.isFinite(saved)&&saved>=item.marketFloor&&saved<=item.marketCeiling)item.marketPrice=saved;
+  else S.marketPrices[item.id]=item.marketPrice;
+ });
+ if(!S.marketPolicies||typeof S.marketPolicies!=='object')S.marketPolicies={};
+ if(!S.marketLastTick)S.marketLastTick=null;
+}
+function loadFresh(){ S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); restoreMarketPrices(); save(); }
 function loadSaved(){
  try{
   const r=localStorage.getItem(SAVE_KEY);
@@ -58,6 +70,7 @@ function loadSaved(){
    if(!Number.isFinite(S.finance.payablesPayroll))S.finance.payablesPayroll=0;
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.landSystem)S.landSystem=null;
+   restoreMarketPrices();
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
 }
