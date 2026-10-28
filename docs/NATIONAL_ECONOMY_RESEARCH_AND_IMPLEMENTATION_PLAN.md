@@ -254,3 +254,11 @@ GitHub Actions run 40718376449 passed for `3d02c30cfaf090856e1accf540f17c84d2d40
 ## 2026-10-28 — Final 2025 maize production added
 
 Added BPS final 2025 maize production (16.16 Mt at 14% moisture; harvested area 2.71 million ha; release 2026-02-02) to the runtime registry and maize regression test. At the same 14%-moisture basis, this is 6.74% above the 2024 final 15.14 Mt observation. The national balance estimate remains null because total demand is rounded/projection-based and feed-industry demand sources disagree; reconcile stocks, trade, losses and scope before estimating surplus/deficit.
+
+
+## Official projected maize balance registered (2026-10-28)
+
+- Added the Bapanas/Kementan Pusdatin projected 2025 maize balance from *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Table 5.6, updated 2025-06-02. The projection includes beginning stock 3,579,102 t; production 16,194,055 t at 14% moisture; 748,165 t losses/spillage (4.62%); net production 15,445,889 t; imports 906,040 t; exports 76,959 t; availability 19,854,073 t; need 14,720,163 t; projected ending balance 5,133,909 t.
+- The source table has three 1-tonne arithmetic discrepancies. They are recorded in runtime `nationalBalanceProjection2025.arithmeticAudit` and tested, with all published values preserved. Final BPS 2025 production (16.16 Mt at 14% moisture) is 34,055 t below the earlier projected production input; this difference does not convert the forecast balance into a final actual balance.
+- Runtime `maizeNationalBalanceEstimate2025` remains null. The projection is useful for national-simulation scenarios but must retain the 2025-06-02 vintage, estimated trade, 4.62% loss factor, and the distinction between rounded headline need (~14.72 Mt) and Table 5.6 exact need (14,720,163 t).
+- Next research gate: resolve the 8.25 Mt versus 8.844096 Mt feed-industry projection difference without mixing all-channel feed need and industry-only purchases. Then continue the queued source-table QA: BPS SEP 2024 UTP broiler Table 2.10, UTL oil-palm income definition, and remaining UPB/UTL rows.
