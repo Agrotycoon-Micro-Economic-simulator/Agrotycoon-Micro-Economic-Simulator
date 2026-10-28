@@ -47,7 +47,7 @@
     const activeConsumers = Math.floor(nonBusinessPopulation * c.activeConsumerShare);
     const workersAndOtherNonOwners = nonBusinessPopulation - activeConsumers;
     const sectorCaps = Object.assign({}, c.sectorProducerCaps);
-    sectorCaps.mining = Math.min(sectorCaps.mining || c.miningOperatorCap, c.miningOperatorCap);
+    sectorCaps.mining = Math.min(Math.max(0, Number(sectorCaps.mining) || 0), c.miningOperatorCap);
     const totalSectorSlots = Object.values(sectorCaps).reduce((sum, n) => sum + n, 0);
     return {
       region: c.region, population: c.population,
