@@ -945,3 +945,17 @@ BPS's *Statistik Harga Produsen Pertanian ... 2025* page states that the publica
 Keep the validated 2020–2024 coconut benchmark as historical/reference data. Do not label it "current 2025/2026 price." Next, retrieve the BPS 2025 PDF or an official BPS table with a direct coconut row and monthly values; then reconcile scope/unit before adding data to the 60-commodity Tier 1–4 matrix. Existing owner-specific values (whole coconut retail Rp13,000/butir, observed purchase reference Rp3,400/butir, es kelapa Rp5,000/glass and roughly four glasses per coconut) remain separate, business-specific inputs.
 
 Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf ; BPS 2025 producer-price publication metadata, https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html .
+
+
+## National food-demand baseline — rice, Indonesia (2024; partial, source-traceable)
+
+| Field | Value | Type / unit | Provenance and interpretation |
+|---|---:|---|---|
+| Household per-capita consumption, “Beras lokal/ketan” | 1.521 | kg/person/week | BPS, Rata-Rata Konsumsi per Kapita Seminggu Beberapa Macam Bahan Makanan Penting, 2015–2024, 2024 column; table updated 2026-07-17; https://www.bps.go.id/id/statistics-table/1/MjMxNiMx/rata-rata-konsumsi-per-kapita-seminggu-beberapa-macam-bahan-makanan-penting--2015-2024.html |
+| Annualized per-capita equivalent | 79.092 | kg/person/year | Derived: 1.521 × 52; not an official annual figure and not total national demand. |
+| Paddy harvested area | 10,050,000 | ha/year | BPS final 2024 release, 2025-02-03; annual harvested area, not unique physical land. |
+| Paddy production | 53,140,000 | tonnes GKG/year | Same BPS release; paddy product form, not milled rice. |
+| Rice production for food consumption | 30,620,000 | tonnes/year | Same BPS release; distinct from GKG paddy production and from household consumption. |
+| National annual rice-consumption estimate | null | tonnes/year | Not calculated until a compatible official population denominator and demand definition are attached. |
+
+Runtime mirror: window.REAL_ECONOMIC_DATA.riceNationalFoodDemand in js/real_economic_data.js. Status is partial; population denominator and comprehensive national demand remain research-required. Do not compare production-for-food directly with household “beras lokal/ketan” consumption as if definitions were identical.
