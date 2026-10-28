@@ -41,6 +41,16 @@ if(!S || S.ledger.length === 0){
  const monthPurchases=sumClass('business_purchase');
  const monthBusinessExpense=sumClass('business_expense');
  const monthCogs=sumClass('business_cogs');
+ const monthCogsByAccount={};
+ monthLedger.forEach(entry=>{
+  const accounting=accAccounting(entry);
+  if(accounting.classification!=='business_cogs')return;
+  const components=entry&&entry.detail&&Array.isArray(entry.detail.components)?entry.detail.components:[];
+  components.forEach(component=>{
+   const account=String(component.account||'Persediaan lainnya');
+   monthCogsByAccount[account]=(Number(monthCogsByAccount[account])||0)+(Number(component.amount)||0);
+  });
+ });
  const monthKitchen=sumClass('household_kitchen');
  const monthInventoryPurchases=sumClass('household_inventory_purchase');
  const monthPersonal=sumClass('household_personal');
@@ -81,13 +91,17 @@ if(!S || S.ledger.length === 0){
  h+='<table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Penjualan (kredit: Penjualan)</td><td class="pos">'+rp(monthGross)+'</td></tr>';
  h+='<tr><td>Pembelian bahan baku (arus kas; belum otomatis menjadi beban)</td><td>'+rp(monthPurchases)+'</td></tr>';
- h+='<tr><td>HPP penjualan (kelapa utuh/es kelapa, transaksi baru)</td><td class="neg">-'+rp(monthCogs)+'</td></tr>';
+ h+='<tr><td>Total HPP penjualan (transaksi yang sudah tercatat)</td><td class="neg">-'+rp(monthCogs)+'</td></tr>';
+ const monthCogsLabels={'Persediaan Kelapa':'Kelapa mentah','Persediaan Kelapa Dalam Proses':'Kelapa dalam proses','Persediaan Es':'Es batu','Persediaan Gula':'Sirup gula','Persediaan Cup':'Gelas plastik'};
+ Object.keys(monthCogsByAccount).sort().forEach(account=>{
+  h+='<tr><td style="padding-left:22px">↳ HPP komponen: '+accEscape(monthCogsLabels[account]||account)+'</td><td class="neg">-'+rp(monthCogsByAccount[account])+'</td></tr>';
+ });
  h+='<tr><td>Beban usaha lain</td><td class="neg">-'+rp(monthBusinessExpense)+'</td></tr>';
  h+='<tr><td><b>Margin usaha setelah HPP tercatat, sebelum penyusutan dan biaya rumah tangga</b></td><td class="'+(monthBusinessResult<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult)+'</b></td></tr>';
  h+='<tr><td>Beban dapur (persediaan yang dikonsumsi, termasuk transaksi lama)</td><td class="neg">-'+rp(monthKitchen)+'</td></tr>';
  h+='<tr><td>Pembelian persediaan rumah tangga (arus kas; bukan beban saat pembelian)</td><td>'+rp(monthInventoryPurchases)+'</td></tr>';
  h+='<tr><td>Pengeluaran pribadi/rumah tangga lainnya</td><td class="neg">-'+rp(monthPersonal)+'</td></tr>';
- h+='<tr><td><b>Margin setelah biaya rumah tangga, sebelum HPP dan penyusutan</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
+ h+='<tr><td><b>Surplus setelah HPP tercatat dan biaya rumah tangga, sebelum penyusutan</b></td><td class="'+(monthBusinessResult-monthKitchen-monthPersonal<0?'neg':'pos')+'"><b>'+rp(monthBusinessResult-monthKitchen-monthPersonal)+'</b></td></tr></table>';
  h+='<h4>Rekonsiliasi kas bulan berjalan</h4><table><tr><th>Pos</th><th>Nilai</th></tr>';
  h+='<tr><td>Kas awal bulan (hasil rekonsiliasi)</td><td>'+rp(monthOpeningCash)+'</td></tr>';
  h+='<tr><td>Kas masuk</td><td class="pos">'+rp(monthCashIn)+'</td></tr>';
