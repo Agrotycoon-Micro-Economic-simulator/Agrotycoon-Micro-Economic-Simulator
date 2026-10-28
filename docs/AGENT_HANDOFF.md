@@ -6158,3 +6158,29 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - `js/ui.js`: daily report now shows separate HPP lines for coconut, ice, syrup sugar, and plastic cups, derived from `dayLog.cogsByAccount`; only the explicit total HPP row sums these components. Other recognized inventory losses remain in a separate “HPP/susut persediaan lainnya” line.
 - Existing `js/economy.js` already preserves component identity in the non-cash journal and daily `cogsByAccount`; this UI change makes the separation visible to the player instead of only in the ledger.
 - Static inspection verified the four component calculations and rows are present. No `node --test` or browser test was run in this step.
+
+
+## 2026-10-28 — HPP komponen dipisah dan fondasi pasar dinamis 60 komoditas
+
+### Aturan HPP yang ditegaskan pemilik
+- HPP kelapa mentah / kelapa dalam proses harus tetap terpisah dari HPP es batu, sirup gula, dan gelas plastik. Nilai boleh dijumlahkan hanya pada subtotal HPP penjualan untuk menghitung hasil usaha; rincian per komponen tidak boleh hilang atau disimpan sebagai satu biaya bahan gabungan.
+- `js/economy.js`: `recordBusinessCogs()` kini menambah `S.dayLog.cogsByAccount` per akun persediaan selain subtotal HPP. Setiap jurnal HPP tetap menyimpan baris debit HPP dan kredit akun persediaan komponen masing-masing.
+- `js/state.js`: log harian baru memiliki `cogsByAccount`; save lama dimigrasikan ke objek kosong jika belum ada.
+- `js/day.js`: snapshot laporan harian menyalin rincian HPP komponen supaya tetap tersedia setelah pergantian hari.
+- `js/ui.js`: laporan harian menampilkan baris terpisah untuk kelapa, es batu, sirup gula, dan gelas plastik; komponen lain masuk baris persediaan lainnya. Jangan menafsirkan subtotal HPP sebagai pengganti rincian komponen.
+
+### Batas harga 60 komoditas
+- `js/commodities.js`: semua 60 entri katalog kini memiliki `marketFloor`, `marketCeiling`, `marketPrice`, serta label status/metode batas. Nilai awal yang dipakai adalah floor 50% dan ceiling 200% dari `basePrice`. Ini **batas balancing game sementara**, bukan harga dasar/atas empiris dari data pemerintah; nilai per komoditas perlu dikalibrasi dari harga produsen/grosir/eceran yang cocok tahap dan satuannya.
+- `js/market_engine.js`: engine menghitung ulang harga dari transaksi beli/jual yang diberikan, memakai tekanan bersih permintaan/penawaran dan VWAP, membatasi perubahan per pembaruan, serta menjepit harga ke floor/ceiling. `index.html` memuat engine ini.
+- `tests/market-engine.test.js`: uji deterministik sumber sudah tersedia untuk jumlah katalog 60, pergerakan harga akibat tekanan beli/jual, batas bawah/atas, dan transaksi tidak valid. Belum ada bukti test runner dijalankan dalam sesi ini.
+
+### Batas penting — multiplayer belum aktif
+- Browser/localStorage satu pemain tidak dapat mengetahui transaksi semua pemain aktif. Agar harga benar-benar mengikuti seluruh pemain aktif seperti Sim Companies, perlu ledger transaksi bersama di server/database, server-side validasi transaksi, jendela agregasi yang konsisten, dan pembaruan snapshot harga yang dibaca semua klien.
+- Engine sekarang merupakan fondasi yang dapat menerima feed transaksi bersama; ini **belum** membuktikan pasar lintas-pemain sudah hidup, dan tidak boleh dipasarkan sebagai multiplayer market sampai adapter server dan pengujian multi-client tersedia.
+- Transaksi yang dihitung harus transaksi selesai/tereksekusi, bukan sekadar listing atau order yang belum match. Perlu kebijakan server untuk pemain aktif, deduplikasi transaction ID, anti-manipulasi wash trading, batas volume, timestamp/window, dan atomic settlement kas/stok.
+- Jangan langsung mengganti `DATA.wholePrice`, `DATA.es.price`, harga tengkulak, atau baseline khusus kelapa pemilik dengan indeks pasar komoditas generik. Hubungkan hanya pasar komoditas yang memang ditransaksikan lewat market engine; harga acuan kelapa/es kelapa milik pemilik tetap kontrak bisnis tersendiri sampai integrasi yang benar dirancang.
+
+### Verifikasi dan pekerjaan berikutnya
+- Source review mengonfirmasi baris HPP per akun tersedia di jurnal dan laporan harian punya kolom komponen terpisah. Ini bukan browser gameplay test.
+- Tidak ada klaim test Node/browser berhasil pada checkpoint ini. Jalankan `node --test tests/market-engine.test.js tests/accounting-inventory.test.js` di checkout repo; jika gagal, perbaiki sebelum menghubungkan transaksi runtime.
+- Berikutnya: verifikasi HPP component breakdown dalam laporan, lalu desain backend shared-market transaction ledger / atomic trade settlement. Jangan membuat simulasi “semua pemain” dari transaksi lokal saja.
