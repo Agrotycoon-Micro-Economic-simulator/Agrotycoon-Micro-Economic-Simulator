@@ -237,3 +237,8 @@ GitHub Actions run 40717841286 passed for `f790d8058542273fe5af7dc95cbb87d3e6d9f
 ## 2026-10-28 — Maize production moisture bases recorded
 
 Added BPS's final 2024 maize production observations to `REAL_ECONOMIC_DATA.maizeProduction2024`: 2.55 million ha harvested area, 20.48 Mt at 28% moisture, and 15.14 Mt at 14% moisture. The same BPS publication says estimates combine KSA, 2024 Ubinan and SKJG2020 conversion survey. A simple moisture-only mass-balance gives ~17.146 Mt at 14%, not the published 15.14 Mt; this is stored as an audit-only derived value and must not replace the official observation. New assertions in `tests/maize-national-demand.test.js` protect this distinction. Next: verify the new CI run, then research/clarify the conversion methodology before linking production to national demand.
+
+
+## 2026-10-28 — Maize production basis regression passed
+
+GitHub Actions run 40718376449 passed for `3d02c30cfaf090856e1accf540f17c84d2d40fcd`, including the updated maize test that preserves both BPS moisture-basis values and guards against substituting a simple moisture-only conversion. Keep the source-vintage conflict between feed-industry demand projections unresolved, and do not calculate a 2024-production/2025-demand balance until period, moisture, loss and use definitions are compatible.
