@@ -39,6 +39,8 @@ jobs:
           npm init -y
           npm install --no-save playwright
           npx playwright install --with-deps chromium
+      - name: Run Node test-runner suites for market, NPC economy, and inventory accounting
+        run: node --test tests/background-economy.test.js tests/market-engine.test.js tests/accounting-inventory.test.js
       - name: Run all standalone Node regression tests
         run: |
           set -e
