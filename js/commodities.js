@@ -60,7 +60,7 @@ const COMMODITIES=[
 ["patin","Patin","perikanan",180,300,28000,5500000,"kolam"],
 ["madu","Lebah Madu","peternakan",180,15,85000,3500000,"koloni"],
 ["jamur_tiram","Jamur Tiram","hortikultura",45,800,16000,5000000,"rak"]
-].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
+].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,marketFloor:Math.max(1,Math.floor(basePrice*0.5)),marketCeiling:Math.max(2,Math.ceil(basePrice*2)),marketPrice:basePrice,setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
 // Agronomi: luas dan hasil spesifik, bukan satu luas generik untuk semua komoditas.
 const AGRONOMY_PROFILES={
  kelapa:{areaM2:64,plantsPerUnit:1,spacing:"8 × 8 m",yieldQty:20,yieldUnit:"buah/pohon/siklus",note:"Kelapa tahunan; sekitar 156 pohon/ha pada jarak 8 × 8 m."},
