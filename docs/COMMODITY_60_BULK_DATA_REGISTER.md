@@ -1001,3 +1001,13 @@ Production comparability remains open: existing records include different report
 BPS *Luas Panen dan Produksi Jagung di Indonesia 2024* (Catalogue 5203036, Publication 05100.25006, released 2025-08-15) reports 2024 harvested area of 2.55 million ha, production of 20.48 million tonnes at 28% moisture and 15.14 million tonnes at 14% moisture. The publication says estimates combine the KSA maize survey, 2024 Ubinan survey and SKJG2020 conversion survey. Official publication: https://www.bps.go.id/id/publication/2025/08/15/2bb49a0af17ec89ac16971de/luas-panen-dan-produksi-jagung-di-indonesia-2024.html.
 
 Both figures are retained as distinct official measures in `REAL_ECONOMIC_DATA.maizeProduction2024`. An audit-only simple moisture mass-balance calculation gives approximately 17.146 million tonnes at 14% moisture from 20.48 million tonnes at 28% moisture; this does not reproduce BPS's separately published 15.14 million tonnes. This demonstrates that a simple moisture-only formula must not be substituted for the source's conversion-survey method. Preserve the BPS values; reconcile the method before using a derived conversion or comparing with the 2025 demand projection. The earlier note about “different reported totals” is refined: these two values are both reported in the same final BPS publication, with distinct moisture bases. No tier economics are inferred from the national totals.
+
+
+## Maize — final 2025 production observation (added 2026-10-28)
+
+| Measure | Value | Unit / period | Source and interpretation |
+|---|---:|---|---|
+| Harvested area | 2,710,000 | ha, 2025 | BPS, *Luas Panen dan Produksi Jagung di Indonesia 2025 (Angka Tetap)*, release 2026-02-02, https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html |
+| Dry shelled maize production at 14% moisture | 16,160,000 | tonnes/year, 2025 | Same BPS final-statistics release. This is a final production observation, not a full supply-demand balance. |
+
+Runtime mirror: `REAL_ECONOMIC_DATA.maizeProduction2025`. `maizeNationalBalanceEstimate2025` is deliberately `null`: the 2025 demand figure is a rounded projection and a valid balance also needs aligned stocks, imports/exports, post-harvest losses and product-scope definitions. Do not subtract the 14%-moisture production figure from national need and label the difference a surplus.
