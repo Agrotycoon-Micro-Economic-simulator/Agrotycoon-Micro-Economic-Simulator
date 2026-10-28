@@ -28,8 +28,9 @@ function spend(cat,desc,amt,field,detail){
   credit:value,
   basis:'cash'
  });
- // Food packages are capitalized into household inventory; recognize kitchen expense on consumption.
- if(mapping.classification!=='household_inventory_purchase')S.dayLog.expense+=value;
+ // Cash purchases are not automatically expenses: business stock is expensed when consumed/sold,
+ // and CAPEX is an asset. HPP/asset depreciation are not yet fully integrated into runtime reports.
+ if(!['household_inventory_purchase','business_purchase','asset_purchase'].includes(mapping.classification))S.dayLog.expense+=value;
  S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+value;
  if(field)S.dayLog[field]+=value;
 }
