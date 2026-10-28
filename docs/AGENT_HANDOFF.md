@@ -6013,3 +6013,18 @@ Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satu
 
 ### Next implementation task
 Implement inventory cost layers and sale-linked HPP for coconut and warung materials, keeping harvest labor separate from coconut inventory valuation as required by the owner. Only after HPP is recorded at actual consumption/sale should reports call the result accounting profit. Then test cash, stock, HPP, and report totals with a controlled purchase-and-sale scenario.
+
+
+## 2026-10-28 — Runtime accounting: separate stock purchases/CAPEX from recognized expenses
+
+### Code changed
+- `js/economy.js`: `spend()` now classifies cash outflows without immediately recognizing business stock purchases or CAPEX as expenses. Business operating expense and personal living expense are tracked separately; cash outflow remains recorded at purchase time. The existing accounting classification and ledger posting are preserved.
+- `js/state.js`: new daily log fields `businessExpense`, `livingExpense`, and `businessPurchases` added with zero defaults. Existing saves remain compatible because updated code reads missing historical fields as zero.
+- `js/day.js`: household inventory consumption is recorded as living expense without a second cash outflow; daily report snapshots include the new classifications.
+- `js/ui.js`: the end-of-day report now labels inventory purchases and CAPEX as cash movements rather than expenses, separates recognized business and living expenses, and explicitly labels the calculated remainder as a temporary surplus—not final net profit—because consumed business HPP and asset depreciation are not yet fully integrated.
+
+### Verification and limitation
+- Source-level assertions were run after commit to verify the classification split, cash-out tracking, non-cash household consumption, compatibility with missing fields in old saves, and revised report wording.
+- No local browser, Node test suite, or gameplay run was available in this tool session. Do not report runtime/gameplay tests as passed.
+- Important remaining accounting task: implement inventory cost layers / consumed HPP for coconut and warung inputs (including own-harvest versus purchased coconut stock), then depreciation for CAPEX. Until that is implemented, daily surplus is explicitly provisional and must not be represented as final profit.
+- Scope stayed on non-map runtime files; `main` was not targeted.
