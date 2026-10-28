@@ -6216,3 +6216,11 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 2. Wire actual completed player commodity trades into a server-authoritative ledger and expose a common market snapshot. Do not substitute localStorage for shared state.
 3. Replace provisional commodity bounds with cited, unit-compatible price ranges, preserving the owner's coconut retail baseline and the distinct coconut/ice/syrup/cup HPP accounts.
 4. Integrate policy and election gates with company progression and add an explainable politics UI only after thresholds and gameplay consequences are agreed.
+
+
+### Follow-up — visible 60-item market and stricter shared-feed boundary
+- `pasar-komoditas.html` now includes a 60-commodity table with saved game price, lower bound, upper bound, and the provisional status of the bounds. It explicitly labels the displayed snapshot as local to the browser/save and not a global multiplayer market.
+- `js/background_economy.js`: merely passing an array named `sharedTransactions` no longer makes the engine claim the market is global. A trusted backend adapter must explicitly set `sharedFeedVerified: true`; otherwise the scope is reported as local or unverified.
+- `tests/background-economy.test.js`: added assertions that unverified feeds cannot claim global-market status.
+- The new background-economy source was syntax-checked and exercised in an isolated Node harness with a 60-item test catalog: **passed** for 120 NPC flow records, tax/subsidy supply effects, bounded local price tick, and presidential eligibility gate. This is a targeted harness, not execution of the committed `node --test` suite or the full app.
+- The repository could not be cloned in this environment because DNS resolution for `github.com` failed. The committed Node test suite and browser/E2E flows therefore remain unverified.
