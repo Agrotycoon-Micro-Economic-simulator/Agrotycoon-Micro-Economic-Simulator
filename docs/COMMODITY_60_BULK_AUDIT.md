@@ -663,3 +663,13 @@ BPS's *Statistik Harga Produsen Pertanian ... 2025* page states that the publica
 Keep the validated 2020–2024 coconut benchmark as historical/reference data. Do not label it "current 2025/2026 price." Next, retrieve the BPS 2025 PDF or an official BPS table with a direct coconut row and monthly values; then reconcile scope/unit before adding data to the 60-commodity Tier 1–4 matrix. Existing owner-specific values (whole coconut retail Rp13,000/butir, observed purchase reference Rp3,400/butir, es kelapa Rp5,000/glass and roughly four glasses per coconut) remain separate, business-specific inputs.
 
 Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf ; BPS 2025 producer-price publication metadata, https://www.bps.go.id/id/publication/2026/04/24/ab557ad3c44be1254c87c5aa/statistik-harga-produsen-pertanian-subsektor-tanaman-pangan--hortikultura--dan-tanaman-perkebunan-rakyat-2025.html .
+
+
+## Rice national-demand baseline — data-quality gate (2026-10-28)
+
+- Accepted for runtime as official-source observations: BPS 2024 household weekly per-capita “Beras lokal/ketan” consumption = 1.521 kg/person/week; BPS final 2024 annual harvested paddy area ≈10.05 million ha; paddy production ≈53.14 million tonnes GKG; rice production for food consumption ≈30.62 million tonnes.
+- Derived, not official: 1.521 × 52 = 79.092 kg/person/year. This annualization is an arithmetic transformation of a weekly survey metric.
+- Not calculated: national annual consumption tonnage remains null because a matching official population denominator and a defensible alignment between household consumption category and national rice-demand definition have not yet been sourced. Do not multiply by an unverified population estimate.
+- Non-comparable product forms: GKG paddy, rice production for food consumption, and household consumption of “Beras lokal/ketan” are different metrics. Do not use them interchangeably or infer a surplus/deficit by direct subtraction.
+- Seasonality: annual totals divided by 365 would be a derived daily mean, not official daily demand; seasonal harvest, stock changes, losses, and distribution must be modeled before translating national quantities into daily NPC market flows.
+- Primary sources: BPS consumption table (updated 2026-07-17), https://www.bps.go.id/id/statistics-table/1/MjMxNiMx/rata-rata-konsumsi-per-kapita-seminggu-beberapa-macam-bahan-makanan-penting--2015-2024.html; BPS final paddy/rice 2024 release (2025-02-03), https://www.bps.go.id/id/pressrelease/2025/02/03/2414/pada-2024--luas-panen-padi-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html.
