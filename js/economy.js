@@ -251,6 +251,8 @@ function recordBusinessCogs(desc,components){
  valid.forEach(x=>lines.push({account:x.account,debit:0,credit:Number(x.amount)}));
  S.dayLog.cogs=(Number(S.dayLog.cogs)||0)+total;
  S.dayLog.expense=(Number(S.dayLog.expense)||0)+total;
+ if(!S.dayLog.cogsByAccount||typeof S.dayLog.cogsByAccount!=='object')S.dayLog.cogsByAccount={};
+ valid.forEach(x=>{S.dayLog.cogsByAccount[x.account]=(Number(S.dayLog.cogsByAccount[x.account])||0)+Number(x.amount);});
  ledger('HPP',desc,-total,{components:valid},{classification:'business_cogs',debitAccount:'HPP Penjualan',creditAccount:valid.map(x=>x.account).join(' / '),debit:total,credit:total,basis:'noncash',lines});
  return total;
 }
