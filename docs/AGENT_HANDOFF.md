@@ -6357,3 +6357,11 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - Added `tests/maize-national-demand.test.js` and registered it in `.github/workflows/targeted-regression.yml`. A new workflow run must be checked after the latest data/test/workflow commits; do not claim the maize test passed until its log confirms it.
 - Source URLs: Bapanas https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional; Kementan Pusdatin https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf; Ditjen PKH https://ditjenpkh.pertanian.go.id/storage/master/file/8EG4sdWw_2025_Buku_Jagung_%281%29.pdf.
 - Next: confirm the new test in CI, then reconcile maize production moisture basis/source vintages and resume the queued original-table extraction: visually verify BPS SEP UTP broiler Table 2.10; resolve UTL oil-palm income definition; capture remaining UPB/UTL exact rows. Keep no-map rule and locked coconut calibration.
+
+
+## Validation result — maize and market/NPC suites green (2026-10-28 15:39 UTC)
+
+- GitHub Actions run **40717841286** passed on commit `f790d8058542273fe5af7dc95cbb87d3e6d9fc42`: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40717841286.
+- Both workflow stages passed: `node --test tests/background-economy.test.js tests/market-engine.test.js tests/accounting-inventory.test.js` and the full standalone Node/browser regression sequence. The log explicitly confirms the maize national-demand test passed along with rice, market bounds, NPC policy/capacity, accounting/HPP, harvest, finance, browser smoke, gameplay E2E, payroll E2E, save migration and corrupt-save recovery.
+- The NPC harness failure in earlier runs was test setup using `COMMODITY_BY_ID` in the VM context instead of the catalog actually exposed by `MARKET_ENGINE.byId`; commit `f790d8058542273fe5af7dc95cbb87d3e6d9fc42` corrects the fixture references. This was a test harness defect, not a simulation runtime failure.
+- Latest branch HEAD at this note is `b585d2b05590b7607ac5542f70619237d91758c1`; commits after the passing run are documentation-only. Maize data remains a national-demand evidence layer, not approval of a complete Tier 1–4 farm model.
