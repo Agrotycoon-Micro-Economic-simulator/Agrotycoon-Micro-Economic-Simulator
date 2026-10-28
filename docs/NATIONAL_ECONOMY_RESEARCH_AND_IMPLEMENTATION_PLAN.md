@@ -282,3 +282,8 @@ Reviewed the latest 100 feature-branch commits from `2cc440305ccbd1387c1ee5d5cf5
 ## Latest verification update (2026-10-28)
 
 Run 40719342746 passed on commit `05220f710fa645f43b04dcb2334747ee049060b0`. The regression now checks the official Table 5.6 projected maize balance, source metadata, final 2025 BPS production, the distinct 2024 moisture-basis figures, and the three source-table 1-tonne arithmetic discrepancies. The feed-industry source title is corrected to *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025); the 8.844096 Mt SiJagung requirement projection remains distinct from the ~8.25 Mt Pusdatin purchase/absorption projection. This discrepancy remains unresolved; preserve both.
+
+
+## Additional maize feed projection arithmetic audit (2026-10-28)
+
+Ditjen PKH Direktorat Pakan's *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025), Table 26, publishes annual projection 8,844,096 t and quarterly totals that sum to it. Its prose monthly average of 727.01 thousand t does not reconcile: annual/12 = 737,008 t/month, difference -9,998 t/month. Runtime `feedIndustryDemand2025.sourceArithmeticAudit` and `tests/maize-national-demand.test.js` preserve/guard this discrepancy. This does not resolve the separate 8.25 Mt versus 8.844096 Mt method/vintage conflict; retain both industry-only projections and do not add them to the all-channel 13.603 Mt feed-use total.
