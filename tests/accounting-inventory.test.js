@@ -88,6 +88,23 @@ test('four es kelapa sales recognize HPP once and do not create cash outflow', (
     const credit = posting.lines.reduce((sum, line) => sum + (line.credit || 0), 0);
     assert.equal(debit, credit);
   }
+
+  const transfers = journal.filter(row => row[4] && row[4].classification === 'inventory_transfer');
+  assert.equal(transfers.length, 1);
+  assert.equal(transfers[0][4].debitAccount, 'Persediaan Kelapa Dalam Proses');
+  assert.equal(transfers[0][4].creditAccount, 'Persediaan Kelapa');
+  assert.equal(transfers[0][4].debit, 2625);
+  assert.equal(transfers[0][4].credit, 2625);
+
+  const coconutHppAccounts = hppEntries.map(row =>
+    row[4].lines.find(line => (line.account === 'Persediaan Kelapa' || line.account === 'Persediaan Kelapa Dalam Proses') && line.credit > 0).account
+  );
+  assert.deepEqual(coconutHppAccounts, [
+    'Persediaan Kelapa',
+    'Persediaan Kelapa Dalam Proses',
+    'Persediaan Kelapa Dalam Proses',
+    'Persediaan Kelapa Dalam Proses'
+  ]);
 });
 
 test('external coconut purchase adds actual cost to existing inventory without immediate expense', () => {
