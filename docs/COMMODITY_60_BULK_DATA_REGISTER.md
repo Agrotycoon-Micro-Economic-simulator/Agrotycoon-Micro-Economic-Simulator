@@ -1061,3 +1061,10 @@ The 8,844,096 t figure is from Ditjen PKH, Direktorat Pakan, *Pemanfaatan Jagung
 ## Maize feed projection — internal monthly-average discrepancy (2026-10-28)
 
 A second arithmetic issue exists in Ditjen PKH Direktorat Pakan's *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025), Table 26. The quarterly totals (2,295,098 + 2,148,839 + 2,200,079 + 2,200,080) sum exactly to the published annual projection of 8,844,096 t. However, the publication prose reports a monthly average of 727.01 thousand t, while 8,844,096 / 12 = 737,008 t/month (737.008 thousand), a 9,998 t/month difference. Runtime `feedIndustryDemand2025.sourceArithmeticAudit` preserves both the published prose value and the arithmetic-derived average. Regression assertions guard this discrepancy; do not silently “correct” the source prose.
+
+
+## UTP broiler benchmark — later BPS publication corroboration (2026-10-28)
+
+BPS *Peternakan Dalam Angka 2025*, Table 8.3.10 (printed p.122; publication released 2026-01-09), reproduces the 2024 UTP broiler benchmark and reports per 5,000 final-stock heads: production Rp152,008.05 thousand; production cost Rp126,445.06 thousand; published income Rp25,563.00 thousand; feed cost Rp81,754.62 thousand (64.66% of cost). Official publication metadata: https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html. Table text inspected in a publicly accessible mirror: https://id.scribd.com/document/1009902102/Peternakan-Dalam-Angka-2025-Menurut-Bps.
+
+Arithmetic: Rp152,008.05k − Rp126,445.06k = Rp25,562.99k, only Rp0.01k below the published Rp25,563.00k (rounding). This conflicts with the earlier transcription of SEP 2024 Table 2.10 (cost Rp126,445.08k; income Rp28,639.72k). Treat the newer BPS table as strong independent corroboration that the earlier income transcription may be wrong, but keep the original Table 2.10 image check open because the BPS official page itself returned 403 and the accessible table text came from a mirror. Runtime benchmark `REAL_ECONOMIC_DATA.utpBroilerBenchmark2024` is research-only; do not use it as a Tier recipe or merge it with UPB/UTL data.
