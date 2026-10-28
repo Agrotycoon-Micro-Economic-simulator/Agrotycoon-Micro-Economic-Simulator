@@ -89,6 +89,14 @@ test('four es kelapa sales recognize HPP once and do not create cash outflow', (
     assert.equal(debit, credit);
   }
 
+  // Component HPP must remain separate: coconut, ice, syrup, and cup are distinct inventory accounts.
+  const firstHppLines = hppEntries[0][4].lines;
+  assert.equal(firstHppLines.find(line => line.account === 'Persediaan Kelapa').credit, 875);
+  assert.equal(firstHppLines.find(line => line.account === 'Persediaan Es').credit, 500);
+  assert.equal(firstHppLines.find(line => line.account === 'Persediaan Gula').credit, 400);
+  assert.equal(firstHppLines.find(line => line.account === 'Persediaan Cup').credit, 300);
+  assert.equal(firstHppLines.filter(line => line.credit > 0).length, 4);
+
   const transfers = journal.filter(row => row[4] && row[4].classification === 'inventory_transfer');
   assert.equal(transfers.length, 1);
   assert.equal(transfers[0][4].debitAccount, 'Persediaan Kelapa Dalam Proses');
