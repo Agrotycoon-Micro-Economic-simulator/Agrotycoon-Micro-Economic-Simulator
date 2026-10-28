@@ -61,6 +61,6 @@ test('unknown and malformed transactions are ignored without mutating prices', (
     { commodityId: 'tomat', side: 'buy', quantity: 0, price: 100 },
     { commodityId: 'tomat', side: 'hold', quantity: 1, price: 100 }
   ]);
-  assert.deepEqual(result, []);
+  assert.equal(result.length, 0);
   assert.equal(item.marketPrice, before);
 });
