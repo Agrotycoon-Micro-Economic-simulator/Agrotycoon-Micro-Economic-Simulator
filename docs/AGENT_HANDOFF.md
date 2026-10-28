@@ -6279,3 +6279,13 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - Next concrete task: obtain a working checkout/CI run, verify the actual feature-branch HEAD, add tests for rice data provenance and the 1.521 × 52 calculation, then source a compatible population denominator and official national rice demand/availability balance before calculating total tonnes or daily NPC demand.
 
 - Added tests/rice-national-demand.test.js and wired it into .github/workflows/targeted-regression.yml. Assertions cover the BPS source URLs, observation units, 1.521 × 52 = 79.092 derivation, official production figures, and explicit null for total national consumption without a compatible population denominator. This branch push should trigger targeted regression CI; the test result is not yet confirmed in this handoff update.
+
+
+## Continuation checkpoint — rice demand projection extended (2026-10-28)
+
+- Added official Bapanas 2024 per-capita rice consumption (92.1 kg/person/year; row 224, dataset published 2025-01-31) and Kementan Pusdatin/Bapanas 2025 balance projection to `js/real_economic_data.js`.
+- New runtime values: 2025 population projection 284,438,800; household need 22,527,000 t; non-household need 8,448,844 t; published total need 30,975,843 t; beginning stock 8,402,277 t; projected paddy output 54,453,100 t GKG; rice production 31,376,296 t; imports 514,804 t; total availability 40,293,371 t; published projected balance 9,317,528 t. These are forecast values, not realized actuals.
+- Official source links: https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional and https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf. Tables 4.5–4.6; Kementan/Bapanas update 2025-06-02.
+- One-tonne source arithmetic discrepancy is documented: 22,527,000 + 8,448,844 = 30,975,844, but source total is 30,975,843. Original figures remain unaltered.
+- Updated `tests/rice-national-demand.test.js` to cover official demand and balance fields. No local Node run was possible in prior environment; test and CI results remain unverified until the workflow logs are checked.
+- Next: check the current feature branch commit and Actions result, fix any real test failures, then add a transparent derived scenario using the 2025 population denominator only if its cross-year assumptions are explicitly labeled. After rice, move to maize using the same provenance/units/seasonality rules. No map files touched.
