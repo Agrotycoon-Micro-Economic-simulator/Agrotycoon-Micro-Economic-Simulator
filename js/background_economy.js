@@ -22,6 +22,11 @@
     perikanan: { demand: 1.06, supply: 0.97 },
     industri: { demand: 0.98, supply: 1.02 }
   });
+  const SECTOR_BY_CATEGORY = Object.freeze({
+    pangan: "agriculture", hortikultura: "agriculture", perkebunan: "agriculture",
+    buah: "agriculture", rempah: "agriculture", peternakan: "livestock",
+    perikanan: "fishery", industri: "processing"
+  });
   const clamp = (n, min, max) => Math.max(min, Math.min(max, Number.isFinite(Number(n)) ? Number(n) : min));
   function normalizePolicies(input) {
     const p = Object.assign({}, DEFAULT_POLICIES, input || {});
@@ -44,6 +49,12 @@
     const activePlayers = clamp(Math.floor(Number(opts.activePlayers) || 1), 1, 1000000);
     const policies = normalizePolicies(opts.policies);
     const catalog = opts.catalog || (root.MARKET_ENGINE && root.MARKET_ENGINE.catalog) || [];
+    const capacityInput = opts.regionCapacity || {};
+    const capacity = root.REGION_CAPACITY
+      ? root.REGION_CAPACITY.allocate(capacityInput)
+      : { activeConsumers: 4600000, sectorProducerCaps: { agriculture: 45000, livestock: 18000, fishery: 9000, processing: 12000 } };
+    const defaultCaps = root.REGION_CAPACITY ? root.REGION_CAPACITY.defaults.sectorProducerCaps : capacity.sectorProducerCaps;
+    const consumerScale = capacity.activeConsumers / 4600000;
     const flow = [];
     catalog.forEach(item => {
       if (!item || !item.id || !(Number(item.marketPrice) > 0)) return;
@@ -52,13 +63,21 @@
       const seasonal = 1 + 0.08 * Math.sin((phase * Math.PI * 2) + stableUnit(item.id) * Math.PI * 2);
       const idNoise = 0.9 + stableUnit(item.id + "|flow") * 0.2;
       const foodReserve = ["pangan", "hortikultura"].includes(item.category) ? policies.foodReserveDemand : 0;
-      const demand = 100 * profile.demand * seasonal * idNoise * (1 + foodReserve);
+      // Population drives aggregate consumption; the count is an explicit scenario,
+      // not a claim about live Indonesian population data.
+      const demand = 100 * profile.demand * seasonal * idNoise * (1 + foodReserve) * consumerScale;
       const taxSupplyFactor = Math.max(0.55, 1 - policies.productionTax * 0.65);
       const subsidySupplyFactor = 1 + policies.inputSubsidy * 0.35;
       const interestSupplyFactor = Math.max(0.7, 1 - policies.interestRate * 0.25);
       const tariffSupplyFactor = Math.max(0.65, 1 - policies.importTariff * 0.2);
       const logisticsSupplyFactor = 0.8 + policies.logisticsEfficiency * 0.2;
-      const supply = 100 * profile.supply * (2 - seasonal) * idNoise * taxSupplyFactor *
+      // Producer counts are capped by the region model. Capacity changes therefore
+      // change aggregate supply instead of allowing unlimited abstract producers.
+      const sector = SECTOR_BY_CATEGORY[item.category] || "other";
+      const configuredCap = Number(capacity.sectorProducerCaps[sector]) || 0;
+      const referenceCap = Math.max(1, Number(defaultCaps[sector]) || configuredCap || 1);
+      const capacityFactor = clamp(configuredCap / referenceCap, 0, 1.5);
+      const supply = 100 * profile.supply * (2 - seasonal) * idNoise * capacityFactor * taxSupplyFactor *
         subsidySupplyFactor * interestSupplyFactor * tariffSupplyFactor * logisticsSupplyFactor;
       const scale = Math.sqrt(activePlayers);
       const price = Number(item.marketPrice);
@@ -90,7 +109,8 @@
       npcTransactionCount: npcTransactions.length,
       playerTransactionCount: playerTransactions.length,
       priceUpdates: prices,
-      policies: normalizePolicies(opts.policies)
+      policies: normalizePolicies(opts.policies),
+      regionalCapacity: root.REGION_CAPACITY ? root.REGION_CAPACITY.snapshot(opts.regionCapacity || {}) : null
     };
   }
   function politicalEligibility(company) {
@@ -107,7 +127,7 @@
     };
   }
   root.BACKGROUND_ECONOMY = {
-    version: "0.1.0", defaultPolicies: DEFAULT_POLICIES, categoryFlow: CATEGORY_FLOW,
-    normalizePolicies, buildNpcFlow, tick, politicalEligibility
+    version: "0.2.0", defaultPolicies: DEFAULT_POLICIES, categoryFlow: CATEGORY_FLOW,
+    sectorByCategory: SECTOR_BY_CATEGORY, normalizePolicies, buildNpcFlow, tick, politicalEligibility
   };
 })(typeof window !== "undefined" ? window : globalThis);
