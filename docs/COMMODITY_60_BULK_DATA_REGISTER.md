@@ -1011,3 +1011,10 @@ Both figures are retained as distinct official measures in `REAL_ECONOMIC_DATA.m
 | Dry shelled maize production at 14% moisture | 16,160,000 | tonnes/year, 2025 | Same BPS final-statistics release. This is a final production observation, not a full supply-demand balance. |
 
 Runtime mirror: `REAL_ECONOMIC_DATA.maizeProduction2025`. `maizeNationalBalanceEstimate2025` is deliberately `null`: the 2025 demand figure is a rounded projection and a valid balance also needs aligned stocks, imports/exports, post-harvest losses and product-scope definitions. Do not subtract the 14%-moisture production figure from national need and label the difference a surplus.
+
+
+## Final maize production 2025 — BPS (2026-10-28)
+
+BPS's final 2025 press release reports harvested area **2.71 million ha** and dry shelled maize production at **14% moisture of 16.16 million tonnes**. Source: BPS, *Luas Panen dan Produksi Jagung di Indonesia 2025 (Angka Tetap)*, released 2026-02-02: https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html. Runtime: `REAL_ECONOMIC_DATA.maizeProduction2025`; regression: `tests/maize-national-demand.test.js`.
+
+The 2025 final output is 1.02 million tonnes / 6.74% above BPS's 2024 final 15.14 Mt at the same 14%-moisture basis. This is a year-over-year production comparison, not a national surplus estimate. `maizeNationalBalanceEstimate2025` remains `null`: the 2025 total-need figure is rounded/projection-based, feed-industry sources disagree, and stocks, imports/exports, losses and exact balance scope are not reconciled. Do not infer a surplus by subtracting demand from production alone.
