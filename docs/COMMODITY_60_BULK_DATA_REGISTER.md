@@ -959,3 +959,22 @@ Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satu
 | National annual rice-consumption estimate | null | tonnes/year | Not calculated until a compatible official population denominator and demand definition are attached. |
 
 Runtime mirror: window.REAL_ECONOMIC_DATA.riceNationalFoodDemand in js/real_economic_data.js. Status is partial; population denominator and comprehensive national demand remain research-required. Do not compare production-for-food directly with household “beras lokal/ketan” consumption as if definitions were identical.
+
+
+## Additional official rice-demand baseline — Bapanas/Kementan 2025 projection (added 2026-10-28)
+
+| Field | Value | Unit / period | Source details |
+|---|---:|---|---|
+| Average per-capita rice consumption | 92.1 | kg/person/year, 2024 | Badan Pangan Nasional, *Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Nasional Update Tahun 2024*, row 224 (Beras, 2024); published 2025-01-31. https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional |
+| Population denominator for 2025 projection | 284,438,800 | persons, 2025 mid-year | BPS 2020–2050 population projection as cited in Kementan Pusdatin *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Tables 4.5–4.6, printed pp. 20–21 / PDF pp. 24–25; updated 2025-06-02. https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf |
+| Household rice need | 22,527,000 | tonnes/year, 2025 projection | Susenas household consumption, as tabulated by Kementan/Bapanas. Same source, Table 4.6. |
+| Non-household rice need | 8,448,844 | tonnes/year, 2025 projection | Bapok 2017-derived non-household use including food-service and institutional demand. Same source, Table 4.6. |
+| Total rice need | 30,975,843 | tonnes/year, 2025 projection | Published source total. The two displayed components sum to 30,975,844, a 1-tonne arithmetic discrepancy; source total is preserved and flagged in audit. |
+| Beginning stock | 8,402,277 | tonnes, start of 2025 | Carry-over estimate, not annual production. |
+| Paddy production | 54,453,100 | tonnes GKG, 2025 projection | Forecast component, not final realized output. |
+| Rice production | 31,376,296 | tonnes, 2025 projection | Derived by official balance source from projected paddy output. |
+| Imports | 514,804 | tonnes, 2025 projection | Includes specified industrial/special rice and government reserve imports. |
+| Total availability | 40,293,371 | tonnes, 2025 projection | Stock + rice production + imports under the published balance methodology. |
+| Projected balance | 9,317,528 | tonnes, 2025 projection | Published availability minus published total need. |
+
+Runtime mirror: `window.REAL_ECONOMIC_DATA.riceNationalFoodDemand` fields `perCapitaAnnualBapanas`, `populationDenominator`, `nationalDemandProjection`, and `nationalBalanceProjection2025`. Keep this 2025 forecast separate from the 2024 BPS final paddy statistics and the weekly “beras lokal/ketan” survey series. Forecast is not a final actual. 
