@@ -978,3 +978,19 @@ Runtime mirror: window.REAL_ECONOMIC_DATA.riceNationalFoodDemand in js/real_econ
 | Projected balance | 9,317,528 | tonnes, 2025 projection | Published availability minus published total need. |
 
 Runtime mirror: `window.REAL_ECONOMIC_DATA.riceNationalFoodDemand` fields `perCapitaAnnualBapanas`, `populationDenominator`, `nationalDemandProjection`, and `nationalBalanceProjection2025`. Keep this 2025 forecast separate from the 2024 BPS final paddy statistics and the weekly “beras lokal/ketan” survey series. Forecast is not a final actual. 
+
+
+## National maize demand and direct-consumption evidence — 2026-10-28
+
+| Measure | Value | Unit / period | Source and table | Status / interpretation |
+|---|---:|---|---|---|
+| Direct household food consumption | 1.5 | kg/person/year, 2024 | Bapanas, *Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Nasional Update Tahun 2024*, row 225 (Jagung), https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional | Official statistic marked provisional for 2024; direct food consumption only, not national maize use |
+| Total national maize need | approximately 14,720,000 | tonnes/year, 2025 | Kementan Pusdatin, *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Figure 5.3, printed p.34, https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf | Official rounded projection, not realized final data |
+| All-channel feed use (feed industry + independent farmers) | approximately 13,603,000 | tonnes/year, 2025 | Same Figure 5.3 | Rounded projection; 92.41% of total need |
+| Other uses (household direct consumption, seed, non-feed industry) | approximately 1,117,000 | tonnes/year, 2025 | Same Figure 5.3 | Rounded projection; 7.59% of total need |
+| Feed-industry requirement | 8,844,096 | tonnes/year, 2025 | Ditjen PKH, *Buku Jagung 2025*, Table 26, https://ditjenpkh.pertanian.go.id/storage/master/file/8EG4sdWw_2025_Buku_Jagung_%281%29.pdf | Official projection for feed-industry requirement, narrower than all-channel feed use |
+| Alternative feed-industry figure in bulletin | approximately 8,250,000 | tonnes/year, 2025 | Kementan Pusdatin, same bulletin, Figure 5.4, printed p.35 | Official rounded projection but differs from Buku Jagung Table 26; reconciliation is unresolved |
+
+Runtime record: `REAL_ECONOMIC_DATA.maizeNationalDemand`; regression test: `tests/maize-national-demand.test.js`; workflow includes the test. The 8.25 Mt and 8.844096 Mt feed-industry projections are not added together or silently harmonized. Total demand of ~14.72 Mt uses all-channel scope; its 13.603 Mt feed component includes both industry and independent farmers. Direct consumption 1.5 kg/person/year remains separate, and direct household tonnage remains `null` rather than being inferred from an unaligned denominator.
+
+Production comparability remains open: existing records include different reported 2024 maize totals and moisture bases (e.g., dry shelled maize at 14% moisture versus another report at 28% moisture). Do not subtract a 2024 production observation from the 2025 rounded demand projection until source vintage, moisture basis, post-harvest losses and product definition are reconciled. No Tier 1–4 model is approved by these national demand indicators.
