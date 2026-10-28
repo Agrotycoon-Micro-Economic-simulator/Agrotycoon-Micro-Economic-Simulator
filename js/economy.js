@@ -254,12 +254,22 @@ function recordBusinessCogs(desc,components){
  ledger('HPP',desc,-total,{components:valid},{classification:'business_cogs',debitAccount:'HPP Penjualan',creditAccount:valid.map(x=>x.account).join(' / '),debit:total,credit:total,basis:'noncash',lines});
  return total;
 }
+function transferInventoryValue(desc,amount,fromAccount,toAccount){
+ const value=Number(amount)||0;
+ if(!Number.isFinite(value)||value<=0)return 0;
+ ledger('PERSEDIAAN',desc,0,{amount:value,fromAccount,toAccount},{
+  classification:'inventory_transfer',debitAccount:toAccount,creditAccount:fromAccount,
+  debit:value,credit:value,basis:'noncash',
+  lines:[{account:toAccount,debit:value,credit:0},{account:fromAccount,debit:0,credit:value}]
+ });
+ return value;
+}
 function takeCoconut(){
  if(S.quarterUsed>0){
   const unitCost=Math.max(0,Number(S.quarterCost)||3500);
   S.quarterUsed++;
   if(S.quarterUsed>=4){S.quarterUsed=0;S.quarterCost=0;}
-  return unitCost/4;
+  return {cost:unitCost/4,account:'Persediaan Kelapa Dalam Proses'};
  }
  const qty=stockQty();
  if(qty<=0)return false;
@@ -268,12 +278,15 @@ function takeCoconut(){
  if(S.stock.biasa>0)S.stock.biasa--;else S.stock.super--;
  S.stockCostValue=Math.max(0,stockValue-unitCost);
  S.quarterUsed=1;S.quarterCost=unitCost;S.dayLog.materials.kelapa++;
- return unitCost/4;
+ // Remove the whole coconut from raw stock, but transfer the unconsumed 3/4 into work in process.
+ const remainingCost=unitCost-(unitCost/4);
+ if(remainingCost>0)transferInventoryValue('Transfer sisa kelapa ke persediaan dalam proses',remainingCost,'Persediaan Kelapa','Persediaan Kelapa Dalam Proses');
+ return {cost:unitCost/4,account:'Persediaan Kelapa'};
 }
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
- const coconutCost=takeCoconut();
- if(coconutCost===false)return false;
+ const coconut=takeCoconut();
+ if(coconut===false)return false;
  const iceQty=Number(S.warung.ice)||0,sugarQty=Number(S.warung.sugar)||0,cupQty=Number(S.warung.cups)||0;
  const iceCost=iceQty>0?(Number(S.warung.iceCost)||iceQty*(DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions))/iceQty:DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions;
  const sugarCost=sugarQty>0?(Number(S.warung.sugarCost)||sugarQty*(DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions))/sugarQty:DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions;
@@ -284,7 +297,7 @@ function trySellEs(){
  S.warung.cupsCost=Math.max(0,(Number(S.warung.cupsCost)||cupQty*cupCost)-cupCost);
  S.dayLog.materials.ice++;S.dayLog.materials.sugar++;S.dayLog.materials.cup++;
  recordBusinessCogs('HPP es kelapa 1 gelas',[
-  {account:'Persediaan Kelapa',amount:coconutCost},
+  {account:coconut.account,amount:coconut.cost},
   {account:'Persediaan Es',amount:iceCost},
   {account:'Persediaan Gula',amount:sugarCost},
   {account:'Persediaan Cup',amount:cupCost}
