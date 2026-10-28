@@ -6184,3 +6184,7 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - Source review mengonfirmasi baris HPP per akun tersedia di jurnal dan laporan harian punya kolom komponen terpisah. Ini bukan browser gameplay test.
 - Tidak ada klaim test Node/browser berhasil pada checkpoint ini. Jalankan `node --test tests/market-engine.test.js tests/accounting-inventory.test.js` di checkout repo; jika gagal, perbaiki sebelum menghubungkan transaksi runtime.
 - Berikutnya: verifikasi HPP component breakdown dalam laporan, lalu desain backend shared-market transaction ledger / atomic trade settlement. Jangan membuat simulasi “semua pemain” dari transaksi lokal saja.
+
+
+- **2026-10-28 HPP report follow-up:** `js/akuntansi.js` now aggregates the `components` array from HPP journal entries by inventory account and renders separate monthly lines for kelapa mentah, kelapa dalam proses, es batu, sirup gula, and gelas plastik. The monthly household-adjusted result label was corrected to say it is after recorded HPP and household costs but before depreciation. The HPP subtotal remains for profit calculation; it does not replace the required component breakdown.
+- **Verification status:** source inspection confirms daily and monthly reports now read component-level HPP data, and the accounting regression test already asserts distinct journal credits for coconut, ice, syrup, and cup. No Node test runner or browser run was executed in this continuation.
