@@ -164,6 +164,19 @@ window.REAL_ECONOMIC_DATA={
   note:"Final 2025 dry shelled maize production at 14% moisture. Do not derive a national surplus/deficit against the 2025 rounded demand projection until stocks, imports, exports, post-harvest losses, product scope and balance methodology are reconciled."
  },
  maizeNationalBalanceEstimate2025:null,
+ utpBroilerBenchmark2024:{
+  geography:"Indonesia",
+  unitType:"UTP",
+  commodity:"Ayam ras pedaging",
+  referencePeriod:"2023-06-01/2024-05-31",
+  denominator:"per 5,000 final-stock heads",
+  source:{publisher:"Badan Pusat Statistik",title:"Peternakan Dalam Angka 2025",url:"https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html",releaseDate:"2026-01-09",table:"Table 8.3.10, printed p.122; cites BPS SEP 2024",qualityStatus:"official_catalog_confirmed_table_text_from_mirror"},
+  reported:{productionValueThousandRp:152008.05,productionCostThousandRp:126445.06,publishedIncomeThousandRp:25563.00,feedCostThousandRp:81754.62,feedCostSharePct:64.66},
+  derived:{productionMinusCostThousandRp:25562.99,publishedIncomeMinusDerivedThousandRp:0.01,status:"derived_arithmetic"},
+  reconciliation:{earlierSepTable2_10Transcription:{productionValueThousandRp:152008.05,productionCostThousandRp:126445.08,publishedIncomeThousandRp:28639.72,status:"conflicts_with_later_bps_publication"},laterBpsTableArithmeticStatus:"income reconciles within Rp0.01 thousand rounding",originalSepTableImageStatus:"not_yet_visually_verified"},
+  status:"research_reference_only",
+  note:"The 2026 BPS publication reproduces 2024 UTP broiler figures with production 152,008.05, cost 126,445.06 and income 25,563.00 thousand Rp per 5,000 heads. Table text was inspected in a publicly accessible mirror of the official publication; the official BPS catalogue page confirms metadata but direct open returns 403. Do not overwrite the original Table 2.10 transcription until its original image/PDF is visually checked. Not a Tier recipe or UPB/UTL estimate."
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
