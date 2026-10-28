@@ -6224,3 +6224,27 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - `tests/background-economy.test.js`: added assertions that unverified feeds cannot claim global-market status.
 - Actual fetched source for `js/commodities.js`, `js/market_engine.js`, and `js/background_economy.js` was syntax-compiled and executed together in an isolated JavaScript harness: **73 targeted assertions passed**, including all 60 catalog entries, 120 NPC buy/sell flow records, tax/subsidy/food-reserve effects, bounded prices, local/unverified/verified-feed scope flags, and presidential eligibility. The current `js/state.js`, `js/day.js`, and all three committed test files also passed syntax compilation. This is not execution of the committed `node --test` suite or the full app.
 - The repository could not be cloned in this environment because DNS resolution for `github.com` failed. The committed Node test suite and browser/E2E flows therefore remain unverified.
+
+
+## 2026-10-28 — Batas populasi NPC dan kapasitas produsen regional
+
+### Implementasi
+- Menambahkan `js/region_capacity.js`, modul data-only yang membatasi populasi nonpengusaha, total pemilik usaha, konsumen aktif, dan slot produsen per sektor. Batas tambang dibatasi maksimal 100 operator dalam konfigurasi default.
+- Skenario default 5.000.000 NPC membatasi pemilik usaha menjadi maksimal 100.000 dan menjaga sedikitnya 98% populasi sebagai nonpengusaha. Dengan konfigurasi itu jumlah nonpengusaha minimal 4.900.000; ini parameter skenario permainan sesuai instruksi pemilik, bukan klaim distribusi statistik resmi Indonesia.
+- `index.html` memuat modul kapasitas sebelum `background_economy.js`.
+- `js/background_economy.js` sekarang mengubah agregat permintaan berdasarkan jumlah konsumen aktif dan agregat penawaran berdasarkan slot produsen sektor. Kapasitas produsen tidak boleh dianggap sebagai populasi tambahan yang terpisah dari populasi utama.
+- Kapasitas lahan per sektor (padi, hortikultura, perkebunan, peternakan, perikanan, tambang, industri, pasar, warung, pabrik) tersedia sebagai kolom konfigurasi, tetapi saat ini bernilai `null` sampai angka berbasis sumber resmi dan definisi hektare/kapasitas yang kompatibel diteliti. Jangan mengarang angka luas lahan nasional.
+
+### Batasan dan risiko
+- Angka slot produsen per sektor selain batas tambang 100 masih parameter game sementara, bukan jumlah perusahaan resmi Indonesia. Nilainya harus dikalibrasi dengan data BPS/Kementerian terkait dan unit usaha yang didefinisikan jelas.
+- Modul ini mengatur NPC agregat lokal. Belum ada klaim pasar lintas-pemain global; transaksi pemain lintas akun masih memerlukan backend bersama dan settlement server.
+- Peran bisa tumpang tindih: petani/pekerja juga konsumen. Jangan menjumlahkan peran pekerjaan sebagai populasi unik.
+- HPP kelapa, es batu, sirup gula, dan gelas plastik tetap akun komponen terpisah; perubahan kapasitas pasar tidak boleh menyatukan HPP komponen tersebut atau mengubah baseline harga kelapa ritel pemilik Rp13.000.
+
+### Verifikasi
+- Source insertion dan perubahan kode dikonfirmasi melalui GitHub Contents API. Belum menjalankan `node --test`, browser, atau E2E setelah perubahan ini. Jangan menyatakan tes runtime lulus.
+
+### Langkah berikutnya
+1. Tambahkan tes untuk populasi 5 juta, batas pemilik usaha 100 ribu, minimum 4,9 juta nonpengusaha, dan batas tambang 100.
+2. Riset serta catat luas lahan/kapasitas sektor Indonesia dari publikasi resmi bertahun dan definisi yang cocok; baru kemudian isi nilai `landUseHa` dan batas produsen sektor.
+3. Hubungkan inventori lahan/pabrik/warung pemain ke kapasitas produksi nyata per wilayah dan cegah kapasitas melebihi lahan/tenaga kerja/izin.
