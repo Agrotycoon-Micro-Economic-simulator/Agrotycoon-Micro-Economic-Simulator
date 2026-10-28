@@ -6188,3 +6188,31 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 
 - **2026-10-28 HPP report follow-up:** `js/akuntansi.js` now aggregates the `components` array from HPP journal entries by inventory account and renders separate monthly lines for kelapa mentah, kelapa dalam proses, es batu, sirup gula, and gelas plastik. The monthly household-adjusted result label was corrected to say it is after recorded HPP and household costs but before depreciation. The HPP subtotal remains for profit calculation; it does not replace the required component breakdown.
 - **Verification status:** source inspection confirms daily and monthly reports now read component-level HPP data, and the accounting regression test already asserts distinct journal credits for coconut, ice, syrup, and cup. No Node test runner or browser run was executed in this continuation.
+
+
+## 2026-10-28 — NPC background flows and political policy foundation
+
+### Runtime implementation
+- Added `js/background_economy.js` and loaded it from `index.html` immediately after `js/market_engine.js`.
+- The new data-only NPC layer generates separate buy-side demand and sell-side supply records for each of the 60 commodities each in-game day. The quantities are deterministic from game day, commodity identity, category profiles, and policy values; no rendered NPC sprites or random per-refresh price spikes are required.
+- Added a policy state interface for production tax, input subsidy, import tariff, interest rate, logistics efficiency, and public food-reserve demand. Policies alter simulated supply and/or demand, and are clamped to valid ranges.
+- Added explicit economic-scale gates for entering national politics and presidential candidacy via `BACKGROUND_ECONOMY.politicalEligibility()`. Current thresholds are game-design parameters, not a finalized balance decision; they need to be reconciled with the game's company progression and currency scale before a player-facing election UI is built.
+- `js/state.js`: persists per-save market prices and policy state; restores bounded prices after loading an existing save.
+- `js/day.js`: calls the NPC market tick during end-of-day processing and saves the updated 60 price values into the player's game save.
+
+### Important scope limitation
+- This is an operational **local NPC simulation**, not yet a market shared across all real players. `marketLastTick.marketIsGloballyShared` is explicitly false. Each browser save currently has its own price history.
+- Supabase MCP currently returned no connected projects. No database, server transaction ledger, Edge Function, or cross-player Realtime feed was deployed. A shared market requires a configured backend with authenticated player identity, server-side atomic settlement, idempotent transaction IDs, anti-wash-trading checks, and a common price snapshot consumed by all clients.
+- Player trade flows are not yet fully wired from all buy/sell UI paths into an authoritative market transaction feed. Do not describe the feature as multiplayer/global until that adapter and multi-client verification exist.
+- Commodity bounds remain provisional 50%-200% game-balancing bounds, not empirically verified market floors/ceilings. They still require unit- and market-level calibration.
+
+### Tests and verification
+- Added `tests/background-economy.test.js` for 120 NPC buy/sell flow records across 60 commodities, policy impacts, bounded market tick, local-vs-global status, and political eligibility gates.
+- The new test file and existing market/accounting tests have **not** yet been executed with `node --test`. A local repository clone was attempted, but the execution environment could not resolve `github.com`; this is an environment limitation, not a test result.
+- No browser/E2E test was run. No `main` or map files were modified.
+
+### Next task
+1. Execute `node --test tests/background-economy.test.js tests/market-engine.test.js tests/accounting-inventory.test.js` in CI or a local checkout; fix any test or syntax failure.
+2. Wire actual completed player commodity trades into a server-authoritative ledger and expose a common market snapshot. Do not substitute localStorage for shared state.
+3. Replace provisional commodity bounds with cited, unit-compatible price ranges, preserving the owner's coconut retail baseline and the distinct coconut/ice/syrup/cup HPP accounts.
+4. Integrate policy and election gates with company progression and add an explainable politics UI only after thresholds and gameplay consequences are agreed.
