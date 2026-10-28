@@ -673,3 +673,15 @@ Sources: official Ministry of Agriculture PDF Tables 2.29 and 5.35, https://satu
 - Non-comparable product forms: GKG paddy, rice production for food consumption, and household consumption of “Beras lokal/ketan” are different metrics. Do not use them interchangeably or infer a surplus/deficit by direct subtraction.
 - Seasonality: annual totals divided by 365 would be a derived daily mean, not official daily demand; seasonal harvest, stock changes, losses, and distribution must be modeled before translating national quantities into daily NPC market flows.
 - Primary sources: BPS consumption table (updated 2026-07-17), https://www.bps.go.id/id/statistics-table/1/MjMxNiMx/rata-rata-konsumsi-per-kapita-seminggu-beberapa-macam-bahan-makanan-penting--2015-2024.html; BPS final paddy/rice 2024 release (2025-02-03), https://www.bps.go.id/id/pressrelease/2025/02/03/2414/pada-2024--luas-panen-padi-mencapai-sekitar-10-05-juta-hektare-dengan-produksi-padi-sebanyak-53-14-juta-ton-gabah-kering-giling--gkg--.html.
+
+
+## Rice-demand source reconciliation — 2026-10-28
+
+A stronger compatible source for national demand was found after the initial BPS weekly household metric was registered:
+
+- Bapanas 2024 national per-capita rice consumption: 92.1 kg/person/year (row 224, published 2025-01-31), distinct from BPS weekly “beras lokal/ketan” = 1.521 kg/person/week.
+- Kementan Pusdatin/Bapanas national balance projection for 2025 (data updated 2025-06-02): beginning stock 8,402,277 t; projected rice production 31,376,296 t; imports 514,804 t; total availability 40,293,371 t; total need 30,975,843 t; published balance 9,317,528 t. This is a forecast, not a realized final 2025 balance.
+- The same Table 4.6 displays household need 22,527,000 t and non-household need 8,448,844 t. Their arithmetic sum is 30,975,844 t, one tonne above the published total 30,975,843 t. Runtime retains the published total and components unchanged; discrepancy is not silently corrected.
+- Population 284,438,800 is the 2025 mid-year projection cited to BPS Proyeksi Penduduk Indonesia 2020–2050 based on SP2020. It is a projection denominator, not a census count.
+- Sources: Bapanas consumption dataset https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional; Kementan Pusdatin, Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025, Tables 4.5–4.6, https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf.
+- Keep annual household per-capita consumption, total national demand (household + non-household), stock, production, imports, and projected balance as distinct metrics. Do not use 2024 production numbers as though they describe the 2025 forecast.
