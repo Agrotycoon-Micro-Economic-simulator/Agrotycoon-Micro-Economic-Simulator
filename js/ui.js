@@ -156,6 +156,10 @@ function showAccelOffer(){
 function showReport(L,net){
  if(!L)L={sales:{},materials:{},dailyExpenses:[]};
  const dayNum=(S.day||1)-1;
+ const cogs=Number(L.cogs)||0;
+ const businessExpense=Number(L.businessExpense)||0;
+ const livingExpense=Number(L.livingExpense)||0;
+ const businessResult=(Number(L.gross)||0)-cogs-businessExpense;
  let h='<h3>🌙 Laporan Hari '+dayNum+'</h3>';
  const weatherName=(L.weather&&DATA.weather[L.weather])?DATA.weather[L.weather].name:'-';
  h+='<p><strong>Cuaca:</strong> '+weatherName+' | <strong>Pembeli:</strong> '+(L.buyerCount||0)+'</p>';
@@ -169,14 +173,16 @@ function showReport(L,net){
  L.dailyExpenses.forEach(d=>{h+='<tr><td>'+(d.item||'-')+'</td><td class="neg">-'+safeRp(d.amt||0)+'</td></tr>';});
  h+='<tr><td>🛒 Pembelian stok (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.shopping||0)+'</td></tr>';
  h+='<tr><td>🏪 CAPEX/investasi (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.capex||0)+'</td></tr>';
- h+='<tr><td>👷 Biaya usaha tercatat (termasuk upah panen)</td><td class="neg">-'+safeRp(L.businessExpense||L.labor||0)+'</td></tr>';
+ h+='<tr><td>📦 HPP bahan yang benar-benar terpakai untuk penjualan (nonkas)</td><td class="neg">-'+safeRp(cogs)+'</td></tr>';
+ h+='<tr><td>👷 Beban usaha lain (termasuk upah panen)</td><td class="neg">-'+safeRp(businessExpense||L.labor||0)+'</td></tr>';
  h+='<tr><td>🏠 Biaya hidup yang diakui</td><td class="neg">-'+safeRp(L.livingExpense||0)+'</td></tr>';
  h+='<tr><td><b>Total beban yang diakui</b></td><td class="neg"><b>'+safeRp(L.expense||0)+'</b></td></tr></table>';
  h+='<h4>📦 Bahan Terpakai</h4><p>🥥 '+(L.materials.kelapa||0)+' |  '+(L.materials.ice||0)+' | 🍯 '+(L.materials.sugar||0)+' | 🥤 '+(L.materials.cup||0)+'</p>';
  if(L.lossIcePortions)h+='<p class="neg">🫠 Es mencair '+L.lossIcePortions+' porsi</p>';
+ h+='<h3 style="margin-top:15px">Hasil usaha sebelum biaya hidup (setelah HPP tercatat): <span class="'+(businessResult<0?'neg':'pos')+'">'+safeRp(businessResult)+'</span></h3>';
  const netNum=net||0;
- h+='<h3 style="margin-top:15px">Surplus setelah beban tercatat: <span class="'+(netNum<0?'neg':'pos')+'">'+safeRp(netNum)+'</span></h3>';
- h+='<p><b>Catatan akuntansi:</b> ini belum merupakan laba bersih final karena HPP persediaan usaha yang terpakai/terjual dan penyusutan aset belum dihitung lengkap. Pembelian stok dan CAPEX tetap mengurangi kas, tetapi tidak langsung dibebankan seluruhnya.</p>';
+ h+='<h3>Surplus setelah biaya hidup tercatat: <span class="'+(netNum<0?'neg':'pos')+'">'+safeRp(netNum)+'</span></h3>';
+ h+='<p><b>Catatan akuntansi:</b> HPP penjualan kelapa utuh/es kelapa mulai dicatat berdasarkan biaya persediaan kelapa rata-rata dan biaya unit bahan warung. HPP untuk transaksi lama, susut bahan, komoditas lain, dan penyusutan aset belum lengkap; angka ini belum merupakan laba bersih final. Pembelian stok dan CAPEX mengurangi kas, tetapi tidak langsung dibebankan seluruhnya.</p>';
  h+='<p><b>🤖 AI:</b> "Surplus sementara hari ini '+safeRp(netNum)+'. Jangan menyebutnya laba bersih final sebelum HPP bahan terpakai dan penyusutan dihitung."</p>';
  h+='<button class="btn btn-primary" onclick="closeModal()">☀ Bangun (Hari '+(S.day||1)+')</button>';
  showModal(h);
