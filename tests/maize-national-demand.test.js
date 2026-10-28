@@ -17,7 +17,7 @@ const data = window.REAL_ECONOMIC_DATA.maizeNationalDemand;
 assert.ok(data, "national maize demand registry exists");
 assert.equal(data.directFoodConsumption2024.value, 1.5);
 assert.equal(data.directFoodConsumption2024.unit, "kg/person/year");
-assert.equal(data.directFoodConsumption2024.status, "official_statistic");
+assert.equal(data.directFoodConsumption2024.status, "official_statistic_provisional");
 assert.match(data.sources.bapanasDirectConsumption2024.url, /data\.badanpangan\.go\.id/);
 assert.equal(data.nationalDemandProjection2025.totalNeedTon, 14720000);
 assert.equal(data.nationalDemandProjection2025.feedNeedTon, 13603000);
@@ -31,6 +31,8 @@ assert.equal(data.nationalDemandProjection2025.status, "official_projection_roun
 assert.equal(data.feedIndustryDemandProjection2025.value, 8844096);
 assert.equal(data.feedIndustryDemandProjection2025.status, "official_projection");
 assert.match(data.sources.feedIndustryDemand2025.url, /ditjenpkh\.pertanian\.go\.id/);
+assert.equal(data.alternativeFeedIndustryProjection2025.value, 8250000);
+assert.equal(data.feedIndustryProjectionReconciliationStatus, "unresolved_source_scope_or_vintage_difference");
 assert.equal(data.directHouseholdConsumptionTonnage, null, "do not infer national household tonnage without an explicitly aligned denominator");
 assert.match(data.nationalDemandProjection2025.note, /not realized final data/i);
 assert.match(data.feedIndustryDemandProjection2025.note, /do not confuse with or add/i);
