@@ -6055,3 +6055,31 @@ Using the current catalog inputs, for an own-harvest coconut valued at Rp3,500 a
 
 ### Next implementation task
 Add deterministic tests for weighted-average coconut cost, 4-glass HPP allocation, cup/ice/syrup cost decrement, cash-versus-noncash ledger balance, and inventory write-offs. Then run a browser smoke test for both recommended and manual cup-pack purchases and an end-to-end es-kelapa sale. Continue from current branch HEAD; do not repeat a broad audit unless a specific dependency requires it.
+
+
+## 2026-10-28 — Sale-linked HPP and inventory cost balances
+
+### Runtime implementation completed
+- `js/economy.js`: added `recordBusinessCogs()`, posting non-cash double-entry HPP (Dr HPP Penjualan / Cr inventory accounts), increasing daily COGS and recognized expenses without adding a cash outflow.
+- Coconut inventory now stores `S.stockCostValue`. Own-harvest stock is valued at Rp3,500/butir; harvest labor (Rp500/butir under the configured owner rule) remains a separate business expense and is not capitalized into coconut inventory. External coconut purchases add their actual purchase cost to the current stock value, giving a moving weighted-average unit cost for later sales.
+- Es kelapa sales recognize one-quarter of the coconut unit cost per glass (four glasses per coconut), plus the unit costs of ice, syrup and cups from the warung cost balances. Whole-coconut retail, tengkulak sales and market sales recognize the cost of coconut inventory sold.
+- Recommended/manual warung purchases update `iceCost`, `sugarCost`, and `cupsCost`; each sale reduces the related balance. Melted ice, rotten coconut stock and unused portions of an opened coconut that are discarded are recognized as inventory shrinkage rather than silently disappearing.
+- `js/state.js`: persists/migrates cost balances and daily COGS. Old saves without these fields receive a compatibility estimate using Rp3,500 per coconut and the currently configured material unit costs; historical lot costs are not reconstructed.
+- `js/day.js`, `js/ui.js`, `js/akuntansi.js`: reports now separate HPP, other business expense, household costs, provisional business result before household costs, and final cash movement. Monthly result subtracts the `business_cogs` journal classification. Inventory asset estimates use remaining cost balances.
+- `js/finance.js`: daily accrued loan interest is also reflected in the daily business-expense subtotal.
+
+### Arithmetic check against the current catalog
+- Own-harvest coconut: Rp3,500 ÷ 4 = Rp875 per es kelapa glass.
+- Ice: Rp20,000 ÷ 40 portions = Rp500/glass; syrup: Rp20,000 ÷ 50 portions = Rp400/glass; cup: Rp15,000 ÷ 50 cups = Rp300/glass.
+- Recorded HPP for an es kelapa glass with a Rp3,500 coconut = **Rp2,075** before unmodeled water/fuel, labor allocation beyond separately booked harvest wages, general overhead and depreciation. At a configured Rp5,000 selling price, the contribution after these recorded inputs is Rp2,925 before those omitted costs.
+- If the coconut weighted-average cost is Rp5,000 (for example, a purchase from the configured tengkulak source), coconut allocation is Rp1,250/glass and recorded HPP becomes Rp2,450/glass. These are model calculations, not claims that the recipe's full real-world cost is already captured.
+
+### Verification and limitations
+- Static source assertions passed for the HPP helper, sale-linked HPP for es kelapa / whole coconut / tengkulak / market, cost-balance migrations, inventory write-offs, monthly `business_cogs` subtraction, and report labels. Arithmetic was checked against the current catalog values.
+- The sugar syrup catalog key is `sugarBloc:{name:'Sirup Gula Merah 1 Tupperware (±1 L)',price:20000,portions:50,unit:'batch'}`; cup pack is Rp15,000/50 pcs; ice is Rp20,000/40 portions.
+- GitHub workflow/status lookup for the HPP commit returned no workflow runs and no status checks. No local Node runtime, browser playthrough, or automated gameplay test was run; JavaScript syntax/runtime behavior remains unverified.
+- Legacy transactions do not get retroactive HPP. HPP for other commodities and processing chains, other types of shrinkage, full lot-history reconstruction, and CAPEX depreciation remain incomplete. Reports must keep the result labelled provisional rather than final accounting profit.
+- Scope stayed on non-map runtime files and handoff documentation. No `main` write was made.
+
+### Next step
+Add deterministic tests for weighted-average coconut cost, the four-glass cost allocation, each material balance decrement, cash/non-cash journal balance, and spoilage write-offs. Then run a browser smoke test for recommended/manual cup purchases and an end-to-end es-kelapa sale. Continue from the current feature branch HEAD without repeating a broad audit.
