@@ -691,3 +691,17 @@ A stronger compatible source for national demand was found after the initial BPS
 ## Validation blocker — CI accounting report failure (2026-10-28)
 
 Recent GitHub Actions run 40711465568 failed at the first Node regression test, `tests/accounting_ledger.test.js`, with a TypeError at `js/akuntansi.js:65` while reading `iceKarung` from missing `DATA.shop`. Thus the rice-demand test and later tests were not reached; this run is not evidence of a rice-data failure or success. A defensive catalog guard was committed as `450dcfb7367718c52c05bcef5eba91e15b9701d2`. CI must be rerun and its actual log reviewed before the national rice data or any commodity model is considered test-validated. Missing catalog metadata is not replaced with invented market prices; the accounting asset display treats unsupported component value as zero until metadata is available.
+
+
+## Maize demand: scope and source-vintage reconciliation — 2026-10-28
+
+Official sources provide distinct measures that must not be conflated:
+
+- Bapanas row 225 reports 2024 direct food consumption of maize at 1.5 kg/person/year; the value is provisional. This is not total demand because most national maize use is feed.
+- Kementan Pusdatin *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Figure 5.3 (printed p.34), estimates 2025 total maize need at approximately 14.72 million tonnes, including 13.603 million tonnes for feed (industry plus independent farmers) and 1.117 million tonnes for other uses. These are rounded projections.
+- Ditjen PKH *Buku Jagung 2025*, Table 26, projects 8,844,096 tonnes for the feed industry in 2025. The Kementan Pusdatin bulletin's Figure 5.4 cites approximately 8.25 million tonnes for feed-industry demand. The figures differ despite describing the same broad industry-demand category. Source vintage, reporting frame, or definition has not yet been reconciled. Keep both source-linked records and mark the conflict unresolved; do not choose one as final or add them together.
+- The 13.603 Mt feed total is a broader category that includes feed industry and independent farmers; it is not directly comparable with the narrower industry-only figures.
+- National demand is not calculated from the per-capita metric; `directHouseholdConsumptionTonnage` remains null because no aligned denominator is used for that field. The rounded total-demand components reconcile arithmetically (13.603 + 1.117 = 14.720 Mt), but this is only consistency of rounded displayed values, not proof of realized supply-demand balance.
+- Existing 2024 production references include different source totals and moisture bases. Do not compute a national surplus/deficit by subtracting 2025 projected need from 2024 production without reconciling period, moisture content, losses and product definition.
+
+Sources: https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional; https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf; https://ditjenpkh.pertanian.go.id/storage/master/file/8EG4sdWw_2025_Buku_Jagung_%281%29.pdf. Runtime fields and the regression guard are in `js/real_economic_data.js` and `tests/maize-national-demand.test.js`. No tier-level unit economics promoted.
