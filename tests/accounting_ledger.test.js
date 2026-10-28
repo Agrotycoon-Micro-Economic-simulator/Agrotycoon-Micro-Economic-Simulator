@@ -33,7 +33,16 @@ const context = {
   document: { getElementById(id) { return id === "acc" ? acc : null; } },
   loadSaved() {},
   S,
-  DATA: { matureDays: 1080, weather: { panas: { name: "Panas" } }, living: { lauk: { name: "Lauk tambahan" } } },
+  DATA: {
+    matureDays: 1080,
+    weather: { panas: { name: "Panas" } },
+    living: { lauk: { name: "Lauk tambahan" } },
+    shop: {
+      iceKarung: { price: 20000, portions: 40 },
+      sugarBloc: { price: 20000, portions: 50 },
+      cupPack: { price: 15000, pcs: 50 }
+    }
+  },
   monthOf(day) { return Math.floor((day - 1) / 30) + 1; },
   stockQty() { return (S.stock.biasa || 0) + (S.stock.super || 0); },
   rp(n) { return "Rp " + Math.round(n).toLocaleString("id-ID"); }
