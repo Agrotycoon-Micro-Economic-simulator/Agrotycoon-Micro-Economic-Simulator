@@ -177,6 +177,21 @@ window.REAL_ECONOMIC_DATA={
   status:"research_reference_only",
   note:"The 2026 BPS publication reproduces 2024 UTP broiler figures with production 152,008.05, cost 126,445.06 and income 25,563.00 thousand Rp per 5,000 heads. Table text was inspected in a publicly accessible mirror of the official publication; the official BPS catalogue page confirms metadata but direct open returns 403. Do not overwrite the original Table 2.10 transcription until its original image/PDF is visually checked. Not a Tier recipe or UPB/UTL estimate."
  },
+
+ utlOilPalmBenchmark2024:{
+  geography:"Indonesia",
+  unitType:"UTL",
+  commodity:"Kelapa sawit",
+  referencePeriod:"2024",
+  denominator:"per 100 trees harvested by Other Agricultural Holdings (UTL)",
+  source:{publisher:"Badan Pusat Statistik",title:"Hasil Survei Ekonomi Pertanian (SEP) 2024 — Subsektor Tanaman Pangan, Hortikultura, dan Perkebunan",catalogue:"5101026",publicationNumber:"05100.25001",table:"Table 4.2, printed p.32",officialPublisherPageUrl:"https://www.bps.go.id/id/publication/2025/01/24/52f47865afe337fd047404a8/hasil-survei-ekonomi-pertanian-sep-2024-nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan-hortikultura-dan-perkebunan.html",mirrorUrl:"https://id.scribd.com/document/1007237393/hasil-survei-ekonomi-pertanian-sep-2024-nilai-dan-biaya-produksi-beberapa-komoditas-utama-pada-subsektor-tanaman-pangan-hortikultura-dan-perkebun",qualityStatus:"official_report_text_from_public_mirror"},
+  reported:{productionValueThousandRp:25143.89,productionCostThousandRp:13218.16,publishedIncomeThousandRp:12046.95,producerPriceThousandRpPerKg:2.07,costThousandRpPerKg:1.29,productivityKgPer100Trees:12443.49},
+  costComponentsThousandRp:{seeds:188.79,fertilizer:3026.97,pesticides:556.84,wagesAndAgriculturalServices:4598.78,fuelAndLubricants:175.62,electricityAndWater:55.98,rentAndEstimatedRent:3927.80,otherExpenditures:681.70},
+  derivedAudit:{costComponentSumThousandRp:13212.48,costComponentSumMinusPublishedCostThousandRp:-5.68,productionMinusPublishedCostThousandRp:11925.73,publishedIncomeMinusProductionMinusCostThousandRp:121.22,status:"source_component_and_income_gap_unresolved"},
+  sourceNotes:{roundingNote:"Source says decimals may differ due to rounding.",imputationNote:"Source says cost/subsidy imputation has not yet been estimated for some expenditure variables.",originalTableImageStatus:"not_yet_visually_verified",doNotInfer:"Do not silently reconcile the cost-component sum or published income; keep all source values and deltas separate."},
+  status:"research_reference_only",
+  note:"BPS SEP 2024 Table 4.2, UTL oil-palm average per 100 trees. Accessible table text is from a public mirror; original PDF image still requires visual verification. Not a Tier 1–4 recipe, and not interchangeable with UPB or UTP values."
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
