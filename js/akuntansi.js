@@ -62,9 +62,13 @@ if(!S || S.ledger.length === 0){
  
  // HITUNG ASET
  const stockValue = (Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):stockQty()*3500) + Math.max(0,Number(S.quarterCost)||0)*Math.max(0,4-(Number(S.quarterUsed)||0))/4;
- const bahanWarung = Math.max(0,Number(S.warung.iceCost)||(Number(S.warung.ice)||0)*(DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions))
-  + Math.max(0,Number(S.warung.sugarCost)||(Number(S.warung.sugar)||0)*(DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions))
-  + Math.max(0,Number(S.warung.cupsCost)||(Number(S.warung.cups)||0)*(DATA.shop.cupPack.price/DATA.shop.cupPack.pcs));
+ const shopData=(typeof DATA!=='undefined'&&DATA&&DATA.shop)||{};
+ const iceData=shopData.iceKarung||{};
+ const sugarData=shopData.sugarBloc||{};
+ const cupData=shopData.cupPack||{};
+ const bahanWarung = Math.max(0,Number(S.warung.iceCost)||(Number(S.warung.ice)||0)*(Math.max(0,Number(iceData.price)||0)/Math.max(1,Number(iceData.portions)||1)))
+  + Math.max(0,Number(S.warung.sugarCost)||(Number(S.warung.sugar)||0)*(Math.max(0,Number(sugarData.price)||0)/Math.max(1,Number(sugarData.portions)||1)))
+  + Math.max(0,Number(S.warung.cupsCost)||(Number(S.warung.cups)||0)*(Math.max(0,Number(cupData.price)||0)/Math.max(1,Number(cupData.pcs)||1)));
  const livingStockValue = ['rice','egg','oil','mie','tempe','sayur','lauk'].reduce((sum,key)=>{
   const qty=Math.max(0,Math.floor(Number(S.livingStock&&S.livingStock[key])||0));
   const price=Math.max(0,Number(DATA.living&&DATA.living[key]&&DATA.living[key].price)||0);
