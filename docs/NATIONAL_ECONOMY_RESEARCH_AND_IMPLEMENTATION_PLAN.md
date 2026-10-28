@@ -192,3 +192,5 @@ Required evidence lifecycle:
 - Retained the BPS 2024 final production observations separately from the 2025 projection. The weekly BPS household item remains distinct from the Bapanas annual per-capita metric.
 - Data quality issue recorded: Table 4.6 published total need 30,975,843 t differs by 1 t from displayed components (22,527,000 + 8,448,844 = 30,975,844). Runtime preserves original published values and flags the discrepancy.
 - Added/updated `tests/rice-national-demand.test.js` for new data fields. Test execution and CI outcome must be verified; do not claim passing until logs/status confirm it.
+
+- Semantic safeguard: the 2025 national need of 30,975,843 tonnes is stored as `nationalDemandProjection.totalNeedTon` (household + non-household), while `nationalAnnualConsumptionEstimateTon` remains `null` to avoid conflating the two concepts. The test now checks this guard and the documented 1-tonne component discrepancy.
