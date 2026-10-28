@@ -69,9 +69,10 @@ function finishDay(){
  // Es mencair jika tidak ada kulkas
  if(!S.warung.fridge&&S.warung.ice>0){
   L.lossIcePortions=S.warung.ice;
-  L.lossIceValue=S.warung.ice/DATA.shop.iceKarung.portions*DATA.shop.iceKarung.price;
-  ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
-  S.warung.ice=0;
+  L.lossIceValue=Number.isFinite(S.warung.iceCost)?Math.max(0,S.warung.iceCost):S.warung.ice/DATA.shop.iceKarung.portions*DATA.shop.iceKarung.price;
+  if(L.lossIceValue>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan es mencair',[{account:'Persediaan Es (susut)',amount:L.lossIceValue}]);
+  else ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
+  S.warung.ice=0;S.warung.iceCost=0;
  }else if(S.warung.fridge&&S.warung.ice>0){
   ledger('INFO','Es tersisa di kulkas: '+S.warung.ice+' porsi (aman)',0);
  }
@@ -130,12 +131,15 @@ function finishDay(){
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
  if(stockClass()==='busuk'&&stockQty()>0){
   const q=stockQty();S.stats.rotten+=q;
-  ledger('RUGI','Kelapa busuk '+q+' butir',0);
-  L.lossRot=q;S.stock={biasa:0,super:0};S.quarterUsed=0;
+  const rottenValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
+  if(rottenValue>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan kelapa busuk',[{account:'Persediaan Kelapa (susut)',amount:rottenValue}]);
+  else ledger('RUGI','Kelapa busuk '+q+' butir',0);
+  L.lossRot=q;S.stock={biasa:0,super:0};S.stockCostValue=0;S.quarterUsed=0;S.quarterCost=0;
  }
  S.cuaca=rollWeather();
  const net=-L.expense+L.gross;
- S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,businessExpense:Number(L.businessExpense)||0,livingExpense:Number(L.livingExpense)||0,businessPurchases:Number(L.businessPurchases)||0,cogs:Number(L.cogs)||0,capex:Number(L.capex)||0,net,cashIn:Number(L.cashIn)||0,cashOut:Number(L.cashOut)||0,cashflow:(Number(L.cashIn)||0)-(Number(L.cashOut)||0),
+ const businessResult=(Number(L.gross)||0)-(Number(L.cogs)||0)-(Number(L.businessExpense)||0);
+ S.reports.push({day:S.day-1,gross:L.gross,expense:L.expense,businessExpense:Number(L.businessExpense)||0,livingExpense:Number(L.livingExpense)||0,businessPurchases:Number(L.businessPurchases)||0,cogs:Number(L.cogs)||0,businessResult,capex:Number(L.capex)||0,net,cashIn:Number(L.cashIn)||0,cashOut:Number(L.cashOut)||0,cashflow:(Number(L.cashIn)||0)-(Number(L.cashOut)||0),
   es:L.sales.es,whole:L.sales.whole,lost:L.lost,
   mat:Object.assign({},L.materials),iceMelt:L.lossIcePortions,
   shopping:L.shopping,living:L.living,bills:L.bills,
