@@ -41,6 +41,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run Node test-runner suites for market, NPC economy, and inventory accounting
         run: node --test tests/background-economy.test.js tests/market-engine.test.js tests/accounting-inventory.test.js
+      - name: Run UTL oil-palm benchmark source and arithmetic guard
+        run: node tests/utl-oil-palm-benchmark.test.js
       - name: Run UTP broiler benchmark provenance and arithmetic guard
         run: node tests/utp-broiler-benchmark.test.js
       - name: Run all standalone Node regression tests
