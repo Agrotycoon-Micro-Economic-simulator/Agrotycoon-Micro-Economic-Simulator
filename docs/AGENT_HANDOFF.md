@@ -6152,3 +6152,9 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 1. Run `node --test tests/accounting-inventory.test.js tests/market-engine.test.js` in CI/local checkout and fix any failures.
 2. Connect the market engine to an authoritative shared transaction feed; only then wire all player buy/sell paths into it.
 3. Replace provisional 50%/200% bounds with documented, commodity-specific floors and ceilings backed by period/geography/source evidence, while preserving the owner's coconut retail baseline (Rp13,000) as a separate business price rather than a national market quote.
+
+
+### Follow-up: display HPP by component in the daily report
+- `js/ui.js`: daily report now shows separate HPP lines for coconut, ice, syrup sugar, and plastic cups, derived from `dayLog.cogsByAccount`; only the explicit total HPP row sums these components. Other recognized inventory losses remain in a separate “HPP/susut persediaan lainnya” line.
+- Existing `js/economy.js` already preserves component identity in the non-cash journal and daily `cogsByAccount`; this UI change makes the separation visible to the player instead of only in the ledger.
+- Static inspection verified the four component calculations and rows are present. No `node --test` or browser test was run in this step.
