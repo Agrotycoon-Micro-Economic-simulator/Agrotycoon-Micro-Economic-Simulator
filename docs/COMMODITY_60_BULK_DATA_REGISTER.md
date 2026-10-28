@@ -1018,3 +1018,22 @@ Runtime mirror: `REAL_ECONOMIC_DATA.maizeProduction2025`. `maizeNationalBalanceE
 BPS's final 2025 press release reports harvested area **2.71 million ha** and dry shelled maize production at **14% moisture of 16.16 million tonnes**. Source: BPS, *Luas Panen dan Produksi Jagung di Indonesia 2025 (Angka Tetap)*, released 2026-02-02: https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html. Runtime: `REAL_ECONOMIC_DATA.maizeProduction2025`; regression: `tests/maize-national-demand.test.js`.
 
 The 2025 final output is 1.02 million tonnes / 6.74% above BPS's 2024 final 15.14 Mt at the same 14%-moisture basis. This is a year-over-year production comparison, not a national surplus estimate. `maizeNationalBalanceEstimate2025` remains `null`: the 2025 total-need figure is rounded/projection-based, feed-industry sources disagree, and stocks, imports/exports, losses and exact balance scope are not reconciled. Do not infer a surplus by subtracting demand from production alone.
+
+
+## Maize — official 2025 projected balance (Bapanas update 2025-06-02)
+
+| Table 5.6 item | Published value | Unit / meaning |
+|---|---:|---|
+| Beginning stock | 3,579,102 | tonnes, carry-over from projected 2024 ending stock |
+| Projected JPK production at 14% moisture | 16,194,055 | tonnes; Jan–Jul BPS KSA, Aug–Dec Kementan potential |
+| Loss / spillage | 748,165 | tonnes; 4.62% of 14%-moisture production, based on BPS 2016 I-O approach as processed by Kementan Pusdatin |
+| Net production | 15,445,889 | tonnes, published table value |
+| Imports | 906,040 | tonnes, projection |
+| Exports | 76,959 | tonnes, estimate based on prior 3-year average |
+| Total availability | 19,854,073 | tonnes, published table value |
+| Total need | 14,720,163 | tonnes, exact balance-table value; the prose/figure rounds to about 14.72 Mt |
+| Projected ending balance | 5,133,909 | tonnes, projected surplus/carry-over across actors, not a final realized result |
+
+Source: Kementan Pusdatin, *Buletin Konsumsi Pangan Vol. 16 No. 1 Tahun 2025*, Table 5.6, printed p.33 / PDF p.37; source data is the Bapanas food balance updated 2 June 2025. URL: https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf. Runtime: `REAL_ECONOMIC_DATA.maizeNationalDemand.nationalBalanceProjection2025`.
+
+Audit guard: source arithmetic contains three 1-tonne differences. (1) 16,194,055 − 748,165 = 15,445,890, while published net production is 15,445,889; (2) 3,579,102 + 15,445,889 + 906,040 − 76,959 = 19,854,072, while published availability is 19,854,073; (3) published availability − need = 5,133,910, while published ending balance is 5,133,909. Runtime preserves the published values and records the discrepancies rather than silently correcting them. The final BPS 2025 production observation (16,160,000 t at 14% moisture) is separate; the actual realized national balance remains null until final stocks, trade, losses and need series are aligned.
