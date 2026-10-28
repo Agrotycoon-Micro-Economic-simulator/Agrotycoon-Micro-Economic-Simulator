@@ -173,3 +173,11 @@ Required evidence lifecycle:
 - Test commands actually executed and outcomes; clearly distinguish static assertions, unit tests, browser tests and unrun tests.
 - Known discrepancies/limitations.
 - The single next task, chosen from the queue above.
+
+
+## 2026-10-28 implementation checkpoint — rice baseline
+
+- Added window.REAL_ECONOMIC_DATA.riceNationalFoodDemand in js/real_economic_data.js using BPS official observations: 2024 household weekly per-capita “Beras lokal/ketan” 1.521 kg/person/week; 2024 paddy harvested area 10.05 million ha; paddy output 53.14 million tonnes GKG; rice production for food consumption 30.62 million tonnes.
+- The derived annualized household value is 79.092 kg/person/year (= 1.521 × 52), explicitly marked derived. National annual consumption remains null pending a source-matched population denominator and compatible demand definition.
+- Sources, release/update dates, units, metric boundaries, and caveats are recorded in the data register and audit. This does not yet drive daily NPC demand: seasonal adjustment, stocks/losses, and stage-compatible market flow remain implementation gates.
+- Test limitation: no local checkout or Node runner was available in this session; the attempted Git clone failed because this runtime could not resolve github.com. Do not mark Node tests as passed. Add/execute a targeted assertion in a working checkout/CI next.
