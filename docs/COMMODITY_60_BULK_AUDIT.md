@@ -687,3 +687,7 @@ A stronger compatible source for national demand was found after the initial BPS
 - Keep annual household per-capita consumption, total national demand (household + non-household), stock, production, imports, and projected balance as distinct metrics. Do not use 2024 production numbers as though they describe the 2025 forecast.
 
 - Schema correction after review: `nationalAnnualConsumptionEstimateTon` remains `null` because the official 30,975,843-ton figure includes both household and non-household demand and should not be mislabeled as household consumption. The published total is stored in `nationalDemandProjection.totalNeedTon`.
+
+## Validation blocker — CI accounting report failure (2026-10-28)
+
+Recent GitHub Actions run 40711465568 failed at the first Node regression test, `tests/accounting_ledger.test.js`, with a TypeError at `js/akuntansi.js:65` while reading `iceKarung` from missing `DATA.shop`. Thus the rice-demand test and later tests were not reached; this run is not evidence of a rice-data failure or success. A defensive catalog guard was committed as `450dcfb7367718c52c05bcef5eba91e15b9701d2`. CI must be rerun and its actual log reviewed before the national rice data or any commodity model is considered test-validated. Missing catalog metadata is not replaced with invented market prices; the accounting asset display treats unsupported component value as zero until metadata is available.
