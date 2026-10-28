@@ -20,7 +20,7 @@ assert.equal(b.referencePeriod, "2023-06-01/2024-05-31");
 assert.equal(b.denominator, "per 5,000 final-stock heads");
 assert.equal(b.source.title, "Peternakan Dalam Angka 2025");
 assert.equal(b.source.releaseDate, "2026-01-09");
-assert.match(b.source.url, /bps\\.go\\.id/);
+assert.match(b.source.url, /bps\.go\.id/);
 assert.equal(b.reported.productionValueThousandRp, 152008.05);
 assert.equal(b.reported.productionCostThousandRp, 126445.06);
 assert.equal(b.reported.publishedIncomeThousandRp, 25563.00);
