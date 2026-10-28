@@ -242,3 +242,10 @@ Added BPS's final 2024 maize production observations to `REAL_ECONOMIC_DATA.maiz
 ## 2026-10-28 — Maize production basis regression passed
 
 GitHub Actions run 40718376449 passed for `3d02c30cfaf090856e1accf540f17c84d2d40fcd`, including the updated maize test that preserves both BPS moisture-basis values and guards against substituting a simple moisture-only conversion. Keep the source-vintage conflict between feed-industry demand projections unresolved, and do not calculate a 2024-production/2025-demand balance until period, moisture, loss and use definitions are compatible.
+
+
+## Maize same-year production added; balance not yet calculated (2026-10-28)
+
+- Added BPS final 2025 maize output: harvested area 2.71 million ha; dry shelled maize 16.16 million tonnes at 14% moisture. Source release 2026-02-02: https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html. Runtime field: `maizeProduction2025`.
+- The same-year production observation is now present alongside the Kementan rounded 2025 need projection (~14.72 Mt), but a difference of the two must not be presented as national surplus. Stocks, imports/exports, post-harvest losses, and exact product/use scope remain unaligned. Runtime `maizeNationalBalanceEstimate2025` is explicitly `null` and guarded by `tests/maize-national-demand.test.js`.
+- CI for the earlier maize moisture-basis provenance test passed in run 40718376449; a new workflow run triggered by the final-2025-production assertion must be checked before claiming that assertion passed. The wider test-runner and browser suite passed in run 40717841286.
