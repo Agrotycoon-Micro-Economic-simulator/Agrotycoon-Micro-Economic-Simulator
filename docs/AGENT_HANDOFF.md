@@ -6413,3 +6413,11 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - `maizeNationalBalanceEstimate2025` remains `null` to distinguish the official forecast from a final realized balance. Data is mirrored in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`, `docs/COMMODITY_60_BULK_AUDIT.md`, and `docs/NATIONAL_ECONOMY_RESEARCH_AND_IMPLEMENTATION_PLAN.md`.
 - CI run for the prior maize-production assertion had a test-regex failure which was fixed in `72cd62a11500`; run `40718376449` passed that corrected moisture-basis test. The current new balance assertions are in commit `b5d67b09cb4f320842ac5796b1d6edfb0a29c21a`; check the latest Actions run for that commit before claiming the new balance assertions passed.
 - Next: resolve the 8.25 Mt vs 8.844096 Mt feed-industry projection discrepancy with scope/vintage evidence, then inspect the queued BPS SEP 2024 UTP broiler Table 2.10, UTL oil-palm income definition, and remaining UPB/UTL source rows. No map work.
+
+
+## Continuation checkpoint — exact maize national balance projection (2026-10-28)
+
+- A source-backed `maizeNationalDemand.nationalBalanceProjection2025` was added from Kementan Pusdatin *Buletin Konsumsi Pangan* Table 5.6 (Bapanas update 2025-06-02): beginning stock 3,579,102 t; gross JPK production at 14% moisture 16,194,055 t; losses 748,165 t; net production 15,445,889 t; imports 906,040 t; exports 76,959 t; availability 19,854,073 t; total need 14,720,163 t; projected ending balance 5,133,909 t.
+- Three one-tonne source arithmetic discrepancies are retained in `arithmeticAudit`. Source production is mixed vintage: BPS KSA Jan–Jul and Kementan crop potential Aug–Dec. The later BPS final 2025 production (16.16 Mt at 14% moisture) is 34,055 t below the earlier projection input; do not recompute the balance using final output without rebuilding all components consistently.
+- Keep the official projected balance separate from `maizeNationalBalanceEstimate2025:null`, which blocks an independent unaligned estimate. The ending balance includes stocks held throughout the supply chain, not necessarily free retail supply.
+- New assertions cover official balance values and one-tonne discrepancies in `tests/maize-national-demand.test.js`. Check the latest Actions run (currently the balance regression was being validated) before claiming this latest extension passed.
