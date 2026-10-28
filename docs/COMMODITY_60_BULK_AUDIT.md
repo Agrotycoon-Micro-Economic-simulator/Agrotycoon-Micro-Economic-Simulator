@@ -705,3 +705,8 @@ Official sources provide distinct measures that must not be conflated:
 - Existing 2024 production references include different source totals and moisture bases. Do not compute a national surplus/deficit by subtracting 2025 projected need from 2024 production without reconciling period, moisture content, losses and product definition.
 
 Sources: https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasional; https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf; https://ditjenpkh.pertanian.go.id/storage/master/file/8EG4sdWw_2025_Buku_Jagung_%281%29.pdf. Runtime fields and the regression guard are in `js/real_economic_data.js` and `tests/maize-national-demand.test.js`. No tier-level unit economics promoted.
+
+
+## Validation note — maize demand schema passed, source reconciliation remains open (2026-10-28)
+
+Run 40717841286 passed, including `tests/maize-national-demand.test.js`; this validates the registry's units, provenance, rounded component arithmetic and explicit flag for the unresolved feed-industry projection conflict. It does not resolve that conflict or validate maize Tier 1–4 economics. Keep 8.25 Mt (Kementan Pusdatin bulletin) and 8.844096 Mt (Ditjen PKH Buku Jagung 2025 Table 26) as separate official projections until source period/frame/definition is reconciled.
