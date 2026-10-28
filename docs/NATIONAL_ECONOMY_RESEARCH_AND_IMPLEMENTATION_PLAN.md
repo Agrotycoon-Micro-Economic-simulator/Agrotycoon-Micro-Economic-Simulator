@@ -272,3 +272,8 @@ Added Bapanas/Kementan Table 5.6 (update 2025-06-02) as a separate official 2025
 ## 2026-10-28 — Maize balance and feed-source metadata tests passed
 
 GitHub Actions run 40719342746 passed for `05220f710fa645f43b04dcb2334747ee049060b0`. The maize test now checks the exact Table 5.6 projection, all three one-tonne arithmetic discrepancies, and the feed-industry source's correct publication title, reference year, and SiJagung provenance. The ~8.25 Mt bulletin estimate and 8,844,096 t Table 26 projection remain separate because they derive from different projection/reporting series. Do not merge them or recalculate the official balance without rebuilding all source components.
+
+
+## 2026-10-28 — Latest 100-commit audit checkpoint
+
+Reviewed the latest 100 feature-branch commits from `2cc440305ccbd1387c1ee5d5cf5181807f6bd317` through current HEAD `33a5abe04de2d6d6ece1ab930c7260db93902b7f`. Themes: national data/source provenance and audits, CI/test harnesses, accounting/HPP, market/NPC flows and regional capacity; no map/peta commits in this window. Current latest test run 40719342746 passed for code/test commit `05220f710fa645f43b04dcb2334747ee049060b0`; subsequent commits are docs-only. Next priorities remain the maize feed-projection source-method reconciliation and BPS SEP UTP/UPB/UTL source QA. Do not promote rough Library estimates into runtime economics without matched primary-source evidence.
