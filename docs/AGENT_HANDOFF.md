@@ -6028,3 +6028,6 @@ Implement inventory cost layers and sale-linked HPP for coconut and warung mater
 - No local browser, Node test suite, or gameplay run was available in this tool session. Do not report runtime/gameplay tests as passed.
 - Important remaining accounting task: implement inventory cost layers / consumed HPP for coconut and warung inputs (including own-harvest versus purchased coconut stock), then depreciation for CAPEX. Until that is implemented, daily surplus is explicitly provisional and must not be represented as final profit.
 - Scope stayed on non-map runtime files; `main` was not targeted.
+
+
+- **2026-10-28 accounting UI follow-up:** `js/akuntansi.js` daily history now labels the calculated figure as “Surplus sementara” and displays an explicit footnote that it is not final net profit until consumed business HPP and asset depreciation are integrated. This aligns the historical daily table with the end-of-day modal and prevents the UI from overstating accounting completeness. Static source assertion verified the new label and footnote; no browser/runtime test was available.
