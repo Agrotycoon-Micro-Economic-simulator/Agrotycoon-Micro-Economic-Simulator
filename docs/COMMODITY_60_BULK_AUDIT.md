@@ -710,3 +710,12 @@ Sources: https://data.badanpangan.go.id/datasetpublications/o5x/konsumsi_nasiona
 ## Validation note — maize demand schema passed, source reconciliation remains open (2026-10-28)
 
 Run 40717841286 passed, including `tests/maize-national-demand.test.js`; this validates the registry's units, provenance, rounded component arithmetic and explicit flag for the unresolved feed-industry projection conflict. It does not resolve that conflict or validate maize Tier 1–4 economics. Keep 8.25 Mt (Kementan Pusdatin bulletin) and 8.844096 Mt (Ditjen PKH Buku Jagung 2025 Table 26) as separate official projections until source period/frame/definition is reconciled.
+
+
+## Latest CI verification and research gate — 2026-10-28
+
+GitHub Actions run [40717841286](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40717841286) passed on code/test commit `f790d8058542273fe5af7dc95cbb87d3e6d9fc42`. The three newly added Node test-runner suites passed 13/13 subtests: NPC background flows/policies and regional capacity; 60-item market price bounds; and inventory/HPP accounting. The standalone Node and browser/E2E commands in the same workflow also passed, including rice and maize provenance/scope tests.
+
+This supersedes the earlier CI-blocker notes that refer to the accounting fixture/margin expectation as unresolved. Those were real failures in earlier runs; they were corrected and the complete current workflow is green. It does not supersede the research limitations below: maize feed-industry projections remain in conflict (~8.25 Mt vs 8.844096 Mt), maize 2024 production sources/moisture bases remain unaligned, and BPS SEP 2024 livestock table extraction/definition issues remain open. Keep those data-quality flags active despite green software tests.
+
+Next evidence task: reconcile maize source vintage, product moisture basis and losses before deriving any national balance. After that, visually inspect BPS SEP UTP broiler Table 2.10; resolve the UTL oil-palm income-definition mismatch; extract remaining UPB/UTL table rows. No national demand statistic alone authorizes Tier 1–4 farm-level costs, yields or margins.
