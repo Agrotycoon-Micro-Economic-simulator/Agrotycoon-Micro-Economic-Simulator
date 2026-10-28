@@ -277,3 +277,8 @@ GitHub Actions run 40719342746 passed for `05220f710fa645f43b04dcb2334747ee04906
 ## 2026-10-28 — Latest 100-commit audit checkpoint
 
 Reviewed the latest 100 feature-branch commits from `2cc440305ccbd1387c1ee5d5cf5181807f6bd317` through current HEAD `33a5abe04de2d6d6ece1ab930c7260db93902b7f`. Themes: national data/source provenance and audits, CI/test harnesses, accounting/HPP, market/NPC flows and regional capacity; no map/peta commits in this window. Current latest test run 40719342746 passed for code/test commit `05220f710fa645f43b04dcb2334747ee049060b0`; subsequent commits are docs-only. Next priorities remain the maize feed-projection source-method reconciliation and BPS SEP UTP/UPB/UTL source QA. Do not promote rough Library estimates into runtime economics without matched primary-source evidence.
+
+
+## Latest verification update (2026-10-28)
+
+Run 40719342746 passed on commit `05220f710fa645f43b04dcb2334747ee049060b0`. The regression now checks the official Table 5.6 projected maize balance, source metadata, final 2025 BPS production, the distinct 2024 moisture-basis figures, and the three source-table 1-tonne arithmetic discrepancies. The feed-industry source title is corrected to *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025); the 8.844096 Mt SiJagung requirement projection remains distinct from the ~8.25 Mt Pusdatin purchase/absorption projection. This discrepancy remains unresolved; preserve both.
