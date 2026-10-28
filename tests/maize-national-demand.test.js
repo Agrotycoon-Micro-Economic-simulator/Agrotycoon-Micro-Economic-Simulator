@@ -14,6 +14,22 @@ vm.runInContext(
 );
 
 const data = window.REAL_ECONOMIC_DATA.maizeNationalDemand;
+
+const production = window.REAL_ECONOMIC_DATA.maizeProduction2024;
+assert.ok(production, "official maize production series exists");
+assert.equal(production.harvestedAreaHa, 2550000);
+assert.equal(production.productionAt28MoistureTon, 20480000);
+assert.equal(production.productionAt14MoistureTon, 15140000);
+assert.match(production.source.url, /bps\.go\.id/);
+assert.equal(production.source.qualityStatus, "official_statistic");
+assert.equal(production.derivedAudit.simpleMoistureOnlyEstimateAt14MoistureTon, 17146047);
+assert.notEqual(
+  production.derivedAudit.simpleMoistureOnlyEstimateAt14MoistureTon,
+  production.productionAt14MoistureTon,
+  "simple moisture-only conversion must not overwrite BPS's published 14%-moisture estimate"
+);
+assert.match(production.note, /same BPS 2024 publication/i);
+
 assert.ok(data, "national maize demand registry exists");
 assert.equal(data.directFoodConsumption2024.value, 1.5);
 assert.equal(data.directFoodConsumption2024.unit, "kg/person/year");
