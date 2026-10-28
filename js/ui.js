@@ -157,6 +157,13 @@ function showReport(L,net){
  if(!L)L={sales:{},materials:{},dailyExpenses:[]};
  const dayNum=(S.day||1)-1;
  const cogs=Number(L.cogs)||0;
+ const cogsByAccount=L.cogsByAccount||{};
+ const cogsAccountTotal=(predicate)=>Object.keys(cogsByAccount).filter(predicate).reduce((sum,key)=>sum+(Number(cogsByAccount[key])||0),0);
+ const coconutCogs=cogsAccountTotal(key=>key.toLowerCase().includes('kelapa'));
+ const iceCogs=cogsAccountTotal(key=>key.toLowerCase().includes('es'));
+ const sugarCogs=cogsAccountTotal(key=>key.toLowerCase().includes('gula'));
+ const cupCogs=cogsAccountTotal(key=>key.toLowerCase().includes('cup'));
+ const otherCogs=Math.max(0,cogs-coconutCogs-iceCogs-sugarCogs-cupCogs);
  const businessExpense=Number(L.businessExpense)||0;
  const livingExpense=Number(L.livingExpense)||0;
  const businessResult=(Number(L.gross)||0)-cogs-businessExpense;
@@ -173,7 +180,12 @@ function showReport(L,net){
  L.dailyExpenses.forEach(d=>{h+='<tr><td>'+(d.item||'-')+'</td><td class="neg">-'+safeRp(d.amt||0)+'</td></tr>';});
  h+='<tr><td>🛒 Pembelian stok (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.shopping||0)+'</td></tr>';
  h+='<tr><td>🏪 CAPEX/investasi (arus kas, bukan beban)</td><td class="neg">-'+safeRp(L.capex||0)+'</td></tr>';
- h+='<tr><td>📦 HPP bahan yang benar-benar terpakai untuk penjualan (nonkas)</td><td class="neg">-'+safeRp(cogs)+'</td></tr>';
+ h+='<tr><td>📦 Total HPP bahan yang benar-benar terpakai (nonkas)</td><td class="neg">-'+safeRp(cogs)+'</td></tr>';
+ h+='<tr><td style="padding-left:22px">🥥 HPP kelapa (bahan utama)</td><td class="neg">-'+safeRp(coconutCogs)+'</td></tr>';
+ h+='<tr><td style="padding-left:22px">🧊 HPP es batu</td><td class="neg">-'+safeRp(iceCogs)+'</td></tr>';
+ h+='<tr><td style="padding-left:22px">🍯 HPP sirup gula</td><td class="neg">-'+safeRp(sugarCogs)+'</td></tr>';
+ h+='<tr><td style="padding-left:22px">🥤 HPP gelas plastik</td><td class="neg">-'+safeRp(cupCogs)+'</td></tr>';
+ if(otherCogs>0)h+='<tr><td style="padding-left:22px">📦 HPP/susut persediaan lainnya</td><td class="neg">-'+safeRp(otherCogs)+'</td></tr>';
  h+='<tr><td>👷 Beban usaha lain (termasuk upah panen)</td><td class="neg">-'+safeRp(businessExpense||L.labor||0)+'</td></tr>';
  h+='<tr><td>🏠 Biaya hidup yang diakui</td><td class="neg">-'+safeRp(L.livingExpense||0)+'</td></tr>';
  h+='<tr><td><b>Total beban yang diakui</b></td><td class="neg"><b>'+safeRp(L.expense||0)+'</b></td></tr></table>';
