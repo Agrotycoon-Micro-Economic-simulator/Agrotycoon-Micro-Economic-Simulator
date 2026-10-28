@@ -6109,3 +6109,20 @@ Add deterministic tests for weighted-average coconut cost, the four-glass cost a
 
 ### Next step
 Run `node --test tests/accounting-inventory.test.js` in a real repository checkout, then add a test for in-process coconut inventory transfer and reconcile ledger inventory accounts to the state-derived balance sheet before broadening HPP to other commodities.
+
+
+## 2026-10-28 — Fix raw coconut to work-in-process accounting
+
+### Runtime correction
+- `js/economy.js`: added `transferInventoryValue()` to post a balanced non-cash inventory transfer without misclassifying it as HPP or cash movement.
+- When the first glass is prepared from a whole coconut, the first quarter's HPP is credited to raw `Persediaan Kelapa`, and the remaining three quarters (Rp2,625 for a Rp3,500 coconut) are transferred from `Persediaan Kelapa` to `Persediaan Kelapa Dalam Proses`.
+- The next three glasses credit their coconut HPP to `Persediaan Kelapa Dalam Proses`, rather than incorrectly crediting raw-coconut stock after the whole coconut has already been removed from that stock.
+- This aligns journal account movements with state-derived inventory valuation: raw stock value falls by the whole coconut cost, the remaining in-process value stays on the balance sheet, and each glass consumes one quarter of the coconut's cost.
+
+### Verification performed
+- Executed an isolated JavaScript harness against the latest fetched `js/economy.js`. **Passed**: four-glass revenue Rp20,000, recorded HPP Rp8,300, no cash outflow from HPP/transfer, raw-stock-to-WIP transfer Rp2,625, first-glass coconut credit to raw stock, later three credits to WIP, balanced debit/credit lines, and zero remaining stock/material cost balances after four servings.
+- The committed `node:test` file now asserts the raw-to-WIP transfer and account source used by each serving. Its source and `js/economy.js` were syntax-compiled in the connected JavaScript environment. The actual `node --test` runner and browser/E2E tests remain unrun.
+- Earlier isolated checks for external coconut purchase weighted cost and CAPEX classification passed before this transfer-only patch; rerun the full committed suite in a local checkout.
+
+### Next step
+Run `node --test tests/accounting-inventory.test.js` in a repository checkout, add an opened-coconut spoilage/write-off case, and reconcile the state-derived balance sheet with raw inventory and work-in-process journal balances.
