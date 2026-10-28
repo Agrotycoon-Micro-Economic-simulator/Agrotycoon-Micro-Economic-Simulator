@@ -64,6 +64,13 @@ table{border-collapse:collapse;width:100%;min-width:600px}th,td{text-align:left;
 </ul>
 </div>
 <p class="foot">Papan ini adalah tahap awal untuk komoditas sapi hidup, bukan cakupan seluruh komoditas atau seluruh provinsi. Snapshot harga belum otomatis diperbarui dari API. Data historis lengkap dan integrasi feed otomatis masih diperlukan.</p>
+<section class="panel">
+<h2>Pasar nasional simulasi — 60 komoditas</h2>
+<p class="muted">Harga game bergerak dari arus permintaan dan penawaran NPC latar belakang. Batas bawah/atas saat ini masih parameter balancing sementara (50%–200% dari harga dasar), bukan rentang harga empiris resmi.</p>
+<div class="notice" id="game-market-status">Memuat snapshot harga game…</div>
+<div class="table-wrap"><table><thead><tr><th>Komoditas</th><th>Kategori</th><th class="num">Harga game</th><th class="num">Batas bawah</th><th class="num">Batas atas</th><th>Status batas</th></tr></thead><tbody id="game-market-body"></tbody></table></div>
+<p class="foot">Penting: snapshot ini berasal dari save lokal pada perangkat/browser ini. Belum disinkronkan antar-pemain; jangan menganggapnya sebagai pasar global/multiplayer.</p>
+</section>
 </main>
 <script src="js/market_prices.js"></script>
 <script src="js/market_chain.js"></script>
@@ -115,6 +122,26 @@ table{border-collapse:collapse;width:100%;min-width:600px}th,td{text-align:left;
   el.addEventListener('change',calculate);if(el.tagName==='INPUT')el.addEventListener('input',calculate);
  });
  calculate();
+})();
+</script>
+<script src="js/commodities.js"></script>
+<script>
+(function(){
+ const body=document.getElementById('game-market-body');
+ const status=document.getElementById('game-market-status');
+ let save=null;
+ try{save=JSON.parse(localStorage.getItem('agrotycoon_save_v15')||'null');}catch(e){}
+ const prices=save&&save.marketPrices&&typeof save.marketPrices==='object'?save.marketPrices:{};
+ const last=save&&save.marketLastTick;
+ const rupiah=n=>'Rp '+Math.round(Number(n)||0).toLocaleString('id-ID');
+ status.textContent=last
+  ? 'Snapshot lokal: hari game '+last.day+' · '+(last.priceUpdates||0)+' harga diperbarui · '+(last.marketIsGloballyShared?'feed bersama':'simulasi NPC lokal; belum pasar global')+'.'
+  : 'Belum ada pembaruan pasar tersimpan. Nilai yang ditampilkan menggunakan harga dasar katalog; akhiri satu hari game untuk menjalankan simulasi NPC.';
+ body.innerHTML=COMMODITIES.map(item=>{
+  const saved=Number(prices[item.id]);
+  const price=Number.isFinite(saved)&&saved>=item.marketFloor&&saved<=item.marketCeiling?saved:item.marketPrice;
+  return '<tr><td>'+item.name+'</td><td>'+item.category+'</td><td class="num">'+rupiah(price)+'</td><td class="num">'+rupiah(item.marketFloor)+'</td><td class="num">'+rupiah(item.marketCeiling)+'</td><td>'+item.marketBoundsStatus+'</td></tr>';
+ }).join('');
 })();
 </script>
 </body></html>
