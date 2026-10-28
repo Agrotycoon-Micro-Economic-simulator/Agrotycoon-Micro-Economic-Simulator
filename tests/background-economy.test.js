@@ -21,7 +21,7 @@ test('data-only NPC actors create buy and sell flows for the 60 commodities', ()
 
 test('political policy changes supply and food-reserve policy changes food demand', () => {
   const econ = context.BACKGROUND_ECONOMY;
-  const baseline = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi] });
+  const baseline = econ.buildNpcFlow({ day: 10, catalog: [context.MARKET_ENGINE.byId.padi] });
   const tax = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { productionTax: 0.4 } });
   const subsidy = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { inputSubsidy: 0.4 } });
   const reserve = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { foodReserveDemand: 0.4 } });
