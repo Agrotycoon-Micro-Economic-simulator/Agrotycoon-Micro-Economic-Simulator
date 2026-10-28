@@ -6382,3 +6382,10 @@ Run `node --test tests/accounting-inventory.test.js` in a repository checkout, a
 - A simple moisture-only mass-balance yields ~17.146 Mt at 14% from 20.48 Mt at 28%, which does not reproduce BPS's 15.14 Mt. This is an audit-only derived check, not a replacement value. Preserve the official figures and do not calculate a national surplus/deficit until the conversion method, loss basis and demand period/scope are aligned.
 - Extended `tests/maize-national-demand.test.js` to guard both source values and the non-equivalence of the simple moisture-only conversion. Check the latest Actions run for the current code/test commit before claiming this extension passed.
 - Primary source: https://www.bps.go.id/id/publication/2025/08/15/2bb49a0af17ec89ac16971de/luas-panen-dan-produksi-jagung-di-indonesia-2024.html.
+
+
+## Validation result — maize production moisture-basis guard passed (2026-10-28 15:41 UTC)
+
+- GitHub Actions run **40718376449** passed on `3d02c30cfaf090856e1accf540f17c84d2d40fcd`: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40718376449.
+- The workflow passed after adding the official 2024 maize production values and audit-only moisture calculation to the runtime registry and test. The preceding full workflow run 40717841286 also passed the market/NPC/inventory Node test-runner suite and all standalone/browser regressions. Documentation-only follow-ups record these outcomes.
+- Current remaining open work is research, not an untested data insertion: resolve the difference between 2025 feed-industry projections (~8.25 Mt in the Kementan Pusdatin bulletin versus 8,844,096 t in Ditjen PKH *Buku Jagung 2025*); inspect BPS source methodology for the moisture-basis conversion; then return to BPS SEP livestock Table 2.10 / UTL / UPB issues. Do not infer national maize surplus from unmatched production/demand periods.
