@@ -205,3 +205,10 @@ Run 40711465568 fails at `tests/accounting_ledger.test.js` because `js/akuntansi
 ## 2026-10-28 — Accounting test chain blocks all later regressions
 
 Three successive CI failures have now been traced to the accounting regression harness before the rice regression test executes: missing `DATA.shop` in the test fixture; an expectation that wrongly expensed inventory purchases; and an over-escaped regex for the corrected Rp400,000 business result. Commits `a7f44cbbc87e6038d3a29209b1340f8191d71c63`, `66719dc4a1`, and `7c257e0123b987e9d771504c31a43319784dde62` address those stages. Check the latest Actions run and actual logs. Do not continue to claim the rice/market/HPP suite is validated until the workflow reaches and passes all test commands.
+
+
+## 2026-10-28 — Targeted regression suite passed
+
+GitHub Actions run 40717347576 passed for code/test commit `7c257e0123b987e9d771504c31a43319784dde62`. The workflow ran all 21 standalone Node/browser regression commands, including `tests/rice-national-demand.test.js`, market, HPP/accounting, finance, world simulation, save migration and gameplay E2E. The latest branch HEAD after documentation-only follow-ups is `758a6e1f634166aee80f306adb35e7c268a5f7e3`; later docs commits do not match the workflow's code/test path filters. This confirms the current targeted suite, not every possible scenario or live multi-player market behavior.
+
+Next evidence work remains: visually reconcile BPS SEP 2024 UTP broiler Table 2.10; resolve the UTL oil-palm income-definition mismatch and Table 4.2 page/definition notes; extract the remaining exact UPB/UTL figures from original tables; then research maize with explicit commodity-form, demand denominator, stock, and period matching. No map changes and no unsupported commodity-tier runtime promotion.
