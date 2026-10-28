@@ -1056,3 +1056,8 @@ The 8,844,096-tonne projection source is not titled simply *Buku Jagung 2025*. T
 ### Feed-industry projection provenance clarification (2026-10-28)
 
 The 8,844,096 t figure is from Ditjen PKH, Direktorat Pakan, *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024*, Vol. 6 Tahun 2025, Table 26 (2025 requirement projection reported through SiJagung), not a generic unqualified “Buku Jagung” figure. The ~8.25 Mt estimate in Kementan Pusdatin's bulletin is a different purchase/absorption projection series. Keep both source metadata and the unresolved method/vintage difference; neither equals total all-channel feed need of approximately 13.603 Mt, and neither is added to national total need.
+
+
+## Maize feed projection — internal monthly-average discrepancy (2026-10-28)
+
+A second arithmetic issue exists in Ditjen PKH Direktorat Pakan's *Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024* (Vol. 6, 2025), Table 26. The quarterly totals (2,295,098 + 2,148,839 + 2,200,079 + 2,200,080) sum exactly to the published annual projection of 8,844,096 t. However, the publication prose reports a monthly average of 727.01 thousand t, while 8,844,096 / 12 = 737,008 t/month (737.008 thousand), a 9,998 t/month difference. Runtime `feedIndustryDemand2025.sourceArithmeticAudit` preserves both the published prose value and the arithmetic-derived average. Regression assertions guard this discrepancy; do not silently “correct” the source prose.
