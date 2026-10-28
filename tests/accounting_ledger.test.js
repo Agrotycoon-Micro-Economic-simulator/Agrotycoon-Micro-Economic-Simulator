@@ -56,7 +56,7 @@ assert.match(acc.innerHTML, /Akun kredit/, "journal exposes credit account and a
 assert.match(acc.innerHTML, /Penjualan tunai/, "sales transaction is visible");
 assert.match(acc.innerHTML, /Pembelian Bahan Baku/, "raw-material purchase is posted to its own debit account");
 assert.match(acc.innerHTML, /Beban Dapur/, "household food expense is separated from business expenses");
-assert.match(acc.innerHTML, /Rp 350\.000/, "business result excludes kitchen spending");
+assert.match(acc.innerHTML, /Rp 400\\.000/, "business result excludes kitchen spending and unconsumed inventory purchases");
 assert.match(acc.innerHTML, /Rp 62\.000/, "kitchen expense is shown separately");
 assert.match(acc.innerHTML, /Rp 1\.288\.000/, "closing cash reconciles to the actual cash balance");
 assert.match(acc.innerHTML, /Rp 1\.000\.000/, "opening cash reconciles from cash movements");
