@@ -249,3 +249,8 @@ GitHub Actions run 40718376449 passed for `3d02c30cfaf090856e1accf540f17c84d2d40
 - Added BPS final 2025 maize output: harvested area 2.71 million ha; dry shelled maize 16.16 million tonnes at 14% moisture. Source release 2026-02-02: https://www.bps.go.id/id/pressrelease/2026/02/02/2538/luas-panen-dan-produksi-jagung.html. Runtime field: `maizeProduction2025`.
 - The same-year production observation is now present alongside the Kementan rounded 2025 need projection (~14.72 Mt), but a difference of the two must not be presented as national surplus. Stocks, imports/exports, post-harvest losses, and exact product/use scope remain unaligned. Runtime `maizeNationalBalanceEstimate2025` is explicitly `null` and guarded by `tests/maize-national-demand.test.js`.
 - CI for the earlier maize moisture-basis provenance test passed in run 40718376449; a new workflow run triggered by the final-2025-production assertion must be checked before claiming that assertion passed. The wider test-runner and browser suite passed in run 40717841286.
+
+
+## 2026-10-28 — Final 2025 maize production added
+
+Added BPS final 2025 maize production (16.16 Mt at 14% moisture; harvested area 2.71 million ha; release 2026-02-02) to the runtime registry and maize regression test. At the same 14%-moisture basis, this is 6.74% above the 2024 final 15.14 Mt observation. The national balance estimate remains null because total demand is rounded/projection-based and feed-industry demand sources disagree; reconcile stocks, trade, losses and scope before estimating surplus/deficit.
