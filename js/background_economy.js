@@ -77,14 +77,16 @@
     const opts = options || {};
     if (!root.MARKET_ENGINE) throw new Error("MARKET_ENGINE must load before background economy");
     const npcTransactions = buildNpcFlow(Object.assign({}, opts, { catalog: root.MARKET_ENGINE.catalog }));
-    const shared = Array.isArray(opts.sharedTransactions);
-    const playerTransactions = shared ? opts.sharedTransactions : (Array.isArray(opts.playerTransactions) ? opts.playerTransactions : []);
+    const hasSharedFeed = Array.isArray(opts.sharedTransactions);
+    // A caller-supplied array is not proof of server authority; only a verified adapter may set this flag.
+    const sharedVerified = hasSharedFeed && opts.sharedFeedVerified === true;
+    const playerTransactions = hasSharedFeed ? opts.sharedTransactions : (Array.isArray(opts.playerTransactions) ? opts.playerTransactions : []);
     const allTransactions = playerTransactions.concat(npcTransactions);
     const prices = root.MARKET_ENGINE.reprice(allTransactions, opts.marketOptions);
     return {
       gameDay: Math.max(1, Math.floor(Number(opts.day) || 1)),
-      scope: shared ? "shared-player-feed-plus-npc" : "local-player-feed-plus-npc",
-      marketIsGloballyShared: shared,
+      scope: sharedVerified ? "shared-player-feed-plus-npc" : (hasSharedFeed ? "unverified-feed-plus-npc" : "local-player-feed-plus-npc"),
+      marketIsGloballyShared: sharedVerified,
       npcTransactionCount: npcTransactions.length,
       playerTransactionCount: playerTransactions.length,
       priceUpdates: prices,
