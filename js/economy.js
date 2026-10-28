@@ -120,12 +120,12 @@ function materialPlan(){
  const demand=demandToday(location),target=Math.ceil(demand*1.5);
  const current={ice:Math.max(0,Number(S.warung.ice)||0),sugar:Math.max(0,Number(S.warung.sugar)||0),cups:Math.max(0,Number(S.warung.cups)||0)};
  const deficit={ice:Math.max(0,target-current.ice),sugar:Math.max(0,target-current.sugar),cups:Math.max(0,target-current.cups)};
- const need={ice:Math.ceil(deficit.ice/40),sugar:Math.ceil(deficit.sugar/50),cups:Math.ceil(deficit.cups/20)};
+ const need={ice:Math.ceil(deficit.ice/DATA.shop.iceKarung.portions),sugar:Math.ceil(deficit.sugar/DATA.shop.sugarBloc.portions),cups:Math.ceil(deficit.cups/DATA.shop.cupPack.pcs)};
  return {w,demand,target,current,deficit,need};
 }
 function shopMaterials(){
  const p=materialPlan(),k=p.need.ice,g=p.need.sugar,c=p.need.cups;
- const total=k*20000+g*20000+c*8000;
+ const total=k*DATA.shop.iceKarung.price+g*DATA.shop.sugarBloc.price+c*DATA.shop.cupPack.price;
  showModal('<h3>🛒 Belanja Bahan Warung</h3>'+
  '<p>Cuaca: <b>'+p.w.name+'</b> | Target permintaan hari ini: <b>'+p.demand+' gelas</b></p>'+
  '<p>Target stok 150% permintaan = <b>'+p.target+' unit</b> per bahan. Jika stok sudah mencapai/melewati batas, rekomendasi pembelian menjadi nol.</p>'+
@@ -133,7 +133,7 @@ function shopMaterials(){
  '<p><strong>🤖 Rekomendasi berbasis kekurangan stok:</strong></p>'+
  '<p>🧊 Es: stok '+p.current.ice+' porsi; '+(k?'beli '+k+' karung ('+(k*40)+' porsi)':'stok memenuhi target — 0 karung')+'.</p>'+
  '<p>🍯 Gula: stok '+p.current.sugar+' porsi; '+(g?'beli '+g+' blok ('+(g*50)+' porsi)':'stok memenuhi target — 0 blok')+'.</p>'+
- '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*20)+' pcs)':'stok memenuhi target — 0 pak')+'.</p>'+
+ '<p>🥤 Cup: stok '+p.current.cups+' pcs; '+(c?'beli '+c+' pak ('+(c*DATA.shop.cupPack.pcs)+' pcs)':'stok memenuhi target — 0 pak')+'.</p>'+
  '<p style="font-size:12px">Item juga dikunci ke 0 bila satu paket utuh akan melampaui batas stok 150% target.</p>'+
  '<p><b>Total: '+rp(total)+'</b></p></div>'+
  '<button class="btn btn-success" '+(total===0?'disabled ':'')+'onclick="buyRecommended('+k+','+g+','+c+')">✅ '+(total===0?'Tidak perlu belanja':'Beli sesuai rekomendasi')+'</button> '+
@@ -144,41 +144,41 @@ function buyRecommended(k,g,c){
  k=Math.max(0,Math.min(1000,Math.floor(Number(k)||0)));
  g=Math.max(0,Math.min(1000,Math.floor(Number(g)||0)));
  c=Math.max(0,Math.min(1000,Math.floor(Number(c)||0)));
- const total=k*20000+g*20000+c*8000;
+ const total=k*DATA.shop.iceKarung.price+g*DATA.shop.sugarBloc.price+c*DATA.shop.cupPack.price;
  if(total===0){msg('Stok sudah memenuhi target permintaan saat ini.');return;}
  if(S.gold<total){msg('Uang tidak cukup. Total belanja: '+rp(total));return;}
  spend('BELANJA','Belanja bahan (rekomendasi)',total,'shopping',[
   {name:'Es Batu '+k+' karung',qty:k,subtotal:k*20000},
   {name:'Gula Merah '+g+' blok',qty:g,subtotal:g*20000},
-  {name:'Cup Plastik '+c+' pak',qty:c,subtotal:c*8000}
+  {name:'Cup Plastik '+c+' pak',qty:c,subtotal:c*DATA.shop.cupPack.price}
  ]);
  S.warung.ice=(S.warung.ice||0)+k*40;
  S.warung.sugar=(S.warung.sugar||0)+g*50;
- S.warung.cups=(S.warung.cups||0)+c*20;
+ S.warung.cups=(S.warung.cups||0)+c*DATA.shop.cupPack.pcs;
  if(typeof playGameSound==='function')playGameSound('purchase');
  say('Mentor','🤖','Bahan masuk gudang sesuai kekurangan stok dan ukuran paket.');
  save();closeModal();render();
 }
 function showManualShop(){
  showModal('<h3>⚙️ Belanja Manual</h3>'+
- '<div style="margin:8px 0"><strong>Es Batu (40 porsi/karung, Rp 20.000)</strong><br><input type="number" id="m-ice" min="0" value="0" style="width:80px"> karung</div>'+
- '<div style="margin:8px 0"><strong>Gula Merah (50 porsi/blok, Rp 20.000)</strong><br><input type="number" id="m-sugar" min="0" value="0" style="width:80px"> blok</div>'+
- '<div style="margin:8px 0"><strong>Cup Plastik (20 pcs/pak, Rp 8.000)</strong><br><input type="number" id="m-cup" min="0" value="0" style="width:80px"> pak</div>'+
+ '<div style="margin:8px 0"><strong>Es Batu ('+DATA.shop.iceKarung.portions+' porsi/karung, '+rp(DATA.shop.iceKarung.price)+')</strong><br><input type="number" id="m-ice" min="0" value="0" style="width:80px"> karung</div>'+
+ '<div style="margin:8px 0"><strong>Gula Merah ('+DATA.shop.sugarBloc.portions+' porsi/blok, '+rp(DATA.shop.sugarBloc.price)+')</strong><br><input type="number" id="m-sugar" min="0" value="0" style="width:80px"> blok</div>'+
+ '<div style="margin:8px 0"><strong>Cup Plastik ('+DATA.shop.cupPack.pcs+' pcs/pak, '+rp(DATA.shop.cupPack.price)+')</strong><br><input type="number" id="m-cup" min="0" value="0" style="width:80px"> pak</div>'+
  '<button class="btn btn-success" onclick="buyManual()">Beli</button> <button class="btn" onclick="shopMaterials()">Kembali</button>');
 }
 function buyManual(){
  const k=Math.max(0,Math.min(1000,parseInt(el('m-ice').value)||0));
  const g=Math.max(0,Math.min(1000,parseInt(el('m-sugar').value)||0));
  const c=Math.max(0,Math.min(1000,parseInt(el('m-cup').value)||0));
- const total=k*20000+g*20000+c*8000;
+ const total=k*DATA.shop.iceKarung.price+g*DATA.shop.sugarBloc.price+c*DATA.shop.cupPack.price;
  if(k===0&&g===0&&c===0){msg('Masukkan jumlah paket yang ingin dibeli.');return;}
  if(S.gold<total){msg('Uang tidak cukup. Total belanja: '+rp(total));return;}
  spend('BELANJA','Belanja bahan (manual)',total,'shopping',[
-  {name:'Es Batu',qty:k,subtotal:k*20000},{name:'Gula Merah',qty:g,subtotal:g*20000},{name:'Cup Plastik',qty:c,subtotal:c*8000}
+  {name:'Es Batu',qty:k,subtotal:k*20000},{name:'Gula Merah',qty:g,subtotal:g*20000},{name:'Cup Plastik',qty:c,subtotal:c*DATA.shop.cupPack.price}
  ]);
  S.warung.ice=(S.warung.ice||0)+k*40;
  S.warung.sugar=(S.warung.sugar||0)+g*50;
- S.warung.cups=(S.warung.cups||0)+c*20;
+ S.warung.cups=(S.warung.cups||0)+c*DATA.shop.cupPack.pcs;
  if(typeof playGameSound==='function')playGameSound('purchase');
  save();closeModal();render();
 }
