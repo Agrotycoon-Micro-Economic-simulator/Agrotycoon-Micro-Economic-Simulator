@@ -6083,3 +6083,29 @@ Add deterministic tests for weighted-average coconut cost, 4-glass HPP allocatio
 
 ### Next step
 Add deterministic tests for weighted-average coconut cost, the four-glass cost allocation, each material balance decrement, cash/non-cash journal balance, and spoilage write-offs. Then run a browser smoke test for recommended/manual cup purchases and an end-to-end es-kelapa sale. Continue from the current feature branch HEAD without repeating a broad audit.
+
+
+## 2026-10-28 — Deterministic regression tests for HPP and inventory
+
+### Code added
+- Added `tests/accounting-inventory.test.js` using Node's built-in `node:test` and `vm` modules. It loads the actual `js/economy.js` source into an isolated test context and checks:
+  1. Four es-kelapa sales recognize Rp8,300 recorded HPP for one Rp3,500 coconut plus four portions each of ice, syrup, and cups.
+  2. HPP journal postings are marked non-cash and each debit/credit summary and detailed journal line balances.
+  3. HPP does not create a cash outflow; cash rises only by the four Rp5,000 sales.
+  4. Coconut and warung-material quantities/cost balances reach zero after the controlled four-glass scenario.
+  5. Buying one Rp5,000 external coconut alongside one Rp3,500 existing coconut results in two coconuts with Rp8,500 total inventory cost, while cash outflow is recorded and no immediate expense is recognized.
+  6. CAPEX reduces cash but does not become an immediate expense.
+
+### Verification performed in this session
+- Executed an isolated JavaScript harness against the current fetched `js/economy.js` source for the four-glass HPP scenario. **Passed**: revenue Rp20,000, HPP Rp8,300, ending cash Rp120,000 from Rp100,000, zero HPP cash outflow, all inventory cost balances consumed, and four balanced non-cash HPP journal entries.
+- Executed a second isolated harness against the current fetched `js/economy.js` source. **Passed**: external purchase updates stock from one coconut/Rp3,500 to two coconuts/Rp8,500, reduces cash by Rp5,000, and does not recognize an immediate expense; CAPEX also reduces cash without immediate expense recognition.
+- These were direct isolated harness checks in the connected execution environment. The newly committed `node:test` file itself has **not** been run by a local Node test runner, and no browser/E2E gameplay run was performed. Do not describe the committed test file as having passed under `node --test`.
+
+### Remaining risks
+- Tests cover the targeted coconut/warung flows, not every save-migration path, market/tengkulak sale, spoilage path, or monthly report.
+- The current state model moves a whole coconut's full cost out of raw-stock value when the first glass is prepared and keeps the unconsumed balance in `quarterCost`; the reports include the remaining in-process value, but journal-level transfer into work-in-process inventory should be checked in a future balance-sheet reconciliation.
+- HPP for other commodities, complete overhead allocation, and CAPEX depreciation remain incomplete. Results must remain explicitly provisional.
+- Scope: test file and handoff documentation only; no map files or `main` changes.
+
+### Next step
+Run `node --test tests/accounting-inventory.test.js` in a real repository checkout, then add a test for in-process coconut inventory transfer and reconcile ledger inventory accounts to the state-derived balance sheet before broadening HPP to other commodities.
