@@ -22,9 +22,9 @@ test('data-only NPC actors create buy and sell flows for the 60 commodities', ()
 test('political policy changes supply and food-reserve policy changes food demand', () => {
   const econ = context.BACKGROUND_ECONOMY;
   const baseline = econ.buildNpcFlow({ day: 10, catalog: [context.MARKET_ENGINE.byId.padi] });
-  const tax = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { productionTax: 0.4 } });
-  const subsidy = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { inputSubsidy: 0.4 } });
-  const reserve = econ.buildNpcFlow({ day: 10, catalog: [context.COMMODITY_BY_ID.padi], policies: { foodReserveDemand: 0.4 } });
+  const tax = econ.buildNpcFlow({ day: 10, catalog: [context.MARKET_ENGINE.byId.padi], policies: { productionTax: 0.4 } });
+  const subsidy = econ.buildNpcFlow({ day: 10, catalog: [context.MARKET_ENGINE.byId.padi], policies: { inputSubsidy: 0.4 } });
+  const reserve = econ.buildNpcFlow({ day: 10, catalog: [context.MARKET_ENGINE.byId.padi], policies: { foodReserveDemand: 0.4 } });
   const baseSell = baseline.find(tx => tx.side === 'sell').quantity;
   assert.ok(tax.find(tx => tx.side === 'sell').quantity < baseSell);
   assert.ok(subsidy.find(tx => tx.side === 'sell').quantity > baseSell);
@@ -33,7 +33,7 @@ test('political policy changes supply and food-reserve policy changes food deman
 
 test('market tick reports local simulation honestly and updates bounded prices', () => {
   const econ = context.BACKGROUND_ECONOMY;
-  const result = econ.tick({ day: 11, playerTransactions: [{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: context.COMMODITY_BY_ID.jagung.marketPrice }] });
+  const result = econ.tick({ day: 11, playerTransactions: [{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: context.MARKET_ENGINE.byId.jagung.marketPrice }] });
   assert.equal(result.marketIsGloballyShared, false);
   assert.equal(result.scope, 'local-player-feed-plus-npc');
   assert.equal(result.npcTransactionCount, 120);
@@ -70,7 +70,7 @@ test('regional population caps preserve 4.9 million non-business NPCs and cap mi
 });
 
 test('regional producer capacity changes aggregate supply and consumer population changes demand', () => {
-  const item = context.COMMODITY_BY_ID.padi;
+  const item = context.MARKET_ENGINE.byId.padi;
   const baseline = context.BACKGROUND_ECONOMY.buildNpcFlow({ day: 10, catalog: [item] });
   const lowProducers = context.BACKGROUND_ECONOMY.buildNpcFlow({
     day: 10, catalog: [item], regionCapacity: { sectorProducerCaps: { agriculture: 22500 } }
