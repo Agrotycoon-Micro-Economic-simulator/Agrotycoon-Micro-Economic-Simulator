@@ -102,3 +102,10 @@ For UTP broiler Table 2.10, the official PDF text layer confirms production Rp15
 - Workflow [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843) completed successfully on code/test/CI commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`.
 - New step `Run UTP cattle benchmark provenance and arithmetic guard` passed. The full workflow also passed the market/NPC/inventory Node test-runner suite, UTL and UTP benchmark guards, all standalone Node tests, browser smoke and all listed browser E2E suites. Logs include accounting, tier-chain, transformation, double-entry, harvest, coconut benchmark, finance, household stock, payroll, real-economy data, rice, maize, unit-economics and world-simulation tests.
 - Latest branch HEAD after documentation updates is `8a7ed1716aa244d22fd150fdce653778cc9a4d7c`; the latest commits after the tested SHA are documentation-only. No local test run was performed in this environment; verification is from GitHub Actions.
+
+
+## UTP benchmark dataset expanded (2026-10-29; new regression pending)
+
+- Added Table 8.3.5 meat goat and Table 8.3.7 native chicken values to `REAL_ECONOMIC_DATA.livestockBenchmarksUtp2024.records`; expanded `tests/utp-livestock-benchmarks.test.js` to assert both aggregates, feed costs, component sums and deltas.
+- Goat: production/cost/income Rp660.93k/Rp155.39k/Rp505.54k per head; listed components Rp155.38k (-Rp0.01k). Native chicken: Rp34.15k/Rp15.61k/Rp18.53k per head; derived income Rp18.54k (-Rp0.01k vs published) and component sum Rp15.62k (+Rp0.01k vs published cost).
+- These remain secondary-transcribed, research-only figures; primary official PDF images are not verified. The previous green run 40857528843 verifies the prior 3-record version only. Wait for and inspect a new CI run triggered by code/test changes before claiming the expanded dataset passes.
