@@ -117,3 +117,10 @@ For UTP broiler Table 2.10, the official PDF text layer confirms production Rp15
 - The test now covers five records: beef cattle, dairy cattle, meat buffalo, meat goat and native chicken. The new goat/chicken values, source gate, denominators and arithmetic deltas passed, along with the full existing Node/browser regression chain.
 - This green result validates implementation/test consistency only. Official PDF table images remain unverified for all five records, and the buffalo cost-component gap remains Rp106.65 thousand. Do not treat green CI as proof of source accuracy or as authorization to promote the data to Tier recipes.
 - Next: resolve primary PDF visual verification and buffalo component gap; then extract remaining UTP tables, followed by matched UPB/UTL evidence. If PDF access continues to time out, leave the gate open and continue with other primary-source tables.
+
+
+## UTP laying-duck benchmark added — CI pending (2026-10-29)
+
+- Added BPS *Peternakan Dalam Angka 2025* Table 8.3.8 to `livestockBenchmarksUtp2024.records.layingDuckPer1000Heads`: per 1,000 heads, production Rp140,316.23k, cost Rp75,420.46k, income Rp64,895.77k, feed Rp60,009.13k / 79.57%; listed cost components sum to published cost and production-minus-cost matches income.
+- Added assertions to `tests/utp-livestock-benchmarks.test.js`. This new code/test revision supersedes the previous green run for five records; wait for the new GitHub Actions run before claiming the six-record dataset passes.
+- Original BPS PDF table image remains unverified. This is not per-egg HPP or a Tier recipe; obtain egg yield, mortality, production period and source-backed denominator before calculating per-egg economics.
