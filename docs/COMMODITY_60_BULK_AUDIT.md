@@ -809,3 +809,14 @@ GitHub Actions run [40792046198](https://github.com/Agrotycoon-Micro-Economic-si
 - UTL oil-palm Table 4.2 image status is `visually_verified_official_pdf_image`; do not retain the former “not yet verified” status. The source arithmetic gaps remain unresolved and separately guarded by `tests/utl-oil-palm-benchmark.test.js`.
 - UTP broiler Table 2.10 is verified in the original official PDF text layer, but the table image is not verified. Keep its original reported income and derived income separate from the later *Peternakan Dalam Angka 2025* record, which reconciles within Rp0.01k. The regression now guards that distinction.
 - Next extraction queue: remaining UTP livestock commodities and relevant UPB/UTL tables, only with exact table/page and denominator/source verification. No Tier 1–4 production recipe is authorized by these research-only rows.
+
+
+## 2026-10-29 — Additional UTP cattle table transcription and arithmetic gate
+
+Added research-only BPS *Peternakan Dalam Angka 2025* Table 8.3.1–8.3.3 data for beef cattle, dairy cattle and meat buffalo to `js/real_economic_data.js`, with regression guard `tests/utp-livestock-benchmarks.test.js`. The official publication metadata is confirmed, but the BPS download endpoint timed out and table figures in this pass were transcribed from a public mirror. These rows are **not primary-PDF visually verified** and remain `research_reference_only`.
+
+- Beef cattle (per head): production 3,290.37; cost 716.12; income 2,574.26; production minus cost 2,574.25; listed cost components 716.13. Each discrepancy is 0.01 thousand Rp.
+- Dairy cattle (per head): production 10,141.12; cost 5,094.66; income 5,046.46; production minus cost 5,046.46; listed components 5,094.65, 0.01 below reported cost.
+- Meat buffalo (per head): production 3,697.39; cost 533.97; income 3,163.42; production minus cost matches; listed components sum 427.32, 106.65 below reported cost. This is a material source/transcription/component gap and blocks promotion.
+
+CI now includes the new standalone regression. Do not claim it passed until the workflow triggered by the new code/test/CI commits finishes green. Next research action is to obtain and visually inspect the official PDF tables (especially buffalo) or explicitly retain the blocker; then continue UTP Tables 8.3.4–8.3.10 and matched UPB/UTL tables. Do not promote any of these research rows into Tier 1–4 recipes.
