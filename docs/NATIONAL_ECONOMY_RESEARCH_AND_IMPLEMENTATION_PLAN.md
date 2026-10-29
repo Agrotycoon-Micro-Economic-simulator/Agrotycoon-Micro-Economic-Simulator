@@ -318,3 +318,8 @@ Next steps:
 2. Investigate buffalo's Rp106.65 thousand component gap and preserve both reported and derived fields.
 3. Extract remaining UTP livestock tables and relevant UPB/UTL rows only with exact product class, unit, denominator, period and primary-source evidence.
 4. Revisit the maize feed-industry projection conflict after this source gate, keeping industry-only projections separate from all-channel feed use.
+
+
+## 2026-10-29 — UTP cattle regression passed; source verification remains open
+
+GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843) passed at code/test/CI commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`, including the new UTP cattle provenance/arithmetic guard and the full existing regression chain. This verifies code assertions, not the primary-source accuracy of table transcription. Keep official PDF image verification and buffalo component reconciliation open before any promotion. Latest branch HEAD after documentation updates is `8a7ed1716aa244d22fd150fdce653778cc9a4d7c`.
