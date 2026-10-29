@@ -1108,3 +1108,15 @@ Source metadata: https://www.bps.go.id/id/publication/2026/01/09/50771bc6f576188
 ### Regression status — UTP cattle benchmark records (2026-10-29)
 
 The regression guard for `livestockBenchmarksUtp2024` passed in GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843), commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`. Test coverage validates the source/quality gate, denominator, reported aggregates and explicit arithmetic deltas. It does not change the source status: original BPS PDF images remain unverified for these rows.
+
+
+### Extension of UTP table extraction — goat and native chicken (2026-10-29)
+
+Added two more 2024 UTP records from the same BPS *Peternakan Dalam Angka 2025* mirror to `livestockBenchmarksUtp2024.records`. Both remain research-only and their original official PDF table images are unverified.
+
+| Commodity / table | Production value (thousand Rp/head) | Cost (thousand Rp/head) | Published income (thousand Rp/head) | Feed cost | Arithmetic QA |
+|---|---:|---:|---:|---:|---|
+| Meat goat, Table 8.3.5 | 660.93 | 155.39 | 505.54 | 57.85 (37.23%) | Income matches production minus cost; listed components total 155.38 (-0.01). |
+| Native chicken, Table 8.3.7 | 34.15 | 15.61 | 18.53 | 10.94 (70.05%) | Derived income is 18.54 (-0.01 vs reported); listed components total 15.62 (+0.01). |
+
+Source quality and promotion gates are unchanged: official BPS catalogue metadata plus secondary text transcription, not primary-PDF verification; no Tier recipe or per-kg price may be inferred.
