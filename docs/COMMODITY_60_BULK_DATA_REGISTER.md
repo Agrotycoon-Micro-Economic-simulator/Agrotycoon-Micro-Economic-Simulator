@@ -1137,3 +1137,9 @@ Added BPS *Peternakan Dalam Angka 2025* Table 8.3.8 (printed p.121), per 1,000 l
 Added BPS *Peternakan Dalam Angka 2025* Table 8.3.9 (printed p.122) for UTP Itik Manila, per head: production Rp39.80k, cost Rp20.75k, published income Rp19.06k, feed Rp15.56k (74.98%). Production minus cost is Rp19.05k, a +Rp0.01k published-income gap; listed cost components sum to Rp20.75k. This is research-only and the original PDF table image is unverified.
 
 Pagination correction: the publication's table of contents identifies Table 8.3.9 on printed page 122; Table 8.3.10 (broiler) follows on printed page 123. Updated the broiler runtime source metadata and regression guard from p.122 to p.123. This is a TOC-based pagination correction, not visual verification of the broiler table itself.
+
+
+
+### Seven-record livestock dataset regression status
+
+The expanded `livestockBenchmarksUtp2024` dataset and corrected broiler page locator passed the full regression workflow in [run 40858451709](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40858451709). All seven rows are covered by the UTP livestock test. This does not promote their secondary-transcribed source figures to official-PDF-verified status.
