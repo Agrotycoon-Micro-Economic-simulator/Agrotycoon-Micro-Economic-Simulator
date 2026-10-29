@@ -29,7 +29,9 @@ assert.equal(b.reported.feedCostSharePct, 64.66);
 assert.equal(b.derived.productionMinusCostThousandRp, 25562.99);
 assert.equal(b.derived.publishedIncomeMinusDerivedThousandRp, 0.01);
 assert.equal(b.reconciliation.earlierSepTable2_10Transcription.publishedIncomeThousandRp, 28639.72);
+assert.equal(b.reconciliation.originalSepTableTextStatus, "verified_in_official_pdf_text");
 assert.equal(b.reconciliation.originalSepTableImageStatus, "not_yet_visually_verified");
+assert.match(b.note, /official BPS SEP 2024 livestock PDF text was opened directly/i);
 assert.equal(b.status, "research_reference_only");
 assert.match(b.note, /Do not overwrite the original Table 2.10 transcription/i);
 
