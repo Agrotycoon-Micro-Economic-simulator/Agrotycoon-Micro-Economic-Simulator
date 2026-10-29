@@ -70,6 +70,18 @@ assert.equal(nativeChicken.derived.publishedIncomeMinusDerivedThousandRp, -0.01)
 assert.equal(nativeChicken.derived.costComponentSumThousandRp, 15.62);
 assert.equal(nativeChicken.derived.costComponentSumMinusPublishedCostThousandRp, 0.01);
 
+const ducks = dataset.records.layingDuckPer1000Heads;
+assert.equal(ducks.table, "Table 8.3.8, printed p.121");
+assert.equal(ducks.denominator, "per 1,000 heads");
+assert.equal(ducks.reported.productionValueThousandRp, 140316.23);
+assert.equal(ducks.reported.productionCostThousandRp, 75420.46);
+assert.equal(ducks.reported.publishedIncomeThousandRp, 64895.77);
+assert.equal(ducks.reported.feedCostThousandRp, 60009.13);
+assert.equal(ducks.reported.feedCostSharePct, 79.57);
+assert.equal(ducks.derived.productionMinusCostThousandRp, 64895.77);
+assert.equal(ducks.derived.costComponentSumThousandRp, 75420.46);
+assert.equal(ducks.derived.costComponentSumMinusPublishedCostThousandRp, 0);
+
 for (const record of Object.values(dataset.records)) {
   const componentSum = Object.values(record.costComponentsThousandRp).reduce((sum, value) => sum + value, 0);
   assert.equal(Math.round(componentSum * 100) / 100, record.derived.costComponentSumThousandRp);
