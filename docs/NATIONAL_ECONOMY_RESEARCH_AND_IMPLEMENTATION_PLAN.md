@@ -328,3 +328,8 @@ GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-si
 ### Expanded UTP table coverage — goat and native chicken
 
 Added research-only aggregate/cost-component rows for meat goat (Table 8.3.5) and native chicken (Table 8.3.7). Both have small arithmetic differences that are now explicitly represented in code and regression tests. This extends the UTP evidence register but does not complete livestock-sector research: the primary PDF/table images and further UTP/UPB/UTL rows remain open.
+
+
+### Expanded livestock regression status (2026-10-29)
+
+The five-record UTP livestock research dataset (beef cattle, dairy cattle, buffalo, goat and native chicken) passed regression in GitHub Actions [40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264). The data remains research-only because the original BPS PDF tables have not been visually verified. Next research gate remains source-image verification and reconciliation of buffalo's component gap before expanding further to UTP/UPB/UTL.
