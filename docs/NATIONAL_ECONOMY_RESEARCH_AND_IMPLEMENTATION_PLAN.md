@@ -305,3 +305,16 @@ BPS SEP 2024 Table 4.2 (UTL oil palm, per 100 trees) reports production value Rp
 - UTL oil-palm Table 4.2 printed-page image verification is now complete. Its Rp5.68k cost-component delta and Rp121.22k income-definition delta remain unresolved; do not attribute them to rounding alone.
 - UTP broiler Table 2.10 is verified in the official PDF text layer but not visually verified. Its reported income differs from production minus cost by Rp3,076.75k. A later BPS *Peternakan Dalam Angka 2025* row reconciles within Rp0.01k; keep the two publication vintages as separate records.
 - Next: extract the remaining relevant UTP livestock tables and UPB/UTL tables from primary-source pages/images. Preserve exact units, denominators, reference period and holding type. No benchmark above is promoted to game Tier 1–4 recipes. If the official PDF image cannot be inspected, keep the visual gate open and leave new values out of runtime.
+
+
+## 2026-10-29 — UTP cattle benchmark data registered with primary-source gate
+
+Added BPS *Peternakan Dalam Angka 2025* Tables 8.3.1–8.3.3 (2024 UTP beef cattle, dairy cattle, and meat buffalo) as research-only records in `REAL_ECONOMIC_DATA.livestockBenchmarksUtp2024`. The official publication catalogue is confirmed; numeric table text came from a publicly accessible mirror because the BPS download endpoint timed out. Every record carries denominator, reference period, table/page, reported totals, feed cost, component sum, arithmetic deltas and explicit unverified-PDF status.
+
+QA outcome: beef cattle and dairy each have a Rp0.01 thousand cost/income rounding discrepancy; buffalo listed cost components sum Rp106.65 thousand below published total cost. These are not cleared by the source evidence. The data is not ready for runtime economics or Tier 1–4 recipes.
+
+Next steps:
+1. Verify original BPS PDF table images for Tables 8.3.1–8.3.3; do not close the visual gate based on the mirror.
+2. Investigate buffalo's Rp106.65 thousand component gap and preserve both reported and derived fields.
+3. Extract remaining UTP livestock tables and relevant UPB/UTL rows only with exact product class, unit, denominator, period and primary-source evidence.
+4. Revisit the maize feed-industry projection conflict after this source gate, keeping industry-only projections separate from all-channel feed use.
