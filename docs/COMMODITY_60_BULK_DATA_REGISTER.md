@@ -1125,3 +1125,8 @@ Source quality and promotion gates are unchanged: official BPS catalogue metadat
 ### Regression status — five UTP livestock benchmark records
 
 GitHub Actions [40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264) passed for the expanded test commit `91e0e1cb5baa7f712199b9e020814b19aebab329`. The new goat and native-chicken rows are included in the test alongside beef cattle, dairy cattle and buffalo. Original PDF visual verification remains open for all five.
+
+
+### Laying-duck benchmark — UTP, 2024 (2026-10-29)
+
+Added BPS *Peternakan Dalam Angka 2025* Table 8.3.8 (printed p.121), per 1,000 laying ducks, to the research-only runtime register. The mirrored table reports production value Rp140,316.23 thousand, cost Rp75,420.46 thousand, income Rp64,895.77 thousand, and feed cost Rp60,009.13 thousand (79.57% of total cost). Production minus cost matches income and the listed cost components sum exactly to published cost. This is a denominator-specific national UTP benchmark, not per head, per egg, or per kg; primary PDF image verification remains open.
