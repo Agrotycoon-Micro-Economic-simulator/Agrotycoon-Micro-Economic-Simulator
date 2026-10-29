@@ -338,3 +338,8 @@ The five-record UTP livestock research dataset (beef cattle, dairy cattle, buffa
 ### UTP laying-duck benchmark added
 
 Table 8.3.8 is now registered as a research-only per-1,000-head cost benchmark, with feed share and arithmetic checks. This provides a potential input for the duck/egg sector evidence chain, but not an egg unit cost: egg production volume and the original PDF table still need verification. Continue primary-source retrieval and avoid per-egg conversion until yield data and period alignment are sourced.
+
+
+### Additional UTP duck benchmark and source-page QA
+
+Added Itik Manila per-head cost structure from BPS *Peternakan Dalam Angka 2025* Table 8.3.9 as research-only data. Its reported income differs from production minus cost by Rp0.01 thousand; components reconcile. The table of contents places Table 8.3.9 on p.122, so the following broiler Table 8.3.10 locator has been corrected to p.123. Original PDF table images remain unverified, so all these records stay out of Tier recipe promotion.
