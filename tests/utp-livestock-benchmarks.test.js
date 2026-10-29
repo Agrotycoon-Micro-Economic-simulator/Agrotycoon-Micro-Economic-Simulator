@@ -49,6 +49,27 @@ assert.equal(buffalo.derived.productionMinusCostThousandRp, 3163.42);
 assert.equal(buffalo.derived.costComponentSumThousandRp, 427.32);
 assert.equal(buffalo.derived.costComponentSumMinusPublishedCostThousandRp, -106.65);
 
+const goat = dataset.records.meatGoatPerHead;
+assert.equal(goat.table, "Table 8.3.5");
+assert.equal(goat.reported.productionValueThousandRp, 660.93);
+assert.equal(goat.reported.productionCostThousandRp, 155.39);
+assert.equal(goat.reported.publishedIncomeThousandRp, 505.54);
+assert.equal(goat.reported.feedCostThousandRp, 57.85);
+assert.equal(goat.derived.productionMinusCostThousandRp, 505.54);
+assert.equal(goat.derived.costComponentSumThousandRp, 155.38);
+assert.equal(goat.derived.costComponentSumMinusPublishedCostThousandRp, -0.01);
+
+const nativeChicken = dataset.records.nativeChickenPerHead;
+assert.equal(nativeChicken.table, "Table 8.3.7");
+assert.equal(nativeChicken.reported.productionValueThousandRp, 34.15);
+assert.equal(nativeChicken.reported.productionCostThousandRp, 15.61);
+assert.equal(nativeChicken.reported.publishedIncomeThousandRp, 18.53);
+assert.equal(nativeChicken.reported.feedCostThousandRp, 10.94);
+assert.equal(nativeChicken.derived.productionMinusCostThousandRp, 18.54);
+assert.equal(nativeChicken.derived.publishedIncomeMinusDerivedThousandRp, -0.01);
+assert.equal(nativeChicken.derived.costComponentSumThousandRp, 15.62);
+assert.equal(nativeChicken.derived.costComponentSumMinusPublishedCostThousandRp, 0.01);
+
 for (const record of Object.values(dataset.records)) {
   const componentSum = Object.values(record.costComponentsThousandRp).reduce((sum, value) => sum + value, 0);
   assert.equal(Math.round(componentSum * 100) / 100, record.derived.costComponentSumThousandRp);
