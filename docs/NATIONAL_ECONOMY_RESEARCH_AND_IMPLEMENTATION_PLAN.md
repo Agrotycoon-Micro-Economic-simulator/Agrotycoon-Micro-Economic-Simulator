@@ -343,3 +343,9 @@ Table 8.3.8 is now registered as a research-only per-1,000-head cost benchmark, 
 ### Additional UTP duck benchmark and source-page QA
 
 Added Itik Manila per-head cost structure from BPS *Peternakan Dalam Angka 2025* Table 8.3.9 as research-only data. Its reported income differs from production minus cost by Rp0.01 thousand; components reconcile. The table of contents places Table 8.3.9 on p.122, so the following broiler Table 8.3.10 locator has been corrected to p.123. Original PDF table images remain unverified, so all these records stay out of Tier recipe promotion.
+
+
+
+### Seven-record UTP livestock dataset regression confirmed (2026-10-29)
+
+The full regression workflow passed after adding Manila duck and correcting the broiler Table 8.3.10 locator to printed p.123. The test guards the seven records' units/denominators, source quality status and arithmetic deltas. The remaining gate is evidence quality: verify primary BPS PDF table images and resolve buffalo cost-component gap before any Tier promotion.
