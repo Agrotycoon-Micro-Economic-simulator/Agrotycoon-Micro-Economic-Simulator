@@ -1088,3 +1088,18 @@ Audit: listed cost components sum to Rp13,212.48 thousand, Rp5.68 thousand below
 The official BPS SEP 2024 technical notes define “income” as the difference between production value and production cost (official crop/estate PDF, PDF page P23, lines 759–760 in the extracted text). Therefore the UTL Table 4.2 printed income Rp12,046.95k differs from the derived production-minus-cost Rp11,925.73k by Rp121.22k, a real unresolved source discrepancy, not something we can explain solely by rounding. The table image is now visually verified; retain the printed value and the derived value separately. The listed cost components sum to Rp13,212.48k, Rp5.68k below published cost Rp13,218.16k. BPS also notes some cost/subsidy imputations were not estimated; whether that explains either gap is not established.
 
 For UTP broiler Table 2.10, the official PDF text layer confirms production Rp152,008.05k, cost Rp126,445.08k, income Rp28,639.72k per 5,000 final-stock heads. Under BPS's own income definition, derived income is Rp25,562.97k, leaving a Rp3,076.75k mismatch. The official table image still could not be rendered due repeated timeout. Later BPS *Peternakan Dalam Angka 2025* uses cost Rp126,445.06k and income Rp25,563.00k, which reconciles within Rp0.01k; retain both publications independently and do not silently correct the earlier table. No game/Tier parameter is changed.
+
+
+## UTP livestock benchmarks — cattle and buffalo (research-only, 2026-10-29)
+
+BPS *Peternakan Dalam Angka 2025* (official publication metadata, released 2026-01-09) contains the 2024 SEP cost tables for UTP beef cattle, dairy cattle and meat buffalo. Table text was extracted from an accessible mirror because the official BPS download endpoint timed out in this pass. The following rows are registered in `REAL_ECONOMIC_DATA.livestockBenchmarksUtp2024` as research references only; official PDF table-image verification is still open.
+
+| Commodity / table | Denominator | Production value (thousand Rp) | Production cost (thousand Rp) | Published income (thousand Rp) | Feed cost (thousand Rp) | Arithmetic QA |
+|---|---|---:|---:|---:|---:|---|
+| Beef cattle, Table 8.3.1, printed p.114 | per head | 3,290.37 | 716.12 | 2,574.26 | 342.25 | Production minus cost = 2,574.25; income gap +0.01. Listed cost components sum 716.13 (+0.01 vs published cost). |
+| Dairy cattle, Table 8.3.2, printed p.115 | per head | 10,141.12 | 5,094.66 | 5,046.46 | 4,074.74 | Production minus cost matches income; listed components sum 5,094.65 (-0.01 vs published cost). |
+| Meat buffalo, Table 8.3.3, printed p.116 | per head | 3,697.39 | 533.97 | 3,163.42 | 143.84 | Production minus cost matches income; listed components sum only 427.32, a material unresolved gap of -106.65. |
+
+Source metadata: https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html. Accessible text mirror: https://id.scribd.com/document/1009902102/Peternakan-Dalam-Angka-2025-Menurut-Bps.
+
+**Data-quality gate:** source status is `official_catalog_confirmed_secondary_table_transcription_not_primary_pdf_verified`; the official PDF/table images have not been visually verified for these rows. The beef/dairy one-hundredth-thousand-Rp gaps and buffalo component gap are retained explicitly. Do not convert these per-head national UTP averages into local purchase prices, per-kg HPP, feed recipes, or Tier 1–4 recipes. The livestock survey reference period is recorded as 2023-06-01 to 2024-05-31 and must not be mistaken for a calendar-year farm cycle.
