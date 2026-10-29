@@ -124,3 +124,10 @@ For UTP broiler Table 2.10, the official PDF text layer confirms production Rp15
 - Added BPS *Peternakan Dalam Angka 2025* Table 8.3.8 to `livestockBenchmarksUtp2024.records.layingDuckPer1000Heads`: per 1,000 heads, production Rp140,316.23k, cost Rp75,420.46k, income Rp64,895.77k, feed Rp60,009.13k / 79.57%; listed cost components sum to published cost and production-minus-cost matches income.
 - Added assertions to `tests/utp-livestock-benchmarks.test.js`. This new code/test revision supersedes the previous green run for five records; wait for the new GitHub Actions run before claiming the six-record dataset passes.
 - Original BPS PDF table image remains unverified. This is not per-egg HPP or a Tier recipe; obtain egg yield, mortality, production period and source-backed denominator before calculating per-egg economics.
+
+
+## UTP Manila duck and broiler page locator correction — CI pending (2026-10-29)
+
+- Added `manilaDuckPerHead` from BPS *Peternakan Dalam Angka 2025* Table 8.3.9 (printed p.122): production Rp39.80k, cost Rp20.75k, income Rp19.06k, feed Rp15.56k / 74.98%. Production minus cost is Rp19.05k (+Rp0.01k reported-income delta); components sum to reported cost. Source remains mirror-transcribed, primary PDF image unverified.
+- The publication TOC places Table 8.3.9 at p.122; corrected the following broiler Table 8.3.10 locator from p.122 to p.123 in runtime and added a regression assertion. This is a locator correction based on the TOC, not visual verification of the original broiler table.
+- Latest green run 40858229396 covered the previous six-record dataset. The Manila-duck addition and page-number correction have new code/test commits; wait for the new workflow run before claiming the expanded set passes.
