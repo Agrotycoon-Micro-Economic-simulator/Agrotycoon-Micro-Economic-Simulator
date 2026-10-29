@@ -19,6 +19,7 @@ assert.equal(b.unitType, "UTP");
 assert.equal(b.referencePeriod, "2023-06-01/2024-05-31");
 assert.equal(b.denominator, "per 5,000 final-stock heads");
 assert.equal(b.source.title, "Peternakan Dalam Angka 2025");
+assert.equal(b.source.table, "Table 8.3.10, printed p.123; cites BPS SEP 2024");
 assert.equal(b.source.releaseDate, "2026-01-09");
 assert.match(b.source.url, /bps\.go\.id/);
 assert.equal(b.reported.productionValueThousandRp, 152008.05);
