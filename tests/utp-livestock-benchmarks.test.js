@@ -70,6 +70,19 @@ assert.equal(nativeChicken.derived.publishedIncomeMinusDerivedThousandRp, -0.01)
 assert.equal(nativeChicken.derived.costComponentSumThousandRp, 15.62);
 assert.equal(nativeChicken.derived.costComponentSumMinusPublishedCostThousandRp, 0.01);
 
+const manilaDuck = dataset.records.manilaDuckPerHead;
+assert.equal(manilaDuck.table, "Table 8.3.9, printed p.122");
+assert.equal(manilaDuck.denominator, "per head");
+assert.equal(manilaDuck.reported.productionValueThousandRp, 39.80);
+assert.equal(manilaDuck.reported.productionCostThousandRp, 20.75);
+assert.equal(manilaDuck.reported.publishedIncomeThousandRp, 19.06);
+assert.equal(manilaDuck.reported.feedCostThousandRp, 15.56);
+assert.equal(manilaDuck.reported.feedCostSharePct, 74.98);
+assert.equal(manilaDuck.derived.productionMinusCostThousandRp, 19.05);
+assert.equal(manilaDuck.derived.publishedIncomeMinusDerivedThousandRp, 0.01);
+assert.equal(manilaDuck.derived.costComponentSumThousandRp, 20.75);
+assert.equal(manilaDuck.derived.costComponentSumMinusPublishedCostThousandRp, 0);
+
 const ducks = dataset.records.layingDuckPer1000Heads;
 assert.equal(ducks.table, "Table 8.3.8, printed p.121");
 assert.equal(ducks.denominator, "per 1,000 heads");
