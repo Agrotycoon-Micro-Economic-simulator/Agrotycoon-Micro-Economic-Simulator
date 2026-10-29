@@ -192,6 +192,42 @@ window.REAL_ECONOMIC_DATA={
   status:"research_reference_only",
   note:"BPS SEP 2024 Table 4.2, UTL oil-palm average per 100 trees. The official BPS PDF table image (printed p.32) was visually inspected and agrees with the reported values. BPS technical notes define income as production value minus production cost, so the Rp121.22k published-income difference cannot be reconciled from the displayed totals alone; cost-component sum remains Rp5.68k below published cost. Not a Tier 1–4 recipe, and not interchangeable with UPB or UTP values."
  },
+ livestockBenchmarksUtp2024:{
+  geography:"Indonesia",
+  unitType:"UTP",
+  referencePeriod:"2023-06-01/2024-05-31",
+  source:{publisher:"Badan Pusat Statistik",title:"Peternakan Dalam Angka 2025",url:"https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html",releaseDate:"2026-01-09",method:"2024 Agricultural Economic Survey (SEP), individual agricultural holdings (UTP)",qualityStatus:"official_catalog_confirmed_secondary_table_transcription_not_primary_pdf_verified",mirrorUrl:"https://id.scribd.com/document/1009902102/Peternakan-Dalam-Angka-2025-Menurut-Bps"},
+  records:{
+   beefCattlePerHead:{
+    commodity:"Sapi potong",
+    table:"Table 8.3.1, printed p.114",
+    denominator:"per head",
+    reported:{productionValueThousandRp:3290.37,productionCostThousandRp:716.12,publishedIncomeThousandRp:2574.26,feedCostThousandRp:342.25,feedCostSharePct:47.79},
+    costComponentsThousandRp:{feed:342.25,health:35.80,wages:70.87,fuelAndLubricants:107.92,electricityAndWater:14.20,land:85.69,livestockServices:14.85,other:44.55},
+    derived:{productionMinusCostThousandRp:2574.25,publishedIncomeMinusDerivedThousandRp:0.01,costComponentSumThousandRp:716.13,costComponentSumMinusPublishedCostThousandRp:0.01}
+   },
+   dairyCattlePerHead:{
+    commodity:"Sapi perah",
+    table:"Table 8.3.2, printed p.115",
+    denominator:"per head",
+    reported:{productionValueThousandRp:10141.12,productionCostThousandRp:5094.66,publishedIncomeThousandRp:5046.46,feedCostThousandRp:4074.74,feedCostSharePct:79.98},
+    costComponentsThousandRp:{feed:4074.74,health:69.13,wages:415.47,fuelAndLubricants:189.12,electricityAndWater:40.18,land:131.96,livestockServices:14.63,other:159.42},
+    derived:{productionMinusCostThousandRp:5046.46,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:5094.65,costComponentSumMinusPublishedCostThousandRp:-0.01}
+   },
+   meatBuffaloPerHead:{
+    commodity:"Kerbau potong",
+    table:"Table 8.3.3, printed p.116",
+    denominator:"per head",
+    reported:{productionValueThousandRp:3697.39,productionCostThousandRp:533.97,publishedIncomeThousandRp:3163.42,feedCostThousandRp:143.84,feedCostSharePct:26.94},
+    costComponentsThousandRp:{feed:143.84,health:49.91,wages:117.14,fuelAndLubricants:6.05,electricityAndWater:6.07,land:59.32,livestockServices:3.78,other:41.21},
+    derived:{productionMinusCostThousandRp:3163.42,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:427.32,costComponentSumMinusPublishedCostThousandRp:-106.65}
+   }
+  },
+  status:"research_reference_only",
+  visualVerificationStatus:"official_pdf_table_images_not_yet_verified",
+  note:"Aggregate values and table labels were transcribed from an accessible text mirror of BPS Peternakan Dalam Angka 2025; the official BPS publication metadata is confirmed, but the original table images/PDF were not visually verified in this pass. Component arithmetic is explicitly audited: beef cattle has Rp0.01 thousand rounding gaps in both cost-component sum and income; dairy has a Rp0.01 thousand cost-component gap; buffalo has an unresolved Rp106.65 thousand gap between listed components and reported total cost. Preserve source and derived fields separately. These are national UTP research references, not local farm quotes, not UTL/UPB values, and not Tier 1–4 recipes. Do not promote until primary PDF/table verification and unresolved cost-component gaps are reviewed."
+ },
+
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
