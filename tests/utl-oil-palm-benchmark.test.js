@@ -31,6 +31,7 @@ assert.match(b.source.officialPublisherPageUrl, /bps\.go\.id/);
 assert.match(b.source.mirrorUrl, /scribd\.com/);
 assert.equal(b.sourceNotes.originalTableImageStatus, "visually_verified_official_pdf_image");
 assert.equal(b.source.qualityStatus, "official_pdf_text_and_table_image_verified");
+assert.match(b.sourceNotes.incomeDefinition, /production value minus production cost/i);
 assert.match(b.sourceNotes.imputationNote, /not yet been estimated/i);
 assert.equal(b.status, "research_reference_only");
 
