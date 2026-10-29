@@ -840,3 +840,10 @@ The expanded UTP livestock benchmark test passed in [run 40857810264](https://gi
 ### Laying-duck table added (2026-10-29)
 
 Added UTP Table 8.3.8 from the BPS publication's accessible mirror: per 1,000 heads, production Rp140,316.23k, cost Rp75,420.46k, income Rp64,895.77k, feed Rp60,009.13k (79.57%). Aggregate arithmetic and listed component sum reconcile. Keep the row research-only because the official PDF/table image was not visually verified; do not divide it into per-head or per-egg economics without a validated production denominator/yield.
+
+
+### Itik Manila benchmark and Table 8.3.10 pagination correction (2026-10-29)
+
+Added Table 8.3.9 Itik Manila per head: production Rp39.80k, cost Rp20.75k, income Rp19.06k, feed Rp15.56k / 74.98%; derived income is Rp19.05k (published value +Rp0.01k), while listed components sum to cost. The original PDF image remains unverified.
+
+A pagination audit of the accessible publication table of contents places Table 8.3.9 at printed p.122. The following Table 8.3.10 broiler table is therefore registered as printed p.123 rather than p.122. Updated runtime metadata and test guard accordingly; this fixes a documentation/source locator mismatch and does not close visual verification.
