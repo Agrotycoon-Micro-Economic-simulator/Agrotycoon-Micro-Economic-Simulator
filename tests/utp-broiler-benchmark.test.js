@@ -33,6 +33,6 @@ assert.equal(b.reconciliation.originalSepTableTextStatus, "verified_in_official_
 assert.equal(b.reconciliation.originalSepTableImageStatus, "not_yet_visually_verified");
 assert.match(b.note, /official BPS SEP 2024 livestock PDF text was opened directly/i);
 assert.equal(b.status, "research_reference_only");
-assert.match(b.note, /Do not overwrite the original Table 2.10 transcription/i);
+assert.match(b.note, /Preserve both source records and do not silently choose one/i);
 
 console.log("PASS: BPS UTP broiler benchmark preserves later-source values, unit, rounding and original-table verification caveat.");
