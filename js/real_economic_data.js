@@ -237,6 +237,14 @@ window.REAL_ECONOMIC_DATA={
     reported:{productionValueThousandRp:34.15,productionCostThousandRp:15.61,publishedIncomeThousandRp:18.53,feedCostThousandRp:10.94,feedCostSharePct:70.05},
     costComponentsThousandRp:{feed:10.94,health:0.27,wages:0.41,fuelAndLubricants:0.28,electricityAndWater:0.40,land:2.59,livestockServices:0.02,other:0.71},
     derived:{productionMinusCostThousandRp:18.54,publishedIncomeMinusDerivedThousandRp:-0.01,costComponentSumThousandRp:15.62,costComponentSumMinusPublishedCostThousandRp:0.01}
+   layingDuckPer1000Heads:{
+    commodity:"Itik petelur",
+    table:"Table 8.3.8, printed p.121",
+    denominator:"per 1,000 heads",
+    reported:{productionValueThousandRp:140316.23,productionCostThousandRp:75420.46,publishedIncomeThousandRp:64895.77,feedCostThousandRp:60009.13,feedCostSharePct:79.57},
+    costComponentsThousandRp:{feed:60009.13,health:1536.82,wages:4875.14,fuelAndLubricants:2228.91,electricityAndWater:1322.29,land:2861.82,livestockServices:741.36,other:1844.99},
+    derived:{productionMinusCostThousandRp:64895.77,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:75420.46,costComponentSumMinusPublishedCostThousandRp:0}
+   },
    },
   },
   status:"research_reference_only",
