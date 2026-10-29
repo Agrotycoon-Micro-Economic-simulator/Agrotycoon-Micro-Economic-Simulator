@@ -247,7 +247,6 @@ window.REAL_ECONOMIC_DATA={
     derived:{productionMinusCostThousandRp:64895.77,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:75420.46,costComponentSumMinusPublishedCostThousandRp:0}
    },
    },
-  },
   status:"research_reference_only",
   visualVerificationStatus:"official_pdf_table_images_not_yet_verified",
   note:"Aggregate values and table labels were transcribed from an accessible text mirror of BPS Peternakan Dalam Angka 2025; the official BPS publication metadata is confirmed, but the original table images/PDF were not visually verified in this pass. Component arithmetic is explicitly audited: beef cattle has Rp0.01 thousand rounding gaps in both cost-component sum and income; dairy has a Rp0.01 thousand cost-component gap; buffalo has an unresolved Rp106.65 thousand gap between listed components and reported total cost. Preserve source and derived fields separately. These are national UTP research references, not local farm quotes, not UTL/UPB values, and not Tier 1–4 recipes. Do not promote until primary PDF/table verification and unresolved cost-component gaps are reviewed."
