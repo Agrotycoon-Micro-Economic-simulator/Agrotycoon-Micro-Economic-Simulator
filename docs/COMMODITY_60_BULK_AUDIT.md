@@ -847,3 +847,9 @@ Added UTP Table 8.3.8 from the BPS publication's accessible mirror: per 1,000 he
 Added Table 8.3.9 Itik Manila per head: production Rp39.80k, cost Rp20.75k, income Rp19.06k, feed Rp15.56k / 74.98%; derived income is Rp19.05k (published value +Rp0.01k), while listed components sum to cost. The original PDF image remains unverified.
 
 A pagination audit of the accessible publication table of contents places Table 8.3.9 at printed p.122. The following Table 8.3.10 broiler table is therefore registered as printed p.123 rather than p.122. Updated runtime metadata and test guard accordingly; this fixes a documentation/source locator mismatch and does not close visual verification.
+
+
+
+### Latest regression and failure/fix trail (2026-10-29)
+
+The seven-record UTP livestock dataset and broiler table-page correction passed full regression in run [40858451709](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40858451709), test commit `f0367036cb40b7d124a0119d1e4c288c5f89f6ee`. Two interim runs failed because the new laying-duck insertion left an extra closing brace; corrected in `2e4d7ca8c7318a55403a324b1efe72ed1095206d`, whose full run [40858229396](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40858229396) passed. These are resolved implementation failures, but source-table image verification and buffalo's Rp106.65k component gap remain open.
