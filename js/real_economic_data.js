@@ -170,7 +170,7 @@ window.REAL_ECONOMIC_DATA={
   commodity:"Ayam ras pedaging",
   referencePeriod:"2023-06-01/2024-05-31",
   denominator:"per 5,000 final-stock heads",
-  source:{publisher:"Badan Pusat Statistik",title:"Peternakan Dalam Angka 2025",url:"https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html",releaseDate:"2026-01-09",table:"Table 8.3.10, printed p.122; cites BPS SEP 2024",qualityStatus:"official_catalog_confirmed_table_text_from_mirror"},
+  source:{publisher:"Badan Pusat Statistik",title:"Peternakan Dalam Angka 2025",url:"https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html",releaseDate:"2026-01-09",table:"Table 8.3.10, printed p.123; cites BPS SEP 2024",qualityStatus:"official_catalog_confirmed_table_text_from_mirror"},
   reported:{productionValueThousandRp:152008.05,productionCostThousandRp:126445.06,publishedIncomeThousandRp:25563.00,feedCostThousandRp:81754.62,feedCostSharePct:64.66},
   derived:{productionMinusCostThousandRp:25562.99,publishedIncomeMinusDerivedThousandRp:0.01,status:"derived_arithmetic"},
   reconciliation:{earlierSepTable2_10Transcription:{productionValueThousandRp:152008.05,productionCostThousandRp:126445.08,publishedIncomeThousandRp:28639.72,status:"conflicts_with_later_bps_publication"},laterBpsTableArithmeticStatus:"income reconciles within Rp0.01 thousand rounding",originalSepTableTextStatus:"verified_in_official_pdf_text",originalSepTableImageStatus:"not_yet_visually_verified"},
@@ -237,6 +237,14 @@ window.REAL_ECONOMIC_DATA={
     reported:{productionValueThousandRp:34.15,productionCostThousandRp:15.61,publishedIncomeThousandRp:18.53,feedCostThousandRp:10.94,feedCostSharePct:70.05},
     costComponentsThousandRp:{feed:10.94,health:0.27,wages:0.41,fuelAndLubricants:0.28,electricityAndWater:0.40,land:2.59,livestockServices:0.02,other:0.71},
     derived:{productionMinusCostThousandRp:18.54,publishedIncomeMinusDerivedThousandRp:-0.01,costComponentSumThousandRp:15.62,costComponentSumMinusPublishedCostThousandRp:0.01}
+   },
+   manilaDuckPerHead:{
+    commodity:"Itik Manila",
+    table:"Table 8.3.9, printed p.122",
+    denominator:"per head",
+    reported:{productionValueThousandRp:39.80,productionCostThousandRp:20.75,publishedIncomeThousandRp:19.06,feedCostThousandRp:15.56,feedCostSharePct:74.98},
+    costComponentsThousandRp:{feed:15.56,health:0.33,wages:0.70,fuelAndLubricants:0.38,electricityAndWater:0.33,land:2.56,livestockServices:0.01,other:0.88},
+    derived:{productionMinusCostThousandRp:19.05,publishedIncomeMinusDerivedThousandRp:0.01,costComponentSumThousandRp:20.75,costComponentSumMinusPublishedCostThousandRp:0}
    },
    layingDuckPer1000Heads:{
     commodity:"Itik petelur",
