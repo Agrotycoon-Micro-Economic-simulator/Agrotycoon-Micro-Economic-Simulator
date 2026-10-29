@@ -45,6 +45,8 @@ jobs:
         run: node tests/utl-oil-palm-benchmark.test.js
       - name: Run UTP broiler benchmark provenance and arithmetic guard
         run: node tests/utp-broiler-benchmark.test.js
+      - name: Run UTP cattle benchmark provenance and arithmetic guard
+        run: node tests/utp-livestock-benchmarks.test.js
       - name: Run all standalone Node regression tests
         run: |
           set -e
