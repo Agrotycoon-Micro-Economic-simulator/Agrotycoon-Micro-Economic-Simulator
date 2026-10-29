@@ -297,3 +297,11 @@ BPS *Peternakan Dalam Angka 2025* Table 8.3.10 (printed p.122) reproduces 2024 U
 ## UTL oil-palm Table 4.2 added as research-only benchmark (2026-10-28)
 
 BPS SEP 2024 Table 4.2 (UTL oil palm, per 100 trees) reports production value Rp25,143.89k, cost Rp13,218.16k, income Rp12,046.95k, producer price Rp2.07k/kg, unit cost Rp1.29k/kg and productivity 12,443.49 kg/100 trees. Listed cost components sum to Rp13,212.48k (Rp5.68k below published total cost); production minus published cost is Rp11,925.73k (Rp121.22k below published income). The source note mentions rounding and incomplete cost/subsidy imputation, but does not explicitly reconcile the differences. Runtime `utlOilPalmBenchmark2024` and `tests/utl-oil-palm-benchmark.test.js` preserve values/deltas without promoting them to a production recipe. Original Table 4.2 image verification remains open.
+
+
+## Latest livestock source-QA and regression checkpoint (2026-10-29)
+
+- GitHub Actions run [40792046198](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40792046198) passed the current targeted regression workflow at commit `91a196490a005f47fc84f09819281878860db7b6`: Node test-runner 13/13, UTL/UTP benchmark tests, standalone accounting/market/economic-data tests, browser smoke and gameplay/finance/migration/recovery E2E.
+- UTL oil-palm Table 4.2 printed-page image verification is now complete. Its Rp5.68k cost-component delta and Rp121.22k income-definition delta remain unresolved; do not attribute them to rounding alone.
+- UTP broiler Table 2.10 is verified in the official PDF text layer but not visually verified. Its reported income differs from production minus cost by Rp3,076.75k. A later BPS *Peternakan Dalam Angka 2025* row reconciles within Rp0.01k; keep the two publication vintages as separate records.
+- Next: extract the remaining relevant UTP livestock tables and UPB/UTL tables from primary-source pages/images. Preserve exact units, denominators, reference period and holding type. No benchmark above is promoted to game Tier 1–4 recipes. If the official PDF image cannot be inspected, keep the visual gate open and leave new values out of runtime.
