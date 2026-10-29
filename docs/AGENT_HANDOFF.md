@@ -109,3 +109,11 @@ For UTP broiler Table 2.10, the official PDF text layer confirms production Rp15
 - Added Table 8.3.5 meat goat and Table 8.3.7 native chicken values to `REAL_ECONOMIC_DATA.livestockBenchmarksUtp2024.records`; expanded `tests/utp-livestock-benchmarks.test.js` to assert both aggregates, feed costs, component sums and deltas.
 - Goat: production/cost/income Rp660.93k/Rp155.39k/Rp505.54k per head; listed components Rp155.38k (-Rp0.01k). Native chicken: Rp34.15k/Rp15.61k/Rp18.53k per head; derived income Rp18.54k (-Rp0.01k vs published) and component sum Rp15.62k (+Rp0.01k vs published cost).
 - These remain secondary-transcribed, research-only figures; primary official PDF images are not verified. The previous green run 40857528843 verifies the prior 3-record version only. Wait for and inspect a new CI run triggered by code/test changes before claiming the expanded dataset passes.
+
+
+## Expanded UTP livestock regression — green (2026-10-29 10:29 UTC)
+
+- Workflow [40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264) passed on expanded test commit `91e0e1cb5baa7f712199b9e020814b19aebab329`; code dataset commit `232901abd2415c6525ac8d2a90e35a28b66ea315` also has a successful workflow [40857792651](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857792651).
+- The test now covers five records: beef cattle, dairy cattle, meat buffalo, meat goat and native chicken. The new goat/chicken values, source gate, denominators and arithmetic deltas passed, along with the full existing Node/browser regression chain.
+- This green result validates implementation/test consistency only. Official PDF table images remain unverified for all five records, and the buffalo cost-component gap remains Rp106.65 thousand. Do not treat green CI as proof of source accuracy or as authorization to promote the data to Tier recipes.
+- Next: resolve primary PDF visual verification and buffalo component gap; then extract remaining UTP tables, followed by matched UPB/UTL evidence. If PDF access continues to time out, leave the gate open and continue with other primary-source tables.
