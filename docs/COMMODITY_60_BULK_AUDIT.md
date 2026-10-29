@@ -830,3 +830,8 @@ GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-si
 ### Additional UTP records — goat and native chicken (2026-10-29)
 
 Extended the same research-only dataset with BPS *Peternakan Dalam Angka 2025* Table 8.3.5 (meat goat) and Table 8.3.7 (native chicken). Goat production/cost/income are Rp660.93k/Rp155.39k/Rp505.54k per head; components total Rp155.38k. Native chicken production/cost/income are Rp34.15k/Rp15.61k/Rp18.53k per head; production minus cost is Rp18.54k and components total Rp15.62k. These small but explicit differences are retained rather than silently rounded away. Numeric table data still comes from a public mirror; official PDF visual verification is open. The updated regression asserts these values and all component sums.
+
+
+### Regression status for expanded UTP livestock set (2026-10-29)
+
+The expanded UTP livestock benchmark test passed in [run 40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264) at test commit `91e0e1cb5baa7f712199b9e020814b19aebab329`; full workflow is green. Five benchmark records are now guarded. This is a code/provenance/arithmetic test, not primary-source validation: official PDF images remain unverified and the buffalo cost-component gap remains open.
