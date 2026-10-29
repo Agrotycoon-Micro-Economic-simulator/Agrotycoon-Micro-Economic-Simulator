@@ -1120,3 +1120,8 @@ Added two more 2024 UTP records from the same BPS *Peternakan Dalam Angka 2025* 
 | Native chicken, Table 8.3.7 | 34.15 | 15.61 | 18.53 | 10.94 (70.05%) | Derived income is 18.54 (-0.01 vs reported); listed components total 15.62 (+0.01). |
 
 Source quality and promotion gates are unchanged: official BPS catalogue metadata plus secondary text transcription, not primary-PDF verification; no Tier recipe or per-kg price may be inferred.
+
+
+### Regression status — five UTP livestock benchmark records
+
+GitHub Actions [40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264) passed for the expanded test commit `91e0e1cb5baa7f712199b9e020814b19aebab329`. The new goat and native-chicken rows are included in the test alongside beef cattle, dairy cattle and buffalo. Original PDF visual verification remains open for all five.
