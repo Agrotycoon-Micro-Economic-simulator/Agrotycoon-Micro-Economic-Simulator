@@ -1103,3 +1103,8 @@ BPS *Peternakan Dalam Angka 2025* (official publication metadata, released 2026-
 Source metadata: https://www.bps.go.id/id/publication/2026/01/09/50771bc6f5761886458558ba/livestock-in-figures-2025.html. Accessible text mirror: https://id.scribd.com/document/1009902102/Peternakan-Dalam-Angka-2025-Menurut-Bps.
 
 **Data-quality gate:** source status is `official_catalog_confirmed_secondary_table_transcription_not_primary_pdf_verified`; the official PDF/table images have not been visually verified for these rows. The beef/dairy one-hundredth-thousand-Rp gaps and buffalo component gap are retained explicitly. Do not convert these per-head national UTP averages into local purchase prices, per-kg HPP, feed recipes, or Tier 1–4 recipes. The livestock survey reference period is recorded as 2023-06-01 to 2024-05-31 and must not be mistaken for a calendar-year farm cycle.
+
+
+### Regression status — UTP cattle benchmark records (2026-10-29)
+
+The regression guard for `livestockBenchmarksUtp2024` passed in GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843), commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`. Test coverage validates the source/quality gate, denominator, reported aggregates and explicit arithmetic deltas. It does not change the source status: original BPS PDF images remain unverified for these rows.
