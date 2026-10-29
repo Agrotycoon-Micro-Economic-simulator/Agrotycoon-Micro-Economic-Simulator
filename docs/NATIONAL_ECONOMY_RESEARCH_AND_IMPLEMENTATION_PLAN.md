@@ -323,3 +323,8 @@ Next steps:
 ## 2026-10-29 — UTP cattle regression passed; source verification remains open
 
 GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843) passed at code/test/CI commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`, including the new UTP cattle provenance/arithmetic guard and the full existing regression chain. This verifies code assertions, not the primary-source accuracy of table transcription. Keep official PDF image verification and buffalo component reconciliation open before any promotion. Latest branch HEAD after documentation updates is `8a7ed1716aa244d22fd150fdce653778cc9a4d7c`.
+
+
+### Expanded UTP table coverage — goat and native chicken
+
+Added research-only aggregate/cost-component rows for meat goat (Table 8.3.5) and native chicken (Table 8.3.7). Both have small arithmetic differences that are now explicitly represented in code and regression tests. This extends the UTP evidence register but does not complete livestock-sector research: the primary PDF/table images and further UTP/UPB/UTL rows remain open.
