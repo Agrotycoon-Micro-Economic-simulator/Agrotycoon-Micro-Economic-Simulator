@@ -835,3 +835,8 @@ Extended the same research-only dataset with BPS *Peternakan Dalam Angka 2025* T
 ### Regression status for expanded UTP livestock set (2026-10-29)
 
 The expanded UTP livestock benchmark test passed in [run 40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264) at test commit `91e0e1cb5baa7f712199b9e020814b19aebab329`; full workflow is green. Five benchmark records are now guarded. This is a code/provenance/arithmetic test, not primary-source validation: official PDF images remain unverified and the buffalo cost-component gap remains open.
+
+
+### Laying-duck table added (2026-10-29)
+
+Added UTP Table 8.3.8 from the BPS publication's accessible mirror: per 1,000 heads, production Rp140,316.23k, cost Rp75,420.46k, income Rp64,895.77k, feed Rp60,009.13k (79.57%). Aggregate arithmetic and listed component sum reconcile. Keep the row research-only because the official PDF/table image was not visually verified; do not divide it into per-head or per-egg economics without a validated production denominator/yield.
