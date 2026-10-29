@@ -237,6 +237,7 @@ window.REAL_ECONOMIC_DATA={
     reported:{productionValueThousandRp:34.15,productionCostThousandRp:15.61,publishedIncomeThousandRp:18.53,feedCostThousandRp:10.94,feedCostSharePct:70.05},
     costComponentsThousandRp:{feed:10.94,health:0.27,wages:0.41,fuelAndLubricants:0.28,electricityAndWater:0.40,land:2.59,livestockServices:0.02,other:0.71},
     derived:{productionMinusCostThousandRp:18.54,publishedIncomeMinusDerivedThousandRp:-0.01,costComponentSumThousandRp:15.62,costComponentSumMinusPublishedCostThousandRp:0.01}
+   },
    layingDuckPer1000Heads:{
     commodity:"Itik petelur",
     table:"Table 8.3.8, printed p.121",
