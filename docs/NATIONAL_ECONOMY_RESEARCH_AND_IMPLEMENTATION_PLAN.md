@@ -333,3 +333,8 @@ Added research-only aggregate/cost-component rows for meat goat (Table 8.3.5) an
 ### Expanded livestock regression status (2026-10-29)
 
 The five-record UTP livestock research dataset (beef cattle, dairy cattle, buffalo, goat and native chicken) passed regression in GitHub Actions [40857810264](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857810264). The data remains research-only because the original BPS PDF tables have not been visually verified. Next research gate remains source-image verification and reconciliation of buffalo's component gap before expanding further to UTP/UPB/UTL.
+
+
+### UTP laying-duck benchmark added
+
+Table 8.3.8 is now registered as a research-only per-1,000-head cost benchmark, with feed share and arithmetic checks. This provides a potential input for the duck/egg sector evidence chain, but not an egg unit cost: egg production volume and the original PDF table still need verification. Continue primary-source retrieval and avoid per-egg conversion until yield data and period alignment are sourced.
