@@ -825,3 +825,8 @@ CI now includes the new standalone regression. Do not claim it passed until the 
 ## CI confirmation — UTP cattle benchmark regression (2026-10-29)
 
 GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843) passed at code/test/CI commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`. The new UTP cattle benchmark test passed along with all existing Node, browser smoke and E2E steps. This confirms structural/provenance/arithmetic assertions only; it does not independently verify the underlying secondary-transcribed table figures against original BPS PDF images. Latest HEAD `8a7ed1716aa244d22fd150fdce653778cc9a4d7c` includes documentation-only commits after the tested code SHA.
+
+
+### Additional UTP records — goat and native chicken (2026-10-29)
+
+Extended the same research-only dataset with BPS *Peternakan Dalam Angka 2025* Table 8.3.5 (meat goat) and Table 8.3.7 (native chicken). Goat production/cost/income are Rp660.93k/Rp155.39k/Rp505.54k per head; components total Rp155.38k. Native chicken production/cost/income are Rp34.15k/Rp15.61k/Rp18.53k per head; production minus cost is Rp18.54k and components total Rp15.62k. These small but explicit differences are retained rather than silently rounded away. Numeric table data still comes from a public mirror; official PDF visual verification is open. The updated regression asserts these values and all component sums.
