@@ -221,7 +221,23 @@ window.REAL_ECONOMIC_DATA={
     reported:{productionValueThousandRp:3697.39,productionCostThousandRp:533.97,publishedIncomeThousandRp:3163.42,feedCostThousandRp:143.84,feedCostSharePct:26.94},
     costComponentsThousandRp:{feed:143.84,health:49.91,wages:117.14,fuelAndLubricants:6.05,electricityAndWater:6.07,land:59.32,livestockServices:3.78,other:41.21},
     derived:{productionMinusCostThousandRp:3163.42,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:427.32,costComponentSumMinusPublishedCostThousandRp:-106.65}
-   }
+   },
+   meatGoatPerHead:{
+    commodity:"Kambing potong",
+    table:"Table 8.3.5",
+    denominator:"per head",
+    reported:{productionValueThousandRp:660.93,productionCostThousandRp:155.39,publishedIncomeThousandRp:505.54,feedCostThousandRp:57.85,feedCostSharePct:37.23},
+    costComponentsThousandRp:{feed:57.85,health:5.08,wages:17.31,fuelAndLubricants:33.16,electricityAndWater:3.58,land:25.73,livestockServices:0.96,other:11.71},
+    derived:{productionMinusCostThousandRp:505.54,publishedIncomeMinusDerivedThousandRp:0,costComponentSumThousandRp:155.38,costComponentSumMinusPublishedCostThousandRp:-0.01}
+   },
+   nativeChickenPerHead:{
+    commodity:"Ayam kampung biasa",
+    table:"Table 8.3.7",
+    denominator:"per head",
+    reported:{productionValueThousandRp:34.15,productionCostThousandRp:15.61,publishedIncomeThousandRp:18.53,feedCostThousandRp:10.94,feedCostSharePct:70.05},
+    costComponentsThousandRp:{feed:10.94,health:0.27,wages:0.41,fuelAndLubricants:0.28,electricityAndWater:0.40,land:2.59,livestockServices:0.02,other:0.71},
+    derived:{productionMinusCostThousandRp:18.54,publishedIncomeMinusDerivedThousandRp:-0.01,costComponentSumThousandRp:15.62,costComponentSumMinusPublishedCostThousandRp:0.01}
+   },
   },
   status:"research_reference_only",
   visualVerificationStatus:"official_pdf_table_images_not_yet_verified",
