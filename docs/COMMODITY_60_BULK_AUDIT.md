@@ -820,3 +820,8 @@ Added research-only BPS *Peternakan Dalam Angka 2025* Table 8.3.1–8.3.3 data f
 - Meat buffalo (per head): production 3,697.39; cost 533.97; income 3,163.42; production minus cost matches; listed components sum 427.32, 106.65 below reported cost. This is a material source/transcription/component gap and blocks promotion.
 
 CI now includes the new standalone regression. Do not claim it passed until the workflow triggered by the new code/test/CI commits finishes green. Next research action is to obtain and visually inspect the official PDF tables (especially buffalo) or explicitly retain the blocker; then continue UTP Tables 8.3.4–8.3.10 and matched UPB/UTL tables. Do not promote any of these research rows into Tier 1–4 recipes.
+
+
+## CI confirmation — UTP cattle benchmark regression (2026-10-29)
+
+GitHub Actions run [40857528843](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40857528843) passed at code/test/CI commit `92fcef854c2219d1c68a51c7d3fc4b786296409f`. The new UTP cattle benchmark test passed along with all existing Node, browser smoke and E2E steps. This confirms structural/provenance/arithmetic assertions only; it does not independently verify the underlying secondary-transcribed table figures against original BPS PDF images. Latest HEAD `8a7ed1716aa244d22fd150fdce653778cc9a4d7c` includes documentation-only commits after the tested code SHA.
