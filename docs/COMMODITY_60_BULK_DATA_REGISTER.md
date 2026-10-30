@@ -1175,3 +1175,7 @@ Runtime now preserves both source values and adds feedIndustryProjectionReconcil
 ## Regression result — maize projection-series reconciliation guard (2026-10-30)
 
 GitHub Actions run [41009050507](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41009050507) passed at test commit ceed808abbe6a0f05bfc31d5c369cb0c853497a2. The node-regression job completed successfully. The earlier data-only run [41009037960](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41009037960) failed because it preceded the corresponding test expectation update; the test commit then changed the guard and passed. This CI result confirms the explicit source-series and arithmetic-delta assertions. It does not erase the real source monthly-average discrepancy or establish exact equivalence between the two rounded feed-demand series.
+
+## 2026-10-30 — UTP livestock audit test coverage
+
+The regression now validates all seven UTP records programmatically, not only a subset of hard-coded examples: component sums, cost-component residuals, production-minus-cost, published-income residuals, and research-only status. This is an arithmetic/provenance guard only; it does not elevate secondary-transcribed records to primary-source verified. BPS's official SEP 2024 livestock catalogue entry is confirmed, but the official 8.14 MB download endpoint timed out in the current retrieval. Test commit 6e15b8691a88781923dcd2b798042ef297b41e22; CI pending run 41056766643.
