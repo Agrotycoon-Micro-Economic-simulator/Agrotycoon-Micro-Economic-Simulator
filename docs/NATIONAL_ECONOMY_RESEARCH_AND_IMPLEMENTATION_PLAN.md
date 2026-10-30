@@ -384,3 +384,6 @@ GitHub Actions run [41009050507](https://github.com/Agrotycoon-Micro-Economic-si
 ## 2026-10-30 — livestock benchmark validation gate
 
 Added a generic per-record regression over the seven current UTP livestock benchmarks to verify source-component arithmetic and preserve all published-vs-derived deltas. This is not a Tier 1–4 approval: records remain research_reference_only, and the buffalo cost-component sum remains Rp106.65 thousand below reported production cost. The original BPS SEP 2024 livestock publication metadata is confirmed, but the official PDF download timed out in this retrieval, so direct table verification remains open. Test commit 6e15b8691a88781923dcd2b798042ef297b41e22; await CI run 41056766643 before claiming regression success.
+## CI outcome — livestock benchmark arithmetic gate (2026-10-30)
+
+Run 41056766643 passed at test commit 6e15b8691a88781923dcd2b798042ef297b41e22. The expanded arithmetic guard is green. This does not promote the dataset to Tier 1–4, resolve the buffalo cost-component residual, or close primary-table verification.
