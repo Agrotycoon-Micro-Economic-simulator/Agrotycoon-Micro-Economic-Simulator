@@ -1179,3 +1179,6 @@ GitHub Actions run [41009050507](https://github.com/Agrotycoon-Micro-Economic-si
 ## 2026-10-30 — UTP livestock audit test coverage
 
 The regression now validates all seven UTP records programmatically, not only a subset of hard-coded examples: component sums, cost-component residuals, production-minus-cost, published-income residuals, and research-only status. This is an arithmetic/provenance guard only; it does not elevate secondary-transcribed records to primary-source verified. BPS's official SEP 2024 livestock catalogue entry is confirmed, but the official 8.14 MB download endpoint timed out in the current retrieval. Test commit 6e15b8691a88781923dcd2b798042ef297b41e22; CI pending run 41056766643.
+## CI update — UTP livestock audit regression green (2026-10-30)
+
+Run 41056766643 passed at test commit 6e15b8691a88781923dcd2b798042ef297b41e22. The expanded node regression validates all seven research-only records' arithmetic deltas. Source quality remains secondary-table transcription pending primary PDF/table verification; the buffalo residual is preserved.
