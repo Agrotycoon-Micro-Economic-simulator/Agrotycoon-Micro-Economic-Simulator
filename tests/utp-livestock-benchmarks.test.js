@@ -95,9 +95,26 @@ assert.equal(ducks.derived.productionMinusCostThousandRp, 64895.77);
 assert.equal(ducks.derived.costComponentSumThousandRp, 75420.46);
 assert.equal(ducks.derived.costComponentSumMinusPublishedCostThousandRp, 0);
 
-for (const record of Object.values(dataset.records)) {
+for (const [recordKey, record] of Object.entries(dataset.records)) {
+  assert.ok(record.costComponentsThousandRp && record.derived, `${recordKey} retains source components and audit fields`);
+
   const componentSum = Object.values(record.costComponentsThousandRp).reduce((sum, value) => sum + value, 0);
-  assert.equal(Math.round(componentSum * 100) / 100, record.derived.costComponentSumThousandRp);
+  const roundedComponentSum = Math.round(componentSum * 100) / 100;
+  assert.equal(roundedComponentSum, record.derived.costComponentSumThousandRp, `${recordKey} component sum is reproducible`);
+  assert.equal(
+    Math.round((roundedComponentSum - record.reported.productionCostThousandRp) * 100) / 100,
+    record.derived.costComponentSumMinusPublishedCostThousandRp,
+    `${recordKey} preserves the cost-component delta`
+  );
+
+  const calculatedIncome = Math.round((record.reported.productionValueThousandRp - record.reported.productionCostThousandRp) * 100) / 100;
+  assert.equal(calculatedIncome, record.derived.productionMinusCostThousandRp, `${recordKey} production-minus-cost is reproducible`);
+  assert.equal(
+    Math.round((record.reported.publishedIncomeThousandRp - calculatedIncome) * 100) / 100,
+    record.derived.publishedIncomeMinusDerivedThousandRp,
+    `${recordKey} preserves the published-income delta`
+  );
+  assert.equal(record.status ?? dataset.status, "research_reference_only", `${recordKey} remains research-only and cannot be promoted implicitly`);
 }
 assert.match(dataset.note, /not Tier 1–4 recipes/i);
 assert.match(dataset.note, /not visually verified/i);
