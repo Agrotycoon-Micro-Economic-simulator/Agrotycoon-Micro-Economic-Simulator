@@ -1161,3 +1161,12 @@ BPS official catalogue metadata for Peternakan Dalam Angka 2025 was rechecked: c
 Current code/test checkpoint: seven-record livestock provenance and arithmetic guards passed in GitHub Actions run [40858451709](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/40858451709), at tested code commit f0367036cb40b7d124a0119d1e4c288c5f89f6ee. Current branch HEAD at the 100-commit review was 2aae7b164db94c3169cf54d7b86dc17e69e4ea57, with later commits in the reviewed window limited to documentation checkpoints.
 
 Next data-reconciliation target is the maize feed-industry demand projection conflict: 8,844,096 t/year versus approximately 8.25 million t/year. Do not merge these values or promote either to the national total-feed-demand figure without confirming source table, reference year, definition and coverage.
+
+
+## Maize feed-demand series clarification — primary-source update (2026-10-30)
+
+Source 1: Ditjen PKH, Pemanfaatan Jagung Lokal oleh Industri Pakan Tahun 2024, Vol. 6/2025, Table 26, printed p.44. URL: https://ditjenpkh.pertanian.go.id/storage/master/file/8EG4sdWw_2025_Buku_Jagung_%281%29.pdf. The table's four quarterly 2025 SiJagung-reported industry-need projections sum to 8,844,096 t. The prose monthly average 727.01 kt is inconsistent with the annual total / 12 = 737.008 kt; this source arithmetic discrepancy remains separately guarded.
+
+Source 2: Kementan Pusdatin, Buletin Konsumsi Pangan Vol. 16 No. 1/2025, printed p.32 and Figure 5.4 on p.35. URL: https://satudata.pertanian.go.id/assets/docs/publikasi/Buletin_Konsumsi_Pangan_Smtr1-2025-Ok.pdf. It reports roughly 8.25 Mt as factory purchase/absorption projection and roughly 5.36 Mt as independent/self-mixing farmer feed demand. The factory series is not identical to the SiJagung-reported need series above. Their difference is 594,096 t. Factory absorption plus independent-farmer feed is approximately 13.61 Mt, 7,000 t above the rounded 13.603 Mt total feed requirement. Treat that as a rounding/plausibility comparison, not exact reconciliation.
+
+Runtime now preserves both source values and adds feedIndustryProjectionReconciliation2025 with an explicit scope distinction and residual gap. No change to the national total need or balance projection. Regression guard added in tests/maize-national-demand.test.js; CI pending.
