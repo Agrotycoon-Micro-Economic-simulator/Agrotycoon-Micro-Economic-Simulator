@@ -894,3 +894,11 @@ BPS's official catalogue confirms the original Hasil Survei Ekonomi Pertanian (S
 ## CI result — UTP livestock arithmetic guard (2026-10-30)
 
 GitHub Actions run 41056766643 passed at test commit 6e15b8691a88781923dcd2b798042ef297b41e22; the node-regression job completed successfully with no failed steps. The new guard reproduces arithmetic and reported-vs-derived deltas across all seven records. The unresolved buffalo component residual remains -Rp106.65 thousand. This is regression validation, not primary-PDF verification.
+
+## 2026-10-31 — Current 100-commit window and livestock evidence gate
+
+The current feature branch HEAD is `80c9ddbd50e957b755ce3a89dd5fef3ac788e1a7`; the latest 100-commit window begins at this HEAD and reaches `cf7bdffa9dae62afa409664ea75006c674ef12ce`. This supersedes the older checkpoint at `642cb7ab...`. The window includes maize balance/feed-demand reconciliation, UTP livestock benchmark arithmetic, UTL oil-palm/broiler source reconciliation, and associated tests/handoffs.
+
+Regression status: UTP seven-record arithmetic guard passed run 41056766643 at test commit `6e15b8691a88781923dcd2b798042ef297b41e22`; maize feed-series guard passed run 41009050507 at test commit `ceed808abbe6a0f05bfc31d5c369cb0c853497a2`. These results validate assertions and arithmetic only. They do not prove primary-table transcription, resolve the buffalo `-Rp106.65 thousand` cost-component residual, or make the secondary-source records eligible for Tier 1–4 production recipes.
+
+A renewed official-source search reconfirmed the BPS catalogue metadata for SEP 2024 livestock (catalogue 5301012, publication 05200.25001, release 2025-01-24, 8.14 MB), but did not expose an accessible official PDF/table for direct visual verification. Status remains `official_catalog_confirmed_secondary_table_transcription_not_primary_pdf_verified`. Preserve every source/derived discrepancy. Next action must be direct primary evidence acquisition or a different accessible official source family, not another arithmetic-only assertion or a checkpoint-only commit.
