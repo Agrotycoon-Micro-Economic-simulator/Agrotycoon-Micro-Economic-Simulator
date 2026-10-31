@@ -387,3 +387,9 @@ Added a generic per-record regression over the seven current UTP livestock bench
 ## CI outcome — livestock benchmark arithmetic gate (2026-10-30)
 
 Run 41056766643 passed at test commit 6e15b8691a88781923dcd2b798042ef297b41e22. The expanded arithmetic guard is green. This does not promote the dataset to Tier 1–4, resolve the buffalo cost-component residual, or close primary-table verification.
+
+## Checkpoint — 2026-10-31: livestock primary-source gate
+
+The current feature HEAD is `80c9ddbd50e957b755ce3a89dd5fef3ac788e1a7`; the renewed 100-commit window runs back to `cf7bdffa9dae62afa409664ea75006c674ef12ce`. Recent work validates maize demand/feed projection scope and arithmetic, and seven UTP livestock research-reference records. CI run 41056766643 passed the UTP arithmetic guard at test commit `6e15b8691a88781923dcd2b798042ef297b41e22`; run 41009050507 passed the maize projection-series guard at `ceed808abbe6a0f05bfc31d5c369cb0c853497a2`.
+
+Next gate is source quality, not more arithmetic-only documentation: directly inspect the official BPS SEP 2024 livestock primary tables or select a different official data family with accessible tables. The BPS catalogue entry is confirmed, but table-level primary PDF verification is not. Keep the UTP records research-only; do not turn the buffalo component residual (-Rp106.65 thousand) or other rounding gaps into inferred expenses. No national livestock or commodity Tier 1–4 values should be promoted until source provenance, denominator, production cycle, and component definitions are reconciled. Avoid checkpoint-only commits unless branch/test status materially changes.
