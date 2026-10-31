@@ -1197,3 +1197,8 @@ Added `REAL_ECONOMIC_DATA.livestockPrices2024` from the directly accessible offi
 National average series for reference year 2024: live cattle Rp51,625/kg live weight; live broiler Rp22,067/kg live weight; layer eggs at producer level Rp25,539/kg; beef at consumer level Rp135,290/kg; broiler meat at consumer level Rp37,277/kg; layer eggs at consumer level Rp30,275/kg. The runtime record also retains the table ID, printed page and published regional high/low for each series. These are historical annual averages, not current prices, farm production costs, or Tier 1–4 recipes. Do not compare live-animal prices directly with retail meat prices.
 
 Regression guard: `tests/livestock-prices-2024.test.js` checks source metadata, year, six records, values, market stages, units, table/page locators, and regional extrema. Workflow integration added to `.github/workflows/targeted-regression.yml`; CI must pass before this new regression is reported green.
+
+
+## CI verification — livestock price source guard (2026-10-31)
+
+The new `tests/livestock-prices-2024.test.js` passed GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41184860562) at test commit `9d1e6f2f934f096d3671f0b743e6bf051bda8ef8`. The full `node-regression` job passed; the workflow integration commit also passed run 41184868805. The regression confirms registry consistency and source metadata, not live-price status or production-cost applicability.
