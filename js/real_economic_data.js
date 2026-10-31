@@ -193,6 +193,36 @@ window.REAL_ECONOMIC_DATA={
   status:"research_reference_only",
   note:"BPS SEP 2024 Table 4.2, UTL oil-palm average per 100 trees. The official BPS PDF table image (printed p.32) was visually inspected and agrees with the reported values. BPS technical notes define income as production value minus production cost, so the Rp121.22k published-income difference cannot be reconciled from the displayed totals alone; cost-component sum remains Rp5.68k below published cost. Not a Tier 1–4 recipe, and not interchangeable with UPB or UTP values."
  },
+ livestockPrices2024:{
+  geography:"Indonesia",
+  referenceYear:2024,
+  unit:"Rp/kg",
+  status:"official_statistic_primary_pdf_text_verified",
+  source:{
+   publisher:"Direktorat Jenderal Peternakan dan Kesehatan Hewan, Kementerian Pertanian",
+   title:"Statistik Peternakan dan Kesehatan Hewan 2025 / Livestock and Animal Health Statistics 2025",
+   url:"https://ditjenpkh.pertanian.go.id/storage/master/file/DBAZgfzg_Buku_Statistik_2025_ISSN.pdf",
+   publicationYear:2025,
+   tables:[
+    {id:"3A.1",printedPage:33,marketStage:"producer",series:"live cattle price",sourceAgency:"Direktorat Jenderal Peternakan dan Kesehatan Hewan"},
+    {id:"3A.2",printedPage:33,marketStage:"producer",series:"live broiler price",sourceAgency:"Direktorat Jenderal Peternakan dan Kesehatan Hewan"},
+    {id:"3A.3",printedPage:34,marketStage:"producer",series:"layer egg price",sourceAgency:"Direktorat Jenderal Peternakan dan Kesehatan Hewan"},
+    {id:"3B.1",printedPage:35,marketStage:"consumer",series:"beef price",sourceAgency:"Bank Indonesia"},
+    {id:"3B.2",printedPage:36,marketStage:"consumer",series:"broiler meat price",sourceAgency:"Bank Indonesia"},
+    {id:"3B.3",printedPage:37,marketStage:"consumer",series:"layer egg price",sourceAgency:"Bank Indonesia"}
+   ],
+   qualityStatus:"official_ministry_pdf_table_text_verified_not_current_price"
+  },
+  records:{
+   liveCattleProducer:{commodity:"sapi hidup",marketStage:"producer",valueRpPerKg:51625,unit:"Rp/kg live weight",table:"3A.1",printedPage:33,regionalHigh:{province:"Kalimantan Timur",valueRpPerKg:63663},regionalLow:{province:"Nusa Tenggara Timur",valueRpPerKg:40800}},
+   liveBroilerProducer:{commodity:"ayam broiler hidup",marketStage:"producer",valueRpPerKg:22067,unit:"Rp/kg live weight",table:"3A.2",printedPage:33,regionalHigh:{province:"Kalimantan Timur",valueRpPerKg:26173},regionalLow:{province:"Jawa Tengah",valueRpPerKg:19944}},
+   layerEggProducer:{commodity:"telur ayam ras",marketStage:"producer",valueRpPerKg:25539,unit:"Rp/kg",table:"3A.3",printedPage:34,regionalHigh:{province:"Kalimantan Timur",valueRpPerKg:28201},regionalLow:{province:"Sumatera Utara",valueRpPerKg:23386}},
+   beefConsumer:{commodity:"daging sapi",marketStage:"consumer",valueRpPerKg:135290,unit:"Rp/kg",table:"3B.1",printedPage:35,regionalHigh:{province:"Kalimantan Selatan",valueRpPerKg:162398},regionalLow:{province:"Kepulauan Riau",valueRpPerKg:99488}},
+   broilerMeatConsumer:{commodity:"daging ayam broiler",marketStage:"consumer",valueRpPerKg:37277,unit:"Rp/kg",table:"3B.2",printedPage:36,regionalHigh:{province:"Papua Barat",valueRpPerKg:49273},regionalLow:{province:"Sulawesi Selatan",valueRpPerKg:26160}},
+   layerEggConsumer:{commodity:"telur ayam ras",marketStage:"consumer",valueRpPerKg:30275,unit:"Rp/kg",table:"3B.3",printedPage:37,regionalHigh:{province:"Papua",valueRpPerKg:37794},regionalLow:{province:"Sulawesi Selatan",valueRpPerKg:25682}}
+  },
+  note:"Annual national averages for reference year 2024, published in the Ministry's 2025 statistical book. Producer-price series are sourced from Ditjen PKH; consumer-price series are sourced from Bank Indonesia. Live-animal prices are per kilogram live weight and must not be conflated with retail meat prices. These historical national averages are reference benchmarks, not current quotes, local prices, production costs, or Tier 1–4 recipes."
+ },
  livestockBenchmarksUtp2024:{
   geography:"Indonesia",
   unitType:"UTP",
