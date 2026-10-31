@@ -47,6 +47,8 @@ jobs:
         run: node tests/utp-broiler-benchmark.test.js
       - name: Run UTP cattle benchmark provenance and arithmetic guard
         run: node tests/utp-livestock-benchmarks.test.js
+      - name: Run official 2024 livestock price benchmark guard
+        run: node tests/livestock-prices-2024.test.js
       - name: Run all standalone Node regression tests
         run: |
           set -e
