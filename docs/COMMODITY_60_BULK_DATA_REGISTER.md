@@ -1182,3 +1182,9 @@ The regression now validates all seven UTP records programmatically, not only a 
 ## CI update — UTP livestock audit regression green (2026-10-30)
 
 Run 41056766643 passed at test commit 6e15b8691a88781923dcd2b798042ef297b41e22. The expanded node regression validates all seven research-only records' arithmetic deltas. Source quality remains secondary-table transcription pending primary PDF/table verification; the buffalo residual is preserved.
+
+## Source verification checkpoint — 2026-10-31
+
+Current branch HEAD is `80c9ddbd50e957b755ce3a89dd5fef3ac788e1a7`; the refreshed 100-commit window reaches `cf7bdffa9dae62afa409664ea75006c674ef12ce`. UTP livestock arithmetic regression is green at test commit `6e15b8691a88781923dcd2b798042ef297b41e22` (run 41056766643). The maize feed-series guard is green at `ceed808abbe6a0f05bfc31d5c369cb0c853497a2` (run 41009050507).
+
+BPS's official catalogue entry for *Hasil Survei Ekonomi Pertanian (SEP) 2024 Subsektor Peternakan* confirms publication metadata only. The renewed search did not provide an accessible official PDF/table for checking the transcribed values. Retain `official_catalog_confirmed_secondary_table_transcription_not_primary_pdf_verified`; retain all seven records as research-only. The buffalo listed-cost component sum remains Rp106.65 thousand below the reported production cost. No source discrepancy is to be silently reconciled or used as a Tier 1–4 recipe until primary evidence and unit/denominator checks are complete.
