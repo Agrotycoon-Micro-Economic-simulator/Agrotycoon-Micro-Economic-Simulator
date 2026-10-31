@@ -400,3 +400,8 @@ Next gate is source quality, not more arithmetic-only documentation: directly in
 The runtime registry now includes six official 2024 annual-average livestock price series from the directly accessible Ditjen PKH *Statistik Peternakan dan Kesehatan Hewan 2025* PDF: producer live cattle and live broiler prices, producer layer-egg price, and consumer beef, broiler-meat and layer-egg prices. Tables 3A.1–3A.3 are printed pp.33–34; Tables 3B.1–3B.3 are printed pp.35–37. The publication attributes producer prices to Ditjen PKH and consumer prices to Bank Indonesia. Values and regional high/low values are source-registered, and a targeted Node regression is added to CI.
 
 This is a source-backed historical price calibration layer, not a production-cost model. Keep live-weight prices separate from retail meat prices; keep 2024 annual averages separate from current prices and from owner-specific game prices. Do not use these values as HPP or Tier 1–4 recipes. The separate UTP cost-benchmark source gate remains open pending primary table access and review of the buffalo component residual.
+
+
+## Regression result — livestock price source guard (2026-10-31)
+
+The new six-series livestock price registry and source guard passed GitHub Actions run 41184860562 at test commit `9d1e6f2f934f096d3671f0b743e6bf051bda8ef8`; the full node-regression job, including standalone and browser/E2E tests, completed successfully. The workflow integration commit passed run 41184868805. This is evidence of regression consistency and provenance assertions only. The 2024 averages remain historical; they are not current quotes or HPP. The separate UTP cost-source verification remains open.
