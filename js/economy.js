@@ -131,7 +131,17 @@ function materialPlan(){
  const demand=demandToday(location),target=Math.ceil(demand*1.5);
  const current={ice:Math.max(0,Number(S.warung.ice)||0),sugar:Math.max(0,Number(S.warung.sugar)||0),cups:Math.max(0,Number(S.warung.cups)||0)};
  const deficit={ice:Math.max(0,target-current.ice),sugar:Math.max(0,target-current.sugar),cups:Math.max(0,target-current.cups)};
- const need={ice:Math.ceil(deficit.ice/DATA.shop.iceKarung.portions),sugar:Math.ceil(deficit.sugar/DATA.shop.sugarBloc.portions),cups:Math.ceil(deficit.cups/DATA.shop.cupPack.pcs)};
+ // Never recommend a whole package that pushes any material above the 150% target.
+ // Buy only complete packages that fit; if one package would exceed the cap, recommend zero.
+ const packCount=(key,packSize)=>{
+  if(!(packSize>0)||deficit[key]<packSize)return 0;
+  return Math.max(0,Math.floor(deficit[key]/packSize));
+ };
+ const need={
+  ice:packCount('ice',DATA.shop.iceKarung.portions),
+  sugar:packCount('sugar',DATA.shop.sugarBloc.portions),
+  cups:packCount('cups',DATA.shop.cupPack.pcs)
+ };
  return {w,demand,target,current,deficit,need};
 }
 function shopMaterials(){
