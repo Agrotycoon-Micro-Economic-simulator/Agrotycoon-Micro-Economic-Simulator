@@ -136,3 +136,28 @@ test('CAPEX reduces cash but is not immediately recognized as expense', () => {
   assert.equal(S.dayLog.businessExpense, 0);
   assert.equal(S.dayLog.cashOut, 10000);
 });
+
+
+test('material recommendations never exceed the 150% stock target with whole packages', () => {
+  const { S, DATA, context } = makeHarness();
+  DATA.weather = { panas: { name: 'Panas' } };
+  S.cuaca = 'panas';
+  context.demandToday = () => 100; // target = 150 units per material
+  S.warung.ice = 0; S.warung.sugar = 0; S.warung.cups = 0;
+  let plan = context.materialPlan();
+  assert.deepEqual(JSON.parse(JSON.stringify(plan.need)), { ice: 3, sugar: 3, cups: 3 });
+  assert.ok(S.warung.ice + plan.need.ice * DATA.shop.iceKarung.portions <= plan.target);
+  assert.ok(S.warung.sugar + plan.need.sugar * DATA.shop.sugarBloc.portions <= plan.target);
+  assert.ok(S.warung.cups + plan.need.cups * DATA.shop.cupPack.pcs <= plan.target);
+
+  // Even one complete package must be rejected if it would exceed the cap.
+  context.demandToday = () => 10; // target = 15
+  plan = context.materialPlan();
+  assert.deepEqual(JSON.parse(JSON.stringify(plan.need)), { ice: 0, sugar: 0, cups: 0 });
+
+  // A near-cap stock level cannot trigger an oversized package.
+  context.demandToday = () => 100;
+  S.warung.ice = 130; S.warung.sugar = 130; S.warung.cups = 130;
+  plan = context.materialPlan();
+  assert.deepEqual(JSON.parse(JSON.stringify(plan.need)), { ice: 0, sugar: 0, cups: 0 });
+});
