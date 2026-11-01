@@ -231,3 +231,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Current code change: `js/real_economic_data.js` now registers six source-backed 2024 livestock producer/consumer price averages from the official Ditjen PKH PDF; `tests/livestock-prices-2024.test.js` validates all six records and provenance; `.github/workflows/targeted-regression.yml` runs the test.
 - Verification: run 41184860562 passed at test commit `9d1e6f2f934f096d3671f0b743e6bf051bda8ef8`; workflow commit `b514916441a1baf18953203769b2ea4b03087d1b` passed run 41184868805. Both node-regression jobs completed successfully, including the full standalone and browser/E2E sequence. Four existing research/handoff documents record the data and test outcome. Documentation-only commits after the workflow run were not independently rerun, and no claim of local test execution is made.
 - Remaining next task: primary-source verification of BPS UTP livestock cost tables is still open. Keep the seven UTP records research-only and preserve the buffalo -Rp106.65 thousand component residual. Next work should advance this source gate or a separate concrete implementation/test task; avoid another audit-only loop.
+
+
+## Material-purchase recommendation cap correction (2026-11-01)
+
+- Verified current feature-branch HEAD before editing: `b0f40e6ab00df9f61db2abe3324d4488d922ab5b`.
+- Fixed `js/economy.js::materialPlan()`: the prior `Math.ceil(deficit / packageSize)` could recommend a full package that pushes ice, syrup, or cups beyond the stated 150% demand-stock target. The UI already promised to lock recommendations to zero when a whole package would exceed the cap; runtime logic now recommends only whole packages that fit, and zero when even one package would exceed the target.
+- Added a regression case to `tests/accounting-inventory.test.js` for normal deficits, deficits smaller than one package, and near-cap inventory.
+- Validation status: no local Node runtime/checkout is available through the connected GitHub file interface, so the new test has **not** been executed locally. GitHub Actions should validate the change after the commit. Do not claim the regression suite passed until a run is observed.
