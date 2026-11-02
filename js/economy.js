@@ -191,9 +191,14 @@ function showManualShop(){
  '<button class="btn btn-success" onclick="buyManual()">Beli</button> <button class="btn" onclick="shopMaterials()">Kembali</button>');
 }
 function buyManual(){
- const k=Math.max(0,Math.min(1000,parseInt(el('m-ice').value)||0));
- const g=Math.max(0,Math.min(1000,parseInt(el('m-sugar').value)||0));
- const c=Math.max(0,Math.min(1000,parseInt(el('m-cup').value)||0));
+ const readPackageCount=(id)=>{
+  const input=el(id),raw=input?String(input.value).trim():'';
+  if(!/^\\d+$/.test(raw))return null;
+  const value=Number(raw);
+  return Number.isSafeInteger(value)&&value>=0&&value<=1000?value:null;
+ };
+ const k=readPackageCount('m-ice'),g=readPackageCount('m-sugar'),c=readPackageCount('m-cup');
+ if(k===null||g===null||c===null){msg('⚠️ Jumlah tiap paket harus bilangan bulat antara 0 dan 1.000. Tidak ada perubahan transaksi.');return;}
  const total=k*DATA.shop.iceKarung.price+g*DATA.shop.sugarBloc.price+c*DATA.shop.cupPack.price;
  if(k===0&&g===0&&c===0){msg('Masukkan jumlah paket yang ingin dibeli.');return;}
  if(S.gold<total){msg('Uang tidak cukup. Total belanja: '+rp(total));return;}
