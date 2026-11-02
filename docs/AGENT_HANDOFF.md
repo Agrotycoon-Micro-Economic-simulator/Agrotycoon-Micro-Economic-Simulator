@@ -255,3 +255,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The first workflow run for the quantity-validation test, [41407054903](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41407054903), failed in the new test fixture, not in the production validation logic: the valid maximum case (200 coconuts at Rp5,000 each) had only Rp100,000 cash, so the game correctly rejected the purchase for insufficient funds. The test incorrectly expected the purchase to succeed.
 - Corrected tests/accounting-inventory.test.js to fund valid boundary cases with Rp1,100,000, enough to exercise both 1- and 200-unit success boundaries while retaining separate invalid-input/no-mutation checks.
 - Test fixture correction commit: 11777f82d0d42fb80705412d10d4db840008b167. CI must be checked again for this commit before recording the quantity-validation regression as green. Do not interpret the failed run as a production-code failure or claim the updated test has passed before its workflow completes.
+
+
+### Manual warung package validation (2026-11-02)
+
+- Further review found buyManual() used parseInt() and clamping, so a fractional entry such as 1.5 was silently accepted as 1 package, and malformed entries were silently converted to zero. This was inconsistent with explicit package-count input semantics.
+- Updated js/economy.js to reject empty, non-integer, negative, nonnumeric, and over-1,000 package counts before any cash, inventory, cost, or ledger mutation. Added regression coverage for all three package fields in tests/accounting-inventory.test.js.
+- CI follow-up: the first funded-boundary correction still had a stale expected-cash assertion based on the old Rp100,000 fixture. Corrected it to use the new Rp1,100,000 fixture in commit a3b68bb4949fc1c4e77bfef511208576f0eb7dba. Check the latest Actions run for this commit and report the actual outcome; earlier failures are test-fixture assertion failures, not evidence of a runtime defect.
