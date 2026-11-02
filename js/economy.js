@@ -86,8 +86,8 @@ function buyKelapaLuar(sumber){
 function confirmBuyKelapa(sumber){
  const currentMonth=monthOf(S.day);
  if(S.purchases&&S.purchases.externalCoconutMonth===currentMonth){msg('Pembelian kelapa luar bulan ini sudah digunakan. Menu dibuka lagi pada tanggal 15 bulan berikutnya.');return;}
- const inp=el('inp-buy'); const qty=inp?(parseInt(inp.value)||0):0;
- if(qty<=0){msg('⚠️ Jumlah tidak valid.');return;}
+ const inp=el('inp-buy'); const rawQty=inp?String(inp.value).trim():''; const qty=rawQty===''?NaN:Number(rawQty);
+ if(!Number.isInteger(qty)||qty<1||qty>200){msg('⚠️ Jumlah harus bilangan bulat antara 1 dan 200 butir.');return;}
  const harga=sumber==='petani'?DATA.buyFromFarmer:DATA.buyFromTengkulak;
  const total=qty*harga;
  if(S.gold<total){msg('⚠️ Uang tidak cukup.');return;}
