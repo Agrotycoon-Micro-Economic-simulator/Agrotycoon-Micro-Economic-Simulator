@@ -201,7 +201,7 @@ test('external coconut purchase enforces integer quantity bounds from 1 through 
     context.el = () => ({ value: validQty });
     context.confirmBuyKelapa('tengkulak');
     const qty = Number(validQty);
-    assert.equal(S.gold, 100000 - qty * 5000);
+    assert.equal(S.gold, 1100000 - qty * 5000);
     assert.equal(S.stock.biasa + S.stock.super, 1 + qty);
     assert.equal(S.stockCostValue, 3500 + qty * 5000);
     assert.equal(S.purchases.externalCoconutMonth, 1);
