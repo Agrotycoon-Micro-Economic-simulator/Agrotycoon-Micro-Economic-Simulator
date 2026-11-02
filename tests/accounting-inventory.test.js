@@ -184,6 +184,21 @@ test('manual warung purchases reject fractional, negative, empty, nonnumeric, an
   }
 });
 
+test('manual warung purchases accept valid whole-package quantities', () => {
+  const { S, context, journal } = makeHarness();
+  const values = { 'm-ice': '1', 'm-sugar': '0', 'm-cup': '0' };
+  context.el = id => ({ value: values[id] });
+  context.buyManual();
+  assert.equal(S.gold, 80000);
+  assert.equal(S.warung.ice, 44);
+  assert.equal(S.warung.iceCost, 22000);
+  assert.equal(S.warung.sugar, 4);
+  assert.equal(S.warung.cups, 4);
+  assert.equal(S.dayLog.businessPurchases, 20000);
+  assert.equal(S.dayLog.cashOut, 20000);
+  assert.equal(journal.length, 1);
+});
+
 test('external coconut purchase enforces integer quantity bounds from 1 through 200', () => {
   for (const invalidQty of ['0', '-1', '201', '1.5', '', 'abc']) {
     const { S, context, journal } = makeHarness();
