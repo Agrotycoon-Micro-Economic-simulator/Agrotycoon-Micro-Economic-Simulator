@@ -246,7 +246,7 @@ function confirmSellTengkulak(jual,rev){
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):soldQty*3500;
  if(stockValue>0)recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}]);
  earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper});
- S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=rev;
+ S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=saleRevenue;
  S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
  say('Tengkulak','🧑‍💼','"Makasih Bos! Saya angkut semua ya."');
  save();render();
