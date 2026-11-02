@@ -163,6 +163,27 @@ test('material recommendations never exceed the 150% stock target with whole pac
 });
 
 
+test('manual warung purchases reject fractional, negative, empty, nonnumeric, and over-limit package counts without mutation', () => {
+  for (const field of ['m-ice', 'm-sugar', 'm-cup']) {
+    for (const invalidValue of ['1.5', '-1', '1001', '', 'abc']) {
+      const { S, context, journal } = makeHarness();
+      const values = { 'm-ice': '0', 'm-sugar': '0', 'm-cup': '0', [field]: invalidValue };
+      context.el = id => ({ value: values[id] });
+      context.buyManual();
+      assert.equal(S.gold, 100000, field + ' invalid value must not spend cash: ' + JSON.stringify(invalidValue));
+      assert.equal(S.warung.ice, 4);
+      assert.equal(S.warung.sugar, 4);
+      assert.equal(S.warung.cups, 4);
+      assert.equal(S.warung.iceCost, 2000);
+      assert.equal(S.warung.sugarCost, 1600);
+      assert.equal(S.warung.cupsCost, 1200);
+      assert.equal(S.dayLog.businessPurchases, 0);
+      assert.equal(S.dayLog.cashOut, 0);
+      assert.equal(journal.length, 0);
+    }
+  }
+});
+
 test('external coconut purchase enforces integer quantity bounds from 1 through 200', () => {
   for (const invalidQty of ['0', '-1', '201', '1.5', '', 'abc']) {
     const { S, context, journal } = makeHarness();
