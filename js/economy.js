@@ -193,7 +193,7 @@ function showManualShop(){
 function buyManual(){
  const readPackageCount=(id)=>{
   const input=el(id),raw=input?String(input.value).trim():'';
-  if(!/^\\d+$/.test(raw))return null;
+  if(!/^\d+$/.test(raw))return null;
   const value=Number(raw);
   return Number.isSafeInteger(value)&&value>=0&&value<=1000?value:null;
  };
