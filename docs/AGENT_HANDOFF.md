@@ -283,3 +283,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The function now rechecks current stock quantity and `stockClass()` at the transaction boundary, recomputes revenue from current ordinary/super quantities and `DATA.priceTengkulak`, and rejects invalid revenue before posting HPP or sales.
 - Added tests for stale modal revenue (should use current stock price) and disappeared stock (should make no ledger/cash/revenue mutation).
 - Code commit: `30b79e4744f4b99b04a522983544bf9121c45483`; tests commit: `ed51535a87e7e1992ca2e36b91ca4d3bc2f80c71`. GitHub Actions validation is pending; check the newest run before treating this fix as verified.
+
+- Follow-up during review: the daily sales-revenue accumulator still referenced the stale modal argument after revenue was recomputed. Corrected it to record `saleRevenue` in `S.dayLog.sales.tengkulakRev` in commit `463b59d1f35a05f2b9d1de915ae61d79c53c46ad`. This should be validated by the newest CI run, not only the earlier run for the initial sale-confirmation patch.
