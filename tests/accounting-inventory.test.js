@@ -161,3 +161,28 @@ test('material recommendations never exceed the 150% stock target with whole pac
   plan = context.materialPlan();
   assert.deepEqual(JSON.parse(JSON.stringify(plan.need)), { ice: 0, sugar: 0, cups: 0 });
 });
+
+
+test('external coconut purchase enforces integer quantity bounds from 1 through 200', () => {
+  for (const invalidQty of ['0', '-1', '201', '1.5', '', 'abc']) {
+    const { S, context, journal } = makeHarness();
+    context.el = () => ({ value: invalidQty });
+    context.confirmBuyKelapa('tengkulak');
+    assert.equal(S.gold, 100000, 'invalid quantity must not spend cash: ' + JSON.stringify(invalidQty));
+    assert.equal(S.stock.biasa + S.stock.super, 1, 'invalid quantity must not add stock: ' + JSON.stringify(invalidQty));
+    assert.equal(S.stockCostValue, 3500, 'invalid quantity must not alter inventory value: ' + JSON.stringify(invalidQty));
+    assert.equal(S.purchases.externalCoconutMonth, 0, 'invalid quantity must not consume the monthly purchase allowance');
+    assert.equal(journal.length, 0, 'invalid quantity must not create a ledger entry');
+  }
+
+  for (const validQty of ['1', '200']) {
+    const { S, context } = makeHarness();
+    context.el = () => ({ value: validQty });
+    context.confirmBuyKelapa('tengkulak');
+    const qty = Number(validQty);
+    assert.equal(S.gold, 100000 - qty * 5000);
+    assert.equal(S.stock.biasa + S.stock.super, 1 + qty);
+    assert.equal(S.stockCostValue, 3500 + qty * 5000);
+    assert.equal(S.purchases.externalCoconutMonth, 1);
+  }
+});
