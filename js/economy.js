@@ -237,9 +237,15 @@ function confirmSellTengkulak(jual,rev){
  closeModal();
  if(!jual){say('Tengkulak','🧑‍💼','"Yaudah, lain kali aja ya Bos."');save();render();return;}
  const soldQty=stockQty();
+ // The confirmation is the transaction boundary: revalidate stock and recompute proceeds
+ // from current quantities, rather than trusting the amount captured by the modal.
+ if(soldQty<=0||stockClass()!=='muda'){msg('⚠️ Stok kelapa muda sudah tidak tersedia. Penjualan dibatalkan.');save();render();return;}
+ const soldBiasa=Math.max(0,Number(S.stock.biasa)||0),soldSuper=Math.max(0,Number(S.stock.super)||0);
+ const saleRevenue=soldBiasa*DATA.priceTengkulak.biasa+soldSuper*DATA.priceTengkulak.super;
+ if(!Number.isFinite(saleRevenue)||saleRevenue<=0){msg('⚠️ Nilai penjualan tidak valid. Transaksi dibatalkan.');save();render();return;}
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):soldQty*3500;
  if(stockValue>0)recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}]);
- earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',rev,{biasa:S.stock.biasa,super:S.stock.super});
+ earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper});
  S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=rev;
  S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
  say('Tengkulak','🧑‍💼','"Makasih Bos! Saya angkut semua ya."');
