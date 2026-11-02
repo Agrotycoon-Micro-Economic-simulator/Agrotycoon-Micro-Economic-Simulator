@@ -262,3 +262,9 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Further review found buyManual() used parseInt() and clamping, so a fractional entry such as 1.5 was silently accepted as 1 package, and malformed entries were silently converted to zero. This was inconsistent with explicit package-count input semantics.
 - Updated js/economy.js to reject empty, non-integer, negative, nonnumeric, and over-1,000 package counts before any cash, inventory, cost, or ledger mutation. Added regression coverage for all three package fields in tests/accounting-inventory.test.js.
 - CI follow-up: the first funded-boundary correction still had a stale expected-cash assertion based on the old Rp100,000 fixture. Corrected it to use the new Rp1,100,000 fixture in commit a3b68bb4949fc1c4e77bfef511208576f0eb7dba. Check the latest Actions run for this commit and report the actual outcome; earlier failures are test-fixture assertion failures, not evidence of a runtime defect.
+
+
+### Manual package parser regression follow-up (2026-11-02)
+
+- Review of the first manual-quantity patch found the integer regex was over-escaped, which would reject valid numeric package counts. Corrected the regex in js/economy.js and added a positive-path regression test confirming one ice sack correctly deducts Rp20,000 and adds 40 portions with the corresponding inventory value.
+- Code commit: 15b1fe5f176e3442a562b882cb0e2ea9ed88112d. Positive-path test commit: cda3d9457d3c3f8bd7ff6769b558c7ee6b00a4f7. Check the latest targeted-regression workflow before marking this set green. Earlier failed runs included an outdated cash expectation and must not be represented as successful verification.
