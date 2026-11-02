@@ -238,4 +238,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Verified current feature-branch HEAD before editing: `b0f40e6ab00df9f61db2abe3324d4488d922ab5b`.
 - Fixed `js/economy.js::materialPlan()`: the prior `Math.ceil(deficit / packageSize)` could recommend a full package that pushes ice, syrup, or cups beyond the stated 150% demand-stock target. The UI already promised to lock recommendations to zero when a whole package would exceed the cap; runtime logic now recommends only whole packages that fit, and zero when even one package would exceed the target.
 - Added a regression case to `tests/accounting-inventory.test.js` for normal deficits, deficits smaller than one package, and near-cap inventory.
-- Validation status: no local Node runtime/checkout is available through the connected GitHub file interface, so the new test has **not** been executed locally. GitHub Actions should validate the change after the commit. Do not claim the regression suite passed until a run is observed.
+- Validation: GitHub Actions run [41319660049](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41319660049) passed on test commit `49fa8f605eac02c394d95b5328267e3d071bbbac`; the inventory-accounting suite and all configured standalone/browser regression commands completed successfully. No local test execution is claimed.
+
+
+## External coconut purchase input validation (2026-11-02)
+
+- Re-verified feature branch after the prior change; prior branch HEAD was `becfc127a766b5a1df45eb42a034b8821945910c`.
+- Found that `buyKelapaLuar()` displayed an HTML `max="200"` limit, but `confirmBuyKelapa()` enforced only `qty > 0`. The UI limit could be bypassed by manually entering more than 200 units; `parseInt` also silently truncated fractional quantities.
+- Updated `js/economy.js` to require a whole-number quantity from 1 through 200 before any cash, inventory, monthly allowance, or ledger mutation.
+- Added `tests/accounting-inventory.test.js` coverage for invalid inputs (0, negative, 201, fractional, empty, nonnumeric) and both valid boundaries (1 and 200).
+- Validation status for this new change: awaiting GitHub Actions run. Do not claim it passed until the workflow reports success. The previous run validates the preceding stock-cap change only, not this new quantity validation.
