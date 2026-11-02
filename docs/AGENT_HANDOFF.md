@@ -268,3 +268,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Review of the first manual-quantity patch found the integer regex was over-escaped, which would reject valid numeric package counts. Corrected the regex in js/economy.js and added a positive-path regression test confirming one ice sack correctly deducts Rp20,000 and adds 40 portions with the corresponding inventory value.
 - Code commit: 15b1fe5f176e3442a562b882cb0e2ea9ed88112d. Positive-path test commit: cda3d9457d3c3f8bd7ff6769b558c7ee6b00a4f7. Check the latest targeted-regression workflow before marking this set green. Earlier failed runs included an outdated cash expectation and must not be represented as successful verification.
+
+
+### Verified CI result — purchase quantity validation (2026-11-02)
+
+- The latest relevant GitHub Actions runs have now completed successfully: [41408456408](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408456408) for the corrected manual package-count parser and [41408467203](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408467203) for the positive-path test. The funded coconut boundary test also passed in [41408370039](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408370039).
+- Regression coverage now includes rejection without mutation for malformed manual warung package counts across ice, sugar, and cup fields; valid one-package purchase; invalid coconut quantities; valid coconut quantities at 1 and 200; and the 150% stock-target package recommendation rule.
+- This verifies those targeted regressions only; it does not mean all economic flows or unit-economics integrations are complete.
