@@ -248,3 +248,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Updated `js/economy.js` to require a whole-number quantity from 1 through 200 before any cash, inventory, monthly allowance, or ledger mutation.
 - Added `tests/accounting-inventory.test.js` coverage for invalid inputs (0, negative, 201, fractional, empty, nonnumeric) and both valid boundaries (1 and 200).
 - Validation status for this new change: awaiting GitHub Actions run. Do not claim it passed until the workflow reports success. The previous run validates the preceding stock-cap change only, not this new quantity validation.
+
+
+### CI follow-up — coconut purchase boundary regression (2026-11-02)
+
+- The first workflow run for the quantity-validation test, [41407054903](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41407054903), failed in the new test fixture, not in the production validation logic: the valid maximum case (200 coconuts at Rp5,000 each) had only Rp100,000 cash, so the game correctly rejected the purchase for insufficient funds. The test incorrectly expected the purchase to succeed.
+- Corrected tests/accounting-inventory.test.js to fund valid boundary cases with Rp1,100,000, enough to exercise both 1- and 200-unit success boundaries while retaining separate invalid-input/no-mutation checks.
+- Test fixture correction commit: 11777f82d0d42fb80705412d10d4db840008b167. CI must be checked again for this commit before recording the quantity-validation regression as green. Do not interpret the failed run as a production-code failure or claim the updated test has passed before its workflow completes.
