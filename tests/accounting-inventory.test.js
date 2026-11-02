@@ -115,6 +115,35 @@ test('four es kelapa sales recognize HPP once and do not create cash outflow', (
   ]);
 });
 
+test('tengkulak sale recomputes revenue from current stock instead of trusting stale modal amount', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  DATA.priceTengkulak = { biasa: 3500, super: 5000 };
+  context.stockClass = () => 'muda';
+  context.confirmSellTengkulak(true, 999999999);
+
+  assert.equal(S.gold, 103500);
+  assert.equal(S.dayLog.gross, 3500);
+  assert.equal(S.dayLog.cogs, 3500);
+  assert.equal(S.stock.biasa + S.stock.super, 0);
+  assert.equal(S.stockCostValue, 0);
+  assert.equal(S.dayLog.sales.tengkulak, 1);
+  assert.equal(S.dayLog.sales.tengkulakRev, 3500);
+  assert.equal(journal.filter(row => row[0] === 'PENJUALAN').length, 1);
+});
+
+test('tengkulak sale rejects confirmation after stock has disappeared', () => {
+  const { S, DATA, context, journal } = makeHarness({ stock: { biasa: 0, super: 0 }, stockCostValue: 0 });
+  DATA.priceTengkulak = { biasa: 3500, super: 5000 };
+  context.stockClass = () => null;
+  context.confirmSellTengkulak(true, 999999999);
+
+  assert.equal(S.gold, 100000);
+  assert.equal(S.dayLog.gross, 0);
+  assert.equal(S.dayLog.cogs, 0);
+  assert.equal(S.dayLog.sales.tengkulak, 0);
+  assert.equal(journal.length, 0);
+});
+
 test('external coconut purchase adds actual cost to existing inventory without immediate expense', () => {
   const { S, context } = makeHarness();
   context.confirmBuyKelapa('tengkulak');
