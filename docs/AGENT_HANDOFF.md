@@ -275,3 +275,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The latest relevant GitHub Actions runs have now completed successfully: [41408456408](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408456408) for the corrected manual package-count parser and [41408467203](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408467203) for the positive-path test. The funded coconut boundary test also passed in [41408370039](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41408370039).
 - Regression coverage now includes rejection without mutation for malformed manual warung package counts across ice, sugar, and cup fields; valid one-package purchase; invalid coconut quantities; valid coconut quantities at 1 and 200; and the 150% stock-target package recommendation rule.
 - This verifies those targeted regressions only; it does not mean all economic flows or unit-economics integrations are complete.
+
+
+### Coconut sale confirmation integrity (2026-11-02)
+
+- `confirmSellTengkulak()` previously trusted the revenue value captured when the modal was opened and did not revalidate that stock still existed or remained in the young-coconut sale class at confirmation time. A stale or externally invoked confirmation could therefore credit proceeds for stock no longer available or use an outdated/inflated amount.
+- The function now rechecks current stock quantity and `stockClass()` at the transaction boundary, recomputes revenue from current ordinary/super quantities and `DATA.priceTengkulak`, and rejects invalid revenue before posting HPP or sales.
+- Added tests for stale modal revenue (should use current stock price) and disappeared stock (should make no ledger/cash/revenue mutation).
+- Code commit: `30b79e4744f4b99b04a522983544bf9121c45483`; tests commit: `ed51535a87e7e1992ca2e36b91ca4d3bc2f80c71`. GitHub Actions validation is pending; check the newest run before treating this fix as verified.
