@@ -176,7 +176,7 @@ test('external coconut purchase enforces integer quantity bounds from 1 through 
   }
 
   for (const validQty of ['1', '200']) {
-    const { S, context } = makeHarness();
+    const { S, context } = makeHarness({ gold: 1100000 });
     context.el = () => ({ value: validQty });
     context.confirmBuyKelapa('tengkulak');
     const qty = Number(validQty);
