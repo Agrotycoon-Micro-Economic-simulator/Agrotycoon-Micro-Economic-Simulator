@@ -302,3 +302,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The `node-regression` job completed successfully. Steps passed include Node test-runner suites for market/NPC/inventory accounting, UTL/UTP source and arithmetic guards, and all standalone Node regression tests.
 - This confirms the stale recommended-package rejection and valid current-plan purchase tests pass in CI. It does not establish that all unit-economics flows are integrated or that all business costs are fully recognized.
 - Handover documentation update follows the tested commit; this documentation-only commit is not a separate code-test run.
+
+
+## Reject incomplete business HPP component sets (2026-11-03)
+
+- Found an accounting-integrity defect in `recordBusinessCogs()`: it filtered malformed component amounts out and still posted the remaining valid components. That could understate HPP and overstate the margin while appearing to be a complete cost posting.
+- Updated the helper to validate the entire component array before mutating daily COGS, expenses, per-account totals, or ledger. Empty arrays, missing account names, non-finite amounts, and negative amounts now reject the posting; valid zero-cost components are omitted from journal lines, while all positive components are recorded.
+- Added regression tests for malformed mixed component sets (ensuring no partial posting), empty input, and a complete four-component HPP posting with balanced debit/credit totals.
+- Code commit: `1f481b96c29fce83e4b583f720dff26e4863370b`. Test commit: `cdc1eb712d00eb28d201efdf6dabbe8bf9d6d586`.
+- CI must be checked for the test commit before this fix is marked verified. Scope is deliberately limited to preventing partial HPP ledger entries; it does not yet make the whole sale flow atomic if a caller supplies invalid data after changing stock. Continue with transaction-level prevalidation/rollback and full unit-economics integration.
