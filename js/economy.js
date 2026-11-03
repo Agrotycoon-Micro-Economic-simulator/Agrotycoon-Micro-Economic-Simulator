@@ -271,19 +271,28 @@ function sellPasar(){
 }
 function demandToday(location){const loc=DATA.warungLocations[location||((S.warung&&S.warung.location)||'depanRumah')]||DATA.warungLocations.depanRumah;const weather=S.cuaca||'panas';const minimum=(loc.minBuyersByWeather&&loc.minBuyersByWeather[weather])??(DATA.weather[weather]||DATA.weather.panas).minBuyers;let demand=minimum+Math.floor(Math.random()*30);if((location||((S.warung&&S.warung.location)||'depanRumah'))==='depanRumah'&&weather==='hujan')demand=Math.min(demand,45);return demand;}
 function wholeBuyersToday(){const r=((S.day*104729)%100)/100;const w=DATA.weather[S.cuaca];const base=r<0.3?1:r<0.6?2:r<0.8?3:r<0.9?4:r<0.96?5:6;return Math.max(1,Math.ceil(base*w.wholeMult));}
-function recordBusinessCogs(desc,components){
- // HPP must be complete: silently dropping one malformed component understates cost
- // and makes the reported margin unreliable. Validate the entire set before mutation.
- if(!Array.isArray(components)||components.length===0)return 0;
+function businessCogsComponents(components){
+ if(!Array.isArray(components)||components.length===0)return false;
  const valid=[];
  for(const component of components){
-  if(!component||typeof component.account!=='string'||!component.account.trim())return 0;
+  if(!component||typeof component.account!=='string'||!component.account.trim())return false;
   const amount=Number(component.amount);
-  if(!Number.isFinite(amount)||amount<0)return 0;
+  if(!Number.isFinite(amount)||amount<0)return false;
   if(amount>0)valid.push({account:component.account,amount});
  }
  const total=valid.reduce((sum,x)=>sum+x.amount,0);
- if(!Number.isFinite(total)||total<=0)return 0;
+ if(!Number.isFinite(total)||total<=0)return false;
+ return {valid,total};
+}
+function businessCogsTotal(components){
+ const validated=businessCogsComponents(components);
+ return validated===false?0:validated.total;
+}
+function recordBusinessCogs(desc,components){
+ // Validate the full cost set before touching any accounting totals or ledger state.
+ const validated=businessCogsComponents(components);
+ if(validated===false)return 0;
+ const {valid,total}=validated;
  const lines=[{account:'HPP Penjualan',debit:total,credit:0}];
  valid.forEach(x=>lines.push({account:x.account,debit:0,credit:Number(x.amount)}));
  S.dayLog.cogs=(Number(S.dayLog.cogs)||0)+total;
@@ -322,25 +331,39 @@ function takeCoconut(){
  if(remainingCost>0)transferInventoryValue('Transfer sisa kelapa ke persediaan dalam proses',remainingCost,'Persediaan Kelapa','Persediaan Kelapa Dalam Proses');
  return {cost:unitCost/4,account:'Persediaan Kelapa'};
 }
+function previewCoconutCost(){
+ if(S.quarterUsed>0)return {cost:Math.max(0,Number(S.quarterCost)||3500)/4,account:'Persediaan Kelapa Dalam Proses'};
+ const qty=stockQty();
+ if(qty<=0)return false;
+ const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):qty*3500;
+ const unitCost=stockValue/qty;
+ if(!Number.isFinite(unitCost)||unitCost<0)return false;
+ return {cost:unitCost/4,account:'Persediaan Kelapa'};
+}
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
- const coconut=takeCoconut();
- if(coconut===false)return false;
+ const coconutPreview=previewCoconutCost();
+ if(coconutPreview===false)return false;
  const iceQty=Number(S.warung.ice)||0,sugarQty=Number(S.warung.sugar)||0,cupQty=Number(S.warung.cups)||0;
  const iceCost=iceQty>0?(Number(S.warung.iceCost)||iceQty*(DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions))/iceQty:DATA.shop.iceKarung.price/DATA.shop.iceKarung.portions;
  const sugarCost=sugarQty>0?(Number(S.warung.sugarCost)||sugarQty*(DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions))/sugarQty:DATA.shop.sugarBloc.price/DATA.shop.sugarBloc.portions;
  const cupCost=cupQty>0?(Number(S.warung.cupsCost)||cupQty*(DATA.shop.cupPack.price/DATA.shop.cupPack.pcs))/cupQty:DATA.shop.cupPack.price/DATA.shop.cupPack.pcs;
+ const hppComponents=[
+  {account:coconutPreview.account,amount:coconutPreview.cost},
+  {account:'Persediaan Es',amount:iceCost},
+  {account:'Persediaan Gula',amount:sugarCost},
+  {account:'Persediaan Cup',amount:cupCost}
+ ];
+ const expectedCogs=businessCogsTotal(hppComponents);
+ if(expectedCogs<=0||recordBusinessCogs('HPP es kelapa 1 gelas',hppComponents)!==expectedCogs)return false;
+ // HPP posting is validated and recorded before raw materials or sale state changes.
+ const coconut=takeCoconut();
+ if(coconut===false)return false;
  S.warung.ice--;S.warung.sugar--;S.warung.cups--;
  S.warung.iceCost=Math.max(0,(Number(S.warung.iceCost)||iceQty*iceCost)-iceCost);
  S.warung.sugarCost=Math.max(0,(Number(S.warung.sugarCost)||sugarQty*sugarCost)-sugarCost);
  S.warung.cupsCost=Math.max(0,(Number(S.warung.cupsCost)||cupQty*cupCost)-cupCost);
  S.dayLog.materials.ice++;S.dayLog.materials.sugar++;S.dayLog.materials.cup++;
- recordBusinessCogs('HPP es kelapa 1 gelas',[
-  {account:coconut.account,amount:coconut.cost},
-  {account:'Persediaan Es',amount:iceCost},
-  {account:'Persediaan Gula',amount:sugarCost},
-  {account:'Persediaan Cup',amount:cupCost}
- ]);
  earn('PENJUALAN','Es kelapa 1 gelas',DATA.es.price);
  S.dayLog.sales.es++;S.dayLog.sales.esRev+=DATA.es.price;S.stats.es++;
  if(S.warung){S.warung.successfulSales=(S.warung.successfulSales||0)+1;}
@@ -350,17 +373,18 @@ function trySellWhole(){
  if(stockQty()<=0&&S.quarterUsed===0)return false;
  if(S.quarterUsed>0){
   const remainingCost=(Number(S.quarterCost)||3500)*(4-S.quarterUsed)/4;
-  if(remainingCost>0)recordBusinessCogs('Susut kelapa terbuka sebelum penjualan utuh',[{account:'Persediaan Kelapa Dalam Proses',amount:remainingCost}]);
+  if(remainingCost>0&&recordBusinessCogs('Susut kelapa terbuka sebelum penjualan utuh',[{account:'Persediaan Kelapa Dalam Proses',amount:remainingCost}])!==remainingCost)return false;
   S.quarterUsed=0;S.quarterCost=0;
  }
  if(stockQty()<=0)return false;
  const qty=stockQty();
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):qty*3500;
  const unitCost=stockValue/qty;
+ if(!Number.isFinite(unitCost)||unitCost<0)return false;
+ if(recordBusinessCogs('HPP kelapa utuh 1 butir',[{account:'Persediaan Kelapa',amount:unitCost}])!==unitCost)return false;
  if(S.stock.biasa>0)S.stock.biasa--;else S.stock.super--;
  S.stockCostValue=Math.max(0,stockValue-unitCost);
  S.dayLog.materials.kelapa++;
- recordBusinessCogs('HPP kelapa utuh 1 butir',[{account:'Persediaan Kelapa',amount:unitCost}]);
  earn('PENJUALAN','Kelapa utuh 1 butir',DATA.wholePrice);
  S.dayLog.sales.whole++;S.dayLog.sales.wholeRev+=DATA.wholePrice;S.stats.whole++;
  if(typeof playGameSound==='function')playGameSound('sale');
