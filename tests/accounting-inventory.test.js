@@ -329,3 +329,41 @@ test('business COGS accepts complete positive components and balances the postin
   assert.equal(posting.debit, 2075);
   assert.equal(posting.credit, 2075);
 });
+
+
+test('es kelapa sale rejects invalid component HPP before consuming any stock or posting revenue', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  DATA.shop.iceKarung.price = NaN;
+  const before = {
+    gold: S.gold, stock: { ...S.stock }, stockCostValue: S.stockCostValue,
+    quarterUsed: S.quarterUsed, quarterCost: S.quarterCost,
+    warung: { ...S.warung }, materials: { ...S.dayLog.materials },
+    gross: S.dayLog.gross, cogs: S.dayLog.cogs, sales: { ...S.dayLog.sales }
+  };
+
+  assert.equal(context.trySellEs(), false);
+  assert.equal(S.gold, before.gold);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.stock)), before.stock);
+  assert.equal(S.stockCostValue, before.stockCostValue);
+  assert.equal(S.quarterUsed, before.quarterUsed);
+  assert.equal(S.quarterCost, before.quarterCost);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.warung)), before.warung);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.dayLog.materials)), before.materials);
+  assert.equal(S.dayLog.gross, before.gross);
+  assert.equal(S.dayLog.cogs, before.cogs);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.dayLog.sales)), before.sales);
+  assert.equal(journal.length, 0);
+});
+
+test('whole-coconut sale rejects non-positive HPP before consuming stock or recording revenue', () => {
+  const { S, context, journal } = makeHarness({ stockCostValue: 0 });
+  const stockBefore = { ...S.stock };
+  assert.equal(context.trySellWhole(), false);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.stock)), stockBefore);
+  assert.equal(S.stockCostValue, 0);
+  assert.equal(S.gold, 100000);
+  assert.equal(S.dayLog.gross, 0);
+  assert.equal(S.dayLog.cogs, 0);
+  assert.equal(S.dayLog.sales.whole, 0);
+  assert.equal(journal.length, 0);
+});
