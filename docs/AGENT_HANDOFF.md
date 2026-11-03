@@ -329,3 +329,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Run 41610607131 passed at test commit 27fe7e04ff327e7f2b3478e09af31fa30a6561b4. This run verifies the updated inventory-accounting tests and all configured source/arithmetic guards plus standalone Node tests.
 - A call-site scan of js/economy.js found six occurrences of recordBusinessCogs(): the definition and five transaction/spoilage call sites. All five call sites now check the HPP posting result before proceeding with sale-state mutation; no unchecked call site remains in that file.
 - Next implementation focus: harden zero/invalid inventory valuation at the remaining wholesale channels and continue wiring js/unit_economics.js into actual transaction flows. Do not claim unit-economics integration complete. Avoid map files and main.
+
+
+## Reject wholesale sales with invalid inventory valuation (2026-11-03)
+
+- Follow-up from the sale HPP call-site audit: tengkulak and market sale functions previously skipped HPP posting when the recorded coconut inventory value was zero, but still credited revenue and cleared inventory. A positive quantity with zero recorded inventory valuation is now rejected before HPP, revenue, or stock mutation.
+- Added regression coverage for both young-coconut tengkulak sale and mature-coconut market sale with zero inventory value. Tests assert no cash, stock, COGS, revenue, or journal changes.
+- Code commit: 13ffa189a97558c919e2db326ef88431abcf91ad. Test commit: 489b787571d12a18fb42d238589a553adeac78c0.
+- GitHub Actions verification is pending for the new test commit. Check the newest workflow and inspect any failures before marking the guard green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
