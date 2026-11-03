@@ -285,3 +285,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Code commit: `30b79e4744f4b99b04a522983544bf9121c45483`; tests commit: `ed51535a87e7e1992ca2e36b91ca4d3bc2f80c71`. GitHub Actions validation is pending; check the newest run before treating this fix as verified.
 
 - Follow-up during review: the daily sales-revenue accumulator still referenced the stale modal argument after revenue was recomputed. Corrected it to record `saleRevenue` in `S.dayLog.sales.tengkulakRev` in commit `463b59d1f35a05f2b9d1de915ae61d79c53c46ad`. This should be validated by the newest CI run, not only the earlier run for the initial sale-confirmation patch.
+
+
+## Recommended material purchase confirmation guard (2026-11-03)
+
+- Follow-up implementation after the coconut sale confirmation fix: `buyRecommended(k,g,c)` previously trusted package counts captured when the recommendation modal opened. A stale modal or direct call could therefore buy more whole packages than the current 150% stock target permits.
+- The function now accepts only safe integer package counts in the supported 0–1,000 range, recalculates `materialPlan()` at confirmation time, and rejects the transaction if any requested count no longer matches the current allowed recommendation. Rejection occurs before cash, inventory, cost balances, or ledger mutation.
+- Added regressions for a stale/over-cap ice package count (must leave all transaction state unchanged) and a valid current plan of three ice, syrup, and cup packages.
+- Code commit: `f88608774d9a2b8b84fe80eb04f084b5464e005f`. Test commit: `11d290f900e72cdc488bbe7b0e8b8844e58b1c7a`.
+- CI verification is pending for the new test commit. Check the targeted-regression workflow and inspect its job result before marking this guard green. No changes to `main`, `peta.html`, or `js/map_engine.js`.
