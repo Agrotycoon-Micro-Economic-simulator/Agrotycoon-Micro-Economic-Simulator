@@ -289,3 +289,43 @@ test('recommended warung purchase accepts current whole-package plan within the 
   assert.equal(S.dayLog.cashOut, 165000);
   assert.equal(journal.length, 1);
 });
+
+
+test('business COGS rejects an incomplete component set without posting partial cost', () => {
+  const invalidSets = [
+    [{ account: 'Persediaan Kelapa', amount: 875 }, { account: 'Persediaan Es', amount: NaN }],
+    [{ account: 'Persediaan Kelapa', amount: 875 }, { account: 'Persediaan Gula', amount: -1 }],
+    [{ account: 'Persediaan Kelapa', amount: 875 }, { amount: 300 }],
+    []
+  ];
+  for (const components of invalidSets) {
+    const { S, context, journal } = makeHarness();
+    assert.equal(context.recordBusinessCogs('HPP tidak lengkap', components), 0);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.expense, 0);
+    assert.equal(S.dayLog.cogsByAccount, undefined);
+    assert.equal(journal.length, 0);
+  }
+});
+
+test('business COGS accepts complete positive components and balances the posting', () => {
+  const { S, context, journal } = makeHarness();
+  assert.equal(context.recordBusinessCogs('HPP lengkap', [
+    { account: 'Persediaan Kelapa', amount: 875 },
+    { account: 'Persediaan Es', amount: 500 },
+    { account: 'Persediaan Gula', amount: 400 },
+    { account: 'Persediaan Cup', amount: 300 }
+  ]), 2075);
+  assert.equal(S.dayLog.cogs, 2075);
+  assert.equal(S.dayLog.expense, 2075);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.dayLog.cogsByAccount)), {
+    'Persediaan Kelapa': 875,
+    'Persediaan Es': 500,
+    'Persediaan Gula': 400,
+    'Persediaan Cup': 300
+  });
+  assert.equal(journal.length, 1);
+  const posting = journal[0][4];
+  assert.equal(posting.debit, 2075);
+  assert.equal(posting.credit, 2075);
+});
