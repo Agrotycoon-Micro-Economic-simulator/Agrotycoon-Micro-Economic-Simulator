@@ -272,9 +272,18 @@ function sellPasar(){
 function demandToday(location){const loc=DATA.warungLocations[location||((S.warung&&S.warung.location)||'depanRumah')]||DATA.warungLocations.depanRumah;const weather=S.cuaca||'panas';const minimum=(loc.minBuyersByWeather&&loc.minBuyersByWeather[weather])??(DATA.weather[weather]||DATA.weather.panas).minBuyers;let demand=minimum+Math.floor(Math.random()*30);if((location||((S.warung&&S.warung.location)||'depanRumah'))==='depanRumah'&&weather==='hujan')demand=Math.min(demand,45);return demand;}
 function wholeBuyersToday(){const r=((S.day*104729)%100)/100;const w=DATA.weather[S.cuaca];const base=r<0.3?1:r<0.6?2:r<0.8?3:r<0.9?4:r<0.96?5:6;return Math.max(1,Math.ceil(base*w.wholeMult));}
 function recordBusinessCogs(desc,components){
- const valid=(components||[]).filter(x=>Number.isFinite(Number(x.amount))&&Number(x.amount)>0);
- const total=valid.reduce((sum,x)=>sum+Number(x.amount),0);
- if(total<=0)return 0;
+ // HPP must be complete: silently dropping one malformed component understates cost
+ // and makes the reported margin unreliable. Validate the entire set before mutation.
+ if(!Array.isArray(components)||components.length===0)return 0;
+ const valid=[];
+ for(const component of components){
+  if(!component||typeof component.account!=='string'||!component.account.trim())return 0;
+  const amount=Number(component.amount);
+  if(!Number.isFinite(amount)||amount<0)return 0;
+  if(amount>0)valid.push({account:component.account,amount});
+ }
+ const total=valid.reduce((sum,x)=>sum+x.amount,0);
+ if(!Number.isFinite(total)||total<=0)return 0;
  const lines=[{account:'HPP Penjualan',debit:total,credit:0}];
  valid.forEach(x=>lines.push({account:x.account,debit:0,credit:Number(x.amount)}));
  S.dayLog.cogs=(Number(S.dayLog.cogs)||0)+total;
