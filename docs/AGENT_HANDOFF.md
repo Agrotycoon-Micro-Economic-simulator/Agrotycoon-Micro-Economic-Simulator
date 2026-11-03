@@ -337,3 +337,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regression coverage for both young-coconut tengkulak sale and mature-coconut market sale with zero inventory value. Tests assert no cash, stock, COGS, revenue, or journal changes.
 - Code commit: 13ffa189a97558c919e2db326ef88431abcf91ad. Test commit: 489b787571d12a18fb42d238589a553adeac78c0.
 - GitHub Actions verification is pending for the new test commit. Check the newest workflow and inspect any failures before marking the guard green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
+
+
+## Reject invalid sale prices before HPP posting (2026-11-03)
+
+- Continued transaction-boundary hardening after CI passed for the zero-inventory-valuation guard. Found that retail es-kelapa and whole-coconut sales could continue to HPP/inventory mutations with invalid or zero sale prices; `earn()` normalizes invalid amounts to zero, which could leave costs recognized without valid revenue. Mature-coconut market sales also needed explicit finite-positive proceeds validation before HPP posting.
+- Added preconditions: es-kelapa price and whole-coconut price must be finite and > 0; market sale quantity must be a positive safe integer and calculated revenue finite and > 0. Invalid values reject before HPP, stock, or revenue mutation.
+- Code commit: 65541d9ebc36e45749a5c0362efb502e5207142c. Regression test commit: 9f95980596c3661f872081599199e9abe65eded8. New tests cover NaN es price, zero whole-coconut price, and NaN market price, asserting no cash, inventory, COGS, sales or journal mutation.
+- CI run for the test commit must be checked before marking this guard green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
