@@ -251,3 +251,41 @@ test('external coconut purchase enforces integer quantity bounds from 1 through 
     assert.equal(S.purchases.externalCoconutMonth, 1);
   }
 });
+
+
+test('recommended warung purchase rejects stale package counts without any transaction mutation', () => {
+  const { S, DATA, context, journal } = makeHarness({ gold: 500000 });
+  DATA.weather = { panas: { name: 'Panas', minBuyers: 100 } };
+  S.cuaca = 'panas';
+  S.warung.ice = 0; S.warung.sugar = 0; S.warung.cups = 0;
+  context.demandToday = () => 100; // target 150 => 3 packages each
+  context.buyRecommended(4, 3, 3); // modal count is stale/over cap for ice
+
+  assert.equal(S.gold, 500000);
+  assert.equal(S.warung.ice, 0);
+  assert.equal(S.warung.sugar, 0);
+  assert.equal(S.warung.cups, 0);
+  assert.equal(S.warung.iceCost, 2000);
+  assert.equal(S.warung.sugarCost, 1600);
+  assert.equal(S.warung.cupsCost, 1200);
+  assert.equal(S.dayLog.businessPurchases, 0);
+  assert.equal(S.dayLog.cashOut, 0);
+  assert.equal(journal.length, 0);
+});
+
+test('recommended warung purchase accepts current whole-package plan within the stock cap', () => {
+  const { S, DATA, context, journal } = makeHarness({ gold: 500000 });
+  DATA.weather = { panas: { name: 'Panas', minBuyers: 100 } };
+  S.cuaca = 'panas';
+  S.warung.ice = 0; S.warung.sugar = 0; S.warung.cups = 0;
+  context.demandToday = () => 100; // target 150 => 3 packages each
+  context.buyRecommended(3, 3, 3);
+
+  assert.equal(S.gold, 335000);
+  assert.equal(S.warung.ice, 120);
+  assert.equal(S.warung.sugar, 150);
+  assert.equal(S.warung.cups, 150);
+  assert.equal(S.dayLog.businessPurchases, 165000);
+  assert.equal(S.dayLog.cashOut, 165000);
+  assert.equal(journal.length, 1);
+});
