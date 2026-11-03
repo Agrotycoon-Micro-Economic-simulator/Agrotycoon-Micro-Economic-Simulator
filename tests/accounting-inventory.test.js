@@ -368,3 +368,33 @@ test('whole-coconut sale rejects non-positive HPP before consuming stock or reco
   assert.equal(S.dayLog.sales.whole, 0);
   assert.equal(journal.length, 0);
 });
+
+
+test('wholesale coconut channels reject zero inventory valuation without consuming stock or posting revenue', () => {
+  {
+    const { S, DATA, context, journal } = makeHarness({ stockCostValue: 0 });
+    DATA.priceTengkulak = { biasa: 3500, super: 5000 };
+    context.stockClass = () => 'muda';
+    context.confirmSellTengkulak(true, 3500);
+    assert.equal(S.gold, 100000);
+    assert.equal(S.stock.biasa, 1);
+    assert.equal(S.stockCostValue, 0);
+    assert.equal(S.dayLog.gross, 0);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.sales.tengkulak, 0);
+    assert.equal(journal.length, 0);
+  }
+  {
+    const { S, DATA, context, journal } = makeHarness({ stockCostValue: 0 });
+    DATA.pricePasarTua = 8000;
+    context.stockClass = () => 'tua';
+    context.sellPasar();
+    assert.equal(S.gold, 100000);
+    assert.equal(S.stock.biasa, 1);
+    assert.equal(S.stockCostValue, 0);
+    assert.equal(S.dayLog.gross, 0);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.sales.pasar, 0);
+    assert.equal(journal.length, 0);
+  }
+});
