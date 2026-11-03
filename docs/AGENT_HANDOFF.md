@@ -294,3 +294,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regressions for a stale/over-cap ice package count (must leave all transaction state unchanged) and a valid current plan of three ice, syrup, and cup packages.
 - Code commit: `f88608774d9a2b8b84fe80eb04f084b5464e005f`. Test commit: `11d290f900e72cdc488bbe7b0e8b8844e58b1c7a`.
 - CI verification is pending for the new test commit. Check the targeted-regression workflow and inspect its job result before marking this guard green. No changes to `main`, `peta.html`, or `js/map_engine.js`.
+
+
+### CI result — recommended material purchase guard (2026-11-03)
+
+- GitHub Actions run [41555723532](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41555723532) passed at test commit `11d290f900e72cdc488bbe7b0e8b8844e58b1c7a`.
+- The `node-regression` job completed successfully. Steps passed include Node test-runner suites for market/NPC/inventory accounting, UTL/UTP source and arithmetic guards, and all standalone Node regression tests.
+- This confirms the stale recommended-package rejection and valid current-plan purchase tests pass in CI. It does not establish that all unit-economics flows are integrated or that all business costs are fully recognized.
+- Handover documentation update follows the tested commit; this documentation-only commit is not a separate code-test run.
