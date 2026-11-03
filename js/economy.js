@@ -251,7 +251,8 @@ function confirmSellTengkulak(jual,rev){
  const saleRevenue=soldBiasa*DATA.priceTengkulak.biasa+soldSuper*DATA.priceTengkulak.super;
  if(!Number.isFinite(saleRevenue)||saleRevenue<=0){msg('⚠️ Nilai penjualan tidak valid. Transaksi dibatalkan.');save();render();return;}
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):soldQty*3500;
- if(stockValue>0&&recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ if(recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper});
  S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=saleRevenue;
  S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
@@ -262,7 +263,8 @@ function sellPasar(){
  if(stockClass()!=='tua'){msg('⚠️ Pasar hanya membeli kelapa tua.');return;}
  const q=stockQty(),rev=q*DATA.pricePasarTua;
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
- if(stockValue>0&&recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev);
  S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
  S.stock={biasa:0,super:0};S.stockCostValue=0;
