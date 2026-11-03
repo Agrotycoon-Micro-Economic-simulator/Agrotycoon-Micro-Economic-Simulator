@@ -334,6 +334,7 @@ test('business COGS accepts complete positive components and balances the postin
 test('es kelapa sale rejects invalid component HPP before consuming any stock or posting revenue', () => {
   const { S, DATA, context, journal } = makeHarness();
   DATA.shop.iceKarung.price = NaN;
+  S.warung.iceCost = 0;
   const before = {
     gold: S.gold, stock: { ...S.stock }, stockCostValue: S.stockCostValue,
     quarterUsed: S.quarterUsed, quarterCost: S.quarterCost,
