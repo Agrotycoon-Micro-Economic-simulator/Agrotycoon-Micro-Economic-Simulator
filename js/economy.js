@@ -262,6 +262,7 @@ function confirmSellTengkulak(jual,rev){
 function sellPasar(){
  if(stockClass()!=='tua'){msg('⚠️ Pasar hanya membeli kelapa tua.');return;}
  const q=stockQty(),rev=q*DATA.pricePasarTua;
+ if(!Number.isSafeInteger(q)||q<=0||!Number.isFinite(rev)||rev<=0){msg('⚠️ Kuantitas atau pendapatan penjualan pasar tidak valid. Transaksi dibatalkan.');save();render();return;}
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
  if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
@@ -344,6 +345,7 @@ function previewCoconutCost(){
 }
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
+ if(!Number.isFinite(DATA.es.price)||DATA.es.price<=0)return false;
  const coconutPreview=previewCoconutCost();
  if(coconutPreview===false)return false;
  const iceQty=Number(S.warung.ice)||0,sugarQty=Number(S.warung.sugar)||0,cupQty=Number(S.warung.cups)||0;
@@ -372,6 +374,7 @@ function trySellEs(){
  return true;
 }
 function trySellWhole(){
+ if(!Number.isFinite(DATA.wholePrice)||DATA.wholePrice<=0)return false;
  if(stockQty()<=0&&S.quarterUsed===0)return false;
  if(S.quarterUsed>0){
   const remainingCost=(Number(S.quarterCost)||3500)*(4-S.quarterUsed)/4;
