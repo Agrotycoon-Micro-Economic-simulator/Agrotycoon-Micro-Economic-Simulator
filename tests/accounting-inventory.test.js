@@ -398,3 +398,40 @@ test('wholesale coconut channels reject zero inventory valuation without consumi
     assert.equal(journal.length, 0);
   }
 });
+
+
+test('all retail and market sale channels reject invalid sale prices before HPP or stock mutation', () => {
+  {
+    const { S, DATA, context, journal } = makeHarness();
+    DATA.es.price = NaN;
+    assert.equal(context.trySellEs(), false);
+    assert.equal(S.gold, 100000);
+    assert.equal(S.stock.biasa, 1);
+    assert.equal(S.warung.ice, 4);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.gross, 0);
+    assert.equal(journal.length, 0);
+  }
+  {
+    const { S, DATA, context, journal } = makeHarness();
+    DATA.wholePrice = 0;
+    assert.equal(context.trySellWhole(), false);
+    assert.equal(S.gold, 100000);
+    assert.equal(S.stock.biasa, 1);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.sales.whole, 0);
+    assert.equal(journal.length, 0);
+  }
+  {
+    const { S, DATA, context, journal } = makeHarness();
+    DATA.pricePasarTua = NaN;
+    context.stockClass = () => 'tua';
+    context.sellPasar();
+    assert.equal(S.gold, 100000);
+    assert.equal(S.stock.biasa, 1);
+    assert.equal(S.dayLog.cogs, 0);
+    assert.equal(S.dayLog.gross, 0);
+    assert.equal(S.dayLog.sales.pasar, 0);
+    assert.equal(journal.length, 0);
+  }
+});
