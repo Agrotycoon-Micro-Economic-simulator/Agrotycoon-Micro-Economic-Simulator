@@ -162,11 +162,18 @@ function shopMaterials(){
  '<button class="btn" onclick="closeModal()">Tutup</button>');
 }
 function buyRecommended(k,g,c){
- k=Math.max(0,Math.min(1000,Math.floor(Number(k)||0)));
- g=Math.max(0,Math.min(1000,Math.floor(Number(g)||0)));
- c=Math.max(0,Math.min(1000,Math.floor(Number(c)||0)));
+ const validCount=value=>Number.isSafeInteger(value)&&value>=0&&value<=1000;
+ if(!validCount(k)||!validCount(g)||!validCount(c)){
+  msg('⚠️ Rekomendasi belanja tidak valid. Tidak ada perubahan transaksi.');return;
+ }
+ // Modal values can become stale while it is open. Recalculate the permitted package
+ // counts at confirmation time so stock/demand changes cannot bypass the 150% cap.
+ const currentPlan=materialPlan();
+ if(k!==currentPlan.need.ice||g!==currentPlan.need.sugar||c!==currentPlan.need.cups){
+  msg('⚠️ Stok atau permintaan berubah. Buka ulang rekomendasi sebelum membeli.');return;
+ }
  const total=k*DATA.shop.iceKarung.price+g*DATA.shop.sugarBloc.price+c*DATA.shop.cupPack.price;
- if(total===0){msg('Stok sudah memenuhi target permintaan saat ini.');return;}
+ if(!Number.isFinite(total)||total<=0){msg('Stok sudah memenuhi target permintaan saat ini.');return;}
  if(S.gold<total){msg('Uang tidak cukup. Total belanja: '+rp(total));return;}
  spend('BELANJA','Belanja bahan (rekomendasi)',total,'shopping',[
   {name:'Es Batu '+k+' karung',qty:k,subtotal:k*DATA.shop.iceKarung.price},
