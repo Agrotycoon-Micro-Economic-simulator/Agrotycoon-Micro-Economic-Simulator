@@ -345,3 +345,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added preconditions: es-kelapa price and whole-coconut price must be finite and > 0; market sale quantity must be a positive safe integer and calculated revenue finite and > 0. Invalid values reject before HPP, stock, or revenue mutation.
 - Code commit: 65541d9ebc36e45749a5c0362efb502e5207142c. Regression test commit: 9f95980596c3661f872081599199e9abe65eded8. New tests cover NaN es price, zero whole-coconut price, and NaN market price, asserting no cash, inventory, COGS, sales or journal mutation.
 - CI run for the test commit must be checked before marking this guard green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
+
+ 
+## Expense amount validation guard (2026-11-04)
+ 
+- Fixed `spend()` in `js/economy.js` so negative, non-finite, and nonnumeric expense amounts are rejected before cash, ledger, expense totals, inventory-purchase totals, or daily cash-out values change. Previously, a negative amount could increase cash and malformed values could be silently converted to zero.
+- Added regression coverage in `tests/accounting-inventory.test.js` for negative values, NaN, positive/negative infinity, and nonnumeric strings; each case asserts no accounting mutation.
+- Validation status: targeted CI is pending for this code/test change. Do not claim it passes until the workflow run completes.
+- Latest prior retail/market sale-price validation CI passed: run [41625233466](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41625233466).
+- Next: continue auditing cash-in/cash-out and production transaction entry points for malformed values, then integrate unit-economics forecasting only where it can be connected to a real UI/transaction flow without double-counting HPP.
