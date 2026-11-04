@@ -156,6 +156,32 @@ test('external coconut purchase adds actual cost to existing inventory without i
   assert.equal(S.dayLog.cashOut, 5000);
 });
 
+test('spend rejects negative and non-finite amounts before any accounting mutation', () => {
+  const { S, journal, context } = makeHarness();
+  const before = {
+    gold: S.gold,
+    gross: S.dayLog.gross,
+    expense: S.dayLog.expense,
+    businessExpense: S.dayLog.businessExpense,
+    livingExpense: S.dayLog.livingExpense,
+    businessPurchases: S.dayLog.businessPurchases,
+    cashOut: S.dayLog.cashOut,
+    journalLength: journal.length
+  };
+
+  for (const invalid of [-1, NaN, Infinity, -Infinity, 'not-a-number']) {
+    assert.equal(context.spend('BELANJA', 'Bahan baku uji', invalid, 'shopping', {}), false);
+    assert.equal(S.gold, before.gold);
+    assert.equal(S.dayLog.gross, before.gross);
+    assert.equal(S.dayLog.expense, before.expense);
+    assert.equal(S.dayLog.businessExpense, before.businessExpense);
+    assert.equal(S.dayLog.livingExpense, before.livingExpense);
+    assert.equal(S.dayLog.businessPurchases, before.businessPurchases);
+    assert.equal(S.dayLog.cashOut, before.cashOut);
+    assert.equal(journal.length, before.journalLength);
+  }
+});
+
 test('CAPEX reduces cash but is not immediately recognized as expense', () => {
   const { S, context } = makeHarness();
   context.spend('CAPEX', 'Paket perlengkapan warung', 10000, 'capex', {});
