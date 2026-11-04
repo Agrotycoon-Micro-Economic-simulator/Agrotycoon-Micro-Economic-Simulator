@@ -17,7 +17,12 @@ function classifySpend(cat,desc){
  return {classification:'unclassified_expense',account:'Beban Belum Diklasifikasi'};
 }
 function spend(cat,desc,amt,field,detail){
- const value=Number(amt)||0;
+ let value;
+ try{value=Number(amt);}catch(_){value=NaN;}
+ if(!Number.isFinite(value)||value<0){
+  msg('⚠️ Nilai pengeluaran tidak valid. Transaksi dibatalkan.');
+  return false;
+ }
  const mapping=classifySpend(cat,desc);
  S.gold-=value;
  ledger(cat,desc,-value,detail,{
@@ -40,6 +45,7 @@ function spend(cat,desc,amt,field,detail){
  if(mapping.classification==='business_purchase')S.dayLog.businessPurchases=(Number(S.dayLog.businessPurchases)||0)+value;
  S.dayLog.cashOut=(Number(S.dayLog.cashOut)||0)+value;
  if(field)S.dayLog[field]+=value;
+ return true;
 }
 function earn(cat,desc,amt,detail){
  const value=Number(amt)||0;
