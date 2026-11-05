@@ -349,6 +349,37 @@ function previewCoconutCost(){
  if(!Number.isFinite(unitCost)||unitCost<0)return false;
  return {cost:unitCost/4,account:'Persediaan Kelapa'};
 }
+function validateEsUnitEconomics(salePrice, coconutCost, iceCost, sugarCost, cupCost){
+ if(typeof AgroUnitEconomics!=='object'||typeof AgroUnitEconomics.calculate!=='function')return true;
+ const evidence={kind:'game_parameter',sourceUrl:'js/data.js',period:'current game config',geography:'game scenario'};
+ const result=AgroUnitEconomics.calculate({
+  id:'coconut-ice-live-sale',
+  name:'Penjualan es kelapa aktual',
+  currency:'IDR',
+  sellPricePerUnit:salePrice,
+  sellPriceEvidence:evidence,
+  plannedSalesUnitsPerMonth:1,
+  salesVolumeEvidence:evidence,
+  wasteRate:0,
+  wasteEvidence:evidence,
+  inputs:[{
+   id:'coconut',
+   quantityPerOutput:1/4,
+   sourcingMode:'buy',
+   purchasePricePerUnit:coconutCost,
+   quantityEvidence:evidence,
+   purchasePriceEvidence:evidence
+  }],
+  variableCosts:[
+   {id:'ice',costPerProducedUnit:iceCost,evidence:evidence},
+   {id:'sugar',costPerProducedUnit:sugarCost,evidence:evidence},
+   {id:'cup',costPerProducedUnit:cupCost,evidence:evidence}
+  ],
+  fixedCostsMonthly:[],
+  capex:[]
+ });
+ return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
+}
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
  if(!Number.isFinite(DATA.es.price)||DATA.es.price<=0)return false;
@@ -365,7 +396,8 @@ function trySellEs(){
   {account:'Persediaan Cup',amount:cupCost}
  ];
  const expectedCogs=businessCogsTotal(hppComponents);
- if(expectedCogs<=0||recordBusinessCogs('HPP es kelapa 1 gelas',hppComponents)!==expectedCogs)return false;
+ if(expectedCogs<=0||!validateEsUnitEconomics(DATA.es.price,coconutPreview.cost,iceCost,sugarCost,cupCost))return false;
+ if(recordBusinessCogs('HPP es kelapa 1 gelas',hppComponents)!==expectedCogs)return false;
  // HPP posting is validated and recorded before raw materials or sale state changes.
  const coconut=takeCoconut();
  if(coconut===false)return false;
