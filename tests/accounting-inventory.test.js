@@ -63,6 +63,22 @@ function makeHarness(overrides = {}) {
   return { S, DATA, journal, context };
 }
 
+test('live es kelapa sale uses unit economics as a pre-posting consistency guard', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  const unitEconomics = require('../js/unit_economics.js');
+  context.AgroUnitEconomics = unitEconomics;
+
+  assert.equal(context.trySellEs(), true);
+  assert.equal(S.dayLog.cogs, 2075);
+  assert.equal(S.gold, 105000);
+  assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
+  assert.equal(journal.filter(row => row[0] === 'PENJUALAN').length, 1);
+
+  DATA.es.price = NaN;
+  assert.equal(context.trySellEs(), false);
+  assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
+});
+ 
 test('four es kelapa sales recognize HPP once and do not create cash outflow', () => {
   const { S, journal, context } = makeHarness();
 
