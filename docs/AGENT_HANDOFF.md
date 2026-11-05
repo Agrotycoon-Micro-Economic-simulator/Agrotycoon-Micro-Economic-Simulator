@@ -354,3 +354,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Validation status: targeted CI is pending for this code/test change. Do not claim it passes until the workflow run completes.
 - Latest prior retail/market sale-price validation CI passed: run [41625233466](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41625233466).
 - Next: continue auditing cash-in/cash-out and production transaction entry points for malformed values, then integrate unit-economics forecasting only where it can be connected to a real UI/transaction flow without double-counting HPP.
+
+## Live unit-economics integration for es kelapa (2026-11-05)
+
+- `js/unit_economics.js` is now loaded by `index.html` before `js/economy.js`, making the existing unit-economics engine available to the actual browser transaction layer.
+- `js/economy.js` now runs `validateEsUnitEconomics()` during the es kelapa sale pre-posting phase. The validator uses the current sale price, coconut input cost, ice, syrup, and cup unit costs to calculate a one-unit HPP consistency result before `recordBusinessCogs()` mutates accounting state.
+- The integration is deliberately a validation/consistency gate, not a second accounting posting. Actual inventory depletion and HPP remain owned by the existing transaction code, preventing double-counting.
+- Added regression coverage confirming a live es kelapa sale succeeds through the unit-economics guard and that an invalid sale price remains rejected without creating an additional HPP or revenue entry.
+- CI must be checked for the latest code/test commits before claiming this integration passes.
