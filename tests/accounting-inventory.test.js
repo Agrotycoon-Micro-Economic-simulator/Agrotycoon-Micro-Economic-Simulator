@@ -78,6 +78,30 @@ test('live es kelapa sale uses unit economics as a pre-posting consistency guard
   assert.equal(context.trySellEs(), false);
   assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
 });
+
+test('whole coconut sale uses unit economics before any HPP or inventory mutation', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  const unitEconomics = require('../js/unit_economics.js');
+  context.AgroUnitEconomics = unitEconomics;
+
+  assert.equal(context.trySellWhole(), true);
+  assert.equal(S.dayLog.cogs, 3500);
+  assert.equal(S.gold, 113000);
+  assert.equal(S.stock.biasa + S.stock.super, 0);
+  assert.equal(S.stockCostValue, 0);
+  assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
+  assert.equal(journal.filter(row => row[0] === 'PENJUALAN').length, 1);
+
+  const fresh = makeHarness();
+  fresh.context.AgroUnitEconomics = unitEconomics;
+  fresh.DATA.wholePrice = NaN;
+  assert.equal(fresh.context.trySellWhole(), false);
+  assert.equal(fresh.S.gold, 100000);
+  assert.equal(fresh.S.dayLog.cogs, 0);
+  assert.equal(fresh.S.stock.biasa, 1);
+  assert.equal(fresh.S.stockCostValue, 3500);
+  assert.equal(fresh.journal.length, 0);
+});
  
 test('four es kelapa sales recognize HPP once and do not create cash outflow', () => {
   const { S, journal, context } = makeHarness();
