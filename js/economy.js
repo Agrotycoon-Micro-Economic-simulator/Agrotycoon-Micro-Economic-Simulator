@@ -380,6 +380,34 @@ function validateEsUnitEconomics(salePrice, coconutCost, iceCost, sugarCost, cup
  });
  return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
 }
+function validateWholeCoconutUnitEconomics(salePrice, coconutCost){
+ if(typeof AgroUnitEconomics!=='object'||typeof AgroUnitEconomics.calculate!=='function')return true;
+ const evidence={kind:'game_parameter',sourceUrl:'js/data.js',period:'current game config',geography:'game scenario'};
+ const result=AgroUnitEconomics.calculate({
+  id:'whole-coconut-live-sale',
+  name:'Penjualan kelapa utuh aktual',
+  currency:'IDR',
+  sellPricePerUnit:salePrice,
+  sellPriceEvidence:evidence,
+  plannedSalesUnitsPerMonth:1,
+  salesVolumeEvidence:evidence,
+  wasteRate:0,
+  wasteEvidence:evidence,
+  inputs:[{
+   id:'whole-coconut',
+   quantityPerOutput:1,
+   sourcingMode:'buy',
+   purchasePricePerUnit:coconutCost,
+   quantityEvidence:evidence,
+   purchasePriceEvidence:evidence
+  }],
+  variableCosts:[],
+  fixedCostsMonthly:[],
+  capex:[]
+ });
+ return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
+}
+
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
  if(!Number.isFinite(DATA.es.price)||DATA.es.price<=0)return false;
@@ -414,6 +442,15 @@ function trySellEs(){
 function trySellWhole(){
  if(!Number.isFinite(DATA.wholePrice)||DATA.wholePrice<=0)return false;
  if(stockQty()<=0&&S.quarterUsed===0)return false;
+ // Validate unit economics before any spoilage/HPP/inventory mutation. If an open
+ // coconut exists, its remaining WIP cost is a separate spoilage event; the unit
+ // sale itself still uses the next whole coconut's recorded unit inventory cost.
+ const wholeQty=stockQty();
+ if(wholeQty<=0)return false;
+ const wholeStockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):wholeQty*3500;
+ const wholeUnitCost=wholeStockValue/wholeQty;
+ if(!Number.isFinite(wholeUnitCost)||wholeUnitCost<=0)return false;
+ if(!validateWholeCoconutUnitEconomics(DATA.wholePrice,wholeUnitCost))return false;
  if(S.quarterUsed>0){
   const remainingCost=(Number(S.quarterCost)||3500)*(4-S.quarterUsed)/4;
   if(remainingCost>0&&recordBusinessCogs('Susut kelapa terbuka sebelum penjualan utuh',[{account:'Persediaan Kelapa Dalam Proses',amount:remainingCost}])!==remainingCost)return false;
