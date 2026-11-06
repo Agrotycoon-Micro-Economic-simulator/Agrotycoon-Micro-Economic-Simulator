@@ -362,3 +362,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The integration is deliberately a validation/consistency gate, not a second accounting posting. Actual inventory depletion and HPP remain owned by the existing transaction code, preventing double-counting.
 - Added regression coverage confirming a live es kelapa sale succeeds through the unit-economics guard and that an invalid sale price remains rejected without creating an additional HPP or revenue entry.
 - CI must be checked for the latest code/test commits before claiming this integration passes.
+
+
+## Live unit-economics CI verification (2026-11-06)
+
+- The three workflows for the live es-kelapa unit-economics integration completed successfully: code run [41972480008](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972480008), index/script-loading run [41972484114](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972484114), and regression-test run [41972489953](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972489953). Each completed with conclusion `success` on the `node-regression` job.
+- This verifies the current es-kelapa unit-economics integration on GitHub Actions. No local test execution is claimed.
+- Next implementation target: extend the same calculation/validation layer to the next existing real transaction flow, beginning with whole-coconut sale, while preserving single-owner accounting for HPP/inventory and avoiding duplicate journal posting. Do not touch main, peta.html, or js/map_engine.js.
