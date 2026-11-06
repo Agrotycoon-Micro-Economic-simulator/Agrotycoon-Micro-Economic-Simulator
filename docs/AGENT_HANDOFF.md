@@ -369,3 +369,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The three workflows for the live es-kelapa unit-economics integration completed successfully: code run [41972480008](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972480008), index/script-loading run [41972484114](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972484114), and regression-test run [41972489953](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/41972489953). Each completed with conclusion `success` on the `node-regression` job.
 - This verifies the current es-kelapa unit-economics integration on GitHub Actions. No local test execution is claimed.
 - Next implementation target: extend the same calculation/validation layer to the next existing real transaction flow, beginning with whole-coconut sale, while preserving single-owner accounting for HPP/inventory and avoiding duplicate journal posting. Do not touch main, peta.html, or js/map_engine.js.
+
+
+## Whole-coconut live unit-economics integration (2026-11-06)
+
+- `js/economy.js` now validates the existing whole-coconut sale against `js/unit_economics.js` before any spoilage, HPP posting, inventory mutation, or revenue posting.
+- The calculation uses the recorded whole-coconut unit inventory cost as the buy-side input cost and the current `DATA.wholePrice` as the sale price. It is a validation layer only; existing HPP/inventory posting remains the single accounting owner.
+- If an opened coconut has remaining WIP cost, that spoilage event remains separate and is not folded into the whole-coconut unit sale calculation.
+- Added regression coverage for a successful whole-coconut sale and for invalid sale price rejection with zero accounting/inventory mutation.
+- Code commit: 17b3abc18244f19f2a9ff0402b80625d6c6bd9af. Test commit: 04fe922e48d30fd8d5007eb3d2d8a1bde4382a9b.
+- GitHub Actions verification is required before marking this integration green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
