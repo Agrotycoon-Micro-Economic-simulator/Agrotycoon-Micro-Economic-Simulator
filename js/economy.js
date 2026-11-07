@@ -271,6 +271,8 @@ function sellPasar(){
  if(!Number.isSafeInteger(q)||q<=0||!Number.isFinite(rev)||rev<=0){msg('⚠️ Kuantitas atau pendapatan penjualan pasar tidak valid. Transaksi dibatalkan.');save();render();return;}
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
  if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ const unitCost=stockValue/q;
+ if(!Number.isFinite(unitCost)||unitCost<=0||!validateOldCoconutMarketUnitEconomics(DATA.pricePasarTua,unitCost)){msg('⚠️ Unit economics kelapa tua tidak valid. Penjualan dibatalkan.');save();render();return;}
  if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev);
  S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
@@ -406,7 +408,34 @@ function validateWholeCoconutUnitEconomics(salePrice, coconutCost){
   capex:[]
  });
  return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
+}function validateOldCoconutMarketUnitEconomics(salePrice, coconutCost){
+ if(typeof AgroUnitEconomics!=='object'||typeof AgroUnitEconomics.calculate!=='function')return true;
+ const evidence={kind:'game_parameter',sourceUrl:'js/data.js',period:'current game config',geography:'game scenario'};
+ const result=AgroUnitEconomics.calculate({
+  id:'old-coconut-market-live-sale',
+  name:'Penjualan kelapa tua ke pasar aktual',
+  currency:'IDR',
+  sellPricePerUnit:salePrice,
+  sellPriceEvidence:evidence,
+  plannedSalesUnitsPerMonth:1,
+  salesVolumeEvidence:evidence,
+  wasteRate:0,
+  wasteEvidence:evidence,
+  inputs:[{
+   id:'old-coconut',
+   quantityPerOutput:1,
+   sourcingMode:'buy',
+   purchasePricePerUnit:coconutCost,
+   quantityEvidence:evidence,
+   purchasePriceEvidence:evidence
+  }],
+  variableCosts:[],
+  fixedCostsMonthly:[],
+  capex:[]
+ });
+ return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
 }
+
 
 function trySellEs(){
  if((S.warung.ice||0)<=0||(S.warung.sugar||0)<=0||(S.warung.cups||0)<=0)return false;
