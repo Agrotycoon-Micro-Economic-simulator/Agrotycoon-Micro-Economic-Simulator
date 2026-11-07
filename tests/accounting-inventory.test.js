@@ -102,6 +102,37 @@ test('whole coconut sale uses unit economics before any HPP or inventory mutatio
   assert.equal(fresh.S.stockCostValue, 3500);
   assert.equal(fresh.journal.length, 0);
 });
+
+test('old coconut market sale uses unit economics before HPP or inventory mutation', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  const unitEconomics = require('../js/unit_economics.js');
+  context.AgroUnitEconomics = unitEconomics;
+
+  S.stock.biasa = 0;
+  S.stock.super = 2;
+  S.stockCostValue = 7000;
+  DATA.pricePasarTua = 6000;
+  assert.equal(context.sellPasar(), undefined);
+  assert.equal(S.gold, 112000);
+  assert.equal(S.stock.biasa + S.stock.super, 0);
+  assert.equal(S.stockCostValue, 0);
+  assert.equal(S.dayLog.cogs, 7000);
+  assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
+  assert.equal(journal.filter(row => row[0] === 'PENJUALAN').length, 1);
+
+  const fresh = makeHarness();
+  fresh.context.AgroUnitEconomics = unitEconomics;
+  fresh.S.stock.biasa = 0;
+  fresh.S.stock.super = 2;
+  fresh.S.stockCostValue = 7000;
+  fresh.DATA.pricePasarTua = NaN;
+  assert.equal(fresh.context.sellPasar(), undefined);
+  assert.equal(fresh.S.gold, 100000);
+  assert.equal(fresh.S.stock.super, 2);
+  assert.equal(fresh.S.stockCostValue, 7000);
+  assert.equal(fresh.S.dayLog.cogs, 0);
+  assert.equal(fresh.journal.length, 0);
+});
  
 test('four es kelapa sales recognize HPP once and do not create cash outflow', () => {
   const { S, journal, context } = makeHarness();
