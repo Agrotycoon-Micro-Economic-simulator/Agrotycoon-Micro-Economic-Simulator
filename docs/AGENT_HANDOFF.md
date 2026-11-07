@@ -379,3 +379,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regression coverage for a successful whole-coconut sale and for invalid sale price rejection with zero accounting/inventory mutation.
 - Code commit: 17b3abc18244f19f2a9ff0402b80625d6c6bd9af. Test commit: 04fe922e48d30fd8d5007eb3d2d8a1bde4382a9b.
 - GitHub Actions verification is required before marking this integration green. No local test execution is claimed. No changes to main, peta.html, or js/map_engine.js.
+
+
+## Old-coconut market live unit-economics integration (2026-11-08)
+
+- `js/economy.js` now validates the existing `sellPasar()` transaction against `js/unit_economics.js` before HPP, inventory, and sales posting.
+- The market sale uses the recorded whole-stock unit inventory cost as the input cost and the current `DATA.pricePasarTua` as the sale price.
+- Existing accounting remains the sole posting owner; unit economics is a consistency/viability guard and does not duplicate HPP entries.
+- Added regression coverage for a valid two-unit old-coconut market sale and invalid sale-price rejection with no accounting or inventory mutation.
+- Code commit: 68e22ed1db56eb41b0247a31ab4dd810938107ed. Test commit: 8d09bcc86392b77658f50b4cfddbd2dac81e962c.
+- The previous whole-coconut unit-economics test run `42255098490` completed successfully. This new integration requires its own GitHub Actions verification.
