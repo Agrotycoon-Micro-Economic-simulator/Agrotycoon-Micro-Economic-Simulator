@@ -142,6 +142,25 @@ assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1), false);
 assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeInvalidPrice);
 
 sandbox.COMMODITY_ECONOMICS.cabai_merah.processed.price = 18000;
+const originalRecordCogs = sandbox.recordBusinessCogs;
+const finishedBeforeCogsFailure = JSON.stringify({
+  gold: state.gold,
+  qty: state.landSystem.finishedInventory.sambal_cabai_250g,
+  cost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross
+});
+sandbox.recordBusinessCogs = () => 0;
+assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1), false);
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  qty: state.landSystem.finishedInventory.sambal_cabai_250g,
+  cost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross
+}), finishedBeforeCogsFailure, "finished-goods HPP failure must leave inventory and cash unchanged");
+sandbox.recordBusinessCogs = originalRecordCogs;
+
 const beforeBadQty = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
 assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1.5), false);
 assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeBadQty);
