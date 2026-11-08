@@ -13,6 +13,8 @@ const state = {
   landSystem: {
     inventory: { cabai_merah: 10 },
     inventoryCost: { cabai_merah: 5000 },
+    finishedInventory: {},
+    finishedInventoryCost: {},
     lands: [],
     market: {}
   },
@@ -116,5 +118,32 @@ assert.equal(JSON.stringify({
   cogs: state.dayLog.cogs,
   gross: state.dayLog.gross
 }), beforeInsufficient, "insufficient cash must not mutate processing state");
+
+
+assert.equal(typeof sandbox.sellFinishedCommodity, "function");
+
+state.gold = 899900;
+state.landSystem.finishedInventory.sambal_cabai_250g = 10;
+state.landSystem.finishedInventoryCost.sambal_cabai_250g = 105000;
+const saleLedgerBefore = state.ledger.length;
+const saleOk = sandbox.sellFinishedCommodity("sambal_cabai_250g", 2);
+assert.equal(saleOk, true);
+assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 8);
+assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 84000);
+assert.equal(state.gold, 935900);
+assert.equal(state.dayLog.cogs, 21000);
+assert.equal(state.dayLog.gross, 36000);
+assert.equal(state.dayLog.cogsByAccount["Persediaan Produk Jadi"], 21000);
+assert.equal(state.ledger.length, saleLedgerBefore + 2);
+
+const beforeInvalidPrice = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
+sandbox.COMMODITY_ECONOMICS.cabai_merah.processed.price = NaN;
+assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1), false);
+assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeInvalidPrice);
+
+sandbox.COMMODITY_ECONOMICS.cabai_merah.processed.price = 18000;
+const beforeBadQty = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
+assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1.5), false);
+assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeBadQty);
 
 console.log("PASS: live commodity processing consumes weighted-average raw inventory, posts HPP once, charges conversion/distribution cash, and prevents execution without cash.");
