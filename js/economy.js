@@ -87,7 +87,8 @@ function harvest(){
 }
 function kelapaMarketQuote(referencePrice){
  const reference=Number(referencePrice);
- const current=typeof MARKET_ENGINE!=="undefined"&&MARKET_ENGINE?Number(MARKET_ENGINE.getPrice("kelapa")):3500;
+ const nationalCurrent=typeof MARKET_ENGINE!=="undefined"&&MARKET_ENGINE?Number(MARKET_ENGINE.getPrice("kelapa")):3500;
+ const current=typeof AgroNationalEconomy!=="undefined"&&S.playerRegionId?Number(AgroNationalEconomy.quote(S.playerRegionId,"kelapa",nationalCurrent)||nationalCurrent):nationalCurrent;
  if(!Number.isFinite(reference)||reference<=0||!Number.isFinite(current)||current<=0)return reference;
  return Math.max(1,Math.round(reference*(current/3500)));
 }
