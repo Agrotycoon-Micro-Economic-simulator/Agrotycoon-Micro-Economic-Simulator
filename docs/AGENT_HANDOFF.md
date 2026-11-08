@@ -389,3 +389,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regression coverage for a valid two-unit old-coconut market sale and invalid sale-price rejection with no accounting or inventory mutation.
 - Code commit: 68e22ed1db56eb41b0247a31ab4dd810938107ed. Test commit: 8d09bcc86392b77658f50b4cfddbd2dac81e962c.
 - The previous whole-coconut unit-economics test run `42255098490` completed successfully. This new integration requires its own GitHub Actions verification.
+
+
+## Young-coconut → tengkulak live unit-economics integration (2026-11-08)
+
+- `js/economy.js` now validates the existing `confirmSellTengkulak()` transaction against `js/unit_economics.js` at the confirmation boundary, after current stock/revenue/inventory valuation validation but before HPP, cash revenue, and stock mutation.
+- The validator uses the weighted current tengkulak sale price across ordinary/super young coconuts and the recorded inventory unit cost. It is a consistency/viability guard only; the existing accounting path remains the sole owner of HPP and revenue posting.
+- The confirmation continues to recompute proceeds from current stock quantities rather than trusting the stale modal revenue argument.
+- Added regression coverage for successful sale with a deliberately stale modal revenue and for invalid current tengkulak pricing. Both cases verify that HPP/inventory/cash mutation is blocked or correctly posted at the transaction boundary.
+- Code commit: `33ca395d0df9a7797bd930b58c1aa4d4a71fd43e`.
+- Test commit: `7988b56ed77956b076eb7755d95572dd39358e14`.
+- GitHub Actions verification is required before marking this integration green. No local test execution is claimed.
