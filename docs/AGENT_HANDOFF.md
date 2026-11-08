@@ -594,3 +594,21 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Code commits: `50a6d719e1648b154153cb430ae847dfc3b185c5`, `2b40931496f27f2ce3e26d13fdd7785609657150`; test commit: `f73e67a15c6d714a92483e16ff455e7c0c24bbf9`.
 - CI runs must complete successfully before marking the feature green. No local test execution is claimed.
 - Next: build explicit producer/collector/wholesale/retail stage price bands where matching reference data exists, then connect actual player offers and NPC orders to a transaction/order-book contract. Do not silently collapse the market stages into one universal price.
+
+
+## Player offers now participate in the daily producer-market price (2026-11-08)
+
+- The owner clarified that price observations are internal simulation calibration; player-facing prices need not display source years. Research provenance remains in handoff/source notes, while the live game presents the current simulated quote.
+- Added `S.marketTransactions` as a save-persistent, bounded queue (maximum 500 records) and `queueMarketTransaction()` validation in `js/state.js`. Only positive-quantity, positive-price buy/sell records at the producer stage are accepted.
+- `js/day.js` now passes queued player transactions into `BACKGROUND_ECONOMY.tick()` before clearing the queue. NPC demand/supply and player trade flow therefore both affect the next daily price update. The save records player transaction count in `S.marketLastTick` for inspection. The market remains a local single-save simulation; no global cross-player market is claimed.
+- `js/land.js` now derives raw-commodity B2B and retail quotes from the current market engine price, preserving each commodity's configured B2B/retail markup ratio relative to its base anchor. Confirmed B2B raw sales enter the producer-stage player flow; direct retail sales do not contaminate the producer market.
+- `js/economy.js` now adjusts coconut farmer/collector quotes and collector/market sale prices relative to the kelapa producer-market anchor. Direct whole-coconut owner retail Rp13,000 and processed es-kelapa retail price remain outside the producer market feed; owner-locked retail semantics are preserved. The sale confirmation recomputes the dynamic quote and validates unit economics against that same quote.
+- Player-side purchases from farmers create producer-stage buy pressure; purchases from collectors are not misclassified as producer transactions. Player sales to tengkulak/market create producer-stage sell pressure.
+- Added regression coverage for queue validation, player buy/sell flow in price discovery, and the daily tick's queue handoff/clear contract.
+- Implementation commits: state queue `3004c4be9dd5ae66ded038ec315ee037f9d18867`; daily integration `8ad57e099babb27dbc98b47f974dfafc44b94be6`, audit count `5ad04cac8034ccb7108bd960c8ee8a4d1c108a15`; land dynamic B2B/retail quote `4cf109c32ce9a465250d986e8423ab401ef435ed`; coconut quote/transaction integration `75828a4bf4a1a3e63431eaa5863a472c088d32bb`, validation correction `dbc5eed2c760bfbcf977b5337005c4c2bd44aeaa`; regression commits `48da6009edda42a092aa197db8d83eb898016931` and `98d31738f5c939801f4ca1808d5684f1726acd44`.
+- CI must complete successfully before this checkpoint is green. No local test execution is claimed.
+
+## Historical price snapshot syntax correction
+
+- The first commits adding the historical Bapanas wholesale observations (`ee5aad7caa677145734463b7ba9d5f598f6f29a3`, `2536defd81af0bf33096275c90de19bd582d6707`) failed the final standalone Node step because a comma was missing between two entries in `officialSnapshots`. The earlier focused tests passed; the failure was a JavaScript parse error in `js/market_chain.js`, not a price assertion failure.
+- Corrected the array separator in `2fd9e0f689458e99feeccb38f93f1147799fca9b`; CI run `42497230450` completed successfully. The failed historical runs remain recorded as failures and are not relabeled.
