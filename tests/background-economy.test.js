@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const context = vm.createContext({ console, Math, Number, Object, Array, Set, String, Error });
 context.window = context;
-for (const file of ['js/commodities.js', 'js/market_engine.js', 'js/region_capacity.js', 'js/background_economy.js']) {
+for (const file of ['js/commodities.js', 'js/market_engine.js', 'js/region_capacity.js', 'js/background_economy.js', 'js/state.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
 }
 
@@ -46,6 +46,24 @@ test('market tick reports local simulation honestly and updates bounded prices',
   for (const item of context.MARKET_ENGINE.catalog) {
     assert.ok(item.marketPrice >= item.marketFloor && item.marketPrice <= item.marketCeiling);
   }
+});
+
+test('player market transactions are queued, validated, and consumed by price discovery', () => {
+  vm.runInContext("S = { marketTransactions: [] }", context);
+  assert.equal(context.queueMarketTransaction({ commodityId: 'jagung', side: 'sell', quantity: 25, price: 5400, marketStage: 'producer', source: 'player_offer' }), true);
+  assert.equal(context.queueMarketTransaction({ commodityId: 'jagung', side: 'hold', quantity: 25, price: 5400 }), false);
+  assert.equal(context.queueMarketTransaction({ commodityId: 'jagung', side: 'buy', quantity: 0, price: 5400 }), false);
+  const queued = vm.runInContext('S.marketTransactions.slice()', context);
+  assert.equal(queued.length, 1);
+  assert.equal(queued[0].actorType, 'player');
+  assert.equal(queued[0].marketStage, 'producer');
+  const market = context.MARKET_ENGINE;
+  const item = market.byId.jagung;
+  item.marketPrice = item.basePrice;
+  const before = item.marketPrice;
+  const result = context.BACKGROUND_ECONOMY.tick({ day: 21, playerTransactions: [{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: before }] });
+  assert.equal(result.playerTransactionCount, 1);
+  assert.ok(item.marketPrice > before, 'player demand contributes to the next market price');
 });
 
 test('national politics and presidential candidacy have explicit economic thresholds', () => {
