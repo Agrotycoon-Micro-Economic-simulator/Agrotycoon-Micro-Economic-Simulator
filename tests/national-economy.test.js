@@ -62,7 +62,6 @@ test('Lampung supply shock raises its local quote without directly repricing Jak
   const afterJakarta = api.quote('dki-jakarta', 'padi', 10000);
   assert.ok(afterLampung > beforeLampung);
   assert.equal(afterJakarta, beforeJakarta);
-  const state = api.ensure();
   assert.ok(state.government.monthlyReleased > 0);
 });
 
