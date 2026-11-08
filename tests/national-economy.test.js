@@ -76,3 +76,20 @@ test('government reserve policy is bounded and the province price quote is finit
   assert.ok(state.government.importShareCap <= 0.10);
   assert.ok(Number.isFinite(context.AgroNationalEconomy.quote('lampung', 'jagung', 5992)));
 });
+
+test('government monthly imports are capped per commodity', () => {
+  vm.runInContext("S = { name: 'import-cap-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  state.eventChancePerProvinceMonthly = 0;
+  state.government.procurementShare = 0;
+  state.government.releaseShare = 0;
+  for (const province of api.provinces) {
+    state.provinces[province.id].reserve.padi = 0;
+    api.applyDisaster({ provinceId: province.id, type: 'drought', commodityIds: ['padi'], productionLossFraction: 0.95, logisticsLossFraction: 0, durationDays: 45 });
+  }
+  for (let day = 1; day <= 30; day++) api.updateDay(day);
+  const monthlyDemand = api.provinces.reduce((sum, province) => sum + api.provinceSnapshot(province.id).demand.padi, 0);
+  assert.ok(state.government.monthlyImportedByCommodity.padi <= monthlyDemand * 0.10 + 1e-8);
+  assert.ok(state.government.monthlyImportedByCommodity.padi > 0);
+});
