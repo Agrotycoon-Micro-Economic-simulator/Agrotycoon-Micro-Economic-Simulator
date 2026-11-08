@@ -21,6 +21,21 @@ test('market engine validates all 60 catalog items and bounded prices', () => {
   }
 });
 
+test('all 60 commodities have differentiated internal price bands and volatility profiles', () => {
+  const market = context.MARKET_ENGINE;
+  const profiles = new Set();
+  for (const item of market.catalog) {
+    assert.ok(item.marketFloor < item.basePrice, item.id + ' floor below anchor');
+    assert.ok(item.marketCeiling > item.basePrice, item.id + ' ceiling above anchor');
+    assert.ok(item.marketElasticity > 0 && item.marketElasticity <= 0.25, item.id + ' has bounded elasticity');
+    assert.ok(item.marketDailyMoveLimit > 0 && item.marketDailyMoveLimit <= 0.25, item.id + ' has bounded daily movement');
+    profiles.add(item.marketVolatility);
+  }
+  assert.ok(profiles.size >= 5, 'the catalog uses multiple volatility profiles');
+  assert.ok(market.byId.cabai_merah.marketDailyMoveLimit > market.byId.padi.marketDailyMoveLimit);
+  assert.ok(market.byId.lele.marketDailyMoveLimit > market.byId.kopi.marketDailyMoveLimit);
+});
+
 test('net buy pressure raises price and net sell pressure lowers price', () => {
   const market = context.MARKET_ENGINE;
   const item = market.byId.jagung;
