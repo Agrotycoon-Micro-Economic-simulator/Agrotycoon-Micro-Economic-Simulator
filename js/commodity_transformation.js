@@ -158,7 +158,53 @@
     };
   }
 
-  const api = Object.freeze({ validateRecipe, planProduction, calculateEconomics });
+  // Inventory valuation uses weighted-average cost for interchangeable commodity stock.
+  // The helper is deliberately pure: callers can validate the full transaction before mutation.
+  function weightedAverageUnitCost(quantity, costValue) {
+    if (!isNonNegativeNumber(quantity) || quantity <= 0 || !isNonNegativeNumber(costValue)) return null;
+    return costValue / quantity;
+  }
+
+  function consumeWeightedAverageInventory(quantity, costValue, consumeQuantity) {
+    if (!isNonNegativeNumber(quantity) || !isNonNegativeNumber(costValue) ||
+        !isNonNegativeNumber(consumeQuantity) || consumeQuantity <= 0 ||
+        consumeQuantity > quantity) {
+      return { ok: false, error: "invalid weighted-average inventory consumption" };
+    }
+    const unitCost = weightedAverageUnitCost(quantity, costValue);
+    if (!Number.isFinite(unitCost)) return { ok: false, error: "inventory unit cost is not finite" };
+    const consumedCost = unitCost * consumeQuantity;
+    return {
+      ok: true,
+      unitCost,
+      consumedCost,
+      remainingQuantity: quantity - consumeQuantity,
+      remainingCostValue: Math.max(0, costValue - consumedCost)
+    };
+  }
+
+  function addInventoryCost(quantity, costValue, addedQuantity, addedCostValue) {
+    if (!isNonNegativeNumber(quantity) || !isNonNegativeNumber(costValue) ||
+        !isNonNegativeNumber(addedQuantity) || addedQuantity <= 0 ||
+        !isNonNegativeNumber(addedCostValue)) {
+      return { ok: false, error: "invalid inventory receipt valuation" };
+    }
+    return {
+      ok: true,
+      quantity: quantity + addedQuantity,
+      costValue: costValue + addedCostValue,
+      unitCost: (costValue + addedCostValue) / (quantity + addedQuantity)
+    };
+  }
+
+  const api = Object.freeze({
+    validateRecipe,
+    planProduction,
+    calculateEconomics,
+    weightedAverageUnitCost,
+    consumeWeightedAverageInventory,
+    addInventoryCost
+  });
   root.AgroCommodityTransformation = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);
