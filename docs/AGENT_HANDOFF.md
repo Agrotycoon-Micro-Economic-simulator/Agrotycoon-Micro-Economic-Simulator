@@ -5,6 +5,7 @@
 - Active branch: `feat/production-tier-taxonomy`. Continue on this branch only; never write to `main`. No map files were changed.
 - New in-game country: **Republik Arunika**, using 38 Indonesian province names as geographic references.
 - Game population: exactly **200,000,000 statistical residents**, distributed across 38 provinces in proportion to BPS 2025 provincial population reference weights. This is a game scenario, not Indonesia's current population.
+- This 200m country scenario supersedes the earlier 5m/4.9m NPC baseline in older historical notes. Those notes remain as historical audit context; do not use them as the current runtime default.
 - Runtime does not instantiate 200m residents. It creates approximately **1,132 active representative agents** (formula `ceil(sqrt(200m) × 0.08)`, clamped 1,000–5,000) and stores 38 × 60 province/commodity aggregate states. Agents execute deterministic daily decisions: producer supply response, buyer demand/inventory response, logistics reroute intent and government reserve review; aggregated signals feed regional stock/price calculations.
 - Administrative identity master imported under `data/administrative_regions/` from the MIT-licensed `prodhokter/dataset-wilayah-indonesia` normalized dataset, derived from Kepmendagri 300.2.2-2138/2025: 38 provinces, 416 kabupaten, 98 kota, 7,285 kecamatan, 75,252 desa, 8,496 kelurahan and 14 UPT/SPT (83,762 locality records). All 38 province-level counts match the master CSVs. Actual locality names/codes load only when the dashboard locality search is used.
 - Separate BPS/Podes reference is retained: 7,281 kecamatan (2024) and 84,291 desa/kelurahan units (2025); Podes 2024 breakdown 75,753 desa, 8,486 kelurahan, 37 UPT/SPT. Do not merge these with the Kemendagri-derived master counts.
@@ -44,7 +45,7 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 - Custom V8 runtime smoke executed against the GitHub-fetched source and imported CSV blobs: 38 provinces, exact 200m population, 1,132 active agents, 60 commodities, master totals 416/98/7,285/75,252/8,496/14, all per-province counts matching the master, actual Lampung locality code/name lookup, name search and daily agent decisions. All 12 checks passed.
 - Deterministic control comparison: a Lampung paddy shock moved its quote from Rp10,000 to Rp13,960, while DKI Jakarta matched the no-shock control at Rp9,916 exactly. Government reserve release occurred.
 - Separate 30-day all-province paddy drought scenario confirmed imports executed exactly up to the 10% monthly demand cap per commodity (20,000 index units in the test scenario).
-- Static syntax checks passed for eight modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html` (three inline scripts total).
+- Static syntax checks passed for eight modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html` (three inline scripts total). The targeted workflow definition includes both `tests/background-economy.test.js` and `tests/national-economy.test.js`.
 - **The Node test-runner suite and GitHub Actions are not yet verified as completed green.** Do not claim full CI or the full Node test file passed until a completed run is available.
 - Existing historical green runs listed elsewhere in this document do not validate this new country model.
 
@@ -55,7 +56,7 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 3. Reconcile/import authoritative locality population and household data. Candidate `dhanyyudi/wilayah-id` documents Dukcapil Semester I 2024 population/household/density/area but has 83,529 village-level records and 7,282 districts, so its code coverage must be reconciled with the 83,762/7,285 administrative master before use. Prodeskel public page is also incomplete relative to the full master.
 4. Replace equal-share locality population estimates and category demand indexes with physical per-capita monthly demand per commodity, province and household/industry/institutional segment; preserve rice-vs-paddy and feed-vs-food definitions.
 5. Add physical production and interprovincial shipment flows; logistics reroute intent is not yet a freight shipment. Then reconcile government procurement, reserve storage losses, imports, tax revenue and public ledger.
-6. Benchmark mobile performance with 38 × 60 aggregates and 1,000–5,000 active agents.
+6. Benchmark mobile performance with 38 × 60 aggregates and 1,000–5,000 active agents. The locality CSVs are loaded only on the dashboard, not during normal game ticks.
 
 ---
 
