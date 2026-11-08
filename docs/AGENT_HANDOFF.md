@@ -411,3 +411,31 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Therefore the four active coconut sales paths now have automated unit-economics coverage at the transaction boundary: es kelapa, whole coconut, old coconut → market, and young coconut → tengkulak.
 - No local test execution is claimed; verification is through GitHub Actions.
 - No additional sales function exists in `js/economy.js` requiring the same coconut unit-economics guard. The next implementation should therefore move to the next real production/processing transaction flow rather than duplicating validation.
+
+
+## Live agricultural commodity processing accounting (2026-11-08)
+
+- Continued from the coconut unit-economics closure by auditing the next real processing transaction: `js/land.js::processCommodity()`. This is an actual UI/runtime path for the cabai and jagung test commodities; `js/commodity_transformation.js` had previously been only a planning/calculation library.
+- Found a material accounting gap: cultivated commodity stock had quantity but no carrying-cost ledger, and `processCommodity()` consumed raw stock and posted product revenue without recognizing the raw inventory cost as HPP. Distribution cost was also recorded in the day log without reducing cash.
+- `js/state.js` now initializes `S.landSystem.inventoryCost` as the carrying-value map for interchangeable agricultural inventory.
+- `js/land.js::plantCommodity()` now records cultivation cash as work-in-progress/business purchase rather than immediately expensing it. Each new agricultural plot stores `wipCost`.
+- `js/land.js::harvestCommodity()` transfers the plot WIP cost into finished agricultural inventory carrying value using the shared weighted-average valuation helpers. Existing legacy inventory without valuation remains explicitly valued at zero rather than receiving an invented cost.
+- `js/commodity_transformation.js` now exposes pure weighted-average helpers for unit cost, inventory consumption, and inventory receipts. These helpers validate before mutation and are reusable for future Tier 1–4 processing.
+- `js/land.js::processCommodity()` now:
+  1. validates recipe/input/output/cost values;
+  2. computes raw-input carrying cost with weighted-average valuation;
+  3. runs the existing unit-economics engine as a pre-posting consistency/viability guard;
+  4. validates HPP components before mutation;
+  5. records conversion cash as a business purchase;
+  6. posts HPP exactly once for raw inventory + conversion cost;
+  7. charges distribution as an actual cash outflow;
+  8. consumes raw inventory carrying value and records finished-product revenue.
+- The implementation intentionally does not invent a real-world price. The processing prices remain game parameters in `js/commodities.js`. BPS SEP 2024 provides empirical context for production-cost structure, including separate production-cost components for coconut, while the BPS producer-price series is a distinct source for producer prices. citeturn308297search12turn308297search0
+- Accounting design follows the inventory principle that inventory cost includes purchase/conversion costs and that carrying cost is recognized as expense when the related inventory is sold/consumed. IAS 2 also supports weighted-average costing for interchangeable inventory. citeturn799436search0turn799436search12
+- The transaction boundary also follows the project's existing rule that invalid/insufficient values must be rejected before state mutation. This is consistent with the Qur'anic principle of accurate measurement and the Sahih Muslim requirement for truthfulness and disclosure in transactions. citeturn319491search1turn871515search0
+- New tests:
+  - `tests/commodity_transformation.test.js`: weighted-average unit cost, consumption, receipt, and invalid-input guards.
+  - `tests/commodity-processing-runtime.test.js`: actual `processCommodity()` execution with HPP, cash, inventory carrying value, conversion cost, distribution cash, and insufficient-cash atomicity checks.
+- GitHub Actions verification is required before this work is marked green. No local test execution is claimed.
+- Important limitation: legacy agricultural inventory created before the new carrying-value ledger may have quantity but zero recorded cost. The runtime deliberately does not invent historical cost. Such stock must be re-harvested/rebuilt under the new valuation path or receive a documented migration rule later. Butuh riset lanjutan untuk a defensible historical-cost migration policy.
+- No changes to `main`, `peta.html`, or `js/map_engine.js`.
