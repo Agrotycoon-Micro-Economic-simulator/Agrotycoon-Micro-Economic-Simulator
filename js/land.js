@@ -267,6 +267,8 @@ function processCommodity(id){
  ensureAgriState();
  const e=COMMODITY_ECONOMICS[id],p=e&&e.processed;
  if(!e||!p||id==="kelapa"){msg("Produk olahan komoditas ini belum diaktifkan di mode uji.");return;}
+ const inputTier=Number(p.inputTier),outputTier=Number(p.outputTier);
+ if(!Number.isInteger(inputTier)||!Number.isInteger(outputTier)||inputTier<1||inputTier>4||outputTier<1||outputTier>4||inputTier>=outputTier||!p.routeId){msg("Rute Tier komoditas belum lengkap/valid; pengolahan dibatalkan.");return;}
  if(typeof AgroCommodityTransformation==="undefined"||typeof AgroCommodityTransformation.consumeWeightedAverageInventory!=="function"||typeof AgroCommodityTransformation.addInventoryCost!=="function"){msg("Mesin valuasi persediaan belum tersedia; pengolahan dibatalkan.");return;}
  if(!S.landSystem.inventoryCost)S.landSystem.inventoryCost={};
  if(!S.landSystem.finishedInventory)S.landSystem.finishedInventory={};
