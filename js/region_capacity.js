@@ -10,12 +10,14 @@
     oilPalmAreaHa: { value: 16830000, year: 2024, metric: "provisional planted area", source: "https://satudata.pertanian.go.id/assets/docs/publikasi/Buku_Analisis_Kinerja_Perdagangan_Kelapa_Sawit_2025_-_tte_sign.pdf" }
   });
   const DEFAULTS = Object.freeze({
-    population: 5000000,
+    population: 200000000,
     minimumNonBusinessShare: 0.98,
     totalBusinessOwnerCap: 100000,
     miningOperatorCap: 100,
     activeConsumerShare: 0.92,
-    region: "Indonesia — skenario permainan",
+    activeAgentFloor: 1000,
+    activeAgentCap: 5000,
+    region: "Republik Arunika — skenario permainan",
     calibrationStatus: "provisional_game_scenario",
     officialBenchmarks: OFFICIAL_BENCHMARKS,
     landUseHa: {
@@ -37,6 +39,8 @@
     c.totalBusinessOwnerCap = Math.max(0, Math.floor(Number(c.totalBusinessOwnerCap) || 0));
     c.miningOperatorCap = Math.max(0, Math.floor(Number(c.miningOperatorCap) || 0));
     c.activeConsumerShare = clamp(c.activeConsumerShare, 0, 1);
+    c.activeAgentFloor = Math.floor(clamp(c.activeAgentFloor, 1000, 5000));
+    c.activeAgentCap = Math.floor(clamp(c.activeAgentCap, c.activeAgentFloor, 5000));
     c.sectorProducerCaps = Object.assign({}, DEFAULTS.sectorProducerCaps, c.sectorProducerCaps || {});
     Object.keys(c.sectorProducerCaps).forEach(k => {
       c.sectorProducerCaps[k] = Math.max(0, Math.floor(Number(c.sectorProducerCaps[k]) || 0));
@@ -54,11 +58,12 @@
     const sectorCaps = Object.assign({}, c.sectorProducerCaps);
     sectorCaps.mining = Math.min(Math.max(0, Number(sectorCaps.mining) || 0), c.miningOperatorCap);
     const totalSectorSlots = Object.values(sectorCaps).reduce((sum, n) => sum + n, 0);
+    const activeAgentCount = Math.max(c.activeAgentFloor, Math.min(c.activeAgentCap, Math.ceil(Math.sqrt(c.population) * 0.08)));
     return {
       region: c.region, population: c.population,
       businessOwnerCap, nonBusinessPopulation, activeConsumers,
       workersAndOtherNonOwners, minimumNonBusinessShare: c.minimumNonBusinessShare,
-      sectorProducerCaps: sectorCaps, totalSectorSlots,
+      sectorProducerCaps: sectorCaps, totalSectorSlots, activeAgentCount, activeAgentFloor: c.activeAgentFloor, activeAgentCap: c.activeAgentCap,
       landUseHa: c.landUseHa, calibrationStatus: c.calibrationStatus,
       note: "Kategori pekerjaan/status harus dimodelkan sebagai peran yang dapat tumpang tindih; total slot sektor bukan tambahan populasi unik."
     };
@@ -77,6 +82,7 @@
       activeConsumers: a.activeConsumers,
       workersAndOtherNonOwners: a.workersAndOtherNonOwners,
       miningOperatorCap: a.sectorProducerCaps.mining,
+      activeAgentCount: a.activeAgentCount, activeAgentFloor: a.activeAgentFloor, activeAgentCap: a.activeAgentCap,
       sectorProducerCaps: Object.assign({}, a.sectorProducerCaps),
       landUseHa: Object.assign({}, a.landUseHa),
       calibrationStatus: a.calibrationStatus
