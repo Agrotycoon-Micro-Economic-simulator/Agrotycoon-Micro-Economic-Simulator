@@ -61,8 +61,8 @@ test('player market transactions are queued, validated, and consumed by price di
   const item = market.byId.jagung;
   item.marketPrice = item.basePrice;
   const before = item.marketPrice;
-  const result = context.BACKGROUND_ECONOMY.tick({ day: 21, playerTransactions: [{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: before }] });
-  assert.equal(result.playerTransactionCount, 1);
+  const result = context.BACKGROUND_ECONOMY.tick({ day: 21, playerTransactions: queued.concat([{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: before }]) });
+  assert.equal(result.playerTransactionCount, 2);
   assert.ok(item.marketPrice > before, 'player demand contributes to the next market price');
 });
 
