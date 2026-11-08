@@ -9,7 +9,7 @@ Real observations calibrate the world. The game then advances in-game time using
 
 The in-game country **Republik Arunika** uses 38 Indonesian province names as geographic references and a 200,000,000-resident game scenario. The 200m population is allocated proportionally from BPS 2025 provincial population references. It is not represented by 200m objects.
 
-`js/national_economy.js` maintains 38 province aggregates × the 60-item commodity catalog. It creates approximately 1,132 representative active agents at this population, clamped between 1,000 and 5,000. Residents remain statistical cohorts; representative agent weights are not extra residents.
+`js/national_economy.js` maintains 38 province aggregates × the 60-item commodity catalog. It creates approximately 1,132 representative active agents at this population, clamped between 1,000 and 5,000. Agents execute deterministic daily producer, buyer, logistics and government heuristics; their aggregated decisions affect supply/demand response. Residents remain statistical cohorts; representative agent weights are not extra residents.
 
 The administrative identity master is the MIT-licensed normalized dataset derived from Kepmendagri 300.2.2-2138/2025: 416 kabupaten, 98 kota, 7,285 kecamatan, 75,252 desa, 8,496 kelurahan and 14 UPT/SPT (83,762 locality records). Actual names/codes are loaded lazily from four CSVs only when the dashboard locality search is used. BPS/Podes reference counts (7,281 kecamatan and 84,291 desa/kelurahan units) are stored separately because source/vintage definitions differ. Per-locality population is still an equal-share estimate, not verified Dukcapil locality population.
 
