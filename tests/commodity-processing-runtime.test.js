@@ -161,6 +161,33 @@ assert.equal(JSON.stringify({
 }), finishedBeforeCogsFailure, "finished-goods HPP failure must leave inventory and cash unchanged");
 sandbox.recordBusinessCogs = originalRecordCogs;
 
+const originalAddInventoryCost = transformation.addInventoryCost;
+const receiptFailureBefore = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  ledger: state.ledger.length
+});
+transformation.addInventoryCost = () => ({ ok: false });
+sandbox.prompt = () => "0";
+sandbox.logisticsPrompt = () => ({ total: 100 });
+sandbox.processCommodity("cabai_merah");
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  ledger: state.ledger.length
+}), receiptFailureBefore, "processing receipt failure must leave cash and inventory unchanged");
+transformation.addInventoryCost = originalAddInventoryCost;
+
 const beforeBadQty = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
 assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1.5), false);
 assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeBadQty);
@@ -198,6 +225,29 @@ state.dayLog.gross = 0;
 state.dayLog.expense = 0;
 state.dayLog.commoditySales = [];
 state.ledger = [];
+const originalRawRecordCogs = sandbox.recordBusinessCogs;
+const rawBeforeCogsFailure = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+});
+sandbox.recordBusinessCogs = () => 0;
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+}), rawBeforeCogsFailure, "raw agricultural HPP failure must leave cash and inventory unchanged");
+sandbox.recordBusinessCogs = originalRawRecordCogs;
+
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = NaN;
 assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
 assert.equal(state.landSystem.inventory.cabai_merah, 10);
