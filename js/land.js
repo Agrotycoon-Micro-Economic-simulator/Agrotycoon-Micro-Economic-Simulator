@@ -368,8 +368,6 @@ function sellFinishedCommodity(productId, requestedQuantity){
  const revenue=rawQuantity*salePrice;
  if(!Number.isFinite(revenue)||revenue<=0){msg("Pendapatan penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!confirm("Konfirmasi penjualan "+rawQuantity+" "+product.name+"?\\nHarga saat konfirmasi: "+safeRp(salePrice)+"/unit\\nOmzet: "+safeRp(revenue)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(revenue-valuation.consumedCost)))return false;
- S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
- S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
  const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
   msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
