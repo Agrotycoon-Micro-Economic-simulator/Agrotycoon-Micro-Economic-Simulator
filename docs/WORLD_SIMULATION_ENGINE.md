@@ -5,6 +5,20 @@ Status: architecture contract; no live news feed is part of the simulation loop.
 ## Core rule
 Real observations calibrate the world. The game then advances in-game time using reproducible simulation rules. Never display a simulated event as a real-world news report. Never fabricate a historical observation to fill gaps.
 
+## National-scale aggregate population model (2026-11-08)
+
+The in-game country **Republik Arunika** uses 38 Indonesian province names as geographic references and a 200,000,000-resident game scenario. The 200m population is allocated proportionally from BPS 2025 provincial population references. It is not represented by 200m objects.
+
+`js/national_economy.js` maintains 38 province aggregates × the 60-item commodity catalog. It creates approximately 1,132 representative active agents at this population, clamped between 1,000 and 5,000. Residents remain statistical cohorts; representative agent weights are not extra residents.
+
+Administrative reference totals are 514 kabupaten/kota (2024), 7,281 kecamatan (2024), and 84,291 desa/kelurahan-level units (2025). The first version computes locality-level average population and demand on request. Regency/city counts allocated by province, desa/kelurahan splits, equal population splits and locality names are provisional/derived; individual official locality codes and names have not yet been imported.
+
+All 60 catalog commodities have a province demand index and regional stock/production/reserve/import/price state. Category demand weights are game-balance indices, not kg/tonnes or measured per-capita consumption. Physical consumption by commodity and locality remains a research gate.
+
+Regional prices use local stock-cover and logistics disruption. A Lampung shock changes Lampung's local quote, not all national prices. The government reserve model starts with 25% of monthly demand index, targets 30 days, procures up to 5% of monthly demand when below target, releases up to 15% of monthly demand when cover is below 10 days and local price index exceeds 1.15, and imports up to 10% of monthly demand subject to treasury. These are experimental game parameters.
+
+For full details, source metadata, formulas, administrative caveats and next research tasks, see `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md`.
+
 ## Data layers
 1. Raw observations (immutable): source, source URL, dataset title, source row/key, observed date or period, geography/code, commodity/indicator, market level, unit, value, retrieval date, license/usage notes, quality status.
 2. Normalized observations: canonical commodity IDs, canonical region IDs, normalized units, frequency, missingness flags, revision lineage. Keep original value and normalized value.
