@@ -73,6 +73,8 @@ test('Lampung supply shock raises its local quote without directly repricing Jak
   assert.ok(afterLampung > beforeLampung);
   assert.equal(afterJakarta, beforeJakarta);
   assert.ok(state.government.monthlyReleased > 0);
+  assert.ok(state.activeAgents.every(agent => agent.lastDecisionDay === 15 && agent.lastAction));
+  assert.ok(Object.values(state.national.agentActionCounts).some(count => count > 0));
 });
 
 test('government reserve policy is bounded and the province price quote is finite', () => {
