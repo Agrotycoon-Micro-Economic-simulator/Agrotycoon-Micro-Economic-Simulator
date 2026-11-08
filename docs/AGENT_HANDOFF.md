@@ -500,3 +500,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test commit: b63bf533498aded0fde27c00373d48d8b47f6052.
 - GitHub Actions for these new commits must be checked before marking the checkpoint green. No local test execution is claimed.
 - Next implementation target after CI closure: move from transaction-atomicity hardening to the next real Tier 1–4 production route, while preserving weighted-average inventory valuation, unit-economics preconditions, and single-owner HPP/revenue posting.
+
+## Finished-goods HPP ordering correction — 2026-11-08
+
+- Re-inspection of the actual `js/land.js` exposed a residual ordering defect in `sellFinishedCommodity()`: finished inventory was being mutated before `recordBusinessCogs()` even though the failure regression expected zero mutation.
+- Corrected the order so HPP posting succeeds before finished-inventory quantity/carrying-value mutation.
+- Strengthened the regression to also assert the ledger length is unchanged when HPP posting fails.
+- Code commit: e1a3f31ebb1468772d2a9b692120b9bd8c2152b7.
+- Test commit: 2a3e15798bd20fdd710d14b1d921e142352ca864.
+- New GitHub Actions run must complete successfully before this checkpoint is considered green.
