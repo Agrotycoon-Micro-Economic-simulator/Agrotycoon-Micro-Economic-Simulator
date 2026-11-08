@@ -11,15 +11,16 @@
 - Locality names/codes are now real master records, but per-locality population is still an equal-share estimate from the province. The population status is explicitly marked `equal_share_estimate_pending_official_locality_population`; it is not actual Dukcapil village population. The dashboard can search and display country, province, regency, city, district, desa and kelurahan.
 - Commodity demand is currently a category-weighted **index**, not physical tonnes/kg. All 60 catalog commodity IDs have a province-level demand index, stock, production, reserve, import and regional price index. Per-commodity physical consumption rates remain a research gate.
 - Regional price index is independent by province. Lampung supply/disaster shocks change Lampung's local quote without automatically repricing DKI Jakarta. Player province defaults to DKI Jakarta and is selectable in `dunia-simulasi.html`; `js/land.js` and coconut producer quotes use the selected province quote.
-- Government reserve model: opening reserve 25% of monthly demand index; target 30 days; monthly procurement max 5% of demand when reserve is below target; release trigger below 10 days and price index >1.15; release max 15% monthly demand; import cap 10% monthly demand, treasury constrained. Opening treasury Rp1 trillion is an experimental game parameter.
+- Government reserve model: opening reserve 25% of monthly demand index; target 30 days; monthly procurement max 5% of demand when reserve is below target; release trigger below 10 days and price index >1.15; release max 15% monthly demand; import cap 10% monthly demand per commodity, treasury constrained. Opening treasury Rp1 trillion is an experimental game parameter. No modeled tax-revenue replenishment or physical interprovincial shipment routing yet.
 - Deterministic disaster rolls are 0.6% per province per 30-day game month; flood, drought and logistics disruptions are experimental templates. `AgroNationalEconomy.applyDisaster()` supports explicit scenario injection.
 - Tier 1–4 remains in the existing 60-commodity catalog and transformation/HPP/ledger systems. National demand indexes all catalog IDs; physical consumption/production calibration by tier remains open.
+- Active agents now update `lastAction`/`lastDecisionDay` daily and aggregate producer supply intent, buyer demand/inventory intent, logistics reroute intent and government reserve review. These are deterministic heuristics; no per-agent cash/inventory/contracts yet.
 
 ## Main files and commit checkpoints
 
 | File | Commit SHA | Change |
 |---|---|---|
-| `js/national_economy.js` | `19f6eeec7cabc17d1c09d5eb1e75adf452007a99` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
+| `js/national_economy.js` | `ab3c88997f7d4553121e50dc7b322739337bc822` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
 | `js/region_capacity.js` | `b5d4b4104e41e21347384b6ede01a00f24608863` | 200m default population and active-agent bounds |
 | `js/state.js` | `bd2e02fcce1ad68d91cd29a4bc6018f42d894429` | Persist player province (default DKI Jakarta) and migrate older saves |
 | `js/land.js` | `1e9f6821add88839c37f2a883c66a15a18f0f474` | Regional commodity quotes for player trade |
@@ -29,11 +30,11 @@
 | `dunia-simulasi.html` | `b41063f6a4e89c0eecb95a00870a9fc06d36f8b7` | Country/province dashboard and player-region selector |
 | `tests/national-economy.test.js` | `5c74d4e51a127885dbd794558385c922a4d515ac` | Population, locality aggregates, agent cap, disaster price and reserve tests |
 | `.github/workflows/targeted-regression.yml` | `deda0462db8b7eac612ea31bb052d7e1e696316b` | Add national economy test to Node regression job |
-| `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `5bf40ad48bc8b164af393d8179d85cb6f475172c` | Full design, data provenance, formulas, policy settings and research backlog |
+| `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `c7ffdf01195b5a80424ddbd14f74f7be87070f26` | Full design, data provenance, formulas, policy settings and research backlog |
 | `data/administrative_regions/*.csv` | See source blob SHAs in `data/administrative_regions/README.md` | 38 provinces, 514 kabupaten/kota, 7,285 districts, 83,762 locality records; loaded lazily |
 | `data/administrative_regions/LICENSE*.txt` | See repository history | MIT attribution for normalized dataset and upstream source |
 
-The national engine's initial implementation commit was `6385112255d088e0e5fa40f7ce0e99076b9cf6af`; later corrections added the administrative master loader and per-commodity monthly import cap. The regression suite now validates the full locality CSVs and real code/name lookup. The administrative CSV files and MIT license notices are stored in `data/administrative_regions/`.
+The national engine's initial implementation commit was `6385112255d088e0e5fa40f7ce0e99076b9cf6af`; later corrections added the administrative master loader, per-commodity monthly import cap and daily representative agent decisions. The regression suite validates the full locality CSVs, all province counts, actual code/name lookup and daily agent actions. The administrative CSV files and MIT license notices are stored in `data/administrative_regions/`.
 
 ## Test / CI status
 
@@ -51,7 +52,7 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 2. Confirm all 38 population weights and administrative count totals through automated assertions; fix any mismatch before extending the feature.
 3. Reconcile/import authoritative locality population and household data. Candidate `dhanyyudi/wilayah-id` documents Dukcapil Semester I 2024 population/household/density/area but has 83,529 village-level records and 7,282 districts, so its code coverage must be reconciled with the 83,762/7,285 administrative master before use. Prodeskel public page is also incomplete relative to the full master.
 4. Replace equal-share locality population estimates and category demand indexes with physical per-capita monthly demand per commodity, province and household/industry/institutional segment; preserve rice-vs-paddy and feed-vs-food definitions.
-5. Add physical production and interprovincial shipment flows, then reconcile government procurement, reserve storage losses, imports and public ledger.
+5. Add physical production and interprovincial shipment flows; logistics reroute intent is not yet a freight shipment. Then reconcile government procurement, reserve storage losses, imports, tax revenue and public ledger.
 6. Benchmark mobile performance with 38 × 60 aggregates and 1,000–5,000 active agents.
 
 ---
