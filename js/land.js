@@ -250,15 +250,14 @@ function sellCommodity(id,channel){
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
   msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
  }
+ if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold})){
+  msg("Pencatatan distribusi gagal; penjualan dibatalkan sebelum persediaan/revenue mutation.");return false;
+ }
  S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
  S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
  S.landSystem.inventory[id]=valuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
- if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold})){
-  // Revenue has already been posted; the cash precondition above guarantees this should not occur.
-  msg("Pencatatan distribusi gagal setelah penjualan; butuh rekonsiliasi transaksi.");return false;
- }
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,cogs:valuation.consumedCost,grossProfit,channel,logisticsCost:logistics.total,netAfterLogistics:net});
  save();msg("Omzet "+safeRp(rev)+"; HPP "+safeRp(valuation.consumedCost)+"; laba kotor "+safeRp(grossProfit)+"; distribusi "+safeRp(logistics.total)+"; kas bersih "+safeRp(net)+".");showCommodityEconomics(id);render();
@@ -317,10 +316,6 @@ function processCommodity(id){
  const finishedCost=inputValuation.consumedCost+cashConversion;
  if(!Number.isFinite(finishedCost)||finishedCost<=0){msg("Nilai persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
  if(!Number.isFinite(S.gold)||S.gold<cashConversion+logistics.total){msg("Kas tidak cukup untuk biaya konversi dan distribusi. Pengolahan dibatalkan.");return;}
- if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
- // Conversion is capitalized into finished-goods inventory. It is not COGS until the finished goods are sold.
- if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
- if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
  const received=AgroCommodityTransformation.addInventoryCost(
    Math.max(0,Number(S.landSystem.finishedInventory[p.id])||0),
    Math.max(0,Number(S.landSystem.finishedInventoryCost[p.id])||0),
@@ -328,6 +323,10 @@ function processCommodity(id){
    finishedCost
  );
  if(!received.ok){msg("Penerimaan persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
+ if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
+ // All receipt state is validated before cash/state mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
+ if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
+ if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
