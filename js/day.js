@@ -134,7 +134,7 @@ function finishDay(){
   const marketTick=BACKGROUND_ECONOMY.tick({day:S.day,activePlayers:1,policies:S.marketPolicies||{},playerTransactions:queuedPlayerTransactions});
   S.marketTransactions=[];
   S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
-  S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
+  S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,playerTransactionCount:marketTick.playerTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
  }
  const mOld=monthOf(S.day);
  S.day++;
