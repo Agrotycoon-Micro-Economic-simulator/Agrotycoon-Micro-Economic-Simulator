@@ -470,3 +470,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression coverage verifies 2 sambal packages sold from 10: carrying value Rp105,000 -> Rp84,000, HPP Rp21,000, revenue Rp36,000, gross revenue Rp36,000, plus zero-mutation rejection for invalid price and non-integer quantity.
 - CI verification is required before marking this checkpoint green. No local test execution is claimed.
 - Next target after CI closure: extend the same finished-goods transaction model to the next real Tier 1–4 production route.
+
+
+## Raw agricultural commodity sale HPP boundary (2026-11-08)
+
+- Hardened js/land.js::sellCommodity() so raw agricultural sales now consume the recorded weighted-average carrying value and recognize HPP exactly once before revenue/distribution posting.
+- The sale rejects missing/zero inventory valuation, invalid current prices, invalid logistics, and insufficient cash for the distribution outflow before accounting mutation. The unit-economics engine validates the current sale price against the actual inventory unit cost.
+- Gross profit is now explicit as revenue minus recognized HPP; distribution remains a separate operating cash expense rather than being folded into HPP.
+- Added regression coverage for a 10 kg cabai B2B sale: inventory value Rp5,000 becomes HPP Rp5,000, revenue Rp250,000, distribution Rp100, and cash Rp1,249,900; invalid current price leaves all accounting/inventory state unchanged.
+- This follows IAS 2's inventory principle that carrying amount is recognized as expense when the related inventory is sold, with weighted-average cost permitted for interchangeable inventory. citeturn576509search0turn576509search13
+- CI verification is required before marking this checkpoint green. No local test execution is claimed.
