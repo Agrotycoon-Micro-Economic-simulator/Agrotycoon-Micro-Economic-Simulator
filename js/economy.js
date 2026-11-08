@@ -258,6 +258,19 @@ function confirmSellTengkulak(jual,rev){
  if(!Number.isFinite(saleRevenue)||saleRevenue<=0){msg('⚠️ Nilai penjualan tidak valid. Transaksi dibatalkan.');save();render();return;}
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):soldQty*3500;
  if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
+ const unitCost=stockValue/soldQty;
+ if(!Number.isFinite(unitCost)||unitCost<=0){
+  msg('⚠️ Biaya unit kelapa tidak valid. Penjualan dibatalkan.');save();render();return;
+ }
+ // Validate unit economics at the confirmation boundary before HPP, revenue, or stock mutation.
+ // Existing accounting remains the sole owner of HPP posting.
+ const ordinaryUnitPrice=Number(DATA.priceTengkulak&&DATA.priceTengkulak.biasa);
+ const superUnitPrice=Number(DATA.priceTengkulak&&DATA.priceTengkulak.super);
+ const weightedSalePrice=(soldBiasa*ordinaryUnitPrice+soldSuper*superUnitPrice)/soldQty;
+ if(!Number.isFinite(weightedSalePrice)||weightedSalePrice<=0||
+    !validateYoungCoconutTengkulakUnitEconomics(weightedSalePrice,unitCost)){
+  msg('⚠️ Unit economics kelapa muda ke tengkulak tidak valid. Penjualan dibatalkan.');save();render();return;
+ }
  if(recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper});
  S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=saleRevenue;
@@ -423,6 +436,33 @@ function validateWholeCoconutUnitEconomics(salePrice, coconutCost){
   wasteEvidence:evidence,
   inputs:[{
    id:'old-coconut',
+   quantityPerOutput:1,
+   sourcingMode:'buy',
+   purchasePricePerUnit:coconutCost,
+   quantityEvidence:evidence,
+   purchasePriceEvidence:evidence
+  }],
+  variableCosts:[],
+  fixedCostsMonthly:[],
+  capex:[]
+ });
+ return Boolean(result&&result.ok&&result.complete&&result.metrics&&Number.isFinite(result.metrics.hppPerSaleableUnit));
+}
+function validateYoungCoconutTengkulakUnitEconomics(salePrice, coconutCost){
+ if(typeof AgroUnitEconomics!=='object'||typeof AgroUnitEconomics.calculate!=='function')return true;
+ const evidence={kind:'game_parameter',sourceUrl:'js/data.js',period:'current game config',geography:'game scenario'};
+ const result=AgroUnitEconomics.calculate({
+  id:'young-coconut-tengkulak-live-sale',
+  name:'Penjualan kelapa muda ke tengkulak aktual',
+  currency:'IDR',
+  sellPricePerUnit:salePrice,
+  sellPriceEvidence:evidence,
+  plannedSalesUnitsPerMonth:1,
+  salesVolumeEvidence:evidence,
+  wasteRate:0,
+  wasteEvidence:evidence,
+  inputs:[{
+   id:'young-coconut',
    quantityPerOutput:1,
    sourcingMode:'buy',
    purchasePricePerUnit:coconutCost,
