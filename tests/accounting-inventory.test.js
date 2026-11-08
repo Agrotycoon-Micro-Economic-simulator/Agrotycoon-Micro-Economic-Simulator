@@ -113,6 +113,7 @@ test('young coconut tengkulak sale uses unit economics before HPP or inventory m
   const { S, DATA, context, journal } = makeHarness();
   const unitEconomics = require('../js/unit_economics.js');
   context.AgroUnitEconomics = unitEconomics;
+  context.stockClass = () => 'muda';
 
   assert.equal(context.confirmSellTengkulak(true, 999999), undefined);
   assert.equal(S.gold, 103500);
@@ -124,6 +125,7 @@ test('young coconut tengkulak sale uses unit economics before HPP or inventory m
 
   const fresh = makeHarness();
   fresh.context.AgroUnitEconomics = unitEconomics;
+  fresh.context.stockClass = () => 'muda';
   fresh.DATA.priceTengkulak.biasa = NaN;
   assert.equal(fresh.context.confirmSellTengkulak(true, 3500), undefined);
   assert.equal(fresh.S.gold, 100000);
