@@ -64,6 +64,9 @@ test('player market transactions are queued, validated, and consumed by price di
   const result = context.BACKGROUND_ECONOMY.tick({ day: 21, playerTransactions: queued.concat([{ commodityId: 'jagung', side: 'buy', quantity: 1000, price: before }]) });
   assert.equal(result.playerTransactionCount, 2);
   assert.ok(item.marketPrice > before, 'player demand contributes to the next market price');
+  const daySource = fs.readFileSync(path.join(__dirname, '..', 'js', 'day.js'), 'utf8');
+  assert.match(daySource, /playerTransactions:queuedPlayerTransactions/);
+  assert.match(daySource, /S\.marketTransactions=\[\]/);
 });
 
 test('national politics and presidential candidacy have explicit economic thresholds', () => {
