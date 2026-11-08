@@ -108,6 +108,15 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   const api = context.AgroNationalEconomy;
   const master = await api.loadAdministrativeMaster();
   assert.deepEqual({ ...master.totals }, { regencies: 416, cities: 98, districts: 7285, desa: 75252, kelurahan: 8496, uptSpt: 14 });
+  for (const province of api.provinces) {
+    const bucket = master.byProvince[province.adminCode];
+    assert.equal(province.regencyCount, bucket.regencies.length, province.id + ' regency count');
+    assert.equal(province.cityCount, bucket.cities.length, province.id + ' city count');
+    assert.equal(province.districtCount, bucket.districts.length, province.id + ' district count');
+    assert.equal(province.desaCount, bucket.desa.length, province.id + ' desa count');
+    assert.equal(province.kelurahanCount, bucket.kelurahan.length, province.id + ' kelurahan count');
+    assert.equal(province.uptSptCount, bucket.uptSpt.length, province.id + ' UPT/SPT count');
+  }
   const desa = await api.getLocalityAggregateAsync('lampung', 'desa', 0);
   const kelurahan = await api.getLocalityAggregateAsync('lampung', 'kelurahan', 0);
   assert.match(desa.id, /^\d{10}$/);
