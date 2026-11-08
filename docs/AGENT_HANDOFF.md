@@ -509,3 +509,17 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Code commit: e1a3f31ebb1468772d2a9b692120b9bd8c2152b7.
 - Test commit: 2a3e15798bd20fdd710d14b1d921e142352ca864.
 - New GitHub Actions run must complete successfully before this checkpoint is considered green.
+
+
+## Active Tier 1 → Tier 4 processing routes (2026-11-08)
+
+- The live processing boundary now requires each active processed-product definition to declare `inputTier`, `outputTier`, and a stable `routeId`. `js/land.js::processCommodity()` rejects incomplete, out-of-range, non-forward, or unnamed routes before any cash/inventory mutation.
+- The two currently executable test routes are:
+  - Tier 1 `cabai_merah` → Tier 4 `sambal_cabai_250g` (`cabai-merah-to-sambal-250g`).
+  - Tier 1 `jagung` → Tier 4 `jagung_bakar` (`jagung-kering-to-jagung-bakar`).
+- `js/commodities.js` now carries the route metadata. This is a gameplay contract, not a claim that all real-world processing chains are only Tier 1 → Tier 4; additional Tier 2/Tier 3 intermediate routes still require explicit recipes, quantities, cost evidence, and tests before activation.
+- Added regression coverage for the complete jagung route: raw weighted-average carrying value → conversion/distribution cash → finished-goods inventory → later sale → weighted-average HPP + revenue. The test also proves an invalid Tier route is rejected without mutation.
+- Code commits: `844dfb1f2adb900d2a41a60ade10c47c686b7b9f` and `6e36b9c48d83c773ba87960e68f99de0bfa9c097`.
+- Test commit: `5cd77d2deb37d1f257b6f9dc1a46eba96a2db9b3`.
+- GitHub Actions verification is required before marking this route green. No local test execution is claimed.
+- Next implementation target after CI: add the next evidence-backed intermediate Tier 2/Tier 3 route rather than adding more generic hard-coded Tier 1 → Tier 4 shortcuts.
