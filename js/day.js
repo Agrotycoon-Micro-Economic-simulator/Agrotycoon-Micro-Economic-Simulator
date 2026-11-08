@@ -125,6 +125,13 @@ function finishDay(){
   const worldEvents=AgroWorldSim.updateDay(S.day);
   worldEvents.forEach(ev=>ledger('DUNIA_SIMULASI',ev.headline+' — '+ev.region,0,{type:ev.type,classification:ev.classification,affected:ev.affected}));
  }
+ if(typeof AgroNationalEconomy!=='undefined'){
+  // Aggregate 200m residents by province; no per-resident objects are created.
+  const nationalTick=AgroNationalEconomy.updateDay(S.day);
+  if(nationalTick&&S.day%30===1){
+   ledger('KEBIJAKAN_NEGARA','Rekap cadangan dan impor nasional',0,{activeAgents:nationalTick.activeAgentCount,monthlyPurchased:nationalTick.government.monthlyPurchased,monthlyReleased:nationalTick.government.monthlyReleased,monthlyImported:nationalTick.government.monthlyImported,treasury:nationalTick.government.treasury});
+  }
+ }
  if(typeof BACKGROUND_ECONOMY!=='undefined'&&typeof MARKET_ENGINE!=='undefined'){
   // Restore this save's prices before repricing. This is a local NPC simulation, not a global player market.
   if(S.marketPrices&&typeof S.marketPrices==='object'){
