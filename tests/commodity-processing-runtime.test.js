@@ -148,7 +148,8 @@ const finishedBeforeCogsFailure = JSON.stringify({
   qty: state.landSystem.finishedInventory.sambal_cabai_250g,
   cost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
   cogs: state.dayLog.cogs,
-  gross: state.dayLog.gross
+  gross: state.dayLog.gross,
+  ledger: state.ledger.length
 });
 sandbox.recordBusinessCogs = () => 0;
 assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1), false);
@@ -157,7 +158,8 @@ assert.equal(JSON.stringify({
   qty: state.landSystem.finishedInventory.sambal_cabai_250g,
   cost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
   cogs: state.dayLog.cogs,
-  gross: state.dayLog.gross
+  gross: state.dayLog.gross,
+  ledger: state.ledger.length
 }), finishedBeforeCogsFailure, "finished-goods HPP failure must leave inventory and cash unchanged");
 sandbox.recordBusinessCogs = originalRecordCogs;
 
