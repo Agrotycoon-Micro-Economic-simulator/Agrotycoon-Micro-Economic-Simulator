@@ -2,6 +2,22 @@
 Last updated: 2026-10-28
 Active work branch: `feat/production-tier-taxonomy`
 
+## 2026-11-08 — 200m country simulation and regional government reserve implementation
+
+The first runtime slice is implemented in `js/national_economy.js` and documented in `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md`.
+
+- Created in-game country **Republik Arunika** with 38 province reference regions.
+- Population is exactly 200,000,000 game residents, scaled from BPS 2025 province population shares. It is a scenario value, not a claim about Indonesia's current population.
+- Background residents are statistical aggregates. Approximately 1,132 representative active agents are instantiated for 200m residents; active agents are clamped to 1,000–5,000.
+- Runtime administrative totals: 514 kabupaten/kota (2024), 7,281 kecamatan (2024), 84,291 desa/kelurahan-level units (2025). Per-province regency/city allocations and desa/kelurahan split are derived; names/codes for individual localities are still synthetic placeholders until the official master data import.
+- Each of 60 commodity catalog IDs has regional demand/stock/production/reserve/import/price-index state. Current demand is a dimensionless category-weighted index, not physical consumption volume. Physical per-capita commodity rates are not claimed.
+- Regional price discovery is stock-cover and logistics based. Local disaster events can change only exposed province prices; player trade quotes use the selected player province.
+- Government model implements a 25%-of-monthly-demand opening reserve, 30-day target, monthly procurement up to 5%, release below 10 days of stock cover when local price index exceeds 1.15, and imports capped at 10% of monthly demand subject to treasury.
+- Deterministic seeded monthly disaster rolls are experimental (0.6% per province per game month); explicit disaster injection is available for scenario tests.
+- New regression file `tests/national-economy.test.js` is included in the targeted Node test job. CI outcome is pending until a completed run is verified.
+
+Evidence and data definitions are in `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md`. Next research gate is the full official locality code/name master and physical per-commodity household/industry/institutional consumption rates. Do not treat synthetic locality splits or demand-index weights as official statistics.
+
 ## Purpose
 Turn Agrotycoon into a constrained, data-backed national microeconomic simulation. The simulation must link commodity prices, physical production capacity, land and labor, consumers, business types, supply chains, government policy, and political progression. Research is not complete when written in a report: validated data must be recorded in the research register and then represented in machine-readable runtime data with provenance and validation. Unverified values must remain explicitly provisional and must not silently become “real Indonesian statistics.”
 
