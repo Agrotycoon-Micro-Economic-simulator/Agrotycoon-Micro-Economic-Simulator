@@ -146,4 +146,47 @@ const beforeBadQty = JSON.stringify({gold:state.gold,qty:state.landSystem.finish
 assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1.5), false);
 assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeBadQty);
 
+
+state.gold = 1000000;
+state.landSystem.inventory.cabai_merah = 10;
+state.landSystem.inventoryCost.cabai_merah = 5000;
+state.dayLog.cogs = 0;
+state.dayLog.gross = 0;
+state.dayLog.expense = 0;
+state.dayLog.businessPurchases = 0;
+state.dayLog.cashOut = 0;
+state.dayLog.commoditySales = [];
+state.ledger = [];
+sandbox.prompt = () => "0";
+sandbox.confirm = () => true;
+sandbox.logisticsPrompt = () => ({ total: 100 });
+const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
+assert.equal(rawSaleOk, true);
+assert.equal(state.landSystem.inventory.cabai_merah, 0);
+assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
+assert.equal(state.gold, 1249900);
+assert.equal(state.dayLog.cogs, 5000);
+assert.equal(state.dayLog.gross, 250000);
+assert.equal(state.dayLog.expense, 100);
+assert.equal(state.dayLog.commoditySales[0].grossProfit, 245000);
+assert.equal(state.ledger.length, 2);
+
+state.gold = 1000000;
+state.landSystem.inventory.cabai_merah = 10;
+state.landSystem.inventoryCost.cabai_merah = 5000;
+state.dayLog.cogs = 0;
+state.dayLog.gross = 0;
+state.dayLog.expense = 0;
+state.dayLog.commoditySales = [];
+state.ledger = [];
+sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = NaN;
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(state.landSystem.inventory.cabai_merah, 10);
+assert.equal(state.landSystem.inventoryCost.cabai_merah, 5000);
+assert.equal(state.gold, 1000000);
+assert.equal(state.dayLog.cogs, 0);
+assert.equal(state.dayLog.gross, 0);
+assert.equal(state.ledger.length, 0);
+sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = 25000;
+
 console.log("PASS: live commodity processing consumes weighted-average raw inventory, posts HPP once, charges conversion/distribution cash, and prevents execution without cash.");
