@@ -265,11 +265,10 @@ function processCommodity(id){
    {account:"Persediaan "+COMMODITY_BY_ID[id].name,amount:inputValuation.consumedCost},
    {account:"Bahan Tambahan Proses",amount:cost}
  ])!==hpp)return;
+ if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
- if(logistics.total)S.dayLog.expense=(Number(S.dayLog.expense)||0)+logistics.total;
  earn("PENJUALAN","Penjualan produk jadi "+p.name,rev,{commodity:id,units,processing:true});
- if(logistics.total)ledger("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:p.name,quantity:units,unitPrice:unitPrice,revenue:rev,hpp,processingCost:cost,logisticsCost:logistics.total});
  save();msg("Produk jadi terjual: omzet "+safeRp(rev)+", HPP "+safeRp(hpp)+", biaya distribusi "+safeRp(logistics.total)+".");showCommodityEconomics(id);render();
