@@ -480,3 +480,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regression coverage for a 10 kg cabai B2B sale: inventory value Rp5,000 becomes HPP Rp5,000, revenue Rp250,000, distribution Rp100, and cash Rp1,249,900; invalid current price leaves all accounting/inventory state unchanged.
 - This follows IAS 2's inventory principle that carrying amount is recognized as expense when the related inventory is sold, with weighted-average cost permitted for interchangeable inventory. citeturn576509search0turn576509search13
 - CI verification is required before marking this checkpoint green. No local test execution is claimed.
+
+
+## Transaction-order hardening after finished/raw commodity sale CI (2026-11-08)
+
+- Current branch HEAD before this follow-up: `89642ef0784374a11687c76f203e04b745a29cf2`; the latest raw-sale regression workflow **42487589712** on `6edbe0ad8a39327a3cd3de2031218530ec606703` completed successfully. Finished-goods sale workflow **42487394236** also completed successfully.
+- Hardened `js/land.js` sale ordering so HPP validation/posting succeeds **before** finished-goods or raw agricultural inventory/market state is mutated. This removes the previous rollback-dependent ordering at the transaction boundary.
+- Added a regression that forces `recordBusinessCogs()` to fail and verifies a finished-goods sale leaves cash, quantity, carrying value, COGS and gross revenue unchanged.
+- No map files, `main`, or unrelated economy paths were changed.
+- Next target: extend this transaction-atomicity test pattern to raw agricultural sale and processing receipt, then continue to the next real Tier 1–4 production route.
