@@ -1,4 +1,15 @@
-// Katalog simulasi 60 komoditas. Harga/biaya adalah parameter balancing game, bukan kutipan harga pasar real-time.
+// Katalog simulasi 60 komoditas. basePrice adalah jangkar harga produsen/pasar awal game,
+// bukan harga real-time. Rentang bawah-atas dan kecepatan fluktuasi dibedakan menurut karakter sektor.
+const MARKET_PRICE_PROFILES=Object.freeze({
+ pangan:{floor:0.72,ceiling:1.42,elasticity:0.075,dailyMove:0.07,volatility:"low_to_medium"},
+ hortikultura:{floor:0.52,ceiling:1.82,elasticity:0.12,dailyMove:0.14,volatility:"high_perishable"},
+ perkebunan:{floor:0.68,ceiling:1.48,elasticity:0.07,dailyMove:0.065,volatility:"medium_cycle"},
+ buah:{floor:0.58,ceiling:1.68,elasticity:0.105,dailyMove:0.12,volatility:"high_perishable"},
+ rempah:{floor:0.62,ceiling:1.62,elasticity:0.09,dailyMove:0.10,volatility:"medium_high"},
+ peternakan:{floor:0.76,ceiling:1.38,elasticity:0.07,dailyMove:0.065,volatility:"medium_biological"},
+ perikanan:{floor:0.55,ceiling:1.72,elasticity:0.13,dailyMove:0.15,volatility:"high_perishable"},
+ industri:{floor:0.78,ceiling:1.36,elasticity:0.06,dailyMove:0.05,volatility:"low_to_medium"}
+});
 const COMMODITIES=[
 ["kelapa","Kelapa","perkebunan",1080,20,3500,60000,"pohon"],
 ["jagung","Jagung","pangan",100,1.72,5992,4594,"tanaman"],
@@ -60,7 +71,7 @@ const COMMODITIES=[
 ["patin","Patin","perikanan",180,300,28000,5500000,"kolam"],
 ["madu","Lebah Madu","peternakan",180,15,85000,3500000,"koloni"],
 ["jamur_tiram","Jamur Tiram","hortikultura",45,800,16000,5000000,"rak"]
-].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>({id,name,category,growDays,yieldQty,basePrice,marketFloor:Math.max(1,Math.floor(basePrice*0.5)),marketCeiling:Math.max(2,Math.ceil(basePrice*2)),marketPrice:basePrice,marketBoundsStatus:"provisional_game_balance",marketBoundsMethod:"50%-200% dari basePrice; rentang awal untuk balancing, belum dianggap data harga resmi",setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"}));
+].map(([id,name,category,growDays,yieldQty,basePrice,setupCost,unitType])=>{const profile=MARKET_PRICE_PROFILES[category]||MARKET_PRICE_PROFILES.pangan;return {id,name,category,growDays,yieldQty,basePrice,marketFloor:Math.max(1,Math.floor(basePrice*profile.floor)),marketCeiling:Math.max(2,Math.ceil(basePrice*profile.ceiling)),marketPrice:basePrice,marketElasticity:profile.elasticity,marketDailyMoveLimit:profile.dailyMove,marketVolatility:profile.volatility,marketBoundsStatus:"game_balance_band",marketBoundsMethod:"Rentang internal berbasis jangkar basePrice dan profil volatilitas sektor; bukan kutipan harga real-time.",setupCost,unitType,seedCost:Math.round(setupCost*.65),careCost:Math.round(setupCost*.35),risk:["hortikultura","pangan"].includes(category)?"sedang":"sedang"};}));
 // Agronomi: luas dan hasil spesifik, bukan satu luas generik untuk semua komoditas.
 const AGRONOMY_PROFILES={
  kelapa:{areaM2:64,plantsPerUnit:1,spacing:"8 × 8 m",yieldQty:20,yieldUnit:"buah/pohon/siklus",note:"Kelapa tahunan; sekitar 156 pohon/ha pada jarak 8 × 8 m."},
