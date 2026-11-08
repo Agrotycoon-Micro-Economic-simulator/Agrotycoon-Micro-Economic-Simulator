@@ -210,23 +210,25 @@ function processCommodity(id){
  ensureAgriState();
  const e=COMMODITY_ECONOMICS[id],p=e&&e.processed;
  if(!e||!p||id==="kelapa"){msg("Produk olahan komoditas ini belum diaktifkan di mode uji.");return;}
- if(typeof AgroCommodityTransformation==="undefined"||typeof AgroCommodityTransformation.consumeWeightedAverageInventory!=="function"){msg("Mesin valuasi persediaan belum tersedia; pengolahan dibatalkan.");return;}
+ if(typeof AgroCommodityTransformation==="undefined"||typeof AgroCommodityTransformation.consumeWeightedAverageInventory!=="function"||typeof AgroCommodityTransformation.addInventoryCost!=="function"){msg("Mesin valuasi persediaan belum tersedia; pengolahan dibatalkan.");return;}
  if(!S.landSystem.inventoryCost)S.landSystem.inventoryCost={};
+ if(!S.landSystem.finishedInventory)S.landSystem.finishedInventory={};
+ if(!S.landSystem.finishedInventoryCost)S.landSystem.finishedInventoryCost={};
  const stock=Math.max(0,Number(S.landSystem.inventory[id])||0);
  const stockCost=Math.max(0,Number(S.landSystem.inventoryCost[id])||0);
- const inputKg=Number(p.inputKg),unitPrice=Number(p.price),otherCost=Number(p.otherCost);
+ const inputKg=Number(p.inputKg),unitPrice=Number(p.price),otherCost=Number(p.otherCost),outputQtyPerBatch=Number(p.outputQty||1);
  const units=Math.floor(stock/inputKg);
- if(!Number.isFinite(inputKg)||inputKg<=0||!Number.isFinite(unitPrice)||unitPrice<=0||!Number.isFinite(otherCost)||otherCost<0||units<1){
+ if(!Number.isFinite(inputKg)||inputKg<=0||!Number.isFinite(unitPrice)||unitPrice<=0||!Number.isFinite(otherCost)||otherCost<0||!Number.isFinite(outputQtyPerBatch)||outputQtyPerBatch<=0||units<1){
   msg("Data resep/valuasi produk olahan tidak valid atau persediaan belum cukup.");return;
  }
- const input=units*inputKg,rev=units*unitPrice,cost=units*otherCost;
+ const input=units*inputKg,outputQty=units*outputQtyPerBatch,cashConversion=units*otherCost;
  const inputValuation=AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,input);
  if(!inputValuation.ok||!Number.isFinite(inputValuation.consumedCost)||inputValuation.consumedCost<0){msg("Valuasi bahan baku tidak valid; pengolahan dibatalkan.");return;}
  const distance=Number(prompt("Jarak pengiriman produk jadi satu arah (km). Default 10 km:", "10"));
  if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; pengolahan dibatalkan.");return;}
  const vehicle=(prompt("Kendaraan distribusi: motor, pickup, truck2, truck3, truck4, atau truck5.","pickup")||"pickup").toLowerCase();
  const cold=/^(y|ya|yes|1)$/i.test(prompt("Perlu box pendingin? Ketik ya/tidak.","tidak")||"tidak");
- const logistics=logisticsPrompt(units,distance,vehicle,cold);
+ const logistics=logisticsPrompt(outputQty,distance,vehicle,cold);
  if(!logistics||!Number.isFinite(logistics.total)||logistics.total<0){msg("Biaya distribusi tidak valid; pengolahan dibatalkan.");return;}
  const economics=(typeof AgroUnitEconomics!=="undefined"&&AgroUnitEconomics.calculate)
   ? AgroUnitEconomics.calculate({
@@ -238,7 +240,7 @@ function processCommodity(id){
     plannedSalesUnitsPerMonth:1,
     wasteRate:0,
     inputs:[{
-      id:id,quantityPerOutput:inputKg,sourcingMode:"own",
+      id:id,quantityPerOutput:inputKg/outputQtyPerBatch,sourcingMode:"own",
       ownProductionCostPerUnit:inputValuation.unitCost,
       ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current harvested inventory",geography:"game scenario"},
       marketOpportunityPricePerUnit:Number(e.tengkulakPrice||e.farmerPrice||e.basePrice||0),
@@ -246,33 +248,35 @@ function processCommodity(id){
       quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"}
     }],
     variableCosts:[
-      {id:"processing-conversion",costPerProducedUnit:otherCost},
-      {id:"distribution",costPerProducedUnit:logistics.total/units}
+      {id:"processing-conversion",costPerProducedUnit:cashConversion/outputQty},
+      {id:"distribution",costPerProducedUnit:logistics.total/outputQty}
     ],
     fixedCostsMonthly:[],capex:[]
   }) : null;
  if(!economics||!economics.ok||!economics.complete||!economics.metrics||!Number.isFinite(economics.metrics.hppPerSaleableUnit)){
   msg("Unit economics produk olahan belum lengkap/valid; transaksi dibatalkan.");return;
  }
- const hpp=inputValuation.consumedCost+cost;
- if(!Number.isFinite(hpp)||hpp<=0||typeof businessCogsTotal!=="function"||businessCogsTotal([{account:"Persediaan "+COMMODITY_BY_ID[id].name,amount:inputValuation.consumedCost},{account:"Bahan Tambahan Proses",amount:cost}])!==hpp){
-  msg("HPP pengolahan tidak valid; transaksi dibatalkan.");return;
- }
- if(!Number.isFinite(S.gold)||S.gold<cost+logistics.total){msg("Kas tidak cukup untuk biaya konversi dan distribusi. Pengolahan dibatalkan.");return;}
- if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet "+safeRp(rev)+", HPP "+safeRp(hpp)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nMargin setelah HPP dan distribusi "+safeRp(rev-hpp-logistics.total)+"."))return;
- // Cash cost of conversion is recorded as a business purchase, then immediately consumed into HPP.
- if(cost>0&&!spend("BELANJA","Bahan tambahan proses "+p.name,cost,"shopping",{commodity:id,units,processing:true}))return;
- if(recordBusinessCogs("HPP pengolahan "+p.name,[
-   {account:"Persediaan "+COMMODITY_BY_ID[id].name,amount:inputValuation.consumedCost},
-   {account:"Bahan Tambahan Proses",amount:cost}
- ])!==hpp)return;
+ const finishedCost=inputValuation.consumedCost+cashConversion;
+ if(!Number.isFinite(finishedCost)||finishedCost<=0){msg("Nilai persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
+ if(!Number.isFinite(S.gold)||S.gold<cashConversion+logistics.total){msg("Kas tidak cukup untuk biaya konversi dan distribusi. Pengolahan dibatalkan.");return;}
+ if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
+ // Conversion is capitalized into finished-goods inventory. It is not COGS until the finished goods are sold.
+ if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
  if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
+ const received=AgroCommodityTransformation.addInventoryCost(
+   Math.max(0,Number(S.landSystem.finishedInventory[p.id])||0),
+   Math.max(0,Number(S.landSystem.finishedInventoryCost[p.id])||0),
+   outputQty,
+   finishedCost
+ );
+ if(!received.ok){msg("Penerimaan persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
- earn("PENJUALAN","Penjualan produk jadi "+p.name,rev,{commodity:id,units,processing:true});
- if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
- S.dayLog.commoditySales.push({commodity:id,name:p.name,quantity:units,unitPrice:unitPrice,revenue:rev,hpp,processingCost:cost,logisticsCost:logistics.total});
- save();msg("Produk jadi terjual: omzet "+safeRp(rev)+", HPP "+safeRp(hpp)+", biaya distribusi "+safeRp(logistics.total)+".");showCommodityEconomics(id);render();
+ S.landSystem.finishedInventory[p.id]=received.quantity;
+ S.landSystem.finishedInventoryCost[p.id]=received.costValue;
+ if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
+ S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
+ save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
 }
 function resetTestCrops(){
  ensureAgriState();
