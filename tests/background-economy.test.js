@@ -77,12 +77,14 @@ test('national politics and presidential candidacy have explicit economic thresh
   assert.equal(eligibility({ companyLevel: 15, annualRevenue: 10000000000, reputation: 75 }).canRunForPresident, true);
 });
 
-test('regional population caps preserve 4.9 million non-business NPCs and cap mining at 100', () => {
+test('200m national population preserves non-business share, active-agent cap and mining cap', () => {
   const cap = context.REGION_CAPACITY.allocate();
-  assert.equal(cap.population, 5000000);
+  assert.equal(cap.population, 200000000);
   assert.equal(cap.businessOwnerCap, 100000);
-  assert.equal(cap.nonBusinessPopulation, 4900000);
+  assert.equal(cap.nonBusinessPopulation, 199900000);
   assert.ok(cap.nonBusinessPopulation / cap.population >= 0.98);
+  assert.ok(cap.activeAgentCount >= 1000 && cap.activeAgentCount <= 5000);
+  assert.equal(cap.activeAgentCount, 1132);
   assert.equal(cap.sectorProducerCaps.mining, 100);
   assert.equal(context.REGION_CAPACITY.producerCap('mining'), 100);
   const reduced = context.REGION_CAPACITY.allocate({ miningOperatorCap: 25 });
