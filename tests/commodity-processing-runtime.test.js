@@ -260,4 +260,61 @@ assert.equal(state.dayLog.gross, 0);
 assert.equal(state.ledger.length, 0);
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = 25000;
 
+state.gold = 1000000;
+state.landSystem.inventory = { jagung: 5 };
+state.landSystem.inventoryCost = { jagung: 5000 };
+state.landSystem.finishedInventory = {};
+state.landSystem.finishedInventoryCost = {};
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+sandbox.COMMODITY_BY_ID.jagung = { id: "jagung", name: "Jagung" };
+sandbox.COMMODITY_ECONOMICS.jagung = {
+  unit: "kg pipilan kering",
+  farmerPrice: 5992,
+  processed: {
+    id: "jagung_bakar",
+    name: "Jagung bakar",
+    inputKg: 0.25,
+    price: 10000,
+    otherCost: 2500,
+    outputQty: 1,
+    outputUnit: "porsi",
+    inputTier: 1,
+    outputTier: 4,
+    routeId: "jagung-kering-to-jagung-bakar"
+  }
+};
+sandbox.prompt = () => "0";
+sandbox.logisticsPrompt = () => ({ total: 100 });
+sandbox.processCommodity("jagung");
+assert.equal(state.landSystem.inventory.jagung, 0);
+assert.equal(state.landSystem.inventoryCost.jagung, 0);
+assert.equal(state.landSystem.finishedInventory.jagung_bakar, 20);
+assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar, 55000);
+assert.equal(state.dayLog.cogs, 0);
+assert.equal(state.gold, 949900);
+assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 2), true);
+assert.equal(state.landSystem.finishedInventory.jagung_bakar, 18);
+assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar, 49500);
+assert.equal(state.dayLog.cogs, 5500);
+assert.equal(state.dayLog.gross, 20000);
+assert.equal(state.ledger.length, 2);
+
+const jagungRouteBefore = JSON.stringify({
+  gold: state.gold,
+  qty: state.landSystem.finishedInventory.jagung_bakar,
+  cost: state.landSystem.finishedInventoryCost.jagung_bakar,
+  ledger: state.ledger.length
+});
+const validInputTier = sandbox.COMMODITY_ECONOMICS.jagung.processed.inputTier;
+sandbox.COMMODITY_ECONOMICS.jagung.processed.inputTier = 4;
+assert.equal(sandbox.processCommodity("jagung"), undefined);
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  qty: state.landSystem.finishedInventory.jagung_bakar,
+  cost: state.landSystem.finishedInventoryCost.jagung_bakar,
+  ledger: state.ledger.length
+}), jagungRouteBefore);
+sandbox.COMMODITY_ECONOMICS.jagung.processed.inputTier = validInputTier;
+
 console.log("PASS: live commodity processing consumes weighted-average raw inventory, posts HPP once, charges conversion/distribution cash, and prevents execution without cash.");
