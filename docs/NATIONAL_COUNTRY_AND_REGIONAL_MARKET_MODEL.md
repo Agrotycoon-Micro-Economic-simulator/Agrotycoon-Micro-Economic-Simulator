@@ -19,7 +19,7 @@ The economy must be regional before it is national. A flood in Lampung reduces e
 
 ### 2.1 Population distribution
 
-The runtime country population is fixed at 200,000,000 for this scenario. The 38 province population shares are derived from BPS 2025 provincial population projections and scaled proportionally to the game total using the largest-remainder method. This preserves the relative distribution while making the total exactly 200 million.
+The runtime country population is fixed at 200,000,000 for this scenario. The 38 province population shares are derived from BPS 2025 provincial population projections and scaled proportionally to the game total using the largest-remainder method. The 38 BPS reference values sum to 284,438,600 residents; the scale factor is 0.7031394473. This preserves the relative distribution while making the total exactly 200 million.
 
 The BPS 2025 reference values (thousand residents) are:
 
