@@ -150,12 +150,15 @@ function harvestCommodity(landId,plotId){
  S.dayLog.commodityHarvests.push({commodity:c.id,name:c.name,quantity:qty,riskLoss});
  save();msg("Panen "+c.name+": "+qty+" "+(COMMODITY_ECONOMICS[c.id]?.unit||"unit")+" masuk persediaan. Pilih jual ke tengkulak, jual langsung, atau olah menjadi produk.");showCommodityEconomics(c.id);render();
 }
-function getCommodityPrice(id){
- ensureAgriState();const c=COMMODITY_BY_ID[id];if(!c)return 0;
- const m=S.landSystem.market[id]||(S.landSystem.market[id]={sold:0,price:c.basePrice});
- // Model permintaan sederhana: pasokan besar menekan harga; pasokan rendah menaikkan harga, dengan batas aman.
- const pressure=Math.max(.65,Math.min(1.4,1-(m.sold||0)/(c.yieldQty*100)));
- m.price=Math.round(c.basePrice*pressure);return m.price;
+function getCommodityPrice(id,channel){
+ ensureAgriState();const c=COMMODITY_BY_ID[id],e=COMMODITY_ECONOMICS[id];if(!c)return 0;
+ const current=typeof MARKET_ENGINE!=="undefined"&&MARKET_ENGINE?MARKET_ENGINE.getPrice(id):c.basePrice;
+ const anchor=Number(c.basePrice),base=channel==="retail"?Number(e&&e.retailPrice):Number(e&&(e.tengkulakPrice||e.farmerPrice));
+ const fallback=Number.isFinite(base)&&base>0?base:anchor;
+ const ratio=Number.isFinite(anchor)&&anchor>0?fallback/anchor:1;
+ const quote=Math.round((Number(current)>0?Number(current):anchor)*ratio);
+ const m=S.landSystem.market[id]||(S.landSystem.market[id]={sold:0,price:quote});
+ m.price=quote;return quote;
 }
 function tickAgricultureDay(){
  ensureAgriState();
@@ -183,7 +186,7 @@ function showCommodityEconomics(focusId){
  let h='<h3>📊 Ekonomi Komoditas — Mode Uji</h3><p>Harga pasar dan biaya bervariasi menurut daerah, mutu, musim, ukuran panen dan kontrak. Harga berikut adalah acuan/parameter simulasi; bukan jaminan transaksi nyata.</p>';
  ids.forEach(id=>{const e=COMMODITY_ECONOMICS[id],stock=S.landSystem.inventory[id]||0;
  if(id==="kelapa"){h+='<section class="agri-card"><h4>🥥 '+labels[id]+'</h4><p>Warisan: '+(S.trees||[]).length+' pohon · siklus game '+DATA.cycleDays+' hari · hasil normal '+DATA.yieldBiasa+' buah/pohon per siklus.</p><p>Tengkulak: '+safeRp(e.farmerPrice)+'/buah. Jual langsung/produk es kelapa: harga game '+safeRp(e.retailPrice)+'/gelas, tetapi harus memperhitungkan es, gula, gelas, tenaga kerja, dan permintaan.</p></section>';return;}
- const c=COMMODITY_BY_ID[id],yieldQty=e.yieldPer4m2||c.yieldQty,cost=e.costPer4m2||c.setupCost,b2b=e.tengkulakPrice||e.farmerPrice,retail=e.retailPrice,qty=stock;
+ const c=COMMODITY_BY_ID[id],yieldQty=e.yieldPer4m2||c.yieldQty,cost=e.costPer4m2||c.setupCost,b2b=getCommodityPrice(id,"b2b"),retail=getCommodityPrice(id,"retail"),qty=stock;
  const rawProfitB2B=yieldQty*b2b-cost,rawProfitRetail=yieldQty*retail-cost;
  const p=e.processed,units=Math.floor(yieldQty/p.inputKg),processedRevenue=units*p.price,processedOther=units*p.otherCost,processedProfit=processedRevenue-processedOther-cost;
  h+='<section class="agri-card"><h4>'+(id==="cabai_merah"?"🌶️ ":"🌽 ")+labels[id]+' — basis 4 m²</h4><p>Umur panen: '+c.growDays+' hari · estimasi hasil '+yieldQty+' '+e.unit+'/siklus · biaya awal '+safeRp(cost)+'</p><p>Tengkulak/B2B: '+safeRp(b2b)+'/'+e.unit+' → omzet '+safeRp(yieldQty*b2b)+' → <b>laba indikatif '+safeRp(rawProfitB2B)+'</b>.</p><p>Jual langsung/B2C: '+safeRp(retail)+'/'+e.unit+' → omzet '+safeRp(yieldQty*retail)+' → <b>laba indikatif '+safeRp(rawProfitRetail)+'</b>.</p><p>Produk jadi: '+p.name+'; kebutuhan bahan '+p.inputKg+' kg/unit; '+units+' unit; harga jual '+safeRp(p.price)+'/unit; biaya bahan tambahan '+safeRp(p.otherCost)+'/unit. Omzet '+safeRp(processedRevenue)+'; laba indikatif setelah biaya awal dan bahan tambahan <b>'+safeRp(processedProfit)+'</b>. Perhitungan belum memasukkan kemasan tambahan, penyusutan alat, tenaga kerja pengolahan, distribusi, produk gagal, pajak, dan barang tidak terjual.</p><p>Persediaan siap jual: '+qty.toFixed(2)+' '+e.unit+'</p>';
@@ -211,7 +214,7 @@ function sellCommodity(id,channel){
  const stockCost=Math.max(0,Number(S.landSystem.inventoryCost[id])||0);
  if(qty<=0){msg("Persediaan kosong.");return false;}
  if(!Number.isFinite(stockCost)||stockCost<=0){msg("Nilai persediaan bahan baku belum valid; penjualan dibatalkan agar HPP tidak hilang.");return false;}
- const price=Number(channel==="b2b"?(e.tengkulakPrice||e.farmerPrice):e.retailPrice);
+ const price=getCommodityPrice(id,channel);
  if(!Number.isFinite(price)||price<=0){msg("Harga jual komoditas saat ini tidak valid; penjualan dibatalkan.");return false;}
  const valuation=AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
  if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP komoditas tidak valid; penjualan dibatalkan.");return false;}
@@ -258,6 +261,7 @@ function sellCommodity(id,channel){
  S.landSystem.inventory[id]=valuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
+ if(channel==="b2b"&&typeof queueMarketTransaction==="function")queueMarketTransaction({commodityId:id,side:"sell",quantity:qty,price,marketStage:"producer",source:"player_b2b_commodity_sale"});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,cogs:valuation.consumedCost,grossProfit,channel,logisticsCost:logistics.total,netAfterLogistics:net});
  save();msg("Omzet "+safeRp(rev)+"; HPP "+safeRp(valuation.consumedCost)+"; laba kotor "+safeRp(grossProfit)+"; distribusi "+safeRp(logistics.total)+"; kas bersih "+safeRp(net)+".");showCommodityEconomics(id);render();
