@@ -36,6 +36,18 @@ test('all 60 commodities have differentiated internal price bands and volatility
   assert.ok(market.byId.lele.marketDailyMoveLimit > market.byId.kopi.marketDailyMoveLimit);
 });
 
+test('sector-specific daily movement limits are enforced at their configured ceilings', () => {
+  const market = context.MARKET_ENGINE;
+  for (const id of ['cabai_merah', 'padi']) {
+    const item = market.byId[id];
+    item.marketPrice = item.basePrice;
+    const start = item.marketPrice;
+    const result = market.reprice([{ commodityId: id, side: 'buy', quantity: 100000, price: item.marketCeiling }]);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].price, Math.round(start * (1 + item.marketDailyMoveLimit)));
+  }
+});
+
 test('net buy pressure raises price and net sell pressure lowers price', () => {
   const market = context.MARKET_ENGINE;
   const item = market.byId.jagung;
