@@ -459,3 +459,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The test fixture was updated so `tests/commodity-processing-runtime.test.js` verifies 10 sambal packages with Rp105,000 carrying value after consuming 2.5 kg of cabai with Rp5,000 raw carrying value plus Rp100,000 conversion cost; no COGS or revenue is recognized at production time.
 - CI verification is required before declaring this checkpoint green. No local test execution is claimed.
 - Next implementation target: build the finished-goods sale transaction against `finishedInventory`/ `finishedInventoryCost`, with weighted-average COGS, revenue validation, and no stale-price mutation. Do not bypass this inventory boundary by restoring auto-sale behavior.
+
+
+## Finished-goods sale transaction (2026-11-08)
+
+- Implemented js/land.js::sellFinishedCommodity() against finishedInventory and finishedInventoryCost.
+- The transaction validates product identity, positive integer quantity, current sale price, weighted-average carrying value, and AgroUnitEconomics.calculate() before mutation; the sale price is read from current product configuration rather than trusted from stale UI state.
+- Successful sales reduce finished quantity/value by weighted-average HPP, post HPP exactly once through recordBusinessCogs(), post revenue exactly once through earn(), and calculate gross profit as revenue minus HPP.
+- Added a minimal sale button in the existing commodity-economics UI. No map files were touched.
+- Regression coverage verifies 2 sambal packages sold from 10: carrying value Rp105,000 -> Rp84,000, HPP Rp21,000, revenue Rp36,000, gross revenue Rp36,000, plus zero-mutation rejection for invalid price and non-integer quantity.
+- CI verification is required before marking this checkpoint green. No local test execution is claimed.
+- Next target after CI closure: extend the same finished-goods transaction model to the next real Tier 1–4 production route.
