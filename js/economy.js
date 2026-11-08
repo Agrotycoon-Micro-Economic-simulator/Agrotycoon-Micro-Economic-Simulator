@@ -253,7 +253,7 @@ function sellTengkulak(){
  const ordinaryOffer=kelapaMarketQuote(DATA.priceTengkulak.biasa),superOffer=kelapaMarketQuote(DATA.priceTengkulak.super);
  const rev=(biasaQty*ordinaryOffer)+(superQty*superOffer);
  showModal('<h3>🧑‍💼 Pak Tengkulak Datang</h3>'+
- '<p>"Halo Bos '+S.name+'! Saya tawar harga standar: biasa Rp 3.500, super Rp 5.000. Saya borong semua."</p>'+
+ '<p>"Halo Bos '+S.name+'! Penawaran saat ini: biasa '+rp(ordinaryOffer)+', super '+rp(superOffer)+'. Saya borong semua."</p>'+
  '<p><b>Total Penawaran: '+rp(rev)+'</b></p>'+
  '<button class="btn btn-success" onclick="confirmSellTengkulak(true,'+rev+')">✅ Jual Semua</button> '+
  '<button class="btn" onclick="closeModal()">❌ Tidak Jadi</button>');
@@ -300,7 +300,7 @@ function sellPasar(){
  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
  if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  const unitCost=stockValue/q;
- if(!Number.isFinite(unitCost)||unitCost<=0||!validateOldCoconutMarketUnitEconomics(DATA.pricePasarTua,unitCost)){msg('⚠️ Unit economics kelapa tua tidak valid. Penjualan dibatalkan.');save();render();return;}
+ if(!Number.isFinite(unitCost)||unitCost<=0||!validateOldCoconutMarketUnitEconomics(salePrice,unitCost)){msg('⚠️ Unit economics kelapa tua tidak valid. Penjualan dibatalkan.');save();render();return;}
  if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev);
  if(typeof queueMarketTransaction==='function')queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:q,price:salePrice,marketStage:'producer',source:'player_sale_to_market'});
