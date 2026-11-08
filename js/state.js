@@ -15,7 +15,7 @@ function defaultState(){
   livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
   livingUseDays:{rice:0,egg:0,oil:0,mie:0,tempe:0,sayur:0,lauk:0},
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0},
-  marketPrices:{},marketPolicies:{productionTax:0.05,inputSubsidy:0,importTariff:0.05,interestRate:0.08,logisticsEfficiency:1,foodReserveDemand:0.05},marketLastTick:null
+  landSystem:null,marketPrices:{},marketPolicies:{productionTax:0.05,inputSubsidy:0,importTariff:0.05,interestRate:0.08,logisticsEfficiency:1,foodReserveDemand:0.05},marketLastTick:null
  };
 }
 function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cogsByAccount:{},cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
@@ -70,6 +70,12 @@ function loadSaved(){
    if(!Number.isFinite(S.finance.payablesPayroll))S.finance.payablesPayroll=0;
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.landSystem)S.landSystem=null;
+   if(S.landSystem){
+    if(!S.landSystem.inventory||typeof S.landSystem.inventory!=='object')S.landSystem.inventory={};
+    if(!S.landSystem.inventoryCost||typeof S.landSystem.inventoryCost!=='object')S.landSystem.inventoryCost={};
+    if(!S.landSystem.finishedInventory||typeof S.landSystem.finishedInventory!=='object')S.landSystem.finishedInventory={};
+    if(!S.landSystem.finishedInventoryCost||typeof S.landSystem.finishedInventoryCost!=='object')S.landSystem.finishedInventoryCost={};
+   }
    restoreMarketPrices();
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
