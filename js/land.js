@@ -258,6 +258,7 @@ function processCommodity(id){
  if(!Number.isFinite(hpp)||hpp<=0||typeof businessCogsTotal!=="function"||businessCogsTotal([{account:"Persediaan "+COMMODITY_BY_ID[id].name,amount:inputValuation.consumedCost},{account:"Bahan Tambahan Proses",amount:cost}])!==hpp){
   msg("HPP pengolahan tidak valid; transaksi dibatalkan.");return;
  }
+ if(!Number.isFinite(S.gold)||S.gold<cost+logistics.total){msg("Kas tidak cukup untuk biaya konversi dan distribusi. Pengolahan dibatalkan.");return;}
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+units+" unit "+p.name+"? Omzet "+safeRp(rev)+", HPP "+safeRp(hpp)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nMargin setelah HPP dan distribusi "+safeRp(rev-hpp-logistics.total)+"."))return;
  // Cash cost of conversion is recorded as a business purchase, then immediately consumed into HPP.
  if(cost>0&&!spend("BELANJA","Bahan tambahan proses "+p.name,cost,"shopping",{commodity:id,units,processing:true}))return;
