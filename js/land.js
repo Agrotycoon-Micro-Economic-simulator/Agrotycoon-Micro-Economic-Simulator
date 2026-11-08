@@ -246,16 +246,14 @@ function sellCommodity(id,channel){
  if(!Number.isFinite(rev)||rev<=0||!Number.isFinite(net)||!Number.isFinite(grossProfit)){msg("Nilai penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!Number.isFinite(S.gold)||S.gold+rev<logistics.total){msg("Kas dan hasil penjualan tidak cukup untuk membayar distribusi; penjualan dibatalkan.");return false;}
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+" "+channel+"\\nOmzet: "+safeRp(rev)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(grossProfit)+"\\n"+logisticsBreakdown(logistics)+"\\nKas bersih setelah distribusi: "+safeRp(net)))return false;
+ const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
+ if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
+  msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
+ }
  S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
  S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
  S.landSystem.inventory[id]=valuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
- const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
- if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
-  S.landSystem.inventory[id]=qty;
-  S.landSystem.inventoryCost[id]=stockCost;
-  msg("Pencatatan HPP gagal; persediaan dikembalikan dan penjualan dibatalkan.");return false;
- }
  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
  if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold})){
   // Revenue has already been posted; the cash precondition above guarantees this should not occur.
@@ -375,10 +373,10 @@ function sellFinishedCommodity(productId, requestedQuantity){
  S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
  const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
-  S.landSystem.finishedInventory[id]=stock;
-  S.landSystem.finishedInventoryCost[id]=stockCost;
-  msg("Pencatatan HPP gagal; persediaan dikembalikan dan penjualan dibatalkan.");return false;
+  msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
  }
+ S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
+ S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
  earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:product.name,quantity:rawQuantity,unitPrice:salePrice,revenue,cogs:valuation.consumedCost,grossProfit:revenue-valuation.consumedCost,channel:"finished_goods"});
