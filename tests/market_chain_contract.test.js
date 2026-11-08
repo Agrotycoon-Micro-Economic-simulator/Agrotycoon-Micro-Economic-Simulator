@@ -21,4 +21,18 @@ assert.equal(coconut.direct.type, "owner_verified_field_price");
 assert.equal(coconut.retailConsumer.value, null, "household final-consumer price is a separate market stage");
 assert.match(window.MARKET_CHAIN_DATA.snapshotNote, /buyer\/seller transaction/);
 assert.match(window.MARKET_CHAIN_DATA.missingDataPolicy, /cannot be substituted for collector-to-processor prices/);
+const latestCorn = window.MARKET_CHAIN_DATA.officialSnapshots.find(x => x.commodityId === "jagung");
+const latestChili = window.MARKET_CHAIN_DATA.officialSnapshots.find(x => x.commodityId === "cabai_merah");
+assert.equal(latestCorn.value, 5810);
+assert.equal(latestCorn.period, "2026-01");
+assert.equal(latestCorn.stage, "producer");
+assert.equal(latestChili.value, 24578);
+assert.equal(latestChili.period, "2026-01");
+assert.equal(latestChili.stage, "producer");
+for (const row of rows) {
+  assert.equal(row.distributionMarket.value, null, "unverified Tier 2 distributor price must remain null");
+  assert.equal(row.distributionMarket.type, "missing");
+  assert.match(row.distributionMarket.note, /Jangan isi|bukan harga/);
+}
+
 console.log("PASS: owner field prices are immutable; processor purchase and household consumer stages remain separate.");
