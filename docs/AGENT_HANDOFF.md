@@ -489,3 +489,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added a regression that forces `recordBusinessCogs()` to fail and verifies a finished-goods sale leaves cash, quantity, carrying value, COGS and gross revenue unchanged.
 - No map files, `main`, or unrelated economy paths were changed.
 - Next target: extend this transaction-atomicity test pattern to raw agricultural sale and processing receipt, then continue to the next real Tier 1–4 production route.
+## Transaction atomicity hardening — raw sale and processing receipt (2026-11-08)
+
+- Verified the previous transaction-order hardening on the actual branch: HEAD advanced to 7e37128d870113aaec07f75eada4bc6f984539c0; targeted regression runs 42488720700 (sale ordering) and 42488722934 (HPP-failure regression) both completed successfully.
+- js/economy.js::spend() now rejects insufficient cash before ledger/day-log/cash mutation. This closes a broader invariant used by the production and sale transaction paths.
+- js/land.js::processCommodity() now validates the finished-goods receipt (addInventoryCost) before any cash or inventory mutation. Raw inventory and finished-goods state are committed only after the conversion/distribution cash steps have passed.
+- js/land.js::sellCommodity() now completes the distribution cash step before raw inventory/market/revenue mutation. The transaction no longer intentionally leaves revenue/inventory changes behind when the distribution spend itself rejects.
+- tests/commodity-processing-runtime.test.js now covers finished-goods sale HPP failure with zero mutation; raw agricultural sale HPP failure with zero mutation; and processing receipt failure with zero cash/raw-inventory/finished-inventory/ledger mutation.
+- Code commits: deddf4a10a961b8a8bac2ff9dbf1af263b7cf065, d48e5340803a4dfbc31a4ada01aaab5f31ba7fa7.
+- Test commit: b63bf533498aded0fde27c00373d48d8b47f6052.
+- GitHub Actions for these new commits must be checked before marking the checkpoint green. No local test execution is claimed.
+- Next implementation target after CI closure: move from transaction-atomicity hardening to the next real Tier 1–4 production route, while preserving weighted-average inventory valuation, unit-economics preconditions, and single-owner HPP/revenue posting.
