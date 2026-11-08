@@ -14,7 +14,7 @@ The first runtime slice is implemented in `js/national_economy.js` and documente
 - Regional price discovery is stock-cover and logistics based. Local disaster events can change only exposed province prices; player trade quotes use the selected player province.
 - Government model implements a 25%-of-monthly-demand opening reserve, 30-day target, monthly procurement up to 5%, release below 10 days of stock cover when local price index exceeds 1.15, and imports capped at 10% of monthly demand subject to treasury.
 - Deterministic seeded monthly disaster rolls are experimental (0.6% per province per game month); explicit disaster injection is available for scenario tests.
-- New regression file `tests/national-economy.test.js` is included in the targeted Node test job. CI outcome is pending until a completed run is verified.
+- New regression file `tests/national-economy.test.js` is included in the targeted Node test job. Custom V8 runtime smoke passed 11 checks, plus a 30-day national paddy import-cap scenario and static syntax checks. The Node test-runner and GitHub Actions outcome remain pending until a completed run is verified.
 
 Evidence and data definitions are in `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md`. Next research gate is the full official locality code/name master and physical per-commodity household/industry/institutional consumption rates. Do not treat synthetic locality splits or demand-index weights as official statistics.
 
