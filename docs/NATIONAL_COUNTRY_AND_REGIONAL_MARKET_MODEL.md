@@ -116,7 +116,8 @@ A separate public dataset documents Dukcapil Semester I 2024 population/househol
 - Agent roles include farmer, livestock operator, fisher, processor, wholesaler, retailer, logistics operator, institutional buyer and government officer.
 - Each active agent has a province, role, behavior profile, risk/price sensitivity, representative population weight and daily decision state. The representative weight is not extra population and must not be added to the 200 million resident count.
 - Each game day, agents evaluate local price signals. Producers/processors adjust supply intent; wholesalers/retailers/institutional buyers adjust demand or inventory intent; logistics agents prioritize rerouting when local price pressure is high; government agents flag reserve review. These are deterministic, low-cost heuristics, not LLM calls.
-- Aggregated agent decisions adjust province-level supply/demand response and logistics mitigation. The runtime processes about 1,132 agent records, not millions of consumer objects. Increasing population does not create millions of JavaScript objects.
+- Aggregated agent decisions adjust province-level supply/demand response and logistics-disruption mitigation. The runtime processes about 1,132 agent records, not millions of consumer objects. Increasing population does not create millions of JavaScript objects.
+- Active agents do not yet own individual cash accounts, physical inventories or contracts; their behavior is a lightweight representative decision layer. Full business balance sheets remain in the player/NPC aggregate accounting layer.
 
 This is an agent-based/aggregate hybrid: statistical cohorts provide scale; a small number of active agents provide behavioral decisions.
 
@@ -173,6 +174,8 @@ Procurement is a market purchase: it debits government treasury, reduces market 
 
 The government does not buy every month regardless of need: procurement is conditional on reserve stock being below the target and sufficient treasury being available. This prevents arbitrary purchases when the reserve is already full.
 
+The first version does not yet route physical interprovincial shipments from surplus provinces to deficit provinces. Local reserve release and capped imports work; logistics agents currently affect local disruption mitigation and record reroute intent, not a full freight network. The opening treasury is not yet replenished by a modeled tax/revenue system, so it can eventually be exhausted.
+
 Fiscal revenue, budget appropriations, debt issuance, procurement contracts, storage losses, quality grades, port capacity and national reserve accounting by physical tonnes are not yet complete. **Butuh riset lanjutan** for the physical and legal policy layer.
 
 The architecture follows the real-world concept of government food reserves and SPHP price stabilization. Bapanas describes CBP/SPHP as instruments for maintaining availability and affordable prices under Government Regulation No. 125/2022 and Bapanas Regulation No. 15/2022. The game policy percentages above remain experimental and are not copied from those regulations.
@@ -205,8 +208,8 @@ The dashboard supports country, province, regency, city, district, desa and kelu
 2. Replace equal-share population estimates with actual locality population and household data; then derive household demand by household size, age structure, income/poverty and urban/rural profile.
 3. Add physical household consumption by commodity and province; distinguish rice from paddy/gabah, food from feed maize, fresh/live animal from processed meat, and household from industrial demand.
 4. Add provincial commodity production, harvested area, productivity, storage and seasonal supply for all Tier 1–4 commodities.
-5. Add actual province-to-province freight capacity, costs, distances, ports, route closures and shipment lead times.
-6. Add government fiscal revenue, budget, procurement contracts, warehouse capacity, reserve quality/age, storage losses, release pricing and transparent public accounts.
+5. Add actual province-to-province freight capacity, costs, distances, ports, route closures and shipment lead times, then transfer surplus inventory between provinces before importing.
+6. Add government tax revenue, fiscal budget, procurement contracts, warehouse capacity, reserve quality/age, storage losses, release pricing and transparent public accounts.
 7. Add official disaster/hazard exposure and calibrated damage/recovery distributions.
 8. Add tests for full master-data parent links, population reconciliation, multi-province trade, price convergence, import budget exhaustion, reserve depletion/replenishment, save migration, and large-scale mobile performance.
 
