@@ -28,9 +28,11 @@
 | `js/day.js` | `b620cb97936c684d9b6aec73812a04ec9324d04d` | Daily national economy tick and government ledger memo |
 | `index.html` | `0038ce026e6280a05a0594cf77bd6d037504d495` | Load national economy engine |
 | `dunia-simulasi.html` | `b41063f6a4e89c0eecb95a00870a9fc06d36f8b7` | Country/province dashboard and player-region selector |
-| `tests/national-economy.test.js` | `5c74d4e51a127885dbd794558385c922a4d515ac` | Population, locality aggregates, agent cap, disaster price and reserve tests |
+| `tests/national-economy.test.js` | `51708b895b9ad04bdd0225279aba44ca08c6784d` | Population, locality aggregates, agent cap, disaster price and reserve tests |
 | `.github/workflows/targeted-regression.yml` | `deda0462db8b7eac612ea31bb052d7e1e696316b` | Add national economy test to Node regression job |
-| `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `c7ffdf01195b5a80424ddbd14f74f7be87070f26` | Full design, data provenance, formulas, policy settings and research backlog |
+| `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `0e7888e58dd10fefd0a7878b914dc8d238f68b60` | Full design, data provenance, formulas, policy settings and research backlog |
+| `docs/NATIONAL_ECONOMY_RESEARCH_AND_IMPLEMENTATION_PLAN.md` | `396f8119a27c28803a215259ee71d06e9d609176` | Current implementation status and research gates |
+| `docs/WORLD_SIMULATION_ENGINE.md` | `041bef2671f71765ae2d0060cfb9aa811df26790` | National aggregate simulation architecture and limits |
 | `data/administrative_regions/*.csv` | See source blob SHAs in `data/administrative_regions/README.md` | 38 provinces, 514 kabupaten/kota, 7,285 districts, 83,762 locality records; loaded lazily |
 | `data/administrative_regions/LICENSE*.txt` | See repository history | MIT attribution for normalized dataset and upstream source |
 
@@ -40,9 +42,9 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 
 - A new Node test-runner suite is present and included in the targeted workflow.
 - Custom V8 runtime smoke executed against the GitHub-fetched source and imported CSV blobs: 38 provinces, exact 200m population, 1,132 active agents, 60 commodities, master totals 416/98/7,285/75,252/8,496/14, all per-province counts matching the master, actual Lampung locality code/name lookup, name search and daily agent decisions. All 12 checks passed.
-- Deterministic control comparison: a Lampung paddy shock moved its quote from Rp10,000 to Rp14,108, while DKI Jakarta matched the no-shock control at Rp9,961 exactly. Government reserve release occurred.
+- Deterministic control comparison: a Lampung paddy shock moved its quote from Rp10,000 to Rp13,960, while DKI Jakarta matched the no-shock control at Rp9,916 exactly. Government reserve release occurred.
 - Separate 30-day all-province paddy drought scenario confirmed imports executed exactly up to the 10% monthly demand cap per commodity (20,000 index units in the test scenario).
-- Static syntax checks passed for seven modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html`.
+- Static syntax checks passed for eight modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html` (three inline scripts total).
 - **The Node test-runner suite and GitHub Actions are not yet verified as completed green.** Do not claim full CI or the full Node test file passed until a completed run is available.
 - Existing historical green runs listed elsewhere in this document do not validate this new country model.
 
