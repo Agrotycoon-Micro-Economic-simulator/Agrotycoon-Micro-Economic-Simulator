@@ -81,8 +81,10 @@
       const imbalance = (g.buyQty - g.sellQty) / totalFlow;
       const vwap = g.turnover / g.volume;
       const tradeSignal = current > 0 ? (vwap - current) / current : 0;
-      const rawChange = (elasticity * imbalance) + (0.25 * tradeSignal);
-      const boundedChange = Math.max(-maxStep, Math.min(maxStep, rawChange));
+      const itemElasticity = finitePositive(item.marketElasticity) ? Math.min(0.25, item.marketElasticity) : elasticity;
+      const itemMaxStep = finitePositive(item.marketDailyMoveLimit) ? Math.min(maxStep, item.marketDailyMoveLimit) : maxStep;
+      const rawChange = (itemElasticity * imbalance) + (0.25 * tradeSignal);
+      const boundedChange = Math.max(-itemMaxStep, Math.min(itemMaxStep, rawChange));
       const next = clampPrice(item, current * (1 + boundedChange));
       item.marketPrice = next;
       results.push({
