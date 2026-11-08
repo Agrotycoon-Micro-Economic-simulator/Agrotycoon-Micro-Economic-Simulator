@@ -523,3 +523,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test commit: `5cd77d2deb37d1f257b6f9dc1a46eba96a2db9b3`.
 - GitHub Actions verification is required before marking this route green. No local test execution is claimed.
 - Next implementation target after CI: add the next evidence-backed intermediate Tier 2/Tier 3 route rather than adding more generic hard-coded Tier 1 → Tier 4 shortcuts.
+
+
+## Tier 2 price-stage evidence contract (2026-11-08)
+
+- Continued the Tier 2/Tier 3 route investigation without inventing distributor prices. `js/market_chain.js` now has an explicit `distributionMarket` stage for coconut, red chili, and corn; its value remains `null` with `type:"missing"` because no source currently in the repository verifies the relevant distributor/wholesale buyer-seller transaction.
+- Added a separate `officialSnapshots` series for Bapanas January 2026 producer observations: dry shelled corn Rp5,810/kg and curly red chili Rp24,578/kg. These are explicitly tagged `stage:"producer"` and must not be copied into Tier 2.
+- Source: Bapanas national monthly producer-price dataset, https://data.badanpangan.go.id/datasetpublications/3iw/rata-rata-harga-pangan-bulanan-produsen-nasional. The dataset records January 2026 producer observations; it does not establish distributor purchase prices.
+- Preserved existing game parameters and owner-verified coconut prices. The new official snapshot is a separate historical observation and does not overwrite current game balancing values or owner-protected coconut Rp13,000.
+- `tests/market_chain_contract.test.js` now asserts exact January 2026 values, producer-stage labels, and null Tier 2 distributor prices for all three market-chain rows.
+- Code/data commit: `f484c947ac5bb573855e33814ac3c52c45406f47`.
+- Test commit: `66518f9110f59a04caba154eeabfe3678649085d`.
+- CI verification is pending. No local test execution is claimed.
+- Next: obtain a matched Tier 2 transaction series (commodity grade, region, unit, month, seller/buyer stage) before activating distributor stock transfers. Candidate sources include PIHPS market-type observations and official market/distribution datasets, but their market type must be checked rather than assumed to be wholesale.
