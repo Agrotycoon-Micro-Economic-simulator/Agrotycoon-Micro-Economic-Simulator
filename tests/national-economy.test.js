@@ -58,20 +58,26 @@ test('every commodity has locality-level demand aggregates without materializing
   }
 });
 
-test('Lampung supply shock raises its local quote without directly repricing Jakarta', () => {
+test('Lampung supply shock changes its quote without cross-province price spillover', () => {
   const api = context.AgroNationalEconomy;
-  api.ensure();
+  vm.runInContext("S = { name: 'lampung-isolation-test' }", context);
+  const control = api.ensure();
+  control.eventChancePerProvinceMonthly = 0;
+  control.government.procurementShare = 0;
+  for (let day = 1; day <= 15; day++) api.updateDay(day);
+  const controlJakartaQuote = api.quote('dki-jakarta', 'padi', 10000);
+
+  vm.runInContext("S = { name: 'lampung-isolation-test' }", context);
   const state = api.ensure();
   state.eventChancePerProvinceMonthly = 0;
   state.government.procurementShare = 0;
   const beforeLampung = api.quote('lampung', 'padi', 10000);
-  const beforeJakarta = api.quote('dki-jakarta', 'padi', 10000);
   api.applyDisaster({ provinceId: 'lampung', type: 'banjir', commodityIds: ['padi'], productionLossFraction: 0.95, logisticsLossFraction: 0.15, durationDays: 30 });
   for (let day = 1; day <= 15; day++) api.updateDay(day);
   const afterLampung = api.quote('lampung', 'padi', 10000);
   const afterJakarta = api.quote('dki-jakarta', 'padi', 10000);
   assert.ok(afterLampung > beforeLampung);
-  assert.equal(afterJakarta, beforeJakarta);
+  assert.equal(afterJakarta, controlJakartaQuote);
   assert.ok(state.government.monthlyReleased > 0);
   assert.ok(state.activeAgents.every(agent => agent.lastDecisionDay === 15 && agent.lastAction));
   assert.ok(Object.values(state.national.agentActionCounts).some(count => count > 0));
