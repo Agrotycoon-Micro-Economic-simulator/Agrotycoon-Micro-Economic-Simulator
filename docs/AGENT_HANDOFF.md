@@ -6,7 +6,7 @@
 - New in-game country: **Republik Arunika**, using 38 Indonesian province names as geographic references.
 - Game population: exactly **200,000,000 statistical residents**, distributed across 38 provinces in proportion to BPS 2025 provincial population reference weights. This is a game scenario, not Indonesia's current population.
 - Runtime does not instantiate 200m residents. It creates approximately **1,132 active representative agents** (formula `ceil(sqrt(200m) × 0.08)`, clamped 1,000–5,000) and stores 38 × 60 province/commodity aggregate states.
-- Administrative counts: 514 kabupaten/kota combined (416 regencies + 98 cities, 2024); 7,281 kecamatan (2024); 84,291 desa/kelurahan-level units (2025). Per-province regency/city allocations and desa/kelurahan split are derived estimates; locality names are synthetic placeholders pending official named/code master data.
+- Administrative counts: 514 kabupaten/kota combined (416 regencies + 98 cities, 2024); 7,281 kecamatan (2024); 84,291 desa/kelurahan-level units (2025). Per-province regency/city allocations (minimum one per province plus population-weighted remainder) and desa/kelurahan split are derived estimates; locality names are synthetic placeholders pending official named/code master data. The dashboard now supports on-demand statistics at country, province, regency, city, district, desa and kelurahan levels.
 - Commodity demand is currently a category-weighted **index**, not physical tonnes/kg. All 60 catalog commodity IDs have a province-level demand index, stock, production, reserve, import and regional price index. Per-commodity physical consumption rates remain a research gate.
 - Regional price index is independent by province. Lampung supply/disaster shocks change Lampung's local quote without automatically repricing DKI Jakarta. Player province defaults to DKI Jakarta and is selectable in `dunia-simulasi.html`; `js/land.js` and coconut producer quotes use the selected province quote.
 - Government reserve model: opening reserve 25% of monthly demand index; target 30 days; monthly procurement max 5% of demand when reserve is below target; release trigger below 10 days and price index >1.15; release max 15% monthly demand; import cap 10% monthly demand, treasury constrained. Opening treasury Rp1 trillion is an experimental game parameter.
@@ -17,15 +17,15 @@
 
 | File | Commit SHA | Change |
 |---|---|---|
-| `js/national_economy.js` | `0e534269975e8fda80e63c2612f6daad40d5b073` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
+| `js/national_economy.js` | `2941b24a34cade6af9e1284573cd7e74a8d07918` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
 | `js/region_capacity.js` | `b5d4b4104e41e21347384b6ede01a00f24608863` | 200m default population and active-agent bounds |
 | `js/state.js` | `bd2e02fcce1ad68d91cd29a4bc6018f42d894429` | Persist player province (default DKI Jakarta) and migrate older saves |
 | `js/land.js` | `1e9f6821add88839c37f2a883c66a15a18f0f474` | Regional commodity quotes for player trade |
 | `js/economy.js` | `85d2eb97f1f47967a3256b800137c3cbd7655e86` | Regional coconut producer quotes; direct retail baseline remains protected |
 | `js/day.js` | `b620cb97936c684d9b6aec73812a04ec9324d04d` | Daily national economy tick and government ledger memo |
 | `index.html` | `0038ce026e6280a05a0594cf77bd6d037504d495` | Load national economy engine |
-| `dunia-simulasi.html` | `10d44940c58a3f42922079ef9d9d785ad9a64741` | Country/province dashboard and player-region selector |
-| `tests/national-economy.test.js` | `ec81c4cd12ebb8e6313b99be9225f055b9bbe075` | Population, locality aggregates, agent cap, disaster price and reserve tests |
+| `dunia-simulasi.html` | `1d3e38b5981fa0c2094ac9f9e714ec34bd54b33b` | Country/province dashboard and player-region selector |
+| `tests/national-economy.test.js` | `bb0ece6a6bfd587cc5a4bcb8b454a860c8418bc4` | Population, locality aggregates, agent cap, disaster price and reserve tests |
 | `.github/workflows/targeted-regression.yml` | `deda0462db8b7eac612ea31bb052d7e1e696316b` | Add national economy test to Node regression job |
 | `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `6b53a9787a057819014a6da7f66b89f77e5eaa5a` | Full design, data provenance, formulas, policy settings and research backlog |
 
