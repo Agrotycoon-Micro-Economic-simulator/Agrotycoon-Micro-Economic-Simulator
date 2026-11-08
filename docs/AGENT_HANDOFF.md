@@ -5,7 +5,7 @@
 - Active branch: `feat/production-tier-taxonomy`. Continue on this branch only; never write to `main`. No map files were changed.
 - New in-game country: **Republik Arunika**, using 38 Indonesian province names as geographic references.
 - Game population: exactly **200,000,000 statistical residents**, distributed across 38 provinces in proportion to BPS 2025 provincial population reference weights. This is a game scenario, not Indonesia's current population.
-- Runtime does not instantiate 200m residents. It creates approximately **1,132 active representative agents** (formula `ceil(sqrt(200m) × 0.08)`, clamped 1,000–5,000) and stores 38 × 60 province/commodity aggregate states.
+- Runtime does not instantiate 200m residents. It creates approximately **1,132 active representative agents** (formula `ceil(sqrt(200m) × 0.08)`, clamped 1,000–5,000) and stores 38 × 60 province/commodity aggregate states. Agents execute deterministic daily decisions: producer supply response, buyer demand/inventory response, logistics reroute intent and government reserve review; aggregated signals feed regional stock/price calculations.
 - Administrative identity master imported under `data/administrative_regions/` from the MIT-licensed `prodhokter/dataset-wilayah-indonesia` normalized dataset, derived from Kepmendagri 300.2.2-2138/2025: 38 provinces, 416 kabupaten, 98 kota, 7,285 kecamatan, 75,252 desa, 8,496 kelurahan and 14 UPT/SPT (83,762 locality records). All 38 province-level counts match the master CSVs. Actual locality names/codes load only when the dashboard locality search is used.
 - Separate BPS/Podes reference is retained: 7,281 kecamatan (2024) and 84,291 desa/kelurahan units (2025); Podes 2024 breakdown 75,753 desa, 8,486 kelurahan, 37 UPT/SPT. Do not merge these with the Kemendagri-derived master counts.
 - Locality names/codes are now real master records, but per-locality population is still an equal-share estimate from the province. The population status is explicitly marked `equal_share_estimate_pending_official_locality_population`; it is not actual Dukcapil village population. The dashboard can search and display country, province, regency, city, district, desa and kelurahan.
@@ -19,15 +19,15 @@
 
 | File | Commit SHA | Change |
 |---|---|---|
-| `js/national_economy.js` | `50d6812313850e57bae905dfc3b64357f89f4238` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
+| `js/national_economy.js` | `19f6eeec7cabc17d1c09d5eb1e75adf452007a99` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
 | `js/region_capacity.js` | `b5d4b4104e41e21347384b6ede01a00f24608863` | 200m default population and active-agent bounds |
 | `js/state.js` | `bd2e02fcce1ad68d91cd29a4bc6018f42d894429` | Persist player province (default DKI Jakarta) and migrate older saves |
 | `js/land.js` | `1e9f6821add88839c37f2a883c66a15a18f0f474` | Regional commodity quotes for player trade |
 | `js/economy.js` | `85d2eb97f1f47967a3256b800137c3cbd7655e86` | Regional coconut producer quotes; direct retail baseline remains protected |
 | `js/day.js` | `b620cb97936c684d9b6aec73812a04ec9324d04d` | Daily national economy tick and government ledger memo |
 | `index.html` | `0038ce026e6280a05a0594cf77bd6d037504d495` | Load national economy engine |
-| `dunia-simulasi.html` | `9cba1ad1ca0cd2294bacf939098312c2586e45d2` | Country/province dashboard and player-region selector |
-| `tests/national-economy.test.js` | `0e79aaac322d7321672b88f390c2c4374557a0c1` | Population, locality aggregates, agent cap, disaster price and reserve tests |
+| `dunia-simulasi.html` | `b41063f6a4e89c0eecb95a00870a9fc06d36f8b7` | Country/province dashboard and player-region selector |
+| `tests/national-economy.test.js` | `5c74d4e51a127885dbd794558385c922a4d515ac` | Population, locality aggregates, agent cap, disaster price and reserve tests |
 | `.github/workflows/targeted-regression.yml` | `deda0462db8b7eac612ea31bb052d7e1e696316b` | Add national economy test to Node regression job |
 | `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `5bf40ad48bc8b164af393d8179d85cb6f475172c` | Full design, data provenance, formulas, policy settings and research backlog |
 | `data/administrative_regions/*.csv` | See source blob SHAs in `data/administrative_regions/README.md` | 38 provinces, 514 kabupaten/kota, 7,285 districts, 83,762 locality records; loaded lazily |
@@ -38,8 +38,8 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 ## Test / CI status
 
 - A new Node test-runner suite is present and included in the targeted workflow.
-- Custom V8 runtime smoke executed against the GitHub-fetched source and imported CSV blobs: 38 provinces, exact 200m population, 1,132 active agents, 60 commodities, master totals 416/98/7,285/75,252/8,496/14, all per-province counts matching the master, actual Lampung locality code/name lookup, and name search. All 12 checks passed.
-- Separate regional market scenario confirmed a Lampung paddy shock moves its quote from Rp10,000 to Rp14,416 while DKI Jakarta remains Rp10,000; government reserve release occurred.
+- Custom V8 runtime smoke executed against the GitHub-fetched source and imported CSV blobs: 38 provinces, exact 200m population, 1,132 active agents, 60 commodities, master totals 416/98/7,285/75,252/8,496/14, all per-province counts matching the master, actual Lampung locality code/name lookup, name search and daily agent decisions. All 12 checks passed.
+- Deterministic control comparison: a Lampung paddy shock moved its quote from Rp10,000 to Rp14,108, while DKI Jakarta matched the no-shock control at Rp9,961 exactly. Government reserve release occurred.
 - Separate 30-day all-province paddy drought scenario confirmed imports executed exactly up to the 10% monthly demand cap per commodity (20,000 index units in the test scenario).
 - Static syntax checks passed for seven modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html`.
 - **The Node test-runner suite and GitHub Actions are not yet verified as completed green.** Do not claim full CI or the full Node test file passed until a completed run is available.
