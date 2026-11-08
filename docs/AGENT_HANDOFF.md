@@ -536,3 +536,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test commit: `66518f9110f59a04caba154eeabfe3678649085d`.
 - CI verification is pending. No local test execution is claimed.
 - Next: obtain a matched Tier 2 transaction series (commodity grade, region, unit, month, seller/buyer stage) before activating distributor stock transfers. Candidate sources include PIHPS market-type observations and official market/distribution datasets, but their market type must be checked rather than assumed to be wholesale.
+
+
+## Tier 2 contract regression correction (2026-11-08)
+
+- Follow-up CI inspection: data commit `f484c947ac5bb573855e33814ac3c52c45406f47` passed workflow run `42495883611`; test commit `66518f9110f59a04caba154eeabfe3678649085d` failed run `42495889997`.
+- The failed job completed the focused market/NPC/inventory Node test step successfully and failed only at the final standalone Node regression step. Inspection of the checked-in fixture showed the corn row lacked the newly required `distributionMarket` object, while the contract test iterates every row and dereferences that field. Coconut and chili already had it.
+- Corrected `js/market_chain.js` by adding the same evidence-gated null Tier 2 distributor stage to corn. No price was invented and no producer/consumer observation was substituted.
+- Fix commit: `46b66447fd075c7a46f06c5b789b6b8f6bad2d03`.
+- CI for the fix must complete before this checkpoint is green. No local test execution is claimed.
+- Research clarification: PIHPS FAQ defines its daily traditional-market survey as retail transactions between retailers and final consumers, and explicitly says sampled merchants sell for self-consumption rather than resale/grosir. Bapanas Panel Harga FAQ's listed wholesale-monitoring item is premium rice; it does not establish a matching wholesale series for red chili or dry corn. Thus the Tier 2 price fields for coconut, chili, and corn remain null. References: https://www.bi.go.id/hargapangan/Informasi/FAQ and https://dev-panelharga.badanpangan.go.id/faq.
+- Next: verify the corrected commit's full standalone Node suite in CI, then search official provincial/market-induction datasets for commodity-grade- and transaction-stage-matched distributor prices. Keep Tier 2 disabled for a commodity until source metadata proves the buyer/seller stage, grade/moisture, region, unit, and period.
