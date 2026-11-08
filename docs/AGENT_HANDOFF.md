@@ -612,3 +612,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - The first commits adding the historical Bapanas wholesale observations (`ee5aad7caa677145734463b7ba9d5f598f6f29a3`, `2536defd81af0bf33096275c90de19bd582d6707`) failed the final standalone Node step because a comma was missing between two entries in `officialSnapshots`. The earlier focused tests passed; the failure was a JavaScript parse error in `js/market_chain.js`, not a price assertion failure.
 - Corrected the array separator in `2fd9e0f689458e99feeccb38f93f1147799fca9b`; CI run `42497230450` completed successfully. The failed historical runs remain recorded as failures and are not relabeled.
+
+
+## Market profile parser correction and CI closure (2026-11-08)
+
+- The first category-profile mapper used a block-bodied arrow callback but retained the old expression-bodied mapper's closing token (` })); `), causing `SyntaxError: Unexpected token ')'` in both `tests/background-economy.test.js` and `tests/market-engine.test.js`. The failure was in `js/commodities.js` line 74; all earlier test-runner suites preceding those files had passed.
+- Corrected the map callback terminator to `});` in commit `ddaa8c500121e3a26ec5b9ad2b9d8a9ddd61e141`. GitHub Actions run `42497597448` completed successfully, including the full standalone regression step. This validates the price-band catalog, market engine sensitivity, persistent player transaction queue, dynamic raw B2B/retail quotes, coconut producer-market quote integration, and queue regression coverage as of that commit.
+- Follow-up adjustment: raised the engine-wide hard ceiling for one daily price step to 25% so per-commodity daily movement caps (5%–15%) can actually govern. Previously a 10% global cap unintentionally limited the highest-volatility profiles. New engine/test commits: `eac3f00915f4edc6a12c8d1c60618c2d9a3bda36` and `ea416a403fa677653fba841f9a5e79776addce64`; CI is pending.
