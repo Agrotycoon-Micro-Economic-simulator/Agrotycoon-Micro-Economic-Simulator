@@ -94,11 +94,23 @@ assert.equal(state.dayLog.businessPurchases, 100000);
 assert.equal(state.dayLog.cashOut, 100100);
 assert.equal(state.dayLog.gross, 400000);
 
-const before = JSON.stringify(state);
 state.gold = 50000;
+state.landSystem.inventory.cabai_merah = 10;
+state.landSystem.inventoryCost.cabai_merah = 5000;
+const beforeInsufficient = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross
+});
 sandbox.processCommodity("cabai_merah");
-assert.equal(JSON.stringify(state).includes('"cogs":105000'), true);
-assert.equal(state.landSystem.inventory.cabai_merah, 0);
-assert.equal(state.gold, 50000, "insufficient cash must not mutate the already-consumed inventory state");
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross
+}), beforeInsufficient, "insufficient cash must not mutate processing state");
 
 console.log("PASS: live commodity processing consumes weighted-average raw inventory, posts HPP once, charges conversion/distribution cash, and prevents execution without cash.");
