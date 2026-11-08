@@ -114,8 +114,9 @@ A separate public dataset documents Dukcapil Semester I 2024 population/househol
 - No individual objects are created for ordinary residents.
 - Active representative agent target: `ceil(sqrt(population) × 0.08)`, bounded by 1,000 and 5,000. For 200 million this produces approximately **1,132 active agents**.
 - Agent roles include farmer, livestock operator, fisher, processor, wholesaler, retailer, logistics operator, institutional buyer and government officer.
-- Each active agent has a province, role, behavior profile and representative population weight. The representative weight is not extra population and must not be added to the 200 million resident count.
-- The active-agent cap is independent of the total statistical population. Increasing population does not create millions of JavaScript objects.
+- Each active agent has a province, role, behavior profile, risk/price sensitivity, representative population weight and daily decision state. The representative weight is not extra population and must not be added to the 200 million resident count.
+- Each game day, agents evaluate local price signals. Producers/processors adjust supply intent; wholesalers/retailers/institutional buyers adjust demand or inventory intent; logistics agents prioritize rerouting when local price pressure is high; government agents flag reserve review. These are deterministic, low-cost heuristics, not LLM calls.
+- Aggregated agent decisions adjust province-level supply/demand response and logistics mitigation. The runtime processes about 1,132 agent records, not millions of consumer objects. Increasing population does not create millions of JavaScript objects.
 
 This is an agent-based/aggregate hybrid: statistical cohorts provide scale; a small number of active agents provide behavioral decisions.
 
