@@ -86,13 +86,13 @@ sandbox.processCommodity("cabai_merah");
 
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
-assert.equal(state.gold, 1299900, "cash must reflect conversion purchase, sale proceeds, and distribution");
-assert.equal(state.dayLog.cogs, 105000, "HPP must include raw inventory cost plus conversion cost");
-assert.equal(state.dayLog.cogsByAccount["Persediaan Cabai Merah"], 5000);
-assert.equal(state.dayLog.cogsByAccount["Bahan Tambahan Proses"], 100000);
+assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 10, "finished goods must be held in inventory, not auto-sold");
+assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 105000, "finished goods carrying value must include raw input plus conversion");
+assert.equal(state.gold, 899900, "cash must reflect conversion purchase and distribution only");
+assert.equal(state.dayLog.cogs, 0, "processing alone must not recognize COGS before finished goods are sold");
 assert.equal(state.dayLog.businessPurchases, 100000);
 assert.equal(state.dayLog.cashOut, 100100);
-assert.equal(state.dayLog.gross, 400000);
+assert.equal(state.dayLog.gross, 0);
 
 state.gold = 50000;
 state.landSystem.inventory.cabai_merah = 10;
@@ -101,6 +101,8 @@ const beforeInsufficient = JSON.stringify({
   gold: state.gold,
   inventory: state.landSystem.inventory.cabai_merah,
   inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
   cogs: state.dayLog.cogs,
   gross: state.dayLog.gross
 });
@@ -109,6 +111,8 @@ assert.equal(JSON.stringify({
   gold: state.gold,
   inventory: state.landSystem.inventory.cabai_merah,
   inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
   cogs: state.dayLog.cogs,
   gross: state.dayLog.gross
 }), beforeInsufficient, "insufficient cash must not mutate processing state");
