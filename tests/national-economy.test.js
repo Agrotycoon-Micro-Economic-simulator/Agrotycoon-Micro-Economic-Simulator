@@ -110,11 +110,11 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   assert.deepEqual({ ...master.totals }, { regencies: 416, cities: 98, districts: 7285, desa: 75252, kelurahan: 8496, uptSpt: 14 });
   const desa = await api.getLocalityAggregateAsync('lampung', 'desa', 0);
   const kelurahan = await api.getLocalityAggregateAsync('lampung', 'kelurahan', 0);
-  assert.match(desa.id, /^\\d{10}$/);
+  assert.match(desa.id, /^\d{10}$/);
   assert.ok(desa.name && !desa.name.startsWith('Desa simulasi'));
   assert.equal(desa.sourceStatus, 'official_kemendagri_2025_name_and_code');
   assert.equal(desa.populationStatus, 'equal_share_estimate_pending_official_locality_population');
-  assert.match(kelurahan.id, /^\\d{10}$/);
+  assert.match(kelurahan.id, /^\d{10}$/);
   const results = await api.searchLocalities('lampung', 'desa', '', 20);
   assert.equal(results.length, 20);
   assert.ok(results.every(row => row.id && row.name && Number.isInteger(row.index)));
