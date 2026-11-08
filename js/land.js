@@ -267,8 +267,6 @@ function processCommodity(id){
  ])!==hpp)return;
  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
- S.gold+=rev;
- S.dayLog.gross=(Number(S.dayLog.gross)||0)+rev;
  if(logistics.total)S.dayLog.expense=(Number(S.dayLog.expense)||0)+logistics.total;
  earn("PENJUALAN","Penjualan produk jadi "+p.name,rev,{commodity:id,units,processing:true});
  if(logistics.total)ledger("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold});
