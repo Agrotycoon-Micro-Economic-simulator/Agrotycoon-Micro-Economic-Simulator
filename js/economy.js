@@ -23,6 +23,10 @@ function spend(cat,desc,amt,field,detail){
   msg('⚠️ Nilai pengeluaran tidak valid. Transaksi dibatalkan.');
   return false;
  }
+ if(!Number.isFinite(S.gold)||S.gold<value){
+  msg('⚠️ Kas tidak cukup untuk pengeluaran ini. Transaksi dibatalkan.');
+  return false;
+ }
  const mapping=classifySpend(cat,desc);
  S.gold-=value;
  ledger(cat,desc,-value,detail,{
