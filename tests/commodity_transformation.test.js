@@ -56,4 +56,19 @@ const invalid = engine.validateRecipe({ id: "broken", inputs: [], outputs: [], c
 assert.equal(invalid.ok, false);
 const unsafeWaste = { ...recipe, outputs: [{ commodityId: "waste_a", qtyPerBatch: 1, unit: "unit", role: "waste", saleable: true, salePricePerUnit: 1, priceEvidence: evidence }] };
 assert.equal(engine.validateRecipe(unsafeWaste).ok, false, "waste cannot be monetized as a saleable output");
-console.log("PASS: generic transformation schema, input/output quantities, stock shortage, cost/provenance gating, and no invented revenue.");
+assert.equal(engine.weightedAverageUnitCost(10, 500), 50);
+assert.equal(engine.weightedAverageUnitCost(0, 500), null);
+const consumed = engine.consumeWeightedAverageInventory(10, 500, 4);
+assert.deepEqual(consumed, {
+  ok: true,
+  unitCost: 50,
+  consumedCost: 200,
+  remainingQuantity: 6,
+  remainingCostValue: 300
+});
+assert.equal(engine.consumeWeightedAverageInventory(3, 100, 4).ok, false);
+const received = engine.addInventoryCost(6, 300, 4, 200);
+assert.deepEqual(received, { ok: true, quantity: 10, costValue: 500, unitCost: 50 });
+assert.equal(engine.addInventoryCost(1, 0, 0, 10).ok, false);
+
+console.log("PASS: generic transformation schema, input/output quantities, stock shortage, cost/provenance gating, weighted-average inventory valuation, and no invented revenue.");
