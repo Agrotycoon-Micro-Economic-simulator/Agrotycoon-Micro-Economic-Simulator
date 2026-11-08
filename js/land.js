@@ -152,7 +152,8 @@ function harvestCommodity(landId,plotId){
 }
 function getCommodityPrice(id,channel){
  ensureAgriState();const c=COMMODITY_BY_ID[id],e=COMMODITY_ECONOMICS[id];if(!c)return 0;
- const current=typeof MARKET_ENGINE!=="undefined"&&MARKET_ENGINE?MARKET_ENGINE.getPrice(id):c.basePrice;
+ const nationalCurrent=typeof MARKET_ENGINE!=="undefined"&&MARKET_ENGINE?MARKET_ENGINE.getPrice(id):c.basePrice;
+ const current=typeof AgroNationalEconomy!=="undefined"&&S.playerRegionId?AgroNationalEconomy.quote(S.playerRegionId,id,nationalCurrent)||nationalCurrent:nationalCurrent;
  const anchor=Number(c.basePrice),base=channel==="retail"?Number(e&&e.retailPrice):Number(e&&(e.tengkulakPrice||e.farmerPrice));
  const fallback=Number.isFinite(base)&&base>0?base:anchor;
  const ratio=Number.isFinite(anchor)&&anchor>0?fallback/anchor:1;
