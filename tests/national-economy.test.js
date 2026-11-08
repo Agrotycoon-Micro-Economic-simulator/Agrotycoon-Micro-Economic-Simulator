@@ -112,7 +112,7 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   const kelurahan = await api.getLocalityAggregateAsync('lampung', 'kelurahan', 0);
   assert.match(desa.id, /^\d{10}$/);
   assert.ok(desa.name && !desa.name.startsWith('Desa simulasi'));
-  assert.equal(desa.sourceStatus, 'official_kemendagri_2025_name_and_code');
+  assert.equal(desa.sourceStatus, 'derived_kemendagri_2025_name_and_code');
   assert.equal(desa.populationStatus, 'equal_share_estimate_pending_official_locality_population');
   assert.match(kelurahan.id, /^\d{10}$/);
   const results = await api.searchLocalities('lampung', 'desa', '', 20);
