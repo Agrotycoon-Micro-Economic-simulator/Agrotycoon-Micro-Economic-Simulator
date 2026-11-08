@@ -17,8 +17,13 @@ test('country contains 38 provinces and exactly 200 million statistical resident
   assert.equal(api.population, 200000000);
   const total = api.provinces.reduce((sum, p) => sum + p.population, 0);
   assert.equal(total, 200000000);
-  assert.equal(api.provinces.reduce((sum, p) => sum + p.districtCount, 0), 7281);
-  assert.equal(api.provinces.reduce((sum, p) => sum + p.villageKelurahanCount, 0), 84291);
+  assert.equal(api.provinces.reduce((sum, p) => sum + p.districtCount, 0), 7285);
+  assert.equal(api.provinces.reduce((sum, p) => sum + p.villageKelurahanCount, 0), 83762);
+  assert.equal(api.nationalAdminTotals.desa, 75252);
+  assert.equal(api.nationalAdminTotals.kelurahan, 8496);
+  assert.equal(api.nationalAdminTotals.uptSpt, 14);
+  assert.equal(api.bpsAdminReference.districts, 7281);
+  assert.equal(api.bpsAdminReference.villageKelurahan, 84291);
   assert.equal(api.nationalAdminTotals.regencies + api.nationalAdminTotals.cities, 514);
 });
 
@@ -92,4 +97,25 @@ test('government monthly imports are capped per commodity', () => {
   const monthlyDemand = api.provinces.reduce((sum, province) => sum + api.provinceSnapshot(province.id).demand.padi, 0);
   assert.ok(state.government.monthlyImportedByCommodity.padi <= monthlyDemand * 0.10 + 1e-8);
   assert.ok(state.government.monthlyImportedByCommodity.padi > 0);
+});
+
+test('official Kepmendagri locality master loads only on demand and resolves actual names/codes', async () => {
+  context.fetch = async url => {
+    const file = String(url).split('/').pop();
+    const content = fs.readFileSync(path.join(__dirname, '..', 'data', 'administrative_regions', file), 'utf8');
+    return { ok: true, status: 200, text: async () => content };
+  };
+  const api = context.AgroNationalEconomy;
+  const master = await api.loadAdministrativeMaster();
+  assert.deepEqual({ ...master.totals }, { regencies: 416, cities: 98, districts: 7285, desa: 75252, kelurahan: 8496, uptSpt: 14 });
+  const desa = await api.getLocalityAggregateAsync('lampung', 'desa', 0);
+  const kelurahan = await api.getLocalityAggregateAsync('lampung', 'kelurahan', 0);
+  assert.match(desa.id, /^\\d{10}$/);
+  assert.ok(desa.name && !desa.name.startsWith('Desa simulasi'));
+  assert.equal(desa.sourceStatus, 'official_kemendagri_2025_name_and_code');
+  assert.equal(desa.populationStatus, 'equal_share_estimate_pending_official_locality_population');
+  assert.match(kelurahan.id, /^\\d{10}$/);
+  const results = await api.searchLocalities('lampung', 'desa', '', 20);
+  assert.equal(results.length, 20);
+  assert.ok(results.every(row => row.id && row.name && Number.isInteger(row.index)));
 });
