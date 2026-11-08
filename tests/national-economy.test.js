@@ -81,6 +81,7 @@ test('Lampung supply shock changes its quote without cross-province price spillo
   assert.ok(state.government.monthlyReleased > 0);
   assert.ok(state.activeAgents.every(agent => agent.lastDecisionDay === 15 && agent.lastAction));
   assert.ok(Object.values(state.national.agentActionCounts).some(count => count > 0));
+  assert.equal(Object.values(state.national.agentActionCounts).reduce((sum, count) => sum + count, 0), state.activeAgents.length);
 });
 
 test('government reserve policy is bounded and the province price quote is finite', () => {
