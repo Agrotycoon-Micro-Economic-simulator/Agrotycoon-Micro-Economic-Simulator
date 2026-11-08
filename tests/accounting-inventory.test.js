@@ -52,10 +52,10 @@ function makeHarness(overrides = {}) {
     ledger: (...args) => journal.push(args),
     gainXP: () => {},
     stockQty: () => (Number(S.stock.biasa) || 0) + (Number(S.stock.super) || 0),
-    stockClass: () => (Number(S.stock.super) || 0) > 0 && (Number(S.stock.biasa) || 0) > 0
-      ? 'muda'
-      : (Number(S.stock.biasa) || 0) + (Number(S.stock.super) || 0) > 0
-        ? 'tua'
+    stockClass: () => (Number(S.stock.super) || 0) > 0
+      ? 'tua'
+      : (Number(S.stock.biasa) || 0) > 0
+        ? 'muda'
         : 'kosong',
     msg: () => {},
     save: () => {},
