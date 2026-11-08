@@ -15,7 +15,7 @@ The administrative identity master is the MIT-licensed normalized dataset derive
 
 All 60 catalog commodities have a province demand index and regional stock/production/reserve/import/price state. Category demand weights are game-balance indices, not kg/tonnes or measured per-capita consumption. Physical consumption by commodity and locality remains a research gate.
 
-Regional prices use local stock-cover and logistics disruption. A Lampung shock changes Lampung's local quote, not all national prices. The government reserve model starts with 25% of monthly demand index, targets 30 days, procures up to 5% of monthly demand when below target, releases up to 15% of monthly demand when cover is below 10 days and local price index exceeds 1.15, and imports up to 10% of monthly demand subject to treasury. These are experimental game parameters.
+Regional prices use local stock-cover and logistics disruption. Active representative agents adjust supply/demand intent daily. A Lampung shock changes Lampung's local quote, not all national prices. Logistics reroute intent is not yet a physical interprovincial shipment network. The government reserve model starts with 25% of monthly demand index, targets 30 days, procures up to 5% of monthly demand when below target, releases up to 15% of monthly demand when cover is below 10 days and local price index exceeds 1.15, and imports up to 10% of monthly demand subject to treasury. These are experimental game parameters.
 
 For full details, source metadata, formulas, administrative caveats and next research tasks, see `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md`.
 
