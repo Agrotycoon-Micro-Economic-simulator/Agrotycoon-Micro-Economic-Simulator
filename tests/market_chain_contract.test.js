@@ -29,6 +29,16 @@ assert.equal(latestCorn.stage, "producer");
 assert.equal(latestChili.value, 24578);
 assert.equal(latestChili.period, "2026-01");
 assert.equal(latestChili.stage, "producer");
+const chiliWholesaleCoverage = window.MARKET_CHAIN_DATA.officialCoverage.find(x => x.commodityId === "cabai_merah");
+const cornWholesaleCoverage = window.MARKET_CHAIN_DATA.officialCoverage.find(x => x.commodityId === "jagung");
+assert.equal(chiliWholesaleCoverage.stage, "wholesale");
+assert.equal(chiliWholesaleCoverage.status, "official_panel_coverage");
+assert.equal(chiliWholesaleCoverage.observationValue, null, "coverage metadata is not a price observation");
+assert.match(chiliWholesaleCoverage.scope, /ibukota provinsi/);
+assert.equal(cornWholesaleCoverage.stage, "wholesale");
+assert.equal(cornWholesaleCoverage.observationValue, null, "special corn panel coverage is not a price observation");
+assert.match(cornWholesaleCoverage.scope, /Jawa Tengah dan Jawa Timur/);
+assert.match(cornWholesaleCoverage.note, /bukan harga nasional/);
 for (const row of rows) {
   assert.equal(row.distributionMarket.value, null, "unverified Tier 2 distributor price must remain null");
   assert.equal(row.distributionMarket.type, "missing");
