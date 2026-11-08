@@ -3,7 +3,7 @@ let S=null;
 function defaultState(){
  const trees=[];
  for(let i=0;i<10;i++)trees.push({slot:i,type:'biasa',plantedDay:0,mature:true,lastHarvest:-30});
- return {v:15,name:'',avatar:0,day:1,phase:'pagi',gold:5000000, xp:0, level:1,
+ return {v:15,name:'',avatar:0,playerRegionId:'dki-jakarta',day:1,phase:'pagi',gold:5000000, xp:0, level:1,
   stock:{biasa:0,super:0},stockCostValue:0,harvestDay:-99,trees,quarterUsed:0,quarterCost:0,
   cuaca:'panas',
   warung:{open:false,ice:0,sugar:0,cups:0,iceCost:0,sugarCost:0,cupsCost:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
@@ -56,6 +56,7 @@ function loadSaved(){
   const r=localStorage.getItem(SAVE_KEY);
   if(r){
    S=JSON.parse(r);
+   if(!S.playerRegionId)S.playerRegionId='dki-jakarta';
    if(!S.stock||typeof S.stock!=='object')S.stock={biasa:0,super:0};
    if(!Number.isFinite(S.stockCostValue))S.stockCostValue=((Number(S.stock.biasa)||0)+(Number(S.stock.super)||0))*3500;
    if(!Number.isFinite(S.quarterCost))S.quarterCost=(Number(S.quarterUsed)||0)>0?3500:0;
