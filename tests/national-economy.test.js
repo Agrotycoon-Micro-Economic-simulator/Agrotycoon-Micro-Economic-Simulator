@@ -52,6 +52,8 @@ test('every commodity has locality-level demand aggregates without materializing
 test('Lampung supply shock raises its local quote without directly repricing Jakarta', () => {
   const api = context.AgroNationalEconomy;
   api.ensure();
+  const state = api.ensure();
+  state.eventChancePerProvinceMonthly = 0;
   const beforeLampung = api.quote('lampung', 'padi', 10000);
   const beforeJakarta = api.quote('dki-jakarta', 'padi', 10000);
   api.applyDisaster({ provinceId: 'lampung', type: 'banjir', commodityIds: ['padi'], productionLossFraction: 0.95, logisticsLossFraction: 0.15, durationDays: 30 });
