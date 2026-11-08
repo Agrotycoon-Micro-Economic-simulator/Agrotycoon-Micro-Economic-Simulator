@@ -15,7 +15,7 @@ function defaultState(){
   livingStock:{rice:2,lauk:0,oil:0,mie:0,tempe:0,sayur:0,egg:0},
   livingUseDays:{rice:0,egg:0,oil:0,mie:0,tempe:0,sayur:0,lauk:0},
   unlockedAchievements:[],employees:[],finance:{debt:0,payablesPayroll:0},
-  landSystem:null,marketPrices:{},marketPolicies:{productionTax:0.05,inputSubsidy:0,importTariff:0.05,interestRate:0.08,logisticsEfficiency:1,foodReserveDemand:0.05},marketLastTick:null
+  landSystem:null,marketPrices:{},marketTransactions:[],marketPolicies:{productionTax:0.05,inputSubsidy:0,importTariff:0.05,interestRate:0.08,logisticsEfficiency:1,foodReserveDemand:0.05},marketLastTick:null
  };
 }
 function newDayLog(){return {gross:0,expense:0,businessExpense:0,livingExpense:0,businessPurchases:0,cogs:0,cogsByAccount:{},cashIn:0,cashOut:0,shopping:0,labor:0,living:0,bills:0,capex:0,lossIcePortions:0,lossIceValue:0,
@@ -26,6 +26,18 @@ function initGameState(){
  const hasSave = localStorage.getItem(SAVE_KEY) !== null;
  if(hasSave){ loadSaved(); } else { loadFresh(); }
 }
+function queueMarketTransaction(transaction){
+ if(!S||!transaction||typeof transaction!=='object')return false;
+ const commodityId=String(transaction.commodityId||'');
+ const side=String(transaction.side||'').toLowerCase();
+ const quantity=Number(transaction.quantity),price=Number(transaction.price);
+ if(!commodityId||!['buy','sell'].includes(side)||!Number.isFinite(quantity)||quantity<=0||!Number.isFinite(price)||price<=0)return false;
+ if(transaction.marketStage&&transaction.marketStage!=='producer')return false;
+ if(!Array.isArray(S.marketTransactions))S.marketTransactions=[];
+ S.marketTransactions.push({commodityId,side,quantity,price,marketStage:'producer',actorType:'player',source:String(transaction.source||'player_transaction')});
+ if(S.marketTransactions.length>500)S.marketTransactions.splice(0,S.marketTransactions.length-500);
+ return true;
+}
 function restoreMarketPrices(){
  if(!S||typeof MARKET_ENGINE==='undefined'||!MARKET_ENGINE||!Array.isArray(MARKET_ENGINE.catalog))return;
  if(!S.marketPrices||typeof S.marketPrices!=='object')S.marketPrices={};
@@ -34,6 +46,7 @@ function restoreMarketPrices(){
   if(Number.isFinite(saved)&&saved>=item.marketFloor&&saved<=item.marketCeiling)item.marketPrice=saved;
   else S.marketPrices[item.id]=item.marketPrice;
  });
+ if(!Array.isArray(S.marketTransactions))S.marketTransactions=[];
  if(!S.marketPolicies||typeof S.marketPolicies!=='object')S.marketPolicies={};
  if(!S.marketLastTick)S.marketLastTick=null;
 }
@@ -76,6 +89,7 @@ function loadSaved(){
     if(!S.landSystem.finishedInventory||typeof S.landSystem.finishedInventory!=='object')S.landSystem.finishedInventory={};
     if(!S.landSystem.finishedInventoryCost||typeof S.landSystem.finishedInventoryCost!=='object')S.landSystem.finishedInventoryCost={};
    }
+   if(!Array.isArray(S.marketTransactions))S.marketTransactions=[];
    restoreMarketPrices();
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
