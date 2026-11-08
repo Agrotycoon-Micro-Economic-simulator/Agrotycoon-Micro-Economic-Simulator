@@ -130,7 +130,9 @@ function finishDay(){
   if(S.marketPrices&&typeof S.marketPrices==='object'){
    MARKET_ENGINE.catalog.forEach(item=>{const p=Number(S.marketPrices[item.id]);if(Number.isFinite(p)&&p>=item.marketFloor&&p<=item.marketCeiling)item.marketPrice=p;});
   }
-  const marketTick=BACKGROUND_ECONOMY.tick({day:S.day,activePlayers:1,policies:S.marketPolicies||{}});
+  const queuedPlayerTransactions=Array.isArray(S.marketTransactions)?S.marketTransactions.slice():[];
+  const marketTick=BACKGROUND_ECONOMY.tick({day:S.day,activePlayers:1,policies:S.marketPolicies||{},playerTransactions:queuedPlayerTransactions});
+  S.marketTransactions=[];
   S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
   S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
  }
