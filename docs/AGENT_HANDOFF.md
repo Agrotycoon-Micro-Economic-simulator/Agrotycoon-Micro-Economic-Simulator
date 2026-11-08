@@ -398,5 +398,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The confirmation continues to recompute proceeds from current stock quantities rather than trusting the stale modal revenue argument.
 - Added regression coverage for successful sale with a deliberately stale modal revenue and for invalid current tengkulak pricing. Both cases verify that HPP/inventory/cash mutation is blocked or correctly posted at the transaction boundary.
 - Code commit: `33ca395d0df9a7797bd930b58c1aa4d4a71fd43e`.
-- Test commit: `7988b56ed77956b076eb7755d95572dd39358e14`.
+- Test commits: `7988b56ed77956b076eb7755d95572dd39358e14` (initial regression) and `96602049d9f4322e8d2946649fd1551119e010fc` (harness correction). The latest test setup then pins the stock-class fixture in `3849b4ab557c6f06455742db4d77434fa8d59083`.
+- Run `42465125512` exposed a pre-existing test-harness omission (`stockClass` undefined); run `42465207865` verified the harness correction. The latest regression run `42465291779` is still in progress at handoff time.
 - GitHub Actions verification is required before marking this integration green. No local test execution is claimed.
