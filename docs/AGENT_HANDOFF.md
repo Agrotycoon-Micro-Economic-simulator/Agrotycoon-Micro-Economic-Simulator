@@ -17,15 +17,15 @@
 
 | File | Commit SHA | Change |
 |---|---|---|
-| `js/national_economy.js` | `2941b24a34cade6af9e1284573cd7e74a8d07918` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
+| `js/national_economy.js` | `113077e0c53cf5a4de114effdc1283ac24f86e8a` | 38 provinces, 200m aggregate population, capped agents, regional stock/price, government reserves/imports, disaster API and seeded event roll |
 | `js/region_capacity.js` | `b5d4b4104e41e21347384b6ede01a00f24608863` | 200m default population and active-agent bounds |
 | `js/state.js` | `bd2e02fcce1ad68d91cd29a4bc6018f42d894429` | Persist player province (default DKI Jakarta) and migrate older saves |
 | `js/land.js` | `1e9f6821add88839c37f2a883c66a15a18f0f474` | Regional commodity quotes for player trade |
 | `js/economy.js` | `85d2eb97f1f47967a3256b800137c3cbd7655e86` | Regional coconut producer quotes; direct retail baseline remains protected |
 | `js/day.js` | `b620cb97936c684d9b6aec73812a04ec9324d04d` | Daily national economy tick and government ledger memo |
 | `index.html` | `0038ce026e6280a05a0594cf77bd6d037504d495` | Load national economy engine |
-| `dunia-simulasi.html` | `1d3e38b5981fa0c2094ac9f9e714ec34bd54b33b` | Country/province dashboard and player-region selector |
-| `tests/national-economy.test.js` | `bb0ece6a6bfd587cc5a4bcb8b454a860c8418bc4` | Population, locality aggregates, agent cap, disaster price and reserve tests |
+| `dunia-simulasi.html` | `557d100e8a60464cb01c5228e334514c7f80d3ea` | Country/province dashboard and player-region selector |
+| `tests/national-economy.test.js` | `d50346e0e80ae71328c085eadc29175d7d7658b7` | Population, locality aggregates, agent cap, disaster price and reserve tests |
 | `.github/workflows/targeted-regression.yml` | `deda0462db8b7eac612ea31bb052d7e1e696316b` | Add national economy test to Node regression job |
 | `docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md` | `6b53a9787a057819014a6da7f66b89f77e5eaa5a` | Full design, data provenance, formulas, policy settings and research backlog |
 
@@ -34,7 +34,10 @@ The national engine's initial implementation commit was `6385112255d088e0e5fa40f
 ## Test / CI status
 
 - A new Node test-runner suite is present and included in the targeted workflow.
-- **Do not claim it passes until GitHub Actions returns a completed successful run.** CI has not yet been verified for this handover checkpoint.
+- Custom V8 runtime smoke executed against the GitHub-fetched `commodities.js` and `national_economy.js`: 11 checks passed, including 38 provinces, exact 200m population, 7,281 districts, 84,291 village-level units, 1,132 agents, 60 commodities, locality queries, Lampung paddy price increase with Jakarta unchanged, and reserve release.
+- A separate 30-day all-province paddy drought smoke confirmed imports executed and stayed exactly within the 10% monthly cap per commodity.
+- Static syntax checks passed for seven modified JS/test files and inline scripts in `index.html` and `dunia-simulasi.html`.
+- **The Node test-runner suite and GitHub Actions are not yet verified as completed green.** Do not claim full CI or the full Node test file passed until a completed run is available.
 - Existing historical green runs listed elsewhere in this document do not validate this new country model.
 
 ## Immediate next steps
