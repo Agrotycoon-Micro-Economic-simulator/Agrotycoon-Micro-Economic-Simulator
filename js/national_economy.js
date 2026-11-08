@@ -14,40 +14,56 @@
   localityMix:{publisher:"BPS",title:"Podes 2024 executive summary",period:"2024",url:"https://web-api.bps.go.id/download.php?f=UdAIFH4pKAoyxUUTZRp4zW1ySFEvSERXWGJoT3FpTEdvMnRUaXdJMm5lSjU3YU15QkRmWGN5RlNTQ2dLZDhUejd3MTlsYzZkNlJ5Z1dWNEF4azEzeFlDcGVjbzlvZ3Y4eUlQTHltcSt2SE9Xc3ZXdTlMR0ZCaVFaOExKV1VFWlNSemJWOXFzaCtySFN5VVNJRmhUcHpDTHVBYzgrUDBCOWJpVk1qWDdacTY5OHJlRFk3ekh2RjhhejBTc3dMWmVZY0w0MjIwRmhnbWdrYVZjbDAyTGY4RGcwRDJmMW03Mm8xMUVJc3RvcEtTajViaHhZdkRIWkpFdjlPU3Z0cktFL1c0UDI2V1EwQzExNlpVQWx3YmRKUHdCcSt0Tmo5Z1VmZGdqUUh3PT0%3D",status:"national_mix_reference_2024"}
  };
  // [id,name,population_2025_thousands,districts_2024,village_kelurahan_2025]
+ // [id,name,pop2025_thousands,master_districts,master_village_units,desa,kelurahan,upt_spt,regencies,cities,bps_districts_2024,bps_village_units_2025,kemendagri_province_code]
  const PROVINCES=[
- ["aceh","Aceh",5626.0,290,6513],["sumatera-utara","Sumatera Utara",15785.8,455,6113],
- ["sumatera-barat","Sumatera Barat",5914.3,179,1287],["riau","Riau",6811.2,172,1870],
- ["jambi","Jambi",3768.5,144,1586],["sumatera-selatan","Sumatera Selatan",8928.5,241,3285],
- ["bengkulu","Bengkulu",2138.0,129,1513],["lampung","Lampung",9522.9,229,2654],
- ["kepulauan-bangka-belitung","Kepulauan Bangka Belitung",1550.8,47,393],["kepulauan-riau","Kepulauan Riau",2213.5,80,430],
- ["dki-jakarta","DKI Jakarta",10678.0,44,267],["jawa-barat","Jawa Barat",50759.0,627,5957],
- ["jawa-tengah","Jawa Tengah",38233.9,576,8563],["di-yogyakarta","DI Yogyakarta",3781.5,78,438],
- ["jawa-timur","Jawa Timur",42089.3,666,8494],["banten","Banten",12537.4,155,1552],
- ["bali","Bali",4461.3,57,718],["nusa-tenggara-barat","Nusa Tenggara Barat",5731.1,117,1180],
- ["nusa-tenggara-timur","Nusa Tenggara Timur",5742.6,315,3538],["kalimantan-barat","Kalimantan Barat",5766.0,174,2157],
- ["kalimantan-tengah","Kalimantan Tengah",2845.0,136,1577],["kalimantan-selatan","Kalimantan Selatan",4323.3,156,2015],
- ["kalimantan-timur","Kalimantan Timur",4267.6,105,1055],["kalimantan-utara","Kalimantan Utara",749.4,55,484],
- ["sulawesi-utara","Sulawesi Utara",2721.4,171,1838],["sulawesi-tengah","Sulawesi Tengah",3156.1,178,2022],
- ["sulawesi-selatan","Sulawesi Selatan",9563.1,311,3060],["sulawesi-tenggara","Sulawesi Tenggara",2836.7,221,2292],
- ["gorontalo","Gorontalo",1242.2,77,732],["sulawesi-barat","Sulawesi Barat",1525.3,69,650],
- ["maluku","Maluku",1970.6,119,1262],["maluku-utara","Maluku Utara",1373.8,118,1209],
- ["papua-barat","Papua Barat",587.6,86,970],["papua-barat-daya","Papua Barat Daya",636.4,132,1056],
- ["papua","Papua",1073.6,107,1029],["papua-selatan","Papua Selatan",549.7,82,690],
- ["papua-tengah","Papua Tengah",1492.3,131,1208],["papua-pegunungan","Papua Pegunungan",1484.9,252,2634]
+ ["aceh","Aceh",5626.0,290,6500,6500,0,0,18,5,290,6513,"11"],
+ ["sumatera-utara","Sumatera Utara",15785.8,455,6110,5417,693,0,25,8,455,6113,"12"],
+ ["sumatera-barat","Sumatera Barat",5914.3,179,1265,1035,230,0,12,7,179,1287,"13"],
+ ["riau","Riau",6811.2,172,1862,1591,271,0,10,2,172,1870,"14"],
+ ["jambi","Jambi",3768.5,144,1585,1414,171,0,9,2,144,1586,"15"],
+ ["sumatera-selatan","Sumatera Selatan",8928.5,241,3259,2856,403,0,13,4,241,3285,"16"],
+ ["bengkulu","Bengkulu",2138.0,129,1513,1341,172,0,9,1,129,1513,"17"],
+ ["lampung","Lampung",9522.9,229,2651,2446,205,0,13,2,229,2654,"18"],
+ ["kepulauan-bangka-belitung","Kepulauan Bangka Belitung",1550.8,47,393,309,84,0,6,1,47,393,"19"],
+ ["kepulauan-riau","Kepulauan Riau",2213.5,80,419,275,144,0,5,2,80,430,"21"],
+ ["dki-jakarta","DKI Jakarta",10678.0,44,267,0,267,0,1,5,44,267,"31"],
+ ["jawa-barat","Jawa Barat",50759.0,627,5957,5311,646,0,18,9,627,5957,"32"],
+ ["jawa-tengah","Jawa Tengah",38233.9,576,8563,7810,753,0,29,6,576,8563,"33"],
+ ["di-yogyakarta","DI Yogyakarta",3781.5,78,438,392,46,0,4,1,78,438,"34"],
+ ["jawa-timur","Jawa Timur",42089.3,666,8494,7721,773,0,29,9,666,8494,"35"],
+ ["banten","Banten",12537.4,155,1552,1238,314,0,4,4,155,1552,"36"],
+ ["bali","Bali",4461.3,57,716,636,80,0,8,1,57,718,"51"],
+ ["nusa-tenggara-barat","Nusa Tenggara Barat",5731.1,117,1166,1021,145,0,8,2,117,1180,"52"],
+ ["nusa-tenggara-timur","Nusa Tenggara Timur",5742.6,315,3442,3137,305,0,21,1,315,3538,"53"],
+ ["kalimantan-barat","Kalimantan Barat",5766.0,174,2145,2046,99,0,12,2,174,2157,"61"],
+ ["kalimantan-tengah","Kalimantan Tengah",2845.0,136,1571,1432,139,0,13,1,136,1577,"62"],
+ ["kalimantan-selatan","Kalimantan Selatan",4323.3,156,2016,1872,144,0,11,2,156,2015,"63"],
+ ["kalimantan-timur","Kalimantan Timur",4267.6,105,1038,841,197,0,7,3,105,1055,"64"],
+ ["kalimantan-utara","Kalimantan Utara",749.4,55,482,447,35,0,4,1,55,484,"65"],
+ ["sulawesi-utara","Sulawesi Utara",2721.4,171,1839,1507,332,0,11,4,171,1838,"71"],
+ ["sulawesi-tengah","Sulawesi Tengah",3156.1,177,2017,1842,175,0,12,1,178,2022,"72"],
+ ["sulawesi-selatan","Sulawesi Selatan",9563.1,313,3059,2266,793,0,21,3,311,3060,"73"],
+ ["sulawesi-tenggara","Sulawesi Tenggara",2836.7,221,2285,1908,377,0,15,2,221,2292,"74"],
+ ["gorontalo","Gorontalo",1242.2,77,729,657,72,0,5,1,77,732,"75"],
+ ["sulawesi-barat","Sulawesi Barat",1525.3,69,648,575,73,0,6,0,69,650,"76"],
+ ["maluku","Maluku",1970.6,119,1235,1200,35,0,9,2,119,1262,"81"],
+ ["maluku-utara","Maluku Utara",1373.8,118,1185,1067,118,0,8,2,118,1209,"82"],
+ ["papua-barat","Papua Barat",587.6,91,824,803,21,0,7,0,86,970,"92"],
+ ["papua-barat-daya","Papua Barat Daya",636.4,132,1013,939,74,0,5,1,132,1056,"96"],
+ ["papua","Papua",1073.6,105,999,934,51,14,8,1,107,1029,"91"],
+ ["papua-selatan","Papua Selatan",549.7,82,690,677,13,0,4,0,82,690,"93"],
+ ["papua-tengah","Papua Tengah",1492.3,131,1208,1172,36,0,8,0,131,1208,"94"],
+ ["papua-pegunungan","Papua Pegunungan",1484.9,252,2627,2617,10,0,8,0,252,2634,"95"]
  ];
- const NATIONAL_ADMIN={regencies:416,cities:98,districts:7281,villageKelurahan:84291,sourceYear:{regencies:2024,cities:2024,districts:2024,villageKelurahan:2025}};
+ const NATIONAL_ADMIN={regencies:416,cities:98,districts:7285,villageKelurahan:83762,desa:75252,kelurahan:8496,uptSpt:14,sourceYear:{regencies:2025,cities:2025,districts:2025,villageKelurahan:2025}};
+ const BPS_ADMIN_REFERENCE={districts:7281,villageKelurahan:84291,sourceYear:{districts:2024,villageKelurahan:2025},definition:"separate BPS/Podes statistical series; do not merge counts with Kemendagri administrative master"};
  const PODES_MIX={villages:75753,kelurahan:8486,uptSpt:37,total:84276};
  const DEMAND_WEIGHT={pangan:1.0,hortikultura:0.32,perkebunan:0.12,buah:0.22,rempah:0.06,peternakan:0.28,perikanan:0.18,industri:0.14};
- const SUPPLY_PROFILE={"jawa-barat":1.20,"jawa-tengah":1.28,"jawa-timur":1.32,"lampung":1.18,"sumatera-selatan":1.08,"sulawesi-selatan":1.16,"nusa-tenggara-barat":1.08,"aceh":0.92,"sumatera-utara":0.96,"sumatera-barat":0.94,"banten":0.88,"bali":0.86,"ntt":0.62,"papua-selatan":0.72};
+ const SUPPLY_PROFILE={"jawa-barat":1.20,"jawa-tengah":1.28,"jawa-timur":1.32,"lampung":1.18,"sumatera-selatan":1.08,"sulawesi-selatan":1.16,"nusa-tenggara-barat":1.08,"aceh":0.92,"sumatera-utara":0.96,"sumatera-barat":0.94,"banten":0.88,"bali":0.86,"nusa-tenggara-timur":0.62,"papua-selatan":0.72};
  const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(n))?Number(n):min));
  function largestRemainder(total,weights){const sum=weights.reduce((a,b)=>a+b,0)||1;const raw=weights.map(w=>total*w/sum);const out=raw.map(Math.floor);let left=total-out.reduce((a,b)=>a+b,0);raw.map((v,i)=>({i,r:v-out[i]})).sort((a,b)=>b.r-a.r).slice(0,left).forEach(x=>out[x.i]++);return out;}
  const provincePopulation=largestRemainder(POPULATION,PROVINCES.map(p=>p[2]));
- const provinceRecords=PROVINCES.map((p,i)=>({id:p[0],name:p[1],populationReference2025:Math.round(p[2]*1000),population:provincePopulation[i],districtCount:p[3],villageKelurahanCount:p[4],populationAllocation:"proportional_to_BPS_2025_provincial_share",localityNamesStatus:"synthetic_ids_until_official_master_import",sourceStatus:"mixed_official_counts_and_game_population"}));
- function allocateMinimumOne(total,weights){const extra=largestRemainder(Math.max(0,total-weights.length),weights);return extra.map(value=>value+1);}
- const regencyAlloc=allocateMinimumOne(NATIONAL_ADMIN.regencies,provincePopulation);
- const cityAlloc=allocateMinimumOne(NATIONAL_ADMIN.cities,provincePopulation);
- const desaRatio=PODES_MIX.villages/PODES_MIX.total,kelRatio=PODES_MIX.kelurahan/PODES_MIX.total;
- provinceRecords.forEach((p,i)=>{p.regencyCount=regencyAlloc[i];p.cityCount=cityAlloc[i];p.desaCount=Math.round(p.villageKelurahanCount*desaRatio);p.kelurahanCount=p.villageKelurahanCount-p.desaCount;p.adminAllocationStatus="regency_city_and_desa_kelurahan_split_derived_not_official_per_province";});
+ const provinceRecords=PROVINCES.map((p,i)=>({id:p[0],name:p[1],populationReference2025:Math.round(p[2]*1000),population:provincePopulation[i],districtCount:p[3],villageKelurahanCount:p[4],desaCount:p[5],kelurahanCount:p[6],uptSptCount:p[7],regencyCount:p[8],cityCount:p[9],bpsDistrictCount:p[10],bpsVillageKelurahanCount:p[11],adminCode:p[12],populationAllocation:"proportional_to_BPS_2025_provincial_share",localityNamesStatus:"official_kemendagri_2025_master_loaded_on_demand",adminAllocationStatus:"official_kemendagri_2025_master",sourceStatus:"BPS_population_weights_plus_Kemendagri_admin_master"}));
  function hash(text){let h=2166136261;for(let i=0;i<String(text).length;i++){h^=String(text).charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
  function random(seed){let a=seed>>>0;return function(){a+=0x6D2B79F5;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
  function activeAgentTarget(population){return clamp(Math.ceil(Math.sqrt(population)*0.08),1000,5000);}
