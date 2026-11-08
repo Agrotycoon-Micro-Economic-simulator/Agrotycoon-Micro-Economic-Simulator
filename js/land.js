@@ -42,6 +42,9 @@ function ensureAgriState(){
  if(!Array.isArray(S.landSystem.lands))S.landSystem.lands=[];
  if(!S.landSystem.market)S.landSystem.market={};
  if(!S.landSystem.inventory)S.landSystem.inventory={};
+ if(!S.landSystem.inventoryCost||typeof S.landSystem.inventoryCost!=='object')S.landSystem.inventoryCost={};
+ if(!S.landSystem.finishedInventory||typeof S.landSystem.finishedInventory!=='object')S.landSystem.finishedInventory={};
+ if(!S.landSystem.finishedInventoryCost||typeof S.landSystem.finishedInventoryCost!=='object')S.landSystem.finishedInventoryCost={};
  if(!S.landSystem.quiz)S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
  if(!S.landSystem.quiz.mastery)S.landSystem.quiz.mastery={};
  // Hubungkan kebun kelapa warisan yang sudah ada tanpa menghapus save lama.
@@ -187,6 +190,16 @@ function showCommodityEconomics(focusId){
  if(qty>0){h+='<button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'b2b\')">Jual semua ke tengkulak/B2B</button> <button class="btn btn-primary" onclick="sellCommodity(\''+id+'\',\'retail\')">Jual langsung/B2C</button> <button class="btn btn-success" onclick="processCommodity(\''+id+'\')">Olah produk jadi</button>';}
  h+='<details><summary>Catatan model</summary><p>'+e.notes+'</p></details></section>';
  });
+ h+='<h4>📦 Persediaan Produk Jadi</h4>';
+ const finishedIds=Object.values(COMMODITY_ECONOMICS||{}).map(e=>e&&e.processed).filter(p=>p&&p.id);
+ finishedIds.forEach(p=>{
+  const qty=Math.max(0,Number(S.landSystem.finishedInventory[p.id])||0);
+  const cost=Math.max(0,Number(S.landSystem.finishedInventoryCost[p.id])||0);
+  if(qty>0){
+   const unitCost=cost/qty;
+   h+='<section class="agri-card"><h4>'+p.name+'</h4><p>Stok: '+qty.toLocaleString("id-ID")+' '+(p.outputUnit||"unit")+' · nilai persediaan: '+safeRp(cost)+' · HPP rata-rata: '+safeRp(unitCost)+'/unit · harga jual saat ini: '+safeRp(Number(p.price))+'/unit</p><button class="btn btn-success" onclick="sellFinishedCommodity(\''+p.id+'\')">Jual produk jadi</button></section>';
+  }
+ });
  h+='<button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
 function sellCommodity(id,channel){
@@ -277,6 +290,53 @@ function processCommodity(id){
  if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
  S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
  save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
+}
+function sellFinishedCommodity(productId, requestedQuantity){
+ ensureAgriState();
+ const id=String(productId||"");
+ const product=Object.values(COMMODITY_ECONOMICS||{}).map(e=>e&&e.processed).find(p=>p&&p.id===id);
+ if(!product){msg("Produk jadi tidak dikenali; penjualan dibatalkan.");return false;}
+ const stock=Math.max(0,Number(S.landSystem.finishedInventory[id])||0);
+ const stockCost=Math.max(0,Number(S.landSystem.finishedInventoryCost[id])||0);
+ if(!Number.isFinite(stock)||stock<=0||!Number.isFinite(stockCost)||stockCost<=0){msg("Persediaan produk jadi kosong atau nilai persediaannya tidak valid.");return false;}
+ const rawQuantity=requestedQuantity==null?Number(prompt("Jumlah "+product.name+" yang dijual. Maksimum "+stock.toFixed(2)+":",String(Math.min(1,stock)))):Number(requestedQuantity);
+ if(!Number.isInteger(rawQuantity)||rawQuantity<=0||rawQuantity>stock){msg("Jumlah penjualan harus bilangan bulat positif dan tidak melebihi persediaan.");return false;}
+ const salePrice=Number(product.price);
+ if(!Number.isFinite(salePrice)||salePrice<=0){msg("Harga jual produk jadi saat ini tidak valid; penjualan dibatalkan.");return false;}
+ const valuation=AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,rawQuantity);
+ if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP produk jadi tidak valid; penjualan dibatalkan.");return false;}
+ const economics=(typeof AgroUnitEconomics!=="undefined"&&AgroUnitEconomics.calculate)
+  ? AgroUnitEconomics.calculate({
+    id:"finished-goods-live-sale-"+id,
+    name:"Penjualan produk jadi "+product.name+" aktual",
+    currency:"IDR",
+    sellPricePerUnit:salePrice,
+    sellPriceEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"},
+    plannedSalesUnitsPerMonth:1,
+    salesVolumeEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current game transaction",geography:"game scenario"},
+    wasteRate:0,
+    wasteEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current game transaction",geography:"game scenario"},
+    inputs:[{id:id,quantityPerOutput:1,sourcingMode:"own",ownProductionCostPerUnit:valuation.unitCost,ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current finished inventory",geography:"game scenario"},quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"}}],
+    variableCosts:[],
+    fixedCostsMonthly:[],capex:[]
+  }) : null;
+ if(!economics||!economics.ok||!economics.complete||!economics.metrics||!Number.isFinite(economics.metrics.hppPerSaleableUnit)){msg("Unit economics produk jadi belum lengkap/valid; transaksi dibatalkan.");return false;}
+ const revenue=rawQuantity*salePrice;
+ if(!Number.isFinite(revenue)||revenue<=0){msg("Pendapatan penjualan tidak valid; transaksi dibatalkan.");return false;}
+ if(!confirm("Konfirmasi penjualan "+rawQuantity+" "+product.name+"?\\nHarga saat konfirmasi: "+safeRp(salePrice)+"/unit\\nOmzet: "+safeRp(revenue)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(revenue-valuation.consumedCost)))return false;
+ S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
+ S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
+ const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
+ if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
+  S.landSystem.finishedInventory[id]=stock;
+  S.landSystem.finishedInventoryCost[id]=stockCost;
+  msg("Pencatatan HPP gagal; persediaan dikembalikan dan penjualan dibatalkan.");return false;
+ }
+ earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
+ if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
+ S.dayLog.commoditySales.push({commodity:id,name:product.name,quantity:rawQuantity,unitPrice:salePrice,revenue,cogs:valuation.consumedCost,grossProfit:revenue-valuation.consumedCost,channel:"finished_goods"});
+ save();msg("Penjualan selesai: omzet "+safeRp(revenue)+", HPP "+safeRp(valuation.consumedCost)+", laba kotor "+safeRp(revenue-valuation.consumedCost)+".");showCommodityEconomics();render();
+ return true;
 }
 function resetTestCrops(){
  ensureAgriState();
