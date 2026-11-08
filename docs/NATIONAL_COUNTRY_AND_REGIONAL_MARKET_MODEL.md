@@ -66,7 +66,7 @@ The BPS 2025 reference values (thousand residents) are:
 
 Source: BPS, *Provinsi Jawa Tengah Dalam Angka 2025*, chart “Jumlah Penduduk Menurut Provinsi di Indonesia (ribu), 2025”, sourced to BPS population projection 2020–2050. The population figures are reference weights only; the game totals 200 million after scaling.
 
-### 2.2 Administrative hierarchy
+### 2.2 Administrative hierarchy and named locality master
 
 Runtime hierarchy supports:
 - Negara
@@ -77,23 +77,37 @@ Runtime hierarchy supports:
 - Desa
 - Kelurahan
 
-Current verified national reference totals:
-- 416 kabupaten and 98 kota (514 combined), 2024.
-- 7,281 kecamatan, 2024.
-- 84,291 desa/kelurahan-level units, 2025.
+The game includes a separately versioned administrative identity master copied into `data/administrative_regions/` from the MIT-licensed `prodhokter/dataset-wilayah-indonesia` normalized dataset, derived from Kepmendagri No. 300.2.2-2138 Tahun 2025. The upstream attribution and both MIT license notices are stored alongside the CSV files.
 
-The 2025 BPS table provides desa/kelurahan counts by province; those 38 values are stored in `PROVINCES`. The 2024 BPS table provides kecamatan counts by province; those 38 values are also stored in `PROVINCES`.
+| Administrative level | Master rows |
+|---|---:|
+| Provinsi | 38 |
+| Kabupaten | 416 |
+| Kota | 98 |
+| Kecamatan | 7,285 |
+| Desa | 75,252 |
+| Kelurahan | 8,496 |
+| UPT/SPT administrative locality records | 14 |
+| Total desa/kelurahan/UPT-SPT locality records | 83,762 |
 
-The national regency/city total is verified, but per-province regency and city counts are currently allocated by provincial population share. The 2024 Podes mix (75,753 desa; 8,486 kelurahan; 37 UPT/SPT out of 84,276 units) is used to derive a provisional desa/kelurahan split for the 2025 combined count. These per-province splits are **derived estimates, not official province-level counts**.
+CSV parent keys are validated when loaded: regency → province, district → regency, village/kelurahan → district. The last four digits of locality codes distinguish desa, kelurahan and UPT/SPT under the source convention. The loader rejects a count or parent-link mismatch.
+
+A separate BPS/Podes statistical reference is retained and must not be merged with the administrative master:
+- BPS/Podes reference: 7,281 kecamatan (2024) and 84,291 desa/kelurahan-level units (2025).
+- Podes 2024 composition: 75,753 desa, 8,486 kelurahan and 37 UPT/SPT in 84,276 locality records.
+- The 2025 Kemendagri-derived master has 7,285 kecamatan and 83,762 locality records. Differences are preserved as source/vintage/definition differences, not silently reconciled.
+
+Per-province Kemendagri-derived counts are stored in `PROVINCES`. The former population-proportional allocation of regencies/cities and Podes-ratio split is no longer used for administrative identities.
 
 ### 2.3 Locality-level population and demand
 
-`getLocalityAggregate(provinceId, level, index)` provides aggregate demand and population for a locality slot at regency, city, district, desa, or kelurahan level. The first implementation distributes provincial population and demand evenly across the relevant count. This is a computationally cheap average, not a claim that every village has equal population.
+`loadAdministrativeMaster()` loads the four CSVs only when the locality explorer is used. `searchLocalities(provinceId, level, query, limit)` searches actual names/codes. `getLocalityAggregateAsync(provinceId, level, index)` returns the actual administrative code and name plus its population/demand estimate. The main game does not load or instantiate all 83,762 locality records during normal play.
 
-Until the official master region dataset is imported, locality names are explicit synthetic placeholders such as “Desa simulasi 00001”. They are not real village/city names or official administrative codes. The code records `masterNameStatus: synthetic_placeholder_requires_official_master_data`.
+**Important limitation:** the administrative master supplies names, codes and parent relationships, not a verified population count for every locality. The current engine distributes provincial population and demand evenly across the relevant locality count to provide a working estimate. This is not an observed village population. Each result labels this as `equal_share_estimate_pending_official_locality_population`. Do not present it as actual village-level population.
 
-**Required follow-up data gate:** import the full official Kemendagri/BPS region master with stable province, regency, city, district, village and kelurahan codes and names. Then replace synthetic locality IDs and equal-split estimates with actual population and household/consumption observations. Do not label this first implementation as a complete named village database.
+A separate public dataset documents Dukcapil Semester I 2024 population/household/density/area fields but lists 83,529 village/kelurahan units and 7,282 districts, which do not match the 83,762/7,285 administrative master. It is not yet merged. Prodeskel's public village-population page also reports fewer completed locality records than the full master. Coverage, definitions, code crosswalks and missing units must be reconciled before using either as a complete population table.
 
+**Next data gate:** import a validated locality-level population/household dataset with a code crosswalk and explicit missing-data handling. Until then, use the current equal-share estimate and label it clearly. Physical household and institutional consumption rates remain a separate research requirement.
 ## 3. Background population and active NPC architecture
 
 - Statistical population: 200,000,000 residents.
@@ -176,21 +190,24 @@ A fully calibrated disaster model still requires BNPB event history, hazard expo
 
 Runtime module: `js/national_economy.js`  
 Main game integration: `index.html`, `js/day.js`, `js/state.js`, `js/land.js`, `js/economy.js`  
+Administrative master: `data/administrative_regions/kemendagri_2025_*.csv`  
 Dashboard: `dunia-simulasi.html`  
 Regression: `tests/national-economy.test.js`
 
-The state stores 38 province aggregates × 60 commodities, plus approximately 1,132 active agents. It does not store 200 million residents or materialize all 84,291 locality records. Locality aggregates are calculated on demand. Player region defaults to DKI Jakarta and can be changed from the Dunia Simulasi dashboard. Commodity and coconut producer quotes use the player's selected province quote; the owner-verified direct whole-coconut retail price remains outside this regional producer-market adjustment.
+The state stores 38 province aggregates × 60 commodities, plus approximately 1,132 active agents. It does not store 200 million residents or persist 83,762 locality objects. The four administrative CSVs total approximately 2.4 MB and are fetched/parsed only when the user searches the locality explorer; the main gameplay tick does not load them. Search results and one selected locality are materialized on demand.
+
+The dashboard supports country, province, regency, city, district, desa and kelurahan views, including search by locality name/code. Player region defaults to DKI Jakarta and can be changed from the same dashboard. Commodity and coconut producer quotes use the player's selected province quote; the owner-verified direct whole-coconut retail price remains outside this regional producer-market adjustment.
 
 ## 9. Research and implementation backlog
 
-1. Import official named/code master data for all 514 regencies/cities, 7,281 districts and 84,291 village/kelurahan units. Resolve current administrative-code vintage and boundary changes.
-2. Replace population-proportional regency/city allocation and equal locality population split with official per-unit population data.
+1. Reconcile and import actual population, household, density and area by locality from Dukcapil/DKB/prodeskel or another authoritative source. Preserve unmatched codes and missing observations; do not impute them silently.
+2. Replace equal-share population estimates with actual locality population and household data; then derive household demand by household size, age structure, income/poverty and urban/rural profile.
 3. Add physical household consumption by commodity and province; distinguish rice from paddy/gabah, food from feed maize, fresh/live animal from processed meat, and household from industrial demand.
 4. Add provincial commodity production, harvested area, productivity, storage and seasonal supply for all Tier 1–4 commodities.
 5. Add actual province-to-province freight capacity, costs, distances, ports, route closures and shipment lead times.
 6. Add government fiscal revenue, budget, procurement contracts, warehouse capacity, reserve quality/age, storage losses, release pricing and transparent public accounts.
 7. Add official disaster/hazard exposure and calibrated damage/recovery distributions.
-8. Add tests for multi-province trade, price convergence, import budget exhaustion, reserve depletion/replenishment, save migration, and large-scale mobile performance.
+8. Add tests for full master-data parent links, population reconciliation, multi-province trade, price convergence, import budget exhaustion, reserve depletion/replenishment, save migration, and large-scale mobile performance.
 
 ## 10. Source register
 
@@ -199,6 +216,8 @@ The state stores 38 province aggregates × 60 commodities, plus approximately 1,
 - BPS, “Jumlah Kecamatan Menurut Provinsi, 2024”, based on BPS Decree No. 646/2024.
 - BPS, *Statistik Indonesia 2025*, Tables 2.1.1–2.1.4, administrative areas; Ministry of Home Affairs source for regency/city counts.
 - BPS, Podes 2024 executive summary: 84,276 village-level administrative units consisting of 75,753 desa, 8,486 kelurahan and 37 UPT/SPT; 7,281 districts and 514 regencies/cities.
+- Administrative code/name master: `prodhokter/dataset-wilayah-indonesia`, MIT licensed, normalized from `cahyadsn/wilayah`, derived from Kepmendagri No. 300.2.2-2138 Tahun 2025. Source and license files are in `data/administrative_regions/README.md`.
+- Candidate locality population source (not yet ingested): `dhanyyudi/wilayah-id`, which documents Dukcapil Semester I 2024 population/household/density/area data but lists 83,529 villages/kelurahan and 7,282 districts; this coverage mismatch must be reconciled first.
 - Bapanas, “Volume Penyaluran Cadangan Pangan Pemerintah untuk Stabilisasi Pasokan dan Harga Beras September 2026”, description of CBP/SPHP and cited regulatory basis: https://data.badanpangan.go.id/datasetpublications/mce/sphp-beras-tingkat-konsumen-agustus-2026
 
 The in-game country and demand weights are simulation constructs. Official reference dates remain in documentation/source metadata and are not required to be shown to players.
