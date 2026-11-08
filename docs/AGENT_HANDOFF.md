@@ -439,3 +439,23 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - GitHub Actions verification is required before this work is marked green. No local test execution is claimed.
 - Important limitation: legacy agricultural inventory created before the new carrying-value ledger may have quantity but zero recorded cost. The runtime deliberately does not invent historical cost. Such stock must be re-harvested/rebuilt under the new valuation path or receive a documented migration rule later. Butuh riset lanjutan untuk a defensible historical-cost migration policy.
 - No changes to `main`, `peta.html`, or `js/map_engine.js`.
+
+
+## Finished-goods inventory boundary (2026-11-08)
+
+- Continued the live processing work by correcting a deeper accounting boundary in `js/land.js::processCommodity()`: processing must create finished goods inventory, not automatically sell the output.
+- `js/commodities.js` now gives the active test outputs stable IDs and output units: `sambal_cabai_250g` and `jagung_bakar`.
+- `js/state.js` now maintains `finishedInventory` and `finishedInventoryCost` separately from raw agricultural inventory.
+- `processCommodity()` now:
+  - consumes raw agricultural quantity and carrying value;
+  - pays conversion cash;
+  - capitalizes raw carrying value + conversion cost into finished-goods carrying value;
+  - records distribution as an actual cash outflow;
+  - does NOT recognize COGS;
+  - does NOT create revenue;
+  - leaves finished goods available for a later sale/distribution transaction.
+- This establishes the intended accounting chain: raw inventory -> processing/conversion -> finished-goods inventory -> later sale -> COGS + revenue.
+- The existing `AgroUnitEconomics.calculate()` call remains a pre-posting economic consistency/viability guard. It does not itself post accounting entries.
+- The test fixture was updated so `tests/commodity-processing-runtime.test.js` verifies 10 sambal packages with Rp105,000 carrying value after consuming 2.5 kg of cabai with Rp5,000 raw carrying value plus Rp100,000 conversion cost; no COGS or revenue is recognized at production time.
+- CI verification is required before declaring this checkpoint green. No local test execution is claimed.
+- Next implementation target: build the finished-goods sale transaction against `finishedInventory`/ `finishedInventoryCost`, with weighted-average COGS, revenue validation, and no stale-price mutation. Do not bypass this inventory boundary by restoring auto-sale behavior.
