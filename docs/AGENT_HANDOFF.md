@@ -401,3 +401,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test commits: `7988b56ed77956b076eb7755d95572dd39358e14` (initial regression) and `96602049d9f4322e8d2946649fd1551119e010fc` (harness correction). The latest test setup then pins the stock-class fixture in `3849b4ab557c6f06455742db4d77434fa8d59083`.
 - Run `42465125512` exposed a pre-existing test-harness omission (`stockClass` undefined); run `42465207865` verified the harness correction. The latest regression run `42465291779` is still in progress at handoff time.
 - GitHub Actions verification is required before marking this integration green. No local test execution is claimed.
+
+
+### CI closure — coconut sales unit-economics coverage (2026-11-08)
+
+- Young coconut → tengkulak regression run **42465291779** completed **successfully** on test commit `3849b4ab557c6f06455742db4d77434fa8d59083`.
+- The earlier harness correction run **42465207865** also completed successfully.
+- The old-coconut market implementation run **42423351369** completed successfully; its regression run initially exposed the same test-harness stock-class dependency and was corrected in the subsequent harness work.
+- Therefore the four active coconut sales paths now have automated unit-economics coverage at the transaction boundary: es kelapa, whole coconut, old coconut → market, and young coconut → tengkulak.
+- No local test execution is claimed; verification is through GitHub Actions.
+- No additional sales function exists in `js/economy.js` requiring the same coconut unit-economics guard. The next implementation should therefore move to the next real production/processing transaction flow rather than duplicating validation.
