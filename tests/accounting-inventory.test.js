@@ -36,6 +36,7 @@ function makeHarness(overrides = {}) {
   const DATA = {
     buyFromFarmer: 3500,
     buyFromTengkulak: 5000,
+    priceTengkulak: { biasa: 3500, super: 5000 },
     wholePrice: 13000,
     es: { price: 5000, glassesPerCoconut: 4 },
     shop: {
@@ -100,6 +101,30 @@ test('whole coconut sale uses unit economics before any HPP or inventory mutatio
   assert.equal(fresh.S.dayLog.cogs, 0);
   assert.equal(fresh.S.stock.biasa, 1);
   assert.equal(fresh.S.stockCostValue, 3500);
+  assert.equal(fresh.journal.length, 0);
+});
+
+test('young coconut tengkulak sale uses unit economics before HPP or inventory mutation', () => {
+  const { S, DATA, context, journal } = makeHarness();
+  const unitEconomics = require('../js/unit_economics.js');
+  context.AgroUnitEconomics = unitEconomics;
+
+  assert.equal(context.confirmSellTengkulak(true, 999999), undefined);
+  assert.equal(S.gold, 103500);
+  assert.equal(S.stock.biasa + S.stock.super, 0);
+  assert.equal(S.stockCostValue, 0);
+  assert.equal(S.dayLog.cogs, 3500);
+  assert.equal(journal.filter(row => row[0] === 'HPP').length, 1);
+  assert.equal(journal.filter(row => row[0] === 'PENJUALAN').length, 1);
+
+  const fresh = makeHarness();
+  fresh.context.AgroUnitEconomics = unitEconomics;
+  fresh.DATA.priceTengkulak.biasa = NaN;
+  assert.equal(fresh.context.confirmSellTengkulak(true, 3500), undefined);
+  assert.equal(fresh.S.gold, 100000);
+  assert.equal(fresh.S.stock.biasa, 1);
+  assert.equal(fresh.S.stockCostValue, 3500);
+  assert.equal(fresh.S.dayLog.cogs, 0);
   assert.equal(fresh.journal.length, 0);
 });
 
