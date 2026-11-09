@@ -21,7 +21,7 @@ test('every actual COMMODITIES catalog ID has a matching storage profile',()=>{
 
 test('market-unit registry exposes only verified physical references and preserves legacy quantity status',()=>{
  const registry=vm.runInContext('MARKET_UNIT_REGISTRY',context);
- assert.equal(Object.keys(registry).length,39);
+ assert.equal(Object.keys(registry).length,41);
  for(const id of Object.keys(registry)){
   assert.ok(registry[id].unit,id+' missing unit');
   assert.ok(registry[id].productForm,id+' missing product form');
