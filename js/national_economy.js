@@ -315,7 +315,7 @@
   const meta=provinceRecords.find(row=>row.id===String(provinceId)),p=s&&s.provinces&&s.provinces[String(provinceId)];if(!meta||!p)return {status:"unknown_province"};
   const expectedLocalityCount=meta.regencyCount+meta.cityCount,entries=Object.values(s.localityConsumption2025||{}).filter(entry=>entry.provinceId===meta.id);
   const gamePopulation=getBpsDkiLocalityGamePopulation2025(),officialWeights=entries.length===expectedLocalityCount&&entries.every(entry=>BPS_KABKOTA_POPULATION_2025[entry.localityCode]&&gamePopulation[entry.localityCode]);
-  const expectedKeys=Object.keys(BAPANAS_CONSUMPTION_MODEL_2025.rows),complete=officialWeights&&expectedKeys.every(key=>entries.every(entry=>entry.rows&&entry.rows[key]));
+  const expectedKeys=entries.length?Object.keys(entries[0].rows||{}):[],complete=officialWeights&&expectedKeys.length>0&&expectedKeys.every(key=>entries.every(entry=>entry.rows&&entry.rows[key]));
   if(!complete){p.localityConsumption2025={source:"Bapanas 2025 locality leaf data + BPS 2025 population weights",status:"partial_not_applied_to_daily_province_demand",localityCount:entries.length,expectedLocalityCount,officialPopulationWeights:!!officialWeights};return p.localityConsumption2025;}
   const provincePopulation=p.population,weighted={};
   expectedKeys.forEach(key=>{let total=0;entries.forEach(entry=>{total+=(entry.rows[key].annualPerCapita*gamePopulation[entry.localityCode])/provincePopulation;});weighted[key]=total;});
