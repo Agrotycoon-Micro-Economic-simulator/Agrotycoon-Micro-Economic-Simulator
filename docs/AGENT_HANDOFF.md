@@ -826,3 +826,9 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Bumped `kabkotaConsumptionSeedVersion` from 2 to 3. Existing saves already seeded with 3101 merge the three additional locality profiles on next `ensure()` without discarding previous rows.
 - Added regression checks for all three new locality snapshots, 26-row completeness per locality, representative source values, 4-locality/104-row coverage, and differentiated fish-category local quote behavior.
 - Source is the Bapanas 2025 rendered table. The complete CSV/JSON/XLSX resource and the remaining 510 localities are still pending; 4/514 is partial coverage only.
+
+
+### Jakarta locality seed validation correction (2026-11-09)
+
+- The first 3-locality code commit omitted the comma separating the final 3101 record from the first 3171 record. GitHub Actions runs `42551115807` and `42551127483` exposed `SyntaxError: Unexpected token '{'`; these runs are failures and must not be counted as green.
+- Corrected the array separator in commit `832c558a0117ac5ebaeac88a6a1b97656354afc9`. The corrected code is now queued for full targeted regression run `42551236544`. Wait for its conclusion and inspect logs before claiming the 4-locality expansion is validated.
