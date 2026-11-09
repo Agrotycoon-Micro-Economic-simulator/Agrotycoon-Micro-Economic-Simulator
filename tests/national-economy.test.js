@@ -11,6 +11,41 @@ for (const file of ['js/commodities.js', 'js/region_capacity.js', 'js/state.js',
 }
 vm.runInContext("S = { name: 'national-economy-test' }", context);
 
+test('official Bapanas 2025 monthly demand coefficients are mapped by compatible commodity stage', () => {
+  const api = context.AgroNationalEconomy;
+  const source = api.bapanasMonthlyDemand2025;
+  assert.equal(source.source.publisher, 'Badan Pangan Nasional');
+  assert.match(source.source.title, /Proyeksi Neraca Pangan Tahun 2025/);
+  assert.equal(source.source.table, 'Tabel 2.5 Koefisien Kebutuhan Pangan Bulanan Tahun 2025');
+  const expected = {
+    padi: [0.0849,0.0769,0.0888,0.0822,0.0849,0.0823,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850],
+    jagung: [0.0849,0.0767,0.0849,0.0822,0.0849,0.0822,0.0849,0.0849,0.0822,0.0849,0.0822,0.0849],
+    cabai_merah: [0.0849,0.0785,0.0884,0.0822,0.0849,0.0839,0.0849,0.0849,0.0822,0.0849,0.0822,0.0853],
+    cabai_rawit: [0.0849,0.0791,0.0897,0.0822,0.0849,0.0834,0.0849,0.0849,0.0822,0.0849,0.0822,0.0854],
+    bawang_merah: [0.0849,0.0789,0.0910,0.0822,0.0849,0.0835,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850],
+    bawang_putih: [0.0849,0.0796,0.0901,0.0822,0.0849,0.0829,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850],
+    kedelai: [0.0849,0.0767,0.0849,0.0822,0.0849,0.0822,0.0849,0.0849,0.0822,0.0849,0.0822,0.0849]
+  };
+  for (const [id, values] of Object.entries(expected)) {
+    assert.deepEqual(Array.from(source.records[id].coefficients), values);
+    assert.equal(source.records[id].coefficients.length, 12);
+  }
+  assert.equal(source.records.padi.mappingStatus, 'downstream_signal_rice_to_paddy_index_only');
+  assert.equal(source.records.jagung.mappingStatus, 'physical_commodity_match');
+  assert.equal(api.seasonalDemandCoefficient('jagung', 1), 0.0849);
+  assert.equal(api.seasonalDemandCoefficient('jagung', 31), 0.0767);
+  assert.equal(api.seasonalDemandCoefficient('jagung', 151), 0.0822);
+  assert.equal(api.seasonalDemandFactor('jagung', 31), 0.9204);
+  assert.equal(api.seasonalDemandFactor('padi', 61), 1.0656);
+  assert.equal(api.seasonalDemandFactor('lele', 61), 1);
+  // Keep the printed HBKN uplift: do not normalize the official annual coefficients to 1.
+  assert.equal(Number(source.records.padi.coefficients.reduce((sum, value) => sum + value, 0).toFixed(4)), 1.0041);
+  assert.equal(Number(source.records.jagung.coefficients.reduce((sum, value) => sum + value, 0).toFixed(4)), 0.9998);
+  const runtime = fs.readFileSync(path.join(__dirname, '..', 'js', 'national_economy.js'), 'utf8');
+  assert.match(runtime, /monthlyDemand=\(p\.demand\[id\]\|\|0\)\*seasonalDemandFactor\(id,day\)/);
+  assert.match(runtime, /seasonalDemandFactor\(id,day\)\)\/30/);
+});
+
 test('country contains 38 provinces and exactly 200 million statistical residents', () => {
   const api = context.AgroNationalEconomy;
   assert.equal(api.provinces.length, 38);
