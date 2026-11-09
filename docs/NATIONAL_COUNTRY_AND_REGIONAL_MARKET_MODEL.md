@@ -340,3 +340,20 @@ Current production quantities remain experimental scenario outputs from the prov
 ### Daily NPC proposal persistence
 
 The daily game rollover now builds one deterministic NPC proposal batch from each province's executed `dailyProduction` and `unmetDemand` snapshot and persists it under `S.marketOrderBook.npcOrders`. The batch is replaced once per in-game day, with validation and an idempotency guard. It remains an aggregate experimental pool and is not yet passed to the matcher; no order fill, settlement, ledger posting, or order-book-derived repricing occurs at this stage.
+
+
+## 5. Commodity storage and spoilage: condition-based contract (2026-11-09)
+
+Commodity deterioration is not a one-day universal timer. The game must distinguish storage age from quality loss and confirmed spoilage. A lot's risk depends on commodity identity, physical form, moisture, temperature, relative humidity, flood/wetting duration, drying response, packaging, physical damage, pests and observed mold/rot.
+
+The first source-backed assessment module is `js/commodity_storage.js`, loaded by the main game. It currently covers paddy, shelled maize and coconut only. Unknown commodities remain `research_required` and are not assigned invented expiry periods.
+
+- **Paddy:** FAO's storage-duration reference demonstrates the interaction between grain moisture and temperature. For example, the table gives about two days at 18% moisture and 30°C, while lower moisture and temperature materially extend storage. This is a conditional storage recommendation, not a fixed expiry for every paddy lot. https://www.fao.org/4/t0522e/T0522E09.htm
+- **Maize:** Indonesian postharvest references recommend approximately 12% moisture for storage; at 14%, storage can still be long but depends on temperature and initial fungal infection. Wet maize and dry shelled maize are separate product states. https://tanamanpangan.bsip.pertanian.go.id/storage/assets/uploads/publikasi/hWTgjjZIWenPLFk4Furv2cybMDDQ8GW39TtHKpbW.pdf
+- **Coconut:** mature husked coconut, mature dehusked coconut, intact young coconut and partially dehusked tender coconut have different storage profiles. USDA's commercial storage reference reports 3–5 months for mature husked coconut at ambient conditions; tender-coconut research documents deterioration behavior that changes with husk/perianth integrity and temperature. https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC3551135/
+
+The current flood scenario escalates an undried, flood-wet lot to critical risk after three days. Critical risk is not automatically booked as a 100% inventory loss: observed mold/rot is required for confirmed spoilage in this first contract. This avoids inventing deterministic loss percentages without local evidence.
+
+**Integration boundary:** regional inventory is currently an aggregate daily balance, not a set of age-tracked lots. The new assessor is callable in the game runtime and covered by a dedicated test suite, but automatic NPC/player stock deterioration, FIFO, quality discounts, write-offs and ledger posting are not yet connected. The next implementation must first introduce persistent lot/cohort records and only then apply the assessment to actual stock. No daily expiry may be added as a shortcut.
+
+The existing player coconut quality progression (young through day 14, old through day 25, rotten thereafter) remains a separate owner-established game rule and must not be generalized to other commodities or coconut forms without approval.
