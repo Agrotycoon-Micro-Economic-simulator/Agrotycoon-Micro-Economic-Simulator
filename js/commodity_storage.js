@@ -8,7 +8,7 @@ const GROUPS={
  veg:['cabai_merah','cabai_rawit','tomat','kacang_panjang','mentimun','terong','kubis','wortel'],
  rhizome:['jahe','kunyit','lengkuas','serai'],
  fruit:['pisang','pepaya','mangga','durian','alpukat','jeruk','nanas','semangka','melon','stroberi'],
- plantation:['tebu','kopi','kakao','teh','karet','kelapa_sawit','vanili','lada','kapas','tembakau'],
+ plantation:['kelapa','tebu','kopi','kakao','teh','karet','kelapa_sawit','vanili','lada','kapas','tembakau'],
  livestock:['ayam_pedaging','ayam_petelur','bebek','kambing','sapi_potong','sapi_perah','domba'],
  fish:['lele','nila','gurami','udang_vaname','patin'],
  stable:['madu'], mushroom:['jamur_tiram']
@@ -28,6 +28,7 @@ const BASE={
  mushroom:{storageClass:'fresh_mushroom',form:'whole_fresh',ambientDays:2,idealDays:7,referenceTempC:2,referenceRhPct:95,source:'FAO horticultural perishability table classifies mushrooms as very highly perishable',sourceUrl:'https://www.fao.org/4/x5403e/x5403e09.htm',evidence:'category_reference'}
 };
 const OV={
+ kelapa:{ambientDays:120,idealDays:150,form:'mature_husked',referenceTempC:25,referenceRhPct:70,source:'USDA commercial storage reference: mature husked coconut around 3-5 months ambient',sourceUrl:'https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf',evidence:'source_backed_form_specific'},
  padi:{ambientDays:180,idealDays:365,moistureMaxPct:14,moistureCriticalPct:18,form:'gabah_kering',referenceTempC:25,referenceRhPct:65,sourceUrl:'https://www.fao.org/4/t0522e/T0522E09.htm'},
  kelapa:{ambientDays:120,idealDays:150,form:'mature_husked',referenceTempC:25,referenceRhPct:70,source:'USDA commercial storage reference: mature husked coconut around 3-5 months ambient',sourceUrl:'https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf',evidence:'source_backed_form_specific'},
  jagung:{ambientDays:180,idealDays:365,moistureMaxPct:12,moistureCriticalPct:16,form:'pipilan_kering',referenceTempC:25,referenceRhPct:65,sourceUrl:'https://tanamanpangan.bsip.pertanian.go.id/storage/assets/uploads/publikasi/hWTgjjZIWenPLFk4Furv2cybMDDQ8GW39TtHKpbW.pdf'},
@@ -81,7 +82,7 @@ function assessLot(input){
  if(!Number.isFinite(days)||days<=0)return {ok:true,commodityId:id,risk:'unclassified',expired:false,spoilageConfirmed:false,calibrationStatus:'research_required'};
  const effectiveAge=age*rate,ratio=effectiveAge/days,quality=Math.max(0,Math.min(100,100*(1-ratio)));
  let risk=ratio>=1?'expired':ratio>=.8?'critical':ratio>=.55?'high':ratio>=.3?'watch':'normal';
- if(input.flooded===true&&!input.driedAfterFlood&&finite(input.daysSinceFlood)&&Number(input.daysSinceFlood)>=3&&['dry_grain','root_tuber'].includes(p.storageClass)&&rank[risk]<rank.critical)risk='critical';
+ if(input.flooded===true&&!input.driedAfterFlood&&finite(input.daysSinceFlood)&&Number(input.daysSinceFlood)>=3&&['dry_grain','root_tuber'].includes(p.storageClass)&&!input.moldObserved&&!input.rottingObserved)risk='critical';
  if(p.moistureCriticalPct&&moist!==null&&moist>=p.moistureCriticalPct&&rank[risk]<rank.critical)risk='critical';
  if(input.moldObserved===true||input.rottingObserved===true)risk='spoiled';
  return {ok:true,commodityId:id,form:p.form,ageDays:age,effectiveAgeDays:Number(effectiveAge.toFixed(3)),shelfLifeDays:days,quality:Number(quality.toFixed(2)),risk,expired:['expired','spoiled'].includes(risk),spoilageConfirmed:['expired','spoiled'].includes(risk),automaticExpiry:false,calibrationStatus:p.evidence,reference:{temperatureC:p.referenceTempC,relativeHumidityPct:p.referenceRhPct},source:p.source,sourceUrl:p.sourceUrl,reasons:[...(input.flooded&&!input.driedAfterFlood?['flood_wet_not_dried']:[]),...(input.physicalDamage?['physical_damage']:[]),...(input.opened?['opened_or_cut']:[])]};
@@ -103,7 +104,7 @@ function consumeLots(state,id,qty){
  let rem=Number(qty);const used=[];const lots=b.lots.filter(l=>l.commodityId===id).sort((a,c)=>a.receivedDay-c.receivedDay);
  for(const l of lots){if(rem<=1e-9)break;const n=Math.min(Math.max(0,Number(l.quantity)||0),rem);if(!n)continue;l.quantity-=n;rem-=n;used.push({lotId:l.id,quantity:n});}
  if(rem>1e-6)return {ok:false,reason:'lot_quantity_shortfall',remaining:rem};
- b.lots=b.lots.filter(l=>l.quantity>1e-9);return {ok:true,consumed:used};
+ b.lots=b.lots.filter(l=>l.quantity>1e-9);state.landSystem.storageLots=b.lots;return {ok:true,consumed:used};
 }
 function tickLots(state,day,environment){
  const b=ensureLotBook(state);if(!b.ok)return b;const env=environment||{},results=[];
