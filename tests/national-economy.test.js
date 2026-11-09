@@ -794,6 +794,7 @@ test('only national disaster and war activate the emergency market-band authoriz
   assert.equal(api.marketEmergencySnapshot().active, true);
   api.updateDay(4);
   assert.equal(api.marketEmergencySnapshot(), null);
+  vm.runInContext("S.nationalEconomy.provinces.lampung.priceIndex.padi = 10", context);
   assert.equal(api.quote('lampung', 'padi', 1000), padiCeiling);
   const war = api.applyNationalEmergency({ type: 'war', durationDays: 2, eventId: 'war-1' });
   assert.equal(war.type, 'war');
