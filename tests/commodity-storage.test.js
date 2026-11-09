@@ -21,7 +21,7 @@ test('every actual COMMODITIES catalog ID has a matching storage profile',()=>{
 
 test('market-unit registry exposes only verified physical references and preserves legacy quantity status',()=>{
  const registry=vm.runInContext('MARKET_UNIT_REGISTRY',context);
- assert.equal(Object.keys(registry).length,50);
+ assert.equal(Object.keys(registry).length,55);
  for(const id of Object.keys(registry)){
   assert.ok(registry[id].unit,id+' missing unit');
   assert.ok(registry[id].productForm,id+' missing product form');
@@ -36,6 +36,11 @@ test('market-unit registry exposes only verified physical references and preserv
  assert.equal(registry.jamur_tiram.unit,'kg');
  assert.equal(registry.jamur_tiram.status,'government_extension_farmer_sale_reference');
  assert.equal(registry.sawi.unit,'kg');
+ assert.equal(registry.melon.unit,'100 kg');
+ assert.equal(registry.jahe.unit,'50 kg');
+ assert.equal(registry.kunyit.unit,'50 kg');
+ assert.equal(registry.lengkuas.unit,'50 kg');
+ assert.equal(registry.serai.unit,'ikat');
  assert.equal(registry.nanas.unit,'10 kg');
  assert.equal(registry.durian.unit,'10 kg');
  for(const id of ['tebu','teh','tembakau','vanili'])assert.equal(registry[id].unit,'kg');
