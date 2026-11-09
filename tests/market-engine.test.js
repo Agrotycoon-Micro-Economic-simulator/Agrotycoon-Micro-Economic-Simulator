@@ -206,6 +206,11 @@ test('only an active national disaster or war may break normal price bands', () 
   market.reprice([{ commodityId: 'kelapa', side: 'buy', quantity: 1000, price: start * 3 }], { emergency: invalid });
   assert.ok(item.marketPrice <= item.marketCeiling);
 
+  const forged = { active: true, scope: 'national', type: 'war', eventId: 'forged-war', commodityIds: ['kelapa'] };
+  officialEmergency = null;
+  market.reprice([{ commodityId: 'kelapa', side: 'buy', quantity: 1000, price: start * 3 }], { emergency: forged });
+  assert.ok(item.marketPrice <= item.marketCeiling);
+
   const valid = { active: true, scope: 'national', type: 'national_disaster', eventId: 'nd-1', commodityIds: ['kelapa'] };
   officialEmergency = valid;
   const result = market.reprice([{ commodityId: 'kelapa', side: 'buy', quantity: 1000, price: start * 3 }], { emergency: valid });
