@@ -267,7 +267,20 @@ window.REAL_ECONOMIC_DATA={
    cabai_merah:{sourceCommodity:"Cabai Besar/TW/Teropong + Cabai Keriting",components:[{sourceCommodity:"Cabai Besar/TW/Teropong",productionQuintal:3871164.47},{sourceCommodity:"Cabai Keriting",productionQuintal:13279127.34}],productionQuintal:17150291.81,productionKg:1715029181},
    jamur_tiram:{sourceCommodity:"Jamur Tiram",productionQuintal:391216.99,productionKg:39121699}
   },
-  runtimeUse:"national_annual_supply_reference_only_no_provincial_or_daily_allocation",
+  provincialCoverage:{verifiedProvinceCount:3,totalProvinceCount:38,provinceIds:["lampung","sumatera-utara","jambi"],coverageStatus:"partial_official_provincial_tables"},
+  provincialSources:{
+   lampung:{publisher:"BPS Provinsi Lampung",url:"https://lampung.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMyMxODAw/produksi-tanaman-sayuran-dan-buah-buahan-semusim-menurut-jenis-tanaman-di-provinsi-lampung.html",lastUpdated:"2026-05-25"},
+   "sumatera-utara":{publisher:"BPS Provinsi Sumatera Utara",url:"https://sumut.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah-buahan-semusim-menurut-jenis-tanaman-di-provinsi-sumatera-utara--2020.html",lastUpdated:"2026-05-25"},
+   jambi:{publisher:"BPS Provinsi Jambi",url:"https://jambi.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buahbuahan-semusim-menurut-jenis-tanaman-di-provinsi-jambi--2021.html",lastUpdated:"2026-05-25"}
+  },
+  provincialRecords:{
+   lampung:{bawang_merah:12897.80,bayam:65673.89,cabai_rawit:132556.26,kacang_panjang:107012.62,kangkung:127826.85,kentang:1458.00,mentimun:106136.85,kubis:56532.60,melon:32213.91,sawi:114146.52,semangka:140621.80,stroberi:0.03,terong:189739.42,tomat:156122.91,wortel:66279.50,cabai_merah:240385.55,jamur_tiram:5200.01},
+   "sumatera-utara":{bawang_merah:520953.05,bawang_putih:430.60,bayam:163510.59,cabai_rawit:1090525.07,kacang_panjang:255779.61,kangkung:225715.05,kentang:1262036.74,mentimun:272202.37,kubis:2450223.43,melon:28487.00,sawi:822463.66,semangka:222227.82,stroberi:1630.53,terong:893049.63,tomat:2345798.56,wortel:1987470.92,cabai_merah:2148738.55,jamur_tiram:1034.50},
+   jambi:{bawang_merah:218558.98,bayam:43567.01,cabai_rawit:421738.75,kacang_panjang:62983.69,kangkung:58356.20,kentang:1328362.00,mentimun:61461.68,kubis:876240.00,melon:7341.62,sawi:364413.46,semangka:64938.49,stroberi:86.82,terong:337685.51,tomat:1002814.08,wortel:170665.00,cabai_merah:2146288.27,jamur_tiram:1232.25}
+  },
+  provincialRecordUnit:"quintal/year",
+  provincialMappingNote:"BPS dash rows are not emitted as positive production. Cabai Merah is the sum of the source rows Cabai Besar/TW/Teropong and Cabai Keriting; original national components remain in records.cabai_merah.components. Provincial values are raw BPS quintals; convert by 100 kg/quintal.",
+  runtimeUse:"national_annual_reference_with_partial_provincial_annual_rows_no_monthly_or_daily_allocation",
   note:"The source is national annual production. It is not allocated to provinces, monthly harvest or daily NPC stock. Cabai Merah combines the BPS rows for big chili and curly chili; this mapping is explicit. BPS uses '–' for zero/no production and NA for unavailable values; no absent row has been fabricated."
  },
 
