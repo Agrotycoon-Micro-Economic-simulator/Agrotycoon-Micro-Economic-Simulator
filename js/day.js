@@ -143,6 +143,15 @@ function finishDay(){
   S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
   S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,playerTransactionCount:marketTick.playerTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
  }
+ // Persist one deterministic regional NPC order batch after the day's regional and market prices are updated.
+ if(typeof AgroNpcOrderGenerator!=='undefined'&&typeof AgroNationalEconomy!=='undefined'&&typeof AgroPlayerOrderBook!=='undefined'&&typeof MARKET_ENGINE!=='undefined'){
+  const provinces=AgroNationalEconomy.provinces.map(meta=>AgroNationalEconomy.provinceSnapshot(meta.id)).filter(Boolean);
+  const proposal=AgroNpcOrderGenerator.buildDailyOrders({day:S.day,provinces,catalog:MARKET_ENGINE.catalog,getPrice:id=>MARKET_ENGINE.getPrice(id)});
+  if(proposal&&proposal.ok){
+   const stored=AgroPlayerOrderBook.replaceNpcOrders(proposal.orders,S.day);
+   if(stored&&stored.ok&&!stored.alreadyGenerated)ledger('PASAR','Order NPC regional dibuat '+stored.storedCount,0,{day:S.day,summary:proposal.summary,calibrationStatus:proposal.summary.calibrationStatus});
+  }
+ }
  // Expire open market orders at the start of the next in-game day.
  if(typeof AgroPlayerOrderBook!=='undefined'&&typeof AgroPlayerOrderBook.expire==='function'){
   const expiry=AgroPlayerOrderBook.expire(S.day+1);
