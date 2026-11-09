@@ -848,3 +848,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Corrected seed commit `9d73c28612bca9aa94ef55800c111418de6a1adc` and test commit `613c71227b2c6f3d1ef29e1993b012f768390573` cover six DKI locality profiles (156 leaf records).
 - GitHub Actions run `42551355735` completed SUCCESS: 52 tests, 52 passed, 0 failed. All benchmark guards and all standalone regression tests also completed successfully.
 - This validates the six DKI locality sample only. It does not validate the remaining 508 of 514 localities, official locality population weights, BPS non-household demand, or local order-book settlement.
+
+
+### Locality explorer runtime visibility (2026-11-09)
+
+- `getLocalityAggregateAsync()` now returns `householdConsumption2025` for kabupaten/kota rows with a verified Bapanas 2025 extract. The existing `dunia-simulasi.html` locality explorer displays this object through its JSON result panel.
+- At district/desa/kelurahan depth, the API explicitly returns `not_available_at_this_administrative_depth`; it does not fabricate village consumption by equal-splitting kabupaten/kota leaf observations.
+- The output also marks `localMarketQuoteStatus` as a bounded experimental overlay, not order-book clearing. Added regression coverage by resolving Kota Administrasi Jakarta Selatan (3174) through the administrative master and checking its 26 source leaf rows appear in the locality explorer payload.
