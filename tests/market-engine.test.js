@@ -143,7 +143,7 @@ test('order book rejects invalid orders and expires orders before matching', () 
   const result = context.MARKET_ENGINE.matchOrderBook([
     makeOrder({ orderId: 'expired', side: 'buy', expiresAt: 5 }),
     makeOrder({ orderId: 'bad-price', limitPrice: 1 }),
-    makeOrder({ orderId: 'bad-qty', quantity: 1.5 }),
+    makeOrder({ orderId: 'bad-qty', quantity: 0 }),
     makeOrder({ orderId: 'valid-bid' }),
     makeOrder({ orderId: 'valid-ask', side: 'sell', limitPrice: 6500, ownerId: 'npc', actorType: 'npc' })
   ], { now: 10 });
@@ -162,4 +162,17 @@ test('order book prevents self-trading and leaves unfilled orders open', () => {
   assert.equal(result.prevented[0].orderId, 'self-ask');
   assert.equal(result.fills.length, 0);
   assert.equal(result.openOrders.length, 2);
+});
+
+
+test('order book supports fractional physical commodity quantities', () => {
+  const result = context.MARKET_ENGINE.matchOrderBook([
+    makeOrder({ orderId: 'fractional-bid', quantity: 2.75, limitPrice: 7000 }),
+    makeOrder({ orderId: 'fractional-ask', side: 'sell', quantity: 1.25, limitPrice: 6500, ownerId: 'npc-fractional', actorType: 'npc' })
+  ], { now: 10 });
+  assert.equal(result.fills.length, 1);
+  assert.equal(result.fills[0].quantity, 1.25);
+  assert.equal(result.openOrders.length, 1);
+  assert.equal(result.openOrders[0].remainingQuantity, 1.5);
+  assert.equal(result.executedNotional, 8750);
 });
