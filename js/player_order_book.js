@@ -64,7 +64,11 @@
     if (stage !== "producer" || !regionId || !Number.isSafeInteger(ttl) || ttl < 1 || ttl > 365) {
       return { ok: false, reason: "unsupported_market_scope_or_expiry" };
     }
-    if (limitPrice < Number(item.marketFloor) || limitPrice > Number(item.marketCeiling)) {
+    const emergency = root.AgroNationalEconomy && typeof root.AgroNationalEconomy.marketEmergencySnapshot === "function"
+      ? root.AgroNationalEconomy.marketEmergencySnapshot() : null;
+    const emergencyAllowed = root.MARKET_ENGINE && typeof root.MARKET_ENGINE.authorizedEmergency === "function"
+      ? root.MARKET_ENGINE.authorizedEmergency(emergency, commodityId) : false;
+    if (!emergencyAllowed && (limitPrice < Number(item.marketFloor) || limitPrice > Number(item.marketCeiling))) {
       return { ok: false, reason: "limit_price_outside_market_bounds" };
     }
     if (book.orders.filter(order => order && order.status === "open").length >= MAX_OPEN_ORDERS) {
@@ -195,7 +199,9 @@
     }
     const playerOrders = (book.orders || []).filter(order => order && order.status === "open");
     const npcOrders = (book.npcOrders || []).filter(order => order && Number(order.expiresAt) > day);
-    const matched = root.MARKET_ENGINE.matchOrderBook(playerOrders.concat(npcOrders), { now: day });
+    const emergency = root.AgroNationalEconomy && typeof root.AgroNationalEconomy.marketEmergencySnapshot === "function"
+      ? root.AgroNationalEconomy.marketEmergencySnapshot() : null;
+    const matched = root.MARKET_ENGINE.matchOrderBook(playerOrders.concat(npcOrders), { now: day, emergency });
     const playerBuyFills = matched.fills.filter(fill => fill.buyerId === "player");
     const playerSellFills = matched.fills.filter(fill => fill.sellerId === "player");
     const buyNotional = playerBuyFills.reduce((sum, fill) => sum + fill.notional, 0);
@@ -318,7 +324,7 @@
       }
     });
     book.npcOrders = matched.openOrders.filter(order => order.actorType === "npc");
-    if (matched.priceTransactions.length) root.MARKET_ENGINE.reprice(matched.priceTransactions);
+    if (matched.priceTransactions.length) root.MARKET_ENGINE.reprice(matched.priceTransactions, { emergency });
     const executionRecords = matched.fills.map(fill => Object.assign({}, fill, { settlement: settled.includes(fill.fillId) ? "player_settled" : "npc_aggregate_execution" }));
     book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords).slice(-1000);
     book.lastMatch = { day, fills: executionRecords, openOrderCount: matched.openOrders.length,
