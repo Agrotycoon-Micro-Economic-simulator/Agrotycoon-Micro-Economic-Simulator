@@ -909,7 +909,8 @@ test('KKP 2024 aquaculture national production is bound without false provincial
   for (const id of ['gurami', 'patin', 'lele', 'nila']) {
     assert.equal(lampung.commodityPhysicalCoverage[id].aquacultureNationalProductionStatus, 'official_2024_national_aquaculture_output_reference_not_provincial_supply');
     assert.equal(lampung.dailyPhysicalSupply[id], null);
-    assert.equal(lampung.commodityPhysicalCoverage[id].supplyStatus, 'official_provincial_supply_data_pending');
+    assert.equal(lampung.commodityPhysicalCoverage[id].supplyStatus, 'official_provincial_annual_aquaculture_output_reference');
+    assert.equal(lampung.commodityPhysicalCoverage[id].dailySupplyStatus, 'provincial_annual_reference_only_monthly_harvest_curve_pending');
   }
   const entry = api.runtimeDataRegistry().verified.find(row => row.id === 'kkp_aquaculture_national_production_2024');
   assert.ok(entry);
