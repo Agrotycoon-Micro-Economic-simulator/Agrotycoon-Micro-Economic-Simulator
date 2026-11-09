@@ -718,14 +718,18 @@ test('BPS 2024 plantation production is bound as partial provincial annual suppl
   assert.equal(source.source.publisher, 'Badan Pusat Statistik');
   assert.equal(source.referenceYear, 2024);
   assert.equal(source.sourceUnit, 'thousand_tonne/year');
-  assert.equal(source.coverage.verifiedProvinceCount, 7);
+  assert.equal(source.coverage.verifiedProvinceCount, 38);
   assert.equal(source.coverage.totalProvinceCount, 38);
-  assert.equal(Object.keys(source.records).length, 7);
+  assert.equal(Object.keys(source.records).length, 38);
   assert.deepEqual(Object.keys(source.commodityMap).sort(), ['kakao','kelapa','kelapa_sawit','karet','kopi','tebu','teh'].sort());
   assert.equal(source.records.aceh.kelapa_sawit, 1092.71);
   assert.equal(source.records['sumatera-utara'].kelapa, 103.64);
   assert.equal(source.records['sumatera-selatan'].tebu, 124.37);
   assert.equal(source.records.riau.kakao, 0.84);
+  assert.deepEqual(source.provincialToNationalDifferencesThousandTon, {
+    kelapa_sawit: 0.02, kelapa: -0.01, karet: 0.04, kopi: 0.02, kakao: -0.01, teh: 0.01, tebu: 0.01
+  });
+  assert.equal(state.national.marketSupplyReference2024.plantation.coverage.observationCount, 266);
   const aceh = state.provinces.aceh;
   assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.productionKg, 1092710000);
   assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.productionThousandTon, 1092.71);
@@ -737,16 +741,27 @@ test('BPS 2024 plantation production is bound as partial provincial annual suppl
     assert.equal(aceh.dailyPhysicalSupply[id], null, id);
   }
   const lampung = state.provinces.lampung;
-  assert.equal(lampung.commodityPhysicalCoverage.kelapa_sawit.supplyStatus, 'official_provincial_supply_data_pending');
+  assert.equal(lampung.commodityPhysicalCoverage.kelapa_sawit.supplyStatus, 'official_provincial_annual_supply_partial');
+  assert.equal(lampung.commodityPhysicalCoverage.kelapa_sawit.dailySupplyStatus, 'provincial_annual_reference_only_monthly_harvest_curve_pending');
+  assert.equal(lampung.marketSupplyReference2024.plantation.kelapa_sawit.productionKg, 375240000);
   assert.equal(lampung.dailyPhysicalSupply.kelapa_sawit, null);
+  for (const provinceId of Object.keys(source.records)) {
+    for (const id of Object.keys(source.commodityMap)) {
+      const observation = state.provinces[provinceId].marketSupplyReference2024.plantation[id];
+      assert.equal(observation.productionKg, source.records[provinceId][id] * 1000000, provinceId + '/' + id);
+      assert.equal(state.provinces[provinceId].dailyPhysicalSupply[id], null, provinceId + '/' + id);
+    }
+  }
   const registry = api.runtimeDataRegistry();
   const entry = registry.verified.find(row => row.id === 'bps_plantation_production_2024_partial');
   assert.ok(entry);
-  assert.equal(entry.records, 49);
+  assert.equal(entry.records, 266);
   assert.equal(entry.depth, 'province');
   assert.equal(entry.runtimeBound, true);
   const usage = api.runtimeDataUsageAudit();
-  assert.equal(usage.audit.plantationProduction2024Partial.sourceRecords, 49);
+  assert.equal(usage.audit.plantationProduction2024Partial.sourceRecords, 266);
+  assert.equal(usage.audit.plantationProduction2024Partial.provinceRows, 38);
+  assert.equal(usage.audit.plantationProduction2024Partial.commodityRows, 7);
   assert.equal(usage.audit.plantationProduction2024Partial.runtimeApplied, true);
   assert.equal(usage.audit.allVerifiedDatasetsRuntimeBound, true);
 });
