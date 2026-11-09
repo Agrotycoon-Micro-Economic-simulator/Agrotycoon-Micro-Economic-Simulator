@@ -184,7 +184,11 @@
         sequence: Number.isFinite(Number(order.sequence)) ? Number(order.sequence) : 0,
         quantityBasis: order.quantityBasis || null,
         quantityUnit: order.quantityUnit || "unverified_catalog_quantity_unit",
-        quantityCalibrationStatus: order.quantityCalibrationStatus || "unit_calibration_unverified"
+        quantityCalibrationStatus: order.quantityCalibrationStatus || "unit_calibration_unverified",
+        referencePhysicalUnit: order.referencePhysicalUnit || null,
+        referenceProductForm: order.referenceProductForm || null,
+        referenceUnitStatus: order.referenceUnitStatus || "butuh_riset_lanjutan",
+        quantityScaleStatus: order.quantityScaleStatus || "unconverted_legacy_simulation_index"
       });
     });
 
@@ -234,6 +238,14 @@
           sellQuantityUnit: sell.quantityUnit,
           buyQuantityCalibrationStatus: buy.quantityCalibrationStatus,
           sellQuantityCalibrationStatus: sell.quantityCalibrationStatus,
+          buyReferencePhysicalUnit: buy.referencePhysicalUnit,
+          sellReferencePhysicalUnit: sell.referencePhysicalUnit,
+          buyReferenceProductForm: buy.referenceProductForm,
+          sellReferenceProductForm: sell.referenceProductForm,
+          buyReferenceUnitStatus: buy.referenceUnitStatus,
+          sellReferenceUnitStatus: sell.referenceUnitStatus,
+          buyQuantityScaleStatus: buy.quantityScaleStatus,
+          sellQuantityScaleStatus: sell.quantityScaleStatus,
           executedAt: now
         });
         buy.remainingQuantity -= quantity;
@@ -246,7 +258,11 @@
       createdAt: order.createdAt, expiresAt: order.expiresAt, actorType: order.actorType,
       ownerId: order.ownerId, regionId: order.regionId, stage: order.stage,
       quantityBasis: order.quantityBasis, quantityUnit: order.quantityUnit,
-      quantityCalibrationStatus: order.quantityCalibrationStatus
+      quantityCalibrationStatus: order.quantityCalibrationStatus,
+      referencePhysicalUnit: order.referencePhysicalUnit,
+      referenceProductForm: order.referenceProductForm,
+      referenceUnitStatus: order.referenceUnitStatus,
+      quantityScaleStatus: order.quantityScaleStatus
     }));
     const priceTransactions = fills.map((fill) => ({
       commodityId: fill.commodityId, side: fill.aggressorSide, quantity: fill.quantity,
