@@ -90,11 +90,19 @@
     }
 
     book.sequence += 1;
+    const unitReference = item.marketUnitReference || null;
     const order = {
       orderId: "player-" + day + "-" + book.sequence,
       commodityId, side, quantity, remainingQuantity: quantity, limitPrice,
       createdAt: day, expiresAt: day + ttl, actorType: "player", ownerId: "player",
-      regionId, stage, sequence: book.sequence, status: "open"
+      regionId, stage, sequence: book.sequence, status: "open",
+      quantityBasis: "player_inventory_legacy_simulation_units",
+      quantityUnit: "unconverted_simulation_market_units",
+      quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
+      referencePhysicalUnit: unitReference && unitReference.unit || null,
+      referenceProductForm: unitReference && unitReference.productForm || null,
+      referenceUnitStatus: item.marketUnitStatus || "butuh_riset_lanjutan",
+      quantityScaleStatus: item.quantityScaleStatus || "unconverted_legacy_simulation_index"
     };
     book.orders.push(order);
     persist(book);
