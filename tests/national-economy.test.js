@@ -507,13 +507,25 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
 });
 
 test('verified datasets are consumed by runtime calculations, not only registered', async () => {
+  vm.runInContext("S = { name: 'runtime-dataset-usage-audit' }", context);
   const api = context.AgroNationalEconomy;
+  const state = api.ensure();
   await api.loadAdministrativeMaster();
+  state.eventChancePerProvinceMonthly = 0;
+  api.updateDay(1);
+  const registry = api.runtimeDataRegistry();
+  const monthlyEntry = registry.verified.find(entry => entry.id === 'bapanas_monthly_demand_2025');
+  assert.equal(monthlyEntry.records, Object.keys(api.bapanasMonthlyDemand2025.records).length);
+  assert.ok(monthlyEntry.records > 0);
+  assert.equal(api.seasonalDemandFactor('padi', 1), api.bapanasMonthlyDemand2025.records.padi.coefficients[0] * 12);
+  assert.ok(state.provinces.lampung.dailyDemand.beras > 0);
   const report = api.runtimeDataUsageAudit();
   assert.equal(report.runtimeAvailable, true);
   assert.equal(report.audit.bapanasNationalConsumption.runtimeBound, true);
   assert.equal(report.audit.bapanasNationalConsumption.runtimeStateSignals, true);
-  assert.equal(report.audit.bapanasMonthlyDemand.seasonalMappedRecords, Object.keys(api.bapanasMonthlyDemand2025.records).length);
+  assert.equal(report.audit.bapanasMonthlyDemand.sourceRecords, monthlyEntry.records);
+  assert.equal(report.audit.bapanasMonthlyDemand.seasonalMappedRecords, monthlyEntry.records);
+  assert.equal(report.audit.bapanasMonthlyDemand.runtimeApplied, true);
   assert.equal(report.audit.bapanasProvincialConsumption.runtimeApplied, true);
   assert.equal(report.audit.bapanasKabkotaConsumption.runtimeApplied, true);
   assert.equal(report.audit.bpsDkiKabkotaPopulation.runtimeApplied, true);
