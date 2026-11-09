@@ -309,3 +309,37 @@ test('player orders may cross commodity bands only during an authorized national
   assert.equal(allowed.reservedCash, limitPrice);
   context.AgroNationalEconomy = undefined;
 });
+
+
+test('player and NPC orders with incompatible quantity contracts remain unmatched and visible', () => {
+  freshState();
+  vm.runInContext("S.day = 20; S.playerRegionId = 'lampung'; S.gold = 1000000;", context);
+  const price = context.MARKET_ENGINE.getPrice('jagung');
+  const player = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'sell', quantity: 1, limitPrice: price });
+  assert.equal(player.ok, true);
+  const npc = {
+    orderId: 'npc-demand-20-lampung-jagung-physical', commodityId: 'jagung', side: 'buy',
+    quantity: 1, limitPrice: price, createdAt: 20, expiresAt: 21, actorType: 'npc',
+    ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1,
+    quantityBasis: 'verified_physical_inventory',
+    quantityUnit: 'kg',
+    quantityCalibrationStatus: 'verified_physical_quantity',
+    referencePhysicalUnit: 'kg', referenceProductForm: 'jagung pipilan kering',
+    referenceUnitStatus: 'official_reference_unit_quality_gate',
+    quantityScaleStatus: 'physical_unit_calibrated'
+  };
+  assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 20).ok, true);
+  const beforeCash = vm.runInContext('S.gold', context);
+  const beforeStock = vm.runInContext('S.landSystem.inventory.jagung', context);
+  const result = context.AgroPlayerOrderBook.matchAndSettle(20);
+  assert.equal(result.ok, true);
+  assert.equal(result.fills.length, 0);
+  assert.equal(result.quantityMismatches.length, 1);
+  assert.equal(result.quantityMismatches[0].reason, 'quantity_contract_mismatch');
+  assert.equal(vm.runInContext('S.gold', context), beforeCash);
+  assert.equal(vm.runInContext('S.landSystem.inventory.jagung', context), beforeStock);
+  const snapshot = context.AgroPlayerOrderBook.snapshot();
+  assert.equal(snapshot.orders[0].status, 'open');
+  assert.equal(snapshot.orders[0].remainingQuantity, 1);
+  assert.equal(snapshot.lastMatch.quantityMismatches.length, 1);
+});
