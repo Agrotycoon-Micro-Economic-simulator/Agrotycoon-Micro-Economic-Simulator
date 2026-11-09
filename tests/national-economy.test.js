@@ -920,3 +920,50 @@ test('KKP 2024 aquaculture national production is bound without false provincial
   assert.equal(usage.audit.aquacultureNationalProduction2024.mappedCatalogCommodities, 4);
   assert.equal(usage.audit.aquacultureNationalProduction2024.runtimeApplied, true);
 });
+
+test('BPS 2024 aquaculture species production is bound to all provinces without forcing KKP reconciliation', () => {
+  vm.runInContext("S = { name: 'aquaculture-provincial-reference-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const source = vm.runInContext("REAL_ECONOMIC_DATA.aquacultureProvincialProduction2024Bps", context);
+  assert.equal(source.coverage.verifiedProvinceCount, 38);
+  assert.equal(source.coverage.verifiedSpeciesCount, 11);
+  assert.equal(source.coverage.observationCount, 418);
+  const speciesIds = Object.keys(source.species);
+  const sums = Object.fromEntries(speciesIds.map(id => [id, 0]));
+  for (const [provinceId, values] of Object.entries(source.records)) {
+    assert.equal(values.length, 11, provinceId);
+    const snapshot = api.provinceSnapshot(provinceId);
+    for (let i = 0; i < speciesIds.length; i++) {
+      sums[speciesIds[i]] += values[i];
+      assert.equal(snapshot.aquacultureProductionReference2024Bps[speciesIds[i]], values[i], provinceId + '/' + speciesIds[i]);
+    }
+  }
+  for (const id of speciesIds) {
+    assert.equal(sums[id], source.provincialRowSumsTon[id], id);
+    assert.equal(sums[id] - source.nationalTotalsTon[id], source.provincialToNationalDifferencesTon[id], id);
+  }
+  const national = api.snapshot().national.marketSupplyReference2024.aquacultureBps;
+  assert.equal(national.records.patin ? national.records.patin.patin : undefined, undefined);
+  assert.equal(national.nationalTotalsTon.patin, 381969);
+  assert.equal(national.provincialRowSumsTon.patin, 381973);
+  assert.equal(national.kkpNationalComparisonTon.gurami, -161402);
+  assert.equal(national.kkpNationalComparisonTon.patin, -1240);
+  const lampung = api.provinceSnapshot('lampung');
+  assert.equal(lampung.aquacultureProductionReference2024Bps.patin, 22359);
+  assert.equal(lampung.aquacultureProductionReference2024Bps.lele, 41269);
+  assert.equal(lampung.aquacultureProductionReference2024Bps.nila, 24782);
+  assert.equal(lampung.commodityPhysicalCoverage.patin.aquacultureBpsProvincialProductionTon, 22359);
+  assert.equal(lampung.commodityPhysicalCoverage.lele.supplyStatus, 'official_provincial_annual_aquaculture_output_reference');
+  assert.equal(lampung.commodityPhysicalCoverage.lele.dailySupplyStatus, 'provincial_annual_reference_only_monthly_harvest_curve_pending');
+  assert.equal(lampung.commodityPhysicalCoverage.gurami.aquacultureBpsProvincialProductionTon, 0);
+  assert.equal(lampung.commodityPhysicalCoverage.gurami.aquacultureNationalProductionTon, 161402);
+  for (const id of ['gurami', 'patin', 'lele', 'nila']) assert.equal(lampung.dailyPhysicalSupply[id], null);
+  const entry = api.runtimeDataRegistry().verified.find(row => row.id === 'bps_aquaculture_production_2024_provincial');
+  assert.ok(entry);
+  assert.equal(entry.records, 418);
+  assert.equal(entry.depth, 'province');
+  const usage = api.runtimeDataUsageAudit();
+  assert.equal(usage.audit.aquacultureProvincialProduction2024Bps.sourceRecords, 418);
+  assert.equal(usage.audit.aquacultureProvincialProduction2024Bps.runtimeApplied, true);
+});
