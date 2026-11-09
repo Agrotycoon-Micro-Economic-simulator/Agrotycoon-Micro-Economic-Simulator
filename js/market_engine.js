@@ -134,7 +134,7 @@
       const createdAt = Number(order.createdAt);
       const expiresAt = order.expiresAt == null ? null : Number(order.expiresAt);
       const invalid = !id || seen.has(id) || !item || !["buy", "sell"].includes(side) ||
-        !finitePositive(quantity) || !Number.isInteger(quantity) || !finitePositive(price) ||
+        !finitePositive(quantity) || !finitePositive(price) ||
         !Number.isFinite(createdAt) || (expiresAt !== null && (!Number.isFinite(expiresAt) || expiresAt <= createdAt)) ||
         !["player", "npc"].includes(String(order.actorType || "").toLowerCase()) ||
         !String(order.ownerId || "") || !String(order.regionId || "") || !String(order.stage || "");
