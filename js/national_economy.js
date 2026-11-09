@@ -457,8 +457,30 @@
   const s=ensure();if(!s)return null;if(level==="country"||level==="province")return getLocalityAggregate(provinceId,level,index);
   const meta=provinceRecords.find(p=>p.id===String(provinceId));if(!meta)return null;level=normalizeLocalityLevel(level);
   const master=await loadAdministrativeMaster(options),rows=getLocalityRows(meta,level,master),row=rows[index];if(!row)return null;
-  const count=rows.length,p=s.provinces[meta.id],populationAnchor=(level==="regency"||level==="city")?BPS_KABKOTA_POPULATION_2025[row.id]:null,population=populationAnchor?getBpsDkiLocalityGamePopulation2025()[row.id]:Math.floor(p.population/count)+(index<p.population%count?1:0),demand={};Object.keys(p.demand).forEach(id=>{demand[id]=p.demand[id]/count;});
-  const physicalDemand={};Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*population;physicalDemand[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:populationAnchor?"official_bps_kabkota_2025_weighted":"derived_equal_split_from_province"};});const localityHousehold=(level==="regency"||level==="city")?(localityConsumptionSnapshot(row.id)||{status:"not_yet_ingested",source:"Bapanas 2025 kabupaten/kota kg/kap/tahun"}):{status:"not_available_at_this_administrative_depth",source:"No verified Bapanas 2025 household leaf dataset at district/village depth"};return {id:row.id,name:row.name,level,provinceId:meta.id,provinceName:meta.name,population,monthlyDemandIndex:demand,physicalDemand,householdConsumption2025:localityHousehold,demandLayers:{household:{status:localityHousehold.coverageStatus||localityHousehold.status||"derived_from_provincial_bapanas_2025_anchor"},nonHousehold:{status:"official_bps_2025_numeric_extraction_pending"},total:{status:"pending_household_plus_nonhousehold_reconciliation"}},localMarketQuoteStatus:"bounded_experimental_quoteLocality_overlay_not_order_book_clearing",sourceStatus:"derived_kemendagri_2025_name_and_code",populationStatus:populationAnchor?"official_bps_2025_weights_scaled_to_game_population":"equal_share_estimate_pending_official_locality_population",sourcePopulation:populationAnchor?populationAnchor.population:null,populationSource:populationAnchor?populationAnchor.source:null,administrativeMaster:"third-party normalized dataset derived from Kepmendagri 300.2.2-2138/2025"};
+  const p=s.provinces[meta.id],populationAnchor=(level==="regency"||level==="city")?BPS_KABKOTA_POPULATION_2025[row.id]:null;
+  const allocationCache={};
+  function equalAllocate(total,rowsForParent,key){const n=rowsForParent.length;if(!n)return 0;const pos=Math.max(0,rowsForParent.findIndex(x=>x.id===key));return Math.floor(total/n)+(pos<total%n?1:0);}
+  let population=0,populationStatus="derived_hierarchical_equal_share_pending_official_locality_population";
+  if(populationAnchor){population=getBpsDkiLocalityGamePopulation2025()[row.id];populationStatus="official_bps_2025_weights_scaled_to_game_population";}
+  else if(level==="regency"||level==="city"){population=equalAllocate(p.population,rows,row.id);}
+  else if(level==="district"){
+    const parent=master.regencyById.get(row.regency_id),parentRows=parent?master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities).filter(x=>x.id===parent.id):[];
+    const parentPopulation=parentRows.length?equalAllocate(p.population,master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities),parent.id):0;
+    const childRows=master.districts.filter(x=>x.regency_id===row.regency_id);
+    population=equalAllocate(parentPopulation,childRows,row.id);
+  } else if(level==="villageKelurahan"||level==="desa"||level==="kelurahan"){
+    const parentDistrict=master.districtById.get(row.district_id);
+    const parentRegency=parentDistrict?master.regencyById.get(parentDistrict.regency_id):null;
+    const parentLevelRows=master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities);
+    const parentPopulation=parentRegency?equalAllocate(p.population,parentLevelRows,parentRegency.id):0;
+    const districtRows=parentDistrict?master.districts.filter(x=>x.regency_id===parentDistrict.regency_id):[];
+    const districtPopulation=parentDistrict?equalAllocate(parentPopulation,districtRows,parentDistrict.id):0;
+    const childRows=master.villages.filter(x=>x.district_id===row.district_id);
+    population=equalAllocate(districtPopulation,childRows,row.id);
+  } else population=equalAllocate(p.population,rows,row.id);
+  population=Math.max(0,Math.floor(population));
+  const count=rows.length,demand={};Object.keys(p.demand).forEach(id=>{demand[id]=p.demand[id]/count;});
+  const physicalDemand={};Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*population;physicalDemand[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:populationAnchor?"official_bps_kabkota_2025_weighted":"derived_equal_split_from_province"};});const localityHousehold=(level==="regency"||level==="city")?(localityConsumptionSnapshot(row.id)||{status:"not_yet_ingested",source:"Bapanas 2025 kabupaten/kota kg/kap/tahun"}):{status:"not_available_at_this_administrative_depth",source:"No verified Bapanas 2025 household leaf dataset at district/village depth"};return {id:row.id,name:row.name,level,provinceId:meta.id,provinceName:meta.name,population,monthlyDemandIndex:demand,physicalDemand,householdConsumption2025:localityHousehold,demandLayers:{household:{status:localityHousehold.coverageStatus||localityHousehold.status||"derived_from_provincial_bapanas_2025_anchor"},nonHousehold:{status:"official_bps_2025_numeric_extraction_pending"},total:{status:"pending_household_plus_nonhousehold_reconciliation"}},localMarketQuoteStatus:"bounded_experimental_quoteLocality_overlay_not_order_book_clearing",sourceStatus:"derived_kemendagri_2025_name_and_code",populationStatus,sourcePopulation:populationAnchor?populationAnchor.population:null,populationSource:populationAnchor?populationAnchor.source:null,administrativeMaster:"third-party normalized dataset derived from Kepmendagri 300.2.2-2138/2025"};
  }
  async function searchLocalities(provinceId,level,query,limit,options){
   const meta=provinceRecords.find(p=>p.id===String(provinceId));if(!meta)return [];level=normalizeLocalityLevel(level);
