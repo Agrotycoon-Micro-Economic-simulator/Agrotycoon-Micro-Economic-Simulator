@@ -202,7 +202,8 @@
     const day = Number(targetDay);
     if (!Number.isSafeInteger(day) || day < 1) return { ok: false, reason: "invalid_match_day", fills: [] };
     if (book.lastMatch && Number(book.lastMatch.day) === day) {
-      return { ok: true, alreadyMatched: true, day, fills: book.lastMatch.fills || [] };
+      return { ok: true, alreadyMatched: true, day, fills: book.lastMatch.fills || [],
+        quantityMismatches: book.lastMatch.quantityMismatches || [] };
     }
     if (!root.MARKET_ENGINE || typeof root.MARKET_ENGINE.matchOrderBook !== "function") {
       return { ok: false, reason: "market_matcher_unavailable", fills: [] };
@@ -339,11 +340,13 @@
     book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords).slice(-1000);
     book.lastMatch = { day, fills: executionRecords, openOrderCount: matched.openOrders.length,
       expired: matched.expired, rejected: matched.rejected, prevented: matched.prevented,
+      quantityMismatches: matched.quantityMismatches || [],
       executedQuantity: matched.executedQuantity, executedNotional: matched.executedNotional };
     persist(book);
     return { ok: true, alreadyMatched: false, day, fills: executionRecords,
       openOrderCount: matched.openOrders.length, executedQuantity: matched.executedQuantity,
       executedNotional: matched.executedNotional, settledPlayerFillCount: settled.length,
+      quantityMismatches: matched.quantityMismatches || [],
       priceUpdates: matched.priceTransactions.length };
   }
 
