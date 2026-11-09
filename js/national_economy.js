@@ -568,7 +568,7 @@
   const maizeData=maizeProjectionRuntimeData();
   if(maizeData){
    const lampung=s.provinces.lampung,expectedPerCapita=maizeData.balance.totalNeedTon*1000/maizeData.denominator.value;
-   audit.maizeTotalMarketDemand={sourceRecords:1,runtimeApplied:s.maizeTotalDemandRuntimeVersion===1&&Math.abs((lampung.totalMarketDemand2025?.jagung?.annualPerCapita||0)-expectedPerCapita)<1e-9&&lampung.demand.jagung>0,runtimeBound:true};
+   audit.maizeTotalMarketDemand={sourceRecords:1,runtimeApplied:s.maizeTotalDemandRuntimeVersion===2&&Math.abs((lampung.totalMarketDemand2025?.jagung?.annualPerCapita||0)-expectedPerCapita)<1e-9&&lampung.totalMarketDemand2025?.jagung?.unitCompatibilityStatus==="physical_demand_reference_only_supply_stock_conversion_pending"&&lampung.demand.jagung>0,runtimeBound:true};
    audit.maizeProductionReference={sourceRecords:1,runtimeApplied:s.national.marketSupplyReference2025?.jagung?.officialNationalProductionTon===maizeData.production.productionAt14MoistureTon&&s.national.marketSupplyReference2025.jagung.regionalAllocationStatus==="pending_official_provincial_production_data",runtimeBound:true};
   }
   audit.allVerifiedDatasetsRuntimeBound=Object.values(audit).every(x=>x&&x.runtimeBound===true&&x.runtimeApplied!==false&&x.runtimeStateSignals!==false);
