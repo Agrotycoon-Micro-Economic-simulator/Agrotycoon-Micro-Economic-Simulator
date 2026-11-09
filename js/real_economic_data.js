@@ -232,9 +232,11 @@ window.REAL_ECONOMIC_DATA={
    "papua-pegunungan":{productionTonGkg:346,riceEquivalentTon:198}
   },
   nationalTotalTonGkg:60207101,
+  provincialRowSumTonGkg:60207098,
+  provincialToNationalDifferenceTonGkg:-3,
   nationalRiceEquivalentTon:34690959,
   runtimeUse:"annual_physical_supply_reference_only_monthly_harvest_curve_pending",
-  note:"All 38 provincial rows are loaded from the BPS 2025 table. Annual totals are not divided into daily production; harvest timing, moisture-loss and paddy-to-rice processing remain separate model stages."
+  note:"All 38 provincial rows are loaded from the BPS 2025 table. Provincial GKG rows sum to 60,207,098 tonnes, 3 tonnes below the published national total of 60,207,101; preserve this source arithmetic discrepancy instead of forcing a false reconciliation. Rice-equivalent provincial rows sum exactly to 34,690,959 tonnes. Annual totals are not divided into daily production; harvest timing, moisture-loss and paddy-to-rice processing remain separate model stages."
  },
 
  utpBroilerBenchmark2024:{
