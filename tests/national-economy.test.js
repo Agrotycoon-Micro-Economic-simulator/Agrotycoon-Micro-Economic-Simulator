@@ -85,6 +85,7 @@ test('Lampung supply shock changes its quote without cross-province price spillo
 });
 
 test('government reserve policy is bounded and the province price quote is finite', () => {
+  vm.runInContext("S = { name: 'government-reserve-policy-test' }", context);
   const state = context.AgroNationalEconomy.ensure();
   assert.equal(state.government.procurementShare, 0.05);
   assert.ok(state.government.importShareCap <= 0.10);
