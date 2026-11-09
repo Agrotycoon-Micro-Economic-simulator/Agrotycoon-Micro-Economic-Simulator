@@ -121,3 +121,49 @@ test('expiry rejects invalid game-day values without changing open orders', () =
   assert.equal(result.reason, 'invalid_expiry_day');
   assert.equal(context.AgroPlayerOrderBook.snapshot().orders[0].status, 'open');
 });
+
+
+test('daily NPC order batches persist once, validate provenance and do not settle player assets', () => {
+  freshState();
+  vm.runInContext("S.day = 9; S.gold = 500000; S.landSystem.inventory.jagung = 25;", context);
+  const beforeGold = context.S.gold;
+  const beforeStock = context.S.landSystem.inventory.jagung;
+  const order = {
+    orderId: 'npc-supply-9-lampung-jagung', commodityId: 'jagung', side: 'sell',
+    quantity: 12.5, limitPrice: context.MARKET_ENGINE.byId.jagung.marketPrice,
+    createdAt: 9, expiresAt: 10, actorType: 'npc', ownerId: 'npc-producer-pool-lampung',
+    regionId: 'lampung', stage: 'producer', sequence: 1,
+    calibrationStatus: 'experimental_regional_simulation_aggregate'
+  };
+  const first = context.AgroPlayerOrderBook.replaceNpcOrders([order], 9);
+  assert.equal(first.ok, true);
+  assert.equal(first.storedCount, 1);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders[0].orderId, order.orderId);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 9);
+  const repeated = context.AgroPlayerOrderBook.replaceNpcOrders([], 9);
+  assert.equal(repeated.ok, true);
+  assert.equal(repeated.alreadyGenerated, true);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders.length, 1);
+  assert.equal(context.S.gold, beforeGold);
+  assert.equal(context.S.landSystem.inventory.jagung, beforeStock);
+  const nextDay = context.AgroPlayerOrderBook.replaceNpcOrders([], 10);
+  assert.equal(nextDay.ok, true);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders.length, 0);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 10);
+});
+
+test('invalid NPC proposal batch is rejected without replacing the previous batch', () => {
+  freshState();
+  const valid = {
+    orderId: 'npc-demand-1-lampung-jagung', commodityId: 'jagung', side: 'buy',
+    quantity: 1, limitPrice: context.MARKET_ENGINE.byId.jagung.marketPrice,
+    createdAt: 1, expiresAt: 2, actorType: 'npc', ownerId: 'npc-buyer-pool-lampung',
+    regionId: 'lampung', stage: 'producer', sequence: 1
+  };
+  assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([valid], 1).ok, true);
+  const invalid = Object.assign({}, valid, { orderId: 'bad', actorType: 'player' });
+  const result = context.AgroPlayerOrderBook.replaceNpcOrders([invalid], 2);
+  assert.equal(result.ok, false);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 1);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders[0].orderId, valid.orderId);
+});
