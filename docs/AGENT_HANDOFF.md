@@ -771,3 +771,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Data/model documentation: docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md section 11.
 - Important: Bapanas group totals and leaf rows coexist. Do not ingest group totals as commodity rows or sum group totals with leaves. Complete provincial file extraction and BPS non-household numeric extraction remain pending.
 - Test gate: runs 42548591399, 42548605653, 42548615507 initially exposed that the first integration overwrote national physical-demand anchors and changed a legacy national-only test expectation. Corrected by separating national and regional physical demand layers. Verify the latest workflow after commits c6b8157facaa00e0b86b2be3932a1f2d9f59fb01 and 1d37728b7cb5ad87d11e4f688b63400e02f4de02 before proceeding.
+### Final green gate — provincial consumption runtime (2026-11-09)
+
+- Corrected test VM catalog access: COMMODITIES is evaluated inside the VM context, not read as a host property.
+- Kept national official physical-demand anchors immutable in province.physicalDemand and stored observed provincial quantities separately in province.regionalPhysicalDemand.
+- Added backward-compatible save migration: legacy same-version nationalEconomy saves gain baseConsumptionPressure and regionalPhysicalDemand, then receive the verified partial Lampung seed once. No version bump or destructive state reset.
+- Final tested code/test commit: 05a313bd5fa0ce108a38aea9d719ae786b959ff9. GitHub Actions run 42548767064 completed SUCCESS; Node test-runner: 49 passed, 0 failed; UTL oil-palm, UTP broiler, UTP cattle, official livestock price benchmark guards and all standalone Node regression tests succeeded.
+- The 11 Lampung observations are an explicitly partial verified extract. Full 38-province import and all 514 kabupaten/kota numeric observations remain pending. Do not treat one province's data as national coverage.
+- The prior failing runs (42548591399, 42548605653, 42548615507, 42548668639, 42548677118) exposed and resolved: national-vs-regional physical layer overwrite, old national-only assertion mismatch, and host-vs-VM catalog lookup. The final run above is the verified green result.
+- Latest follow-up docs should retain this exact distinction: national anchor != regional observation; household consumption != non-household demand; consumption != production requirement.
