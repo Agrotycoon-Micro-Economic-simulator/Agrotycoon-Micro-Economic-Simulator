@@ -426,3 +426,12 @@ The NPC economy now uses the official 2025 national maize total-need projection 
 - **Unit caveat:** tonne-to-kg mass conversion only; the total-demand source does not state a compatible moisture basis. Runtime flags this rather than fabricating a moisture correction.
 
 This integration is currently specific to maize. Other physical anchors remain separate until their full-channel demand scopes, product forms, units and supply-side datasets are reconciled. **Butuh riset lanjutan** for regional maize production and for equivalent full-channel demand series across other commodities.
+
+
+## NPC quantity-unit integrity gate (2026-11-09)
+
+- The regional NPC order generator consumes the national economy's legacy inventory and unmetDemand simulation indexes. These values are NOT calibrated to kg, tonnes, litres, pieces, or another physical commodity unit. They must not be presented as official physical supply/demand.
+- NPC orders now carry quantityUnit: unconverted_simulation_market_units and quantityCalibrationStatus: legacy_index_to_physical_unit_conversion_pending, in addition to the existing quantity basis. Generator version is 0.3.0.
+- js/market_engine.js preserves quantity basis/unit/calibration metadata when it validates orders, matches them, emits open orders, and creates fills. Fills retain separate buyer-side and seller-side unit/calibration fields; a mixed or unverified aggregate unit is explicitly labelled rather than silently treated as physical.
+- Regression coverage: tests/npc-order-generator.test.js, tests/market-engine.test.js, and tests/player-order-book.test.js check the unit marker and verify it survives player/NPC matching and settlement records.
+- This is a provenance correction, not a physical conversion. Physical NPC kg/day orders remain blocked until source-backed province/commodity production, inventory conversion, demand reconciliation, harvest timing, loss, and shipment allocation are implemented. Status: butuh riset lanjutan.
