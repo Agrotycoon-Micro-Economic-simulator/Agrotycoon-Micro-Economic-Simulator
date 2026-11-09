@@ -482,10 +482,10 @@ test('non-DKI locality demand uses hierarchical population allocation instead of
   const bucket = master.byProvince[province.adminCode];
   const firstRegency = bucket.regencies[0];
   const firstDistrict = bucket.districts.find(row => row.regency_id === firstRegency.id);
-  const firstVillage = bucket.villages.find(row => row.district_id === firstDistrict.id);
+  const firstVillage = master.villages.find(row => row.district_id === firstDistrict.id);
   const regencyIndex = bucket.regencies.findIndex(row => row.id === firstRegency.id);
   const districtIndex = bucket.districts.findIndex(row => row.id === firstDistrict.id);
-  const villageIndex = bucket.villages.findIndex(row => row.id === firstVillage.id);
+  const villageIndex = master.villages.findIndex(row => row.id === firstVillage.id);
   const regency = await api.getLocalityAggregateAsync('lampung', 'regency', regencyIndex);
   const district = await api.getLocalityAggregateAsync('lampung', 'district', districtIndex);
   const village = await api.getLocalityAggregateAsync('lampung', 'desa', bucket.desa.findIndex(row => row.district_id === firstDistrict.id));
@@ -497,7 +497,7 @@ test('non-DKI locality demand uses hierarchical population allocation instead of
   assert.ok(village.population > 0);
   assert.ok(district.population < regency.population);
   assert.ok(village.population <= district.population);
-  assert.equal(village.population, Math.floor(district.population / bucket.villages.filter(row => row.district_id === firstDistrict.id).length) +
-    (bucket.villages.filter(row => row.district_id === firstDistrict.id).findIndex(row => row.id === firstVillage.id) < district.population % bucket.villages.filter(row => row.district_id === firstDistrict.id).length ? 1 : 0));
+  assert.equal(village.population, Math.floor(district.population / master.villages.filter(row => row.district_id === firstDistrict.id).length) +
+    (master.villages.filter(row => row.district_id === firstDistrict.id).findIndex(row => row.id === firstVillage.id) < district.population % master.villages.filter(row => row.district_id === firstDistrict.id).length ? 1 : 0));
   assert.equal(state.provinces.lampung.population, province.population);
 });
