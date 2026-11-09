@@ -253,3 +253,33 @@ test('existing national economy saves migrate regional consumption layers withou
   assert.equal(migrated.provinces.lampung.physicalDemand.jagung.annualPerCapita, 1.5);
   assert.equal(migrated.provinces['dki-jakarta'].regionalConsumption2025, undefined);
 });
+
+
+test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a locality-specific demand quote', () => {
+  vm.runInContext("S = { name: 'bapanas-kepulauan-seribu-locality-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const local = api.localityConsumptionSnapshot('3101');
+  assert.ok(local);
+  assert.equal(local.localityName, 'Administrasi Kepulauan Seribu');
+  assert.equal(local.recordCount, 5);
+  assert.equal(local.rows.beras.annualPerCapita, 88.6);
+  assert.equal(local.rows.jagung.annualPerCapita, 0.2);
+  assert.equal(local.physicalDemand.jagung.annualPerCapita, 0.2);
+  assert.equal(local.populationStatus, 'equal_share_estimate_pending_official_locality_population');
+  const quote = api.quoteLocality('3101', 'jagung', 5992);
+  assert.ok(Number.isFinite(quote));
+  assert.ok(quote < api.quote('dki-jakarta', 'jagung', 5992));
+  assert.equal(state.kabkotaConsumptionCoverage.status, 'partial_verified_observations');
+});
+
+test('kabupaten/kota Bapanas ingestion rejects invalid codes, units and duplicate commodity observations', () => {
+  vm.runInContext("S = { name: 'bapanas-kabkota-validation-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const valid = { localityCode: '3174', provinceId: 'dki-jakarta', provinceCode: '31', localityName: 'Kota Administrasi Jakarta Selatan', key: 'jagung', sourceCommodity: 'Jagung', group: 'Padi-Padian', annualPerCapita: 1.7, year: 2025, unit: 'kg/kap/tahun' };
+  assert.throws(() => api.applyKabupatenKotaConsumptionRecords([valid, valid]), /Duplicate Bapanas locality/);
+  assert.throws(() => api.applyKabupatenKotaConsumptionRecords([Object.assign({}, valid, { localityCode: '31A4' })]), /Invalid Bapanas kabupaten\/kota/);
+  assert.throws(() => api.applyKabupatenKotaConsumptionRecords([Object.assign({}, valid, { unit: 'kg/kap/bulan' })]), /Invalid Bapanas kabupaten\/kota/);
+  assert.throws(() => api.applyKabupatenKotaConsumptionRecords([Object.assign({}, valid, { provinceCode: '32' })]), /mismatched province code/);
+});
