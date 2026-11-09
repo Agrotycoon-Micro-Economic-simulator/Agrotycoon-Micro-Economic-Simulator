@@ -518,6 +518,16 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   assert.equal(paddy.provincialToNationalDifferenceTonGkg, -3);
   assert.equal(paddy.records.lampung.productionTonGkg, 3252627);
   assert.equal(paddy.records['nusa-tenggara-barat'].riceEquivalentTon, 973144);
+  const horticulture = context.REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
+  assert.equal(horticulture.coverage.verifiedCommodityCount, 18);
+  assert.equal(Object.keys(horticulture.records).length, 18);
+  assert.equal(horticulture.records.bawang_merah.productionQuintal, 21861568.44);
+  assert.equal(horticulture.records.bawang_merah.productionKg, 2186156844);
+  assert.equal(horticulture.records.cabai_merah.productionQuintal, 17150291.81);
+  assert.equal(horticulture.records.jamur_tiram.productionKg, 39121699);
+  assert.equal(horticulture.runtimeUse, 'national_annual_supply_reference_only_no_provincial_or_daily_allocation');
+  const horticultureRegistry = registry.verified.find(entry => entry.id === 'bps_horticulture_production_2025_national_partial');
+  assert.equal(horticultureRegistry.records, 18);
   const allCommodityCoverage = api.commodityPhysicalCoverageSnapshot('lampung');
   assert.equal(allCommodityCoverage.commodityCount, 60);
   assert.equal(allCommodityCoverage.coverage[0].commodities.length, 60);
@@ -527,6 +537,10 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
     'official_provincial_annual_supply_complete');
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'jagung').supplyStatus,
     'official_provincial_annual_supply_partial');
+  assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').supplyStatus,
+    'official_national_annual_supply_reference');
+  assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').dailySupplyStatus,
+    'national_reference_only_provincial_allocation_pending');
   const initializedState = api.ensure();
   assert.equal(initializedState.provinces.lampung.marketSupplyReference2025.padi.productionKgGkg, 3252627000);
   assert.equal(initializedState.provinces['nusa-tenggara-barat'].marketSupplyReference2025.padi.riceEquivalentKg, 973144000);
@@ -568,6 +582,8 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(report.audit.maizeProvincialProduction2025Partial.sourceRecords, 2);
   assert.equal(report.audit.paddyProvincialProduction2025.sourceRecords, 38);
   assert.equal(report.audit.paddyProvincialProduction2025.runtimeApplied, true);
+  assert.equal(report.audit.horticultureNationalProduction2025.sourceRecords, 18);
+  assert.equal(report.audit.horticultureNationalProduction2025.runtimeApplied, true);
   assert.equal(report.audit.all60CommodityCoverage.sourceRecords, 60);
   assert.equal(report.audit.all60CommodityCoverage.runtimeApplied, true);
   assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
