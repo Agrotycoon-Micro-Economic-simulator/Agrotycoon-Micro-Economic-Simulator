@@ -726,9 +726,9 @@ test('BPS 2024 plantation production is bound as partial provincial annual suppl
   assert.equal(source.records['sumatera-utara'].kelapa, 103.64);
   assert.equal(source.records['sumatera-selatan'].tebu, 124.37);
   assert.equal(source.records.riau.kakao, 0.84);
-  assert.deepEqual(source.provincialToNationalDifferencesThousandTon, {
+  assert.equal(JSON.stringify(source.provincialToNationalDifferencesThousandTon), JSON.stringify({
     kelapa_sawit: 0.02, kelapa: -0.01, karet: 0.04, kopi: 0.02, kakao: -0.01, teh: 0.01, tebu: 0.01
-  });
+  }));
   assert.equal(state.national.marketSupplyReference2024.plantation.coverage.observationCount, 266);
   const aceh = state.provinces.aceh;
   assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.productionKg, 1092710000);
