@@ -93,6 +93,13 @@
    bawang_merah:Object.freeze({sourceCommodity:"Bawang Merah",mappingStatus:"physical_commodity_match",coefficients:Object.freeze([0.0849,0.0789,0.0910,0.0822,0.0849,0.0835,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850])}),
    bawang_putih:Object.freeze({sourceCommodity:"Bawang Putih",mappingStatus:"physical_commodity_match",coefficients:Object.freeze([0.0849,0.0796,0.0901,0.0822,0.0849,0.0829,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850])}),
    kedelai:Object.freeze({sourceCommodity:"Kedelai",mappingStatus:"physical_commodity_match",coefficients:Object.freeze([0.0849,0.0767,0.0849,0.0822,0.0849,0.0822,0.0849,0.0849,0.0822,0.0849,0.0822,0.0849])})
+  }),
+  unmappedRecords:Object.freeze({
+   daging_sapi:Object.freeze({sourceCommodity:"Daging Sapi",mappingStatus:"research_only_no_kg_meat_catalog_stage",coefficients:Object.freeze([0.0849,0.0811,0.0965,0.0822,0.0849,0.2336,0.0849,0.0849,0.0822,0.0849,0.0822,0.0855])}),
+   daging_ayam:Object.freeze({sourceCommodity:"Daging Ayam",mappingStatus:"research_only_no_kg_meat_catalog_stage",coefficients:Object.freeze([0.0849,0.0786,0.0910,0.0822,0.0849,0.0827,0.0849,0.0849,0.0822,0.0849,0.0822,0.0857])}),
+   telur_ayam:Object.freeze({sourceCommodity:"Telur Ayam",mappingStatus:"research_only_no_kg_egg_catalog_stage",coefficients:Object.freeze([0.0849,0.0825,0.0963,0.0822,0.0849,0.0824,0.0849,0.0849,0.0822,0.0849,0.0822,0.0858])}),
+   gula_pasir:Object.freeze({sourceCommodity:"Gula Pasir",mappingStatus:"research_only_catalog_product_missing",coefficients:Object.freeze([0.0849,0.0786,0.0892,0.0822,0.0849,0.0823,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850])}),
+   minyak_goreng:Object.freeze({sourceCommodity:"Minyak Goreng",mappingStatus:"research_only_catalog_product_missing",coefficients:Object.freeze([0.0849,0.0786,0.0901,0.0822,0.0849,0.0822,0.0849,0.0849,0.0822,0.0849,0.0822,0.0852])})
   })
  });
  function seasonalDemandCoefficient(commodityId,day){
