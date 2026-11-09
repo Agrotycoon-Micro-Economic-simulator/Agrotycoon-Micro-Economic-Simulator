@@ -39,6 +39,8 @@ test('NPC proposals use regional daily production and unmet demand with explicit
   assert.equal(supply.spreadBps, 100);
   assert.equal(supply.midPrice, 7200);
   assert.equal(supply.spreadStatus, 'experimental_unresearched_transaction_cost_proxy');
+  assert.equal(supply.quantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(supply.quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
   const bid = result.orders.find(order => order.side === 'buy' && order.commodityId === 'jagung');
   assert.equal(bid.limitPrice, 7128);
   assert.notEqual(supply.ownerId, demand.ownerId);
