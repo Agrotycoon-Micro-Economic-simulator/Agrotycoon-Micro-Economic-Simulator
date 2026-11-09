@@ -1,3 +1,18 @@
+## Regional order-book clearing and executed transaction settlement (2026-11-09)
+
+The national/provincial stock model and player commodity inventory are now connected to a daily local producer-stage order book.
+
+1. **Supply offer basis.** NPC sell offers are capped by post-demand free regional inventory, not gross daily production. Government reserves remain outside the player-facing order book. NPC buy offers are capped by current unmet demand.
+2. **Matching.** Orders are isolated by commodity, province and stage. Price priority precedes time/sequence priority; partial fills are supported; execution uses the maker's limit price. Expired orders and self-trades are rejected/prevented. NPC bid and ask limits currently use the same bounded local quote; a calibrated spread and independent NPC risk budgets remain future work.
+3. **Player settlement.** Only executed quantity settles. A player purchase debits cash and capitalizes inventory at executed notional, with an age-tracked storage lot. A player sale consumes FIFO lots, removes stock and book value, records revenue/cash receipt and recognizes COGS. Unfilled quantity remains open and reserved. Player buy and sell fills for the same commodity in one daily batch are rejected pending a netting policy.
+4. **Regional settlement.** NPC seller fills reduce the relevant province's free market inventory; NPC buyer fills reduce the corresponding unmet demand. Every fill contributes to daily regional trade quantity, notional and last execution price. The trade summary is available from `provinceSnapshot().tradeIndex`.
+5. **Price formation.** Executed transactions feed `MARKET_ENGINE.reprice()`; transaction imbalance and VWAP affect the catalog market price. Regional stock cover and local price indices remain independently updated by the national daily simulation. The local quote is therefore not a static NPC price list.
+6. **Persistence and audit.** The save stores order states, reservations, up to 1,000 execution records and the latest match summary. Player cash/inventory/HPP entries are balanced journal postings; NPC aggregate fills update regional stock/demand and emit an informational market event without fictitious NPC cash entries.
+
+**Verification:** test checkpoint `47bd3abf81af3ec9f99e25577d77fb3dbac34181`; Actions run [42573899842](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42573899842), 94/94 test-runner tests passed and the full targeted regression workflow succeeded.
+
+**Remaining boundaries:** NPCs are aggregate province pools, not individually capitalized firms. No NPC-specific cash/debt/firm ledger or firm-owned inventory exists yet. Orders currently trade only at the producer stage; no processing/wholesale/retail matching or calibrated bid–ask spread is implemented. Physical demand and free-stock calibration remain limited by the source coverage documented above; scenario-derived quantities must not be presented as official Indonesian measurements.
+
 # National Country & Regional Market Model — Agrotycoon
 
 Version: 1.0.0  
