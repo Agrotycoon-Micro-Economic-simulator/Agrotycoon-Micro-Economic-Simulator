@@ -230,6 +230,10 @@
           quantityUnit: buy.quantityUnit === sell.quantityUnit ? buy.quantityUnit : "mixed_or_unverified_quantity_units",
           quantityCalibrationStatus: buy.quantityCalibrationStatus === sell.quantityCalibrationStatus
             ? buy.quantityCalibrationStatus : "mixed_or_unverified_quantity_calibration",
+          buyQuantityUnit: buy.quantityUnit,
+          sellQuantityUnit: sell.quantityUnit,
+          buyQuantityCalibrationStatus: buy.quantityCalibrationStatus,
+          sellQuantityCalibrationStatus: sell.quantityCalibrationStatus,
           executedAt: now
         });
         buy.remainingQuantity -= quantity;
