@@ -1,3 +1,11 @@
+## Hierarchical locality demand decomposition (2026-11-09)
+
+The 2025 administrative master is now used as a runtime hierarchy rather than merely a lookup list. For a locality without an authoritative population leaf, simulation population is allocated in two stages: province population is allocated across regencies/cities; each parent allocation is then distributed equally across its districts; each district allocation is distributed equally across its desa/kelurahan/UPT children. Local commodity demand is the corresponding population share of the parent/province runtime demand.
+
+This is a conservation rule for the simulation, not an assertion about actual Indonesian population distribution. It guarantees that locality demand can be materialized for every administrative entity without creating additional national demand. DKI regency/city weights with BPS 2025 data remain official-weighted inputs; deeper/non-DKI leaf populations remain marked as derived and require official leaf data research.
+
+The BPS 2025 non-household staple survey is now treated as a separate demand layer. BPS states that its June 2026 publication estimates non-household staple use and covers 18 major staple groups plus salt and other listed items. Numeric extraction is not yet injected into runtime because the machine-readable table has not been independently reconciled. This is deliberate: household Susenas/Bapanas demand must not be mixed with non-household business/institution demand.
+
 ## Regional order-book clearing and executed transaction settlement (2026-11-09)
 
 The national/provincial stock model and player commodity inventory are now connected to a daily local producer-stage order book.
