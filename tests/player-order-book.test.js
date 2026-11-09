@@ -126,8 +126,8 @@ test('expiry rejects invalid game-day values without changing open orders', () =
 test('daily NPC order batches persist once, validate provenance and do not settle player assets', () => {
   freshState();
   vm.runInContext("S.day = 9; S.gold = 500000; S.landSystem.inventory.jagung = 25;", context);
-  const beforeGold = context.S.gold;
-  const beforeStock = context.S.landSystem.inventory.jagung;
+  const beforeGold = vm.runInContext('S.gold', context);
+  const beforeStock = vm.runInContext('S.landSystem.inventory.jagung', context);
   const order = {
     orderId: 'npc-supply-9-lampung-jagung', commodityId: 'jagung', side: 'sell',
     quantity: 12.5, limitPrice: context.MARKET_ENGINE.byId.jagung.marketPrice,
@@ -146,8 +146,8 @@ test('daily NPC order batches persist once, validate provenance and do not settl
   assert.equal(repeated.ok, true);
   assert.equal(repeated.alreadyGenerated, true);
   assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders.length, 1);
-  assert.equal(context.S.gold, beforeGold);
-  assert.equal(context.S.landSystem.inventory.jagung, beforeStock);
+  assert.equal(vm.runInContext('S.gold', context), beforeGold);
+  assert.equal(vm.runInContext('S.landSystem.inventory.jagung', context), beforeStock);
   const nextDay = context.AgroPlayerOrderBook.replaceNpcOrders([], 10);
   assert.equal(nextDay.ok, true);
   assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders.length, 0);
