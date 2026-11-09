@@ -764,3 +764,36 @@ test('BPS 2024 plantation production is bound as partial provincial annual suppl
   assert.equal(usage.audit.plantationProduction2024Partial.commodityRows, 7);
   assert.equal(usage.audit.plantationProduction2024Partial.runtimeApplied, true);
 });
+
+test('only national disaster and war activate the emergency market-band authorization', () => {
+  vm.runInContext("S = { name: 'national-emergency-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const local = api.applyDisaster({ provinceId: 'lampung', type: 'banjir', productionLossFraction: 0.4, logisticsLossFraction: 0.2, durationDays: 10 });
+  assert.equal(local.classification, 'SIMULATION');
+  assert.equal(api.marketEmergencySnapshot(), null);
+  assert.throws(() => api.applyNationalEmergency({ type: 'earthquake', durationDays: 3 }), /Only national_disaster or war/);
+
+  const emergency = api.applyNationalEmergency({ type: 'national_disaster', durationDays: 3, commodityIds: ['padi'], eventId: 'national-flood-1' });
+  assert.equal(emergency.scope, 'national');
+  assert.equal(emergency.marketBandOverrideAuthorized, true);
+  assert.equal(emergency.expiresAtDay, 3);
+  const snapshot = api.marketEmergencySnapshot();
+  assert.equal(snapshot.active, true);
+  assert.equal(snapshot.type, 'national_disaster');
+  assert.deepEqual(Array.from(snapshot.commodityIds), ['padi']);
+  assert.equal(api.provinceSnapshot('aceh').activeEffects.padi.productionLoss, 0.25);
+  assert.equal(api.provinceSnapshot('aceh').activeEffects.jagung, undefined);
+  assert.throws(() => api.applyNationalEmergency({ type: 'war', durationDays: 2 }), /already active/);
+
+  api.updateDay(1);
+  assert.equal(api.marketEmergencySnapshot().active, true);
+  api.updateDay(4);
+  assert.equal(api.marketEmergencySnapshot(), null);
+  const war = api.applyNationalEmergency({ type: 'war', durationDays: 2, eventId: 'war-1' });
+  assert.equal(war.type, 'war');
+  assert.equal(api.marketEmergencySnapshot().active, true);
+  assert.equal(api.endNationalEmergency('wrong-id').ok, false);
+  assert.equal(api.endNationalEmergency('war-1').ok, true);
+  assert.equal(api.marketEmergencySnapshot(), null);
+});
