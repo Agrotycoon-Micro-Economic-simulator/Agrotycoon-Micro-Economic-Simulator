@@ -159,6 +159,7 @@ function finishDay(){
  }
  const mOld=monthOf(S.day);
  S.day++;
+ if(typeof AgroCommodityStorage!=='undefined'&&S.landSystem){const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const storageTick=AgroCommodityStorage.tickLots(S,S.day,env);if(storageTick&&storageTick.ok){const alerts=storageTick.results.filter(x=>!x.skipped&&['high','critical','expired','spoiled'].includes(x.risk));if(alerts.length){if(!S.dayLog.storageAlerts)S.dayLog.storageAlerts=[];S.dayLog.storageAlerts.push(...alerts.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,risk:x.risk,quality:x.quality})));}}}
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
  if(stockClass()==='busuk'&&stockQty()>0){
