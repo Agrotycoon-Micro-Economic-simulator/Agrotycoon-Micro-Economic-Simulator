@@ -1500,3 +1500,20 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Important remaining control: `market_engine.js` still permits matching orders with different or missing quantity metadata and only labels the fill as mixed/unverified. A subsequent change should add a compatibility gate that prevents unlike quantity contracts from matching, while preserving/migrating pre-existing legacy save orders safely. Do not activate physical conversion as part of that gate.
 - All 60 catalog quantities remain `unconverted_legacy_simulation_index`. No conversion factor is introduced. No test execution or CI result is claimed for this commit set.
 - `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+## 2026-11-10 — quantity-contract matching gate and legacy-save migration
+
+- `js/market_engine.js` now partitions order matching by the complete quantity-scale contract: `quantityUnit`, `quantityCalibrationStatus`, and `quantityScaleStatus`. Buy and sell orders can only fill when all three fields agree. A price-crossing pair with incompatible contracts is not executed and is returned in `quantityMismatches` with reason `quantity_contract_mismatch`.
+- Mismatched orders remain visible/open and reserved; the engine does not silently discard either order. The player order book stores mismatch details in `lastMatch.quantityMismatches` and returns them to callers. They can expire or be cancelled through existing flows.
+- `js/player_order_book.js` now migrates legacy saved player/NPC orders that have **none** of the quantity-contract fields. Since the game has not enabled physical quantity conversion, these old records are explicitly tagged as `unconverted_simulation_market_units` with `legacy_index_to_physical_unit_conversion_pending` and `unconverted_legacy_simulation_index`. Product reference metadata is copied from the current registry where available. Partially populated contracts are not overwritten; this avoids guessing whether a partially upgraded record was intended to represent another scale.
+- Regression coverage added:
+  - market engine refuses a price-crossing physical-kg vs legacy-index fill and reports the mismatch;
+  - player/NPC integration preserves both open orders and leaves cash/inventory unchanged on a mismatch;
+  - legacy saved player and NPC orders migrate to the common legacy contract;
+  - existing all-60 player order metadata coverage remains in place.
+- Commits: matcher gate `7a12f24f2400cb3f248c3e0d9815c72a58e935a4`; player-book mismatch reporting `2b5b82516d4f3cbc70b35bcaac4de174a2c4bb7e`; market matcher regression `ad6450c23ee5bf48ca09d428e8bccf2aad80bb90`; player/NPC mismatch regression `96d31adecb3c85222d0feee47d04f97d5ada7070`; legacy save migration `d21f81bbf7a16bc4b8d5df11a1cd59385d7156fc`; migration regression `d67cd660a173bf64e63f1a913afd95eb40ce9380`.
+- The compatibility gate compares the simulation scale, not the producer reference unit: `kg`, `100 kg`, `10 kg`, `50 kg`, `ikat`, and `ekor` remain reference labels only until physical conversion is explicitly designed and validated.
+- No physical quantity conversion, unit normalization, rounding, inventory rescaling, or price rescaling was introduced. All 60 catalog quantities remain `unconverted_legacy_simulation_index`.
+- Tests were added/updated but not executed in this session; no CI pass/fail is claimed.
+- `main`, `peta.html`, and `js/map_engine.js` remain untouched.
