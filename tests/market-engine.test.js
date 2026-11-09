@@ -91,3 +91,75 @@ test('unknown and malformed transactions are ignored without mutating prices', (
   assert.equal(result.length, 0);
   assert.equal(item.marketPrice, before);
 });
+
+
+const makeOrder = (overrides = {}) => ({
+  orderId: 'o-' + Math.random().toString(36).slice(2),
+  commodityId: 'jagung',
+  side: 'buy',
+  quantity: 5,
+  limitPrice: 7000,
+  createdAt: 1,
+  expiresAt: null,
+  actorType: 'player',
+  ownerId: 'player-1',
+  regionId: 'lampung',
+  stage: 'producer',
+  ...overrides
+});
+
+test('order book matches crossed orders at the resting order price with partial fills', () => {
+  const market = context.MARKET_ENGINE;
+  const result = market.matchOrderBook([
+    makeOrder({ orderId: 'bid-1', side: 'buy', quantity: 10, limitPrice: 7000, createdAt: 1 }),
+    makeOrder({ orderId: 'ask-1', side: 'sell', quantity: 4, limitPrice: 6500, createdAt: 2, ownerId: 'npc-1', actorType: 'npc' }),
+    makeOrder({ orderId: 'ask-2', side: 'sell', quantity: 8, limitPrice: 6600, createdAt: 3, ownerId: 'npc-2', actorType: 'npc' })
+  ], { now: 10 });
+  assert.equal(result.fills.length, 2);
+  assert.deepEqual(result.fills.map(fill => fill.quantity), [4, 6]);
+  assert.deepEqual(result.fills.map(fill => fill.price), [7000, 7000]);
+  assert.equal(result.executedQuantity, 10);
+  assert.equal(result.executedNotional, 70000);
+  assert.equal(result.openOrders.length, 1);
+  assert.equal(result.openOrders[0].orderId, 'ask-2');
+  assert.equal(result.openOrders[0].remainingQuantity, 2);
+});
+
+test('order book enforces price priority before time priority and isolates region and stage', () => {
+  const result = context.MARKET_ENGINE.matchOrderBook([
+    makeOrder({ orderId: 'low-old', quantity: 5, limitPrice: 7000, createdAt: 1 }),
+    makeOrder({ orderId: 'high-new', quantity: 5, limitPrice: 7200, createdAt: 2 }),
+    makeOrder({ orderId: 'ask-main', side: 'sell', quantity: 3, limitPrice: 6800, createdAt: 3, ownerId: 'npc-main', actorType: 'npc' }),
+    makeOrder({ orderId: 'ask-other-region', side: 'sell', quantity: 3, limitPrice: 6800, createdAt: 1, ownerId: 'npc-region', actorType: 'npc', regionId: 'jakarta' }),
+    makeOrder({ orderId: 'ask-other-stage', side: 'sell', quantity: 3, limitPrice: 6800, createdAt: 1, ownerId: 'npc-stage', actorType: 'npc', stage: 'retail' })
+  ], { now: 10 });
+  assert.equal(result.fills.length, 1);
+  assert.equal(result.fills[0].buyOrderId, 'high-new');
+  assert.equal(result.fills[0].quantity, 3);
+  assert.equal(result.openOrders.length, 4);
+});
+
+test('order book rejects invalid orders and expires orders before matching', () => {
+  const result = context.MARKET_ENGINE.matchOrderBook([
+    makeOrder({ orderId: 'expired', side: 'buy', expiresAt: 5 }),
+    makeOrder({ orderId: 'bad-price', limitPrice: 1 }),
+    makeOrder({ orderId: 'bad-qty', quantity: 1.5 }),
+    makeOrder({ orderId: 'valid-bid' }),
+    makeOrder({ orderId: 'valid-ask', side: 'sell', limitPrice: 6500, ownerId: 'npc', actorType: 'npc' })
+  ], { now: 10 });
+  assert.equal(result.expired.length, 1);
+  assert.equal(result.rejected.length, 2);
+  assert.equal(result.fills.length, 1);
+});
+
+test('order book prevents self-trading and leaves unfilled orders open', () => {
+  const result = context.MARKET_ENGINE.matchOrderBook([
+    makeOrder({ orderId: 'self-bid', ownerId: 'same-owner', createdAt: 1 }),
+    makeOrder({ orderId: 'self-ask', side: 'sell', limitPrice: 6500, ownerId: 'same-owner', createdAt: 2 }),
+    makeOrder({ orderId: 'external-ask', side: 'sell', limitPrice: 7100, ownerId: 'npc', actorType: 'npc', createdAt: 3 })
+  ], { now: 10 });
+  assert.equal(result.prevented.length, 1);
+  assert.equal(result.prevented[0].orderId, 'self-ask');
+  assert.equal(result.fills.length, 0);
+  assert.equal(result.openOrders.length, 2);
+});
