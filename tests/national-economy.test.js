@@ -510,6 +510,23 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   assert.equal(provincialSource.records['nusa-tenggara-barat'].productionTon, 1180000);
   assert.equal(provincialSource.moisturePct, 14);
   assert.equal(provincialSource.runtimeUse, 'reference_only_no_daily_supply_or_npc_inventory_injection');
+  const paddy = context.REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
+  assert.equal(paddy.coverage.verifiedProvinceCount, 38);
+  assert.equal(Object.keys(paddy.records).length, 38);
+  assert.equal(paddy.nationalTotalTonGkg, 60207101);
+  assert.equal(paddy.provincialRowSumTonGkg, 60207098);
+  assert.equal(paddy.provincialToNationalDifferenceTonGkg, -3);
+  assert.equal(paddy.records.lampung.productionTonGkg, 3252627);
+  assert.equal(paddy.records['nusa-tenggara-barat'].riceEquivalentTon, 973144);
+  const allCommodityCoverage = api.commodityPhysicalCoverageSnapshot('lampung');
+  assert.equal(allCommodityCoverage.commodityCount, 60);
+  assert.equal(allCommodityCoverage.coverage[0].commodities.length, 60);
+  assert.ok(allCommodityCoverage.coverage[0].commodities.every(row => row.marketModelStatus === 'active_catalog_and_market_index'));
+  assert.ok(allCommodityCoverage.coverage[0].commodities.every(row => row.storageProfileStatus === 'storage_profile_available'));
+  assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'padi').supplyStatus,
+    'official_provincial_annual_supply_complete');
+  assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'jagung').supplyStatus,
+    'official_provincial_annual_supply_partial');
   assert.ok(registry.verified.every(entry => entry.runtimeBound === true && entry.records > 0));
   assert.ok(registry.pending.some(entry => entry.status === 'official_source_metadata_only_numeric_extraction_pending'));
   assert.ok(api.bapanasNationalConsumption2025.length > 0);
@@ -543,6 +560,11 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(report.audit.administrativeMaster.runtimeApplied, true);
   assert.equal(report.audit.maizeProvincialProduction2025Partial.runtimeApplied, true);
   assert.equal(report.audit.maizeProvincialProduction2025Partial.sourceRecords, 2);
+  assert.equal(report.audit.paddyProvincialProduction2025.sourceRecords, 38);
+  assert.equal(report.audit.paddyProvincialProduction2025.runtimeApplied, true);
+  assert.equal(report.audit.all60CommodityCoverage.sourceRecords, 60);
+  assert.equal(report.audit.all60CommodityCoverage.runtimeApplied, true);
+  assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
   assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
