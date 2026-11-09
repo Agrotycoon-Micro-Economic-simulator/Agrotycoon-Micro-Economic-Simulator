@@ -82,7 +82,9 @@
             limitPrice: askPrice,
             ownerId: "npc-producer-pool-" + regionId,
             sequence,
-            quantityBasis: "regional_marketable_inventory_after_daily_demand"
+            quantityBasis: "regional_marketable_inventory_after_daily_demand",
+          quantityUnit: "unconverted_simulation_market_units",
+          quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending"
           }));
         }
 
