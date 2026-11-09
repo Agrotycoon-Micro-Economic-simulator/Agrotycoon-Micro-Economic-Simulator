@@ -165,6 +165,22 @@ window.REAL_ECONOMIC_DATA={
   status:"official_statistic_final",
   note:"Final 2025 dry shelled maize production at 14% moisture. Do not derive a national surplus/deficit against the 2025 rounded demand projection until stocks, imports, exports, post-harvest losses, product scope and balance methodology are reconciled."
  },
+ maizeProvincialProduction2025Partial:{
+  geography:"Indonesia",
+  referenceYear:2025,
+  product:"jagung pipilan kering",
+  moisturePct:14,
+  unit:"tonne/year",
+  sourceSeries:"BPS provincial fixed-figure press releases, 2026-02",
+  status:"official_provincial_final_figures_partial_coverage_rounded",
+  coverage:{verifiedProvinceCount:2,totalProvinceCount:38,provinceIds:["lampung","ntb"],coverageStatus:"partial_official_provincial_observations"},
+  records:{
+   lampung:{provinceId:"lampung",productionTon:1260000,productionDisplay:"1.26 juta ton",harvestedAreaHa:194490,precision:"rounded_to_0.01_million_ton_and_0.01_thousand_ha",source:{publisher:"Badan Pusat Statistik Provinsi Lampung",title:"Pada 2025, luas panen jagung pipilan mencapai 194,49 ribu hektare dengan produksi jagung pipilan kering kadar air 14 persen sebanyak 1,26 juta ton",url:"https://lampung.bps.go.id/id/pressrelease/2026/02/05/1636/pada-2025--luas-panen-jagung-pipilan-mencapai-194-49-ribu-hektare-dengan-produksi-jagung-pipilan-kering-kadar-air-14-persen-sebanyak-1-26-juta-ton-.html",releaseDate:"2026-02-05",qualityStatus:"official_statistic_final_rounded_release_abstract"}},
+   ntb:{provinceId:"ntb",productionTon:1180000,productionDisplay:"1.18 juta ton",harvestedAreaHa:173090,precision:"rounded_to_0.01_million_ton_and_0.01_thousand_ha",source:{publisher:"Badan Pusat Statistik Provinsi Nusa Tenggara Barat",title:"Luas Panen dan Produksi Jagung di Nusa Tenggara Barat 2025 (Angka Tetap)",url:"https://ntb.bps.go.id/id/pressrelease/2026/02/02/1115/corn-harvest-area-and-production-in-west-nusa-tenggara-province-in-2025--fixed-figures-.html",releaseDate:"2026-02-02",qualityStatus:"official_statistic_final_rounded_release_abstract"}}
+  },
+  runtimeUse:"reference_only_no_daily_supply_or_npc_inventory_injection",
+  note:"Both records are official final BPS provincial 2025 releases, but the public abstracts round production to 0.01 million tonnes and harvested area to 0.01 thousand hectares. They are loaded as partial provincial references only; do not treat rounded values as exact harvest flows, allocate the national remainder to other provinces, or feed them into daily supply until exact monthly/provincial table values and all 38 provinces are ingested."
+ },
  maizeNationalBalanceEstimate2025:null,
  utpBroilerBenchmark2024:{
   geography:"Indonesia",
