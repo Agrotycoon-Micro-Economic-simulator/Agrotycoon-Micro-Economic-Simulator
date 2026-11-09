@@ -225,3 +225,20 @@ The dashboard supports country, province, regency, city, district, desa and kelu
 - Bapanas, “Volume Penyaluran Cadangan Pangan Pemerintah untuk Stabilisasi Pasokan dan Harga Beras September 2026”, description of CBP/SPHP and cited regulatory basis: https://data.badanpangan.go.id/datasetpublications/mce/sphp-beras-tingkat-konsumen-agustus-2026
 
 The in-game country and demand weights are simulation constructs. Official reference dates remain in documentation/source metadata and are not required to be shown to players.
+
+## 11. Bapanas provincial consumption runtime layer (2026-11-09)
+
+The provincial Bapanas 2025 source is available at https://data.badanpangan.go.id/datasetpublications/x1y/konsumsi-provinsi. It reports kg/capita/year at province depth and contains both group totals and commodity leaves. Runtime must use leaf commodity records for item-level demand; group totals are reconciliation-only to avoid double counting.
+
+A verified partial Lampung extract (province code 18) is currently integrated in js/national_economy.js: beras 84.3, jagung 1.0, singkong 12.4, ubi jalar 3.5, kentang 1.2, daging ruminansia 4.2, daging unggas 8.0, telur 7.6, susu 1.7, ikan 22.5 and kelapa 1.2 kg/capita/year. The embedded constant is explicitly named BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL; it is not a full 38-province dataset.
+
+Runtime behavior:
+- applyProvincialConsumptionRecords(records) validates year, unit, non-negative numeric values, known province ID, province-code match, known commodity key and duplicate (provinceId,key) rows.
+- Physical leaf observations are stored in province.regionalPhysicalDemand, not province.physicalDemand. The latter remains the national-anchor layer and must not be overwritten by provincial observations.
+- Physical and downstream demand pressure is adjusted by the ratio provincial per-capita observation / national per-capita anchor.
+- Category pressure is adjusted only when every mapped leaf key for that category is present for the province. Partial category rows do not silently produce a partial category total.
+- Regional coverage and record count are exposed as regionalConsumption2025 and regionalConsumptionCoverage. Missing province rows continue to use the existing synthetic baseline and remain marked partial.
+
+The 200m game population is allocated to provinces using the existing BPS provincial population shares; therefore regionalPhysicalDemand.annualTotal is an in-game scaled quantity, not a claim that the source population denominator exactly equals the 200m simulation population. National source anchors and regional observations remain separate layers.
+
+Pending: retrieve and import the complete 38-province file (all source leaf records), then replace the partial Lampung seed with the complete verified dataset. Do not mark provincial consumption complete until all province codes, leaf keys, row counts, units and duplicate keys pass reconciliation. BPS non-household consumption remains a separate missing layer.
