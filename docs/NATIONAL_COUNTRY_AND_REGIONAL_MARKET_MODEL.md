@@ -403,3 +403,19 @@ Product form is essential:
 Source references: FAO grain storage https://www.fao.org/4/t0522e/T0522E09.htm ; FAO horticultural storage https://www.fao.org/4/x5403e/x5403e09.htm ; FAO chilled fish https://www.fao.org/4/v7180e/v7180e07.htm ; USDA raw meat https://ask.fsis.usda.gov/article/How-long-can-I-keep-meat-in-the-refrigerator ; USDA coconut storage https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf ; tender coconut study https://pmc.ncbi.nlm.nih.gov/articles/PMC3551135/.
 
 Research limitations: most plantation-harvest shelf-life values and some ambient crop horizons are provisional category/engineering calibrations rather than individually verified Indonesian field measurements. These remain **butuh riset lanjutan**. Livestock slaughter, fish harvest-to-chilled-product workflows, and age-cohort integration of the legacy whole-coconut stock pool remain open.
+
+
+## Maize all-channel physical demand in the NPC economy
+
+The NPC economy now uses the official 2025 national maize total-need projection as a physical demand volume, separately from the household direct-food consumption indicator.
+
+- **Demand source:** Kementan Pusdatin / Bapanas 2025 national balance Table 5.6, `totalNeedTon = 14,720,163` tonnes, status `official_projection`.
+- **Population denominator:** BPS mid-year 2025 projection, 284,438,800 persons. Game population remains 200,000,000 and is a simulation setting.
+- **Scale formula:** `annual_game_kg = official_total_need_ton × 1,000 × (game_population / official_population)`. Each province receives a population-proportional annual share; `p.demand.jagung` stores the monthly kg-equivalent baseline. Bapanas monthly demand coefficients then shape daily demand in `runDaily()`.
+- **Distinct consumption series:** Bapanas direct-food maize consumption is 1.5 kg/person/year nationally and 1.0 kg/person/year in the verified Lampung row. These remain household-only physical signals. They are not added again to the all-channel total, and the Lampung household ratio does not scale feed and other-use demand.
+- **Precision:** the detailed balance table reports 14,720,163 t; the separate rounded national demand summary reports 14,720,000 t. Runtime keeps the 163 t difference visible.
+- **Migration:** existing NPC background maize demand, production, inventory, reserve and unmet demand are rescaled once under `maizeTotalDemandRuntimeVersion = 1`, preserving province stock-cover and supply/demand ratios. Player business inventory and historical transaction records are not modified.
+- **Supply reference:** BPS final 2025 production of 16.16 Mt at 14% moisture is stored separately in the national economy. It is not distributed among provinces or directly compared to the demand projection. Provincial production data and full source-basis reconciliation are still required.
+- **Unit caveat:** tonne-to-kg mass conversion only; the total-demand source does not state a compatible moisture basis. Runtime flags this rather than fabricating a moisture correction.
+
+This integration is currently specific to maize. Other physical anchors remain separate until their full-channel demand scopes, product forms, units and supply-side datasets are reconciled. **Butuh riset lanjutan** for regional maize production and for equivalent full-channel demand series across other commodities.
