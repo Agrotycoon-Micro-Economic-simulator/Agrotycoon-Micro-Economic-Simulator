@@ -16,7 +16,7 @@ const province = (overrides = {}) => ({
 });
 const getPrice = id => ({ jagung: 6000, padi: 12000 }[id] || null);
 
-test('NPC proposals use regional daily production and unmet demand with explicit provenance', () => {
+test('NPC proposals use regional marketable inventory and unmet demand with explicit provenance', () => {
   const result = context.AgroNpcOrderGenerator.buildDailyOrders({ day: 7, provinces: [province()], catalog, getPrice });
   assert.equal(result.ok, true);
   assert.equal(result.summary.regionCount, 1);
