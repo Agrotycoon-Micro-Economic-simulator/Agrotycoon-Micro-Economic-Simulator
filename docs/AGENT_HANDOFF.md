@@ -11,6 +11,12 @@
 - Test guard added in tests/national-economy.test.js for the 200m jagung annual/monthly arithmetic and anchor provenance. Static new Function syntax validation passed after correction; full Node/GitHub Actions execution for these newest commits is still NOT verified green.
 - Code commits: fe2ddb5570b12b89f3d381e40d1a284459ab82cf (anchor implementation), 24f504090b26850e0f6476315f3cbcbe9f431517 (declaration fix). Test commit: 5a21cf39a95d456192caae75f46115ed43a96811.
 - Research source: https://data.badanpangan.go.id/datasetpublications/hez/konsumsi_nasional. BPS 2025 weekly-consumption table corroborates several direct food observations but is a separate source series and should not be silently merged with Bapanas annual data.
+## Latest demand-layer contract (2026-11-09, continuation)
+- Added explicit demand-layer metadata to the national economy: household consumption (Bapanas where mapped), non-household consumption (BPS 2025 source registered; numeric extraction pending), and total demand (requires reconciliation before runtime use).
+- Added physicalDemand and demandLayers to province snapshots and locality async snapshots. Locality physical demand remains an equal-share derivation from provincial population until official locality population/consumption data is available.
+- BPS source: Konsumsi Bahan Pokok Non Rumah Tangga 2025, released 12 June 2026. It covers rice, dry corn, sweet corn, cassava, sweet potato, soybean, peanut, beef/buffalo, chicken, eggs, fresh fish, shallot, garlic, chili, cooking oil, sugar, wheat flour and salt. Numeric extraction is deliberately not fabricated.
+- Current source evidence: BPS publication metadata confirms the scope and purpose; official provincial Bapanas dataset is at https://data.badanpangan.go.id/datasetpublications/x1y/konsumsi-provinsi and is kg/capita/year at province depth.
+- Commits: 7a58d6161c4b145b88d23541c5e6d91e67f55e7d (demand-layer contract), 830086141065b3d6b20639ea3a096be2109986ad (source metadata syntax fix), a6a485e3b39ebf39df004da8cd77082fc92f5e2a (province snapshot object fix). Static syntax validation passes after the final fix. Full Node/GitHub Actions remains unverified.
 ## Current implementation checkpoint
 
 - Active branch: `feat/production-tier-taxonomy`. Continue on this branch only; never write to `main`. No map files were changed.
