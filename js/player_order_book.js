@@ -175,18 +175,160 @@
     return { ok: true, alreadyGenerated: false, day, storedCount: accepted.length };
   }
 
+  function postLedger(category, description, amount, detail, accounting) {
+    if (typeof ledger === "function") ledger(category, description, amount, detail, accounting);
+    else {
+      if (!Array.isArray(S.ledger)) S.ledger = [];
+      S.ledger.push({ day: S.day, cat: category, desc: description, amt: amount, detail: detail || null, accounting });
+    }
+  }
+
+  function matchAndSettle(targetDay) {
+    const book = ensureBook();
+    const day = Number(targetDay);
+    if (!Number.isSafeInteger(day) || day < 1) return { ok: false, reason: "invalid_match_day", fills: [] };
+    if (book.lastMatch && Number(book.lastMatch.day) === day) {
+      return { ok: true, alreadyMatched: true, day, fills: book.lastMatch.fills || [] };
+    }
+    if (!root.MARKET_ENGINE || typeof root.MARKET_ENGINE.matchOrderBook !== "function") {
+      return { ok: false, reason: "market_matcher_unavailable", fills: [] };
+    }
+    const playerOrders = (book.orders || []).filter(order => order && order.status === "open");
+    const npcOrders = (book.npcOrders || []).filter(order => order && Number(order.expiresAt) > day);
+    const matched = root.MARKET_ENGINE.matchOrderBook(playerOrders.concat(npcOrders), { now: day });
+    const playerBuyFills = matched.fills.filter(fill => fill.buyerId === "player");
+    const playerSellFills = matched.fills.filter(fill => fill.sellerId === "player");
+    const buyNotional = playerBuyFills.reduce((sum, fill) => sum + fill.notional, 0);
+    const sellQuantity = playerSellFills.reduce((sum, fill) => sum + fill.quantity, 0);
+    const sellByCommodity = {};
+    playerSellFills.forEach(fill => { sellByCommodity[fill.commodityId] = (sellByCommodity[fill.commodityId] || 0) + fill.quantity; });
+    const buyByCommodity = {};
+    playerBuyFills.forEach(fill => { buyByCommodity[fill.commodityId] = (buyByCommodity[fill.commodityId] || 0) + fill.quantity; });
+    Object.keys(sellByCommodity).forEach(id => {
+      if (buyByCommodity[id] > 0) throw new Error("same_day_buy_sell_same_commodity:" + id);
+    });
+    if (buyNotional > Math.max(0, Number(S.gold) || 0) + 1e-7) {
+      return { ok: false, reason: "insufficient_cash_at_settlement", fills: [], matched };
+    }
+    if (sellQuantity > 0) {
+      if (!S.landSystem || !S.landSystem.inventory || !S.landSystem.inventoryCost) {
+        return { ok: false, reason: "player_inventory_unavailable", fills: [], matched };
+      }
+      for (const id of Object.keys(sellByCommodity)) {
+        const quantity = Math.max(0, Number(S.landSystem.inventory[id]) || 0);
+        const cost = Math.max(0, Number(S.landSystem.inventoryCost[id]) || 0);
+        if (quantity + 1e-9 < sellByCommodity[id]) return { ok: false, reason: "insufficient_inventory_at_settlement:" + id, fills: [], matched };
+        if (cost <= 0) return { ok: false, reason: "missing_inventory_cost_at_settlement:" + id, fills: [], matched };
+      }
+    }
+    const hasBuy = playerBuyFills.length > 0;
+    const hasSell = playerSellFills.length > 0;
+    if (hasBuy && hasSell) return { ok: false, reason: "same_day_player_buy_and_sell_not_supported", fills: [], matched };
+
+    const settled = [];
+    playerSellFills.forEach(fill => {
+      const id = fill.commodityId, qty = fill.quantity, stock = Number(S.landSystem.inventory[id]) || 0;
+      const costPool = Math.max(0, Number(S.landSystem.inventoryCost[id]) || 0);
+      let consumedCost = costPool * qty / stock;
+      if (root.AgroCommodityStorage && typeof root.AgroCommodityStorage.ensureLotBook === "function") {
+        const stateLots = root.AgroCommodityStorage.ensureLotBook(S);
+        if (stateLots.ok) {
+          let remaining = qty; consumedCost = 0;
+          stateLots.lots.filter(lot => lot.commodityId === id).sort((a, b) => Number(a.receivedDay) - Number(b.receivedDay)).forEach(lot => {
+            if (remaining <= 1e-9) return;
+            const take = Math.min(remaining, Math.max(0, Number(lot.quantity) || 0));
+            consumedCost += take * Math.max(0, Number(lot.unitCost) || 0);
+            remaining -= take;
+          });
+          if (remaining > 1e-6) consumedCost = costPool * qty / stock;
+          else root.AgroCommodityStorage.consumeLots(S, id, qty);
+        }
+      }
+      consumedCost = Math.min(costPool, Math.max(0, consumedCost));
+      S.landSystem.inventory[id] = Math.max(0, stock - qty);
+      S.landSystem.inventoryCost[id] = Math.max(0, costPool - consumedCost);
+      S.gold = (Number(S.gold) || 0) + fill.notional;
+      if (S.dayLog) {
+        S.dayLog.gross = (Number(S.dayLog.gross) || 0) + fill.notional;
+        S.dayLog.cashIn = (Number(S.dayLog.cashIn) || 0) + fill.notional;
+        S.dayLog.cogs = (Number(S.dayLog.cogs) || 0) + consumedCost;
+        S.dayLog.expense = (Number(S.dayLog.expense) || 0) + consumedCost;
+      }
+      postLedger("PENJUALAN", "Penjualan pasar order-book " + id, fill.notional,
+        { fillId: fill.fillId, quantity: qty, price: fill.price, commodityId: id, channel: "regional_order_book" },
+        { classification: "business_revenue", debitAccount: "Kas", creditAccount: "Penjualan", debit: fill.notional, credit: fill.notional, basis: "cash",
+          lines: [{ account: "Kas", debit: fill.notional, credit: 0 }, { account: "Penjualan", debit: 0, credit: fill.notional }] });
+      if (consumedCost > 0) {
+        const components = [{ account: "Persediaan Bahan Baku Pertanian", amount: consumedCost }];
+        if (typeof recordBusinessCogs === "function") recordBusinessCogs("HPP penjualan order-book " + id, components);
+        else postLedger("HPP", "HPP penjualan order-book " + id, -consumedCost, { components },
+          { classification: "business_cogs", debitAccount: "HPP Penjualan", creditAccount: components[0].account, debit: consumedCost, credit: consumedCost, basis: "noncash",
+            lines: [{ account: "HPP Penjualan", debit: consumedCost, credit: 0 }, { account: components[0].account, debit: 0, credit: consumedCost }] });
+      }
+      settled.push(fill.fillId);
+    });
+    playerBuyFills.forEach(fill => {
+      const id = fill.commodityId, qty = fill.quantity, value = fill.notional;
+      if (!S.landSystem) S.landSystem = { inventory: {}, inventoryCost: {} };
+      if (!S.landSystem.inventory) S.landSystem.inventory = {};
+      if (!S.landSystem.inventoryCost) S.landSystem.inventoryCost = {};
+      S.gold = (Number(S.gold) || 0) - value;
+      S.landSystem.inventory[id] = (Number(S.landSystem.inventory[id]) || 0) + qty;
+      S.landSystem.inventoryCost[id] = (Number(S.landSystem.inventoryCost[id]) || 0) + value;
+      if (root.AgroCommodityStorage && typeof root.AgroCommodityStorage.receiveLot === "function") {
+        root.AgroCommodityStorage.receiveLot(S, { commodityId: id, quantity: qty, unitCost: value / qty, day, id: "market-fill-" + fill.fillId });
+      }
+      if (S.dayLog) {
+        S.dayLog.businessPurchases = (Number(S.dayLog.businessPurchases) || 0) + value;
+        S.dayLog.cashOut = (Number(S.dayLog.cashOut) || 0) + value;
+      }
+      postLedger("BELANJA", "Pembelian bahan baku order-book " + id, -value,
+        { fillId: fill.fillId, quantity: qty, price: fill.price, commodityId: id, channel: "regional_order_book" },
+        { classification: "business_purchase", debitAccount: "Persediaan Bahan Baku", creditAccount: "Kas", debit: value, credit: value, basis: "cash",
+          lines: [{ account: "Persediaan Bahan Baku", debit: value, credit: 0 }, { account: "Kas", debit: 0, credit: value }] });
+      settled.push(fill.fillId);
+    });
+
+    const remainingById = new Map(matched.openOrders.map(order => [order.orderId, order.remainingQuantity]));
+    (book.orders || []).forEach(order => {
+      if (!order || order.status !== "open") return;
+      const remaining = remainingById.has(order.orderId) ? remainingById.get(order.orderId) : 0;
+      order.remainingQuantity = remaining;
+      if (remaining <= 1e-9) order.status = "filled";
+      order.lastMatchedDay = day;
+    });
+    const preventedIds = new Set(matched.prevented.map(item => item.orderId));
+    (book.orders || []).forEach(order => {
+      if (order && order.status === "open" && preventedIds.has(order.orderId)) {
+        order.status = "cancelled"; order.remainingQuantity = 0; order.cancelledAt = day;
+      }
+    });
+    book.npcOrders = matched.openOrders.filter(order => order.actorType === "npc");
+    if (matched.priceTransactions.length) root.MARKET_ENGINE.reprice(matched.priceTransactions);
+    const executionRecords = matched.fills.map(fill => Object.assign({}, fill, { settlement: settled.includes(fill.fillId) ? "player_settled" : "npc_aggregate_execution" }));
+    book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords).slice(-1000);
+    book.lastMatch = { day, fills: executionRecords, openOrderCount: matched.openOrders.length,
+      expired: matched.expired, rejected: matched.rejected, prevented: matched.prevented,
+      executedQuantity: matched.executedQuantity, executedNotional: matched.executedNotional };
+    persist(book);
+    return { ok: true, alreadyMatched: false, day, fills: executionRecords,
+      openOrderCount: matched.openOrders.length, executedQuantity: matched.executedQuantity,
+      executedNotional: matched.executedNotional, settledPlayerFillCount: settled.length,
+      priceUpdates: matched.priceTransactions.length };
+  }
+
   function playerOrderBookSnapshot() {
     const book = ensureBook();
     return JSON.parse(JSON.stringify({
       version: book.version, orders: book.orders, reservedCash: book.reservedCash,
       reservedInventory: book.reservedInventory, pendingSettlement: book.pendingSettlement,
-      lastMatch: book.lastMatch, npcOrders: book.npcOrders,
+      lastMatch: book.lastMatch, npcOrders: book.npcOrders, trades: book.trades || [],
       lastNpcGenerationDay: book.lastNpcGenerationDay
     }));
   }
 
   root.AgroPlayerOrderBook = {
     version: "0.1.0", maxOpenOrders: MAX_OPEN_ORDERS, defaultTtlDays: DEFAULT_TTL_DAYS,
-    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, expire: expirePlayerMarketOrders, replaceNpcOrders, snapshot: playerOrderBookSnapshot
+    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, expire: expirePlayerMarketOrders, replaceNpcOrders, matchAndSettle, snapshot: playerOrderBookSnapshot
   };
 })(typeof window !== "undefined" ? window : globalThis);
