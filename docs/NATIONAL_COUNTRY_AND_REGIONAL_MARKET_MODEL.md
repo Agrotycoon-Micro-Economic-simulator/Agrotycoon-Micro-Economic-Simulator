@@ -298,3 +298,12 @@ This gate currently activates for DKI Jakarta only: 6/6 localities, 26 leaf keys
 The locality table has 26 leaf commodity rows, whereas the national Bapanas table has 28. The locality aggregation uses the locality source's 26-key schema and excludes parent food-group totals to avoid double counting. The two additional national-level leaf entries are not treated as zero in localities.
 
 Regression coverage asserts that the six-locality population-weighted overlay is present in DKI runtime state, maize demand pressure differs from its base calibration, physical-demand totals reconcile to the game province population, and a daily tick updates inventory. GitHub Actions run 42555141202 completed SUCCESS: 54/54 Node regression tests passed, four official benchmark guards passed, and all standalone regression/browser smoke/E2E checks passed.
+
+
+## 4.2 Local order-book matching primitive (2026-11-09)
+
+The market engine now exposes `MARKET_ENGINE.matchOrderBook(orders, {now})`. It is a local deterministic matching primitive grouped by commodity, region and stage. Bid priority is price descending then time ascending; ask priority is price ascending then time ascending. Remaining tie-breaks are sequence and order ID. A fill executes at the older resting order's limit price; partial quantities remain on the book. Expired, malformed, out-of-band and self-trading orders are not executed.
+
+**Execution contract:** an order is not a transaction. Only a returned fill is an executed transaction candidate. This first slice does not persist orders and does not yet mutate cash, stock, HPP, ledger or market prices. Do not display submitted order volume as traded volume. Full in-game settlement remains pending until atomic accounting integration and regression tests are complete.
+
+Code commit: `780f6d82ad81b6a408c506682da244ed02d00026`; tests: `26b08f712dee590cdbbae746a5dc07bbd749208c`. CI validation was not yet confirmed at this documentation checkpoint.
