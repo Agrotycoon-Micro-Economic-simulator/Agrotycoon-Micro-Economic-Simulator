@@ -64,7 +64,7 @@ test('all 60 player order contracts retain legacy scale and expose only verified
   vm.runInContext("S.gold = 1000000000000; S.playerRegionId = 'lampung'; S.landSystem.inventory = {}; S.landSystem.inventoryCost = {};", context);
   for (const item of context.MARKET_ENGINE.catalog) {
     const result = context.AgroPlayerOrderBook.submit({
-      commodityId: item.id, side: 'buy', quantity: 1, limitPrice: item.marketPrice
+      commodityId: item.id, side: 'buy', quantity: 1, limitPrice: context.MARKET_ENGINE.getPrice(item.id)
     });
     assert.equal(result.ok, true, item.id + ' order rejected');
     assert.equal(result.order.quantityUnit, 'unconverted_simulation_market_units', item.id);
