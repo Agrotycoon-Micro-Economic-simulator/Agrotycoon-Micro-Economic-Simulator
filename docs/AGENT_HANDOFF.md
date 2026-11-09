@@ -896,4 +896,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Expanded locality 2025 Bapanas consumption profiles to all six DKI Jakarta administrative localities: 3101 Kepulauan Seribu, 3171 Jakarta Pusat, 3172 Jakarta Utara, 3173 Jakarta Barat, 3174 Jakarta Selatan and 3175 Jakarta Timur.
 - Each locality contributes 26 leaf commodities; total 156 rows. All values in this expansion were checked against the rendered Bapanas dataset table; source rows include per-capita kg/year, and zero-valued leaf observations are retained. Group aggregates are intentionally excluded.
 - Bumped `kabkotaConsumptionSeedVersion` to 4. Tests now assert 6 localities, 156 records, 26 leaf keys per locality and representative locality-specific values. Source: https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota.
-- This only completes DKI Jakarta's six locality profiles; it is 6/514 national locality coverage. The remaining 508 localities, official population weights and full downloadable dataset ingestion remain pending.
+- This completes DKI Jakarta's six locality profiles only (6/514). The other 508 localities remain pending. Official BPS 2025 population counts for the six DKI localities are already integrated as relative weights and scaled to the Arunika game population; official locality weights outside DKI and the full downloadable Bapanas resource ingestion remain pending.
+
+
+### Final green gate — six DKI localities plus population-scaled demand (2026-11-09)
+
+- GitHub Actions run `42554038068` completed SUCCESS on test commit `12cc0b5f1b18496d0c0c112057326a67dceda3e8`: 53 tests, 53 passed, 0 failed. The targeted market/NPC/inventory Node suites, all four official benchmark guards, and all standalone Node regression tests passed.
+- This gate validates the six DKI Bapanas profiles (156 leaf observations), six BPS population weights, scaled game population reconciliation, and locality-level consumption snapshots/quotes. It does not imply full national locality coverage or the order-book execution layer.
+- Bapanas page source `https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota` remains rendered and searchable but its 16MB+ page body exceeds the web retrieval size limit. Data.go.id catalogue lists CSV/JSON/XLSX download resources, but direct resource URLs/bytes have not been recovered. The full 514-locality raw import remains the next data gate.
