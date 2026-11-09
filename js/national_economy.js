@@ -365,6 +365,33 @@
   };
   return {status:"applied",commodityRows:ids.length};
  }
+ function applyPlantationProductionReference(s){
+  const data=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
+  if(!s||!data||data.coverage?.verifiedProvinceCount!==7||data.coverage?.verifiedCommodityCount!==7)return {status:"source_not_loaded"};
+  const provinceIds=Object.keys(data.records||{}),commodityIds=Object.keys(data.commodityMap||{});
+  if(provinceIds.length!==7||commodityIds.length!==7||provinceIds.some(id=>!provinceRecords.some(p=>p.id===id))||commodityIds.some(id=>!catalog().some(item=>item.id===id)))return {status:"source_catalog_mismatch",provinceRows:provinceIds.length,commodityRows:commodityIds.length};
+  if(!s.national.marketSupplyReference2024)s.national.marketSupplyReference2024={};
+  s.national.marketSupplyReference2024.plantation={
+   referenceYear:2024,sourceUnit:data.sourceUnit,conversion:data.conversion,
+   coverage:data.coverage,source:data.source,status:data.status,runtimeUse:data.runtimeUse,
+   records:Object.fromEntries(provinceIds.map(provinceId=>[provinceId,Object.assign({},data.records[provinceId])]))
+  };
+  provinceIds.forEach(provinceId=>{
+   const p=s.provinces[provinceId];
+   if(!p.marketSupplyReference2024)p.marketSupplyReference2024={};
+   p.marketSupplyReference2024.plantation={};
+   commodityIds.forEach(id=>{
+    const value=data.records[provinceId][id];
+    if(!Number.isFinite(value)||value<0)throw new Error("Invalid BPS plantation production value: "+provinceId+"/"+id);
+    p.marketSupplyReference2024.plantation[id]={
+     unit:"kg/year",productionKg:value*data.conversion.kgPerThousandTonne,
+     productionThousandTon:value,referenceYear:2024,source:data.source,
+     status:"official_provincial_annual_reference_not_daily_supply"
+    };
+   });
+  });
+  return {status:"applied",provinceRows:provinceIds.length,commodityRows:commodityIds.length,observations:provinceIds.length*commodityIds.length};
+ }
  function applyCommodityPhysicalCoverage(s){
   const items=catalog(),storage=root.AgroCommodityStorage;
   provinceRecords.forEach(meta=>{
@@ -378,7 +405,9 @@
     const horticultureData=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
     const provincialHorticultureValue=horticultureData?.provincialRecords?.[meta.id]?.[id];
     const horticultureProvincialRecord=Number.isFinite(provincialHorticultureValue)?{productionKg:provincialHorticultureValue*100,productionQuintal:provincialHorticultureValue}:null;
-    const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(horticultureProvincialRecord||s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
+    const plantationValue=REAL_ECONOMIC_DATA.plantationProduction2024Partial?.records?.[meta.id]?.[id];
+    const plantationProvincialRecord=Number.isFinite(plantationValue)?{productionKg:plantationValue*1000000,productionThousandTon:plantationValue,referenceYear:2024}:null;
+    const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(plantationProvincialRecord||horticultureProvincialRecord||s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
     const economics=typeof COMMODITY_ECONOMICS!=="undefined"&&COMMODITY_ECONOMICS?COMMODITY_ECONOMICS[id]:null;
     const unit=economics?.unit||(item.unitType==="ternak"?"ekor":item.unitType==="pohon"?"kg_hasil_pohon":item.unitType==="kolam"?"kg_hasil_kolam":item.unitType==="koloni"?"kg_madu":item.unitType==="rak"?"kg_hasil_rak":"kg");
     p.commodityPhysicalCoverage[id]={
@@ -388,9 +417,9 @@
      storageProfileStatus:profile?"storage_profile_available":"storage_profile_missing",
      demandStatus:demandRecord?"official_physical_demand_reference_available":"official_physical_demand_data_pending",
      demandAnnual:demandRecord?Number(demandRecord.annualTotalKg||demandRecord.annualTotal||0):null,
-     supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":horticultureProvincialRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
+     supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":plantationProvincialRecord||horticultureProvincialRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
      supplyAnnualTon:id==="padi"&&supplyRecord?supplyRecord.productionKgGkg/1000:id==="jagung"&&supplyRecord?supplyRecord.productionTon:supplyRecord?supplyRecord.productionKg/1000:null,
-     dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":horticultureProvincialRecord?"provincial_annual_reference_only_monthly_harvest_curve_pending":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
+     dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":plantationProvincialRecord||horticultureProvincialRecord?"provincial_annual_reference_only_monthly_harvest_curve_pending":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
      qualityStatus:"mixed_verified_reference_and_pending_data"
     };
     if(p.dailyPhysicalSupply[id]===undefined)p.dailyPhysicalSupply[id]=null;
@@ -426,7 +455,7 @@
  }
  function provinceShare(p){return p.population/POPULATION;}
  function ensure(){const game=gameState();if(!game)return null;let s=game.nationalEconomy;if(!s||s.version!==VERSION){const seed=hash((game.name||"player")+"|"+COUNTRY_NAME+"|"+VERSION);const items=catalog();s={version:VERSION,countryName:COUNTRY_NAME,population:POPULATION,dayProcessed:0,seed,activeAgents:buildAgents(seed),agentCap:5000,agentFloor:1000,government:{treasury:1000000000000,procurementShare:0.05,importShareCap:0.10,reserveTargetDays:30,releaseTriggerDays:10,releaseShare:0.15,monthlyProcurementSpent:0,monthlyImportSpent:0,monthlyReleased:0,monthlyPurchased:0,monthlyImported:0,monthlyImportedByCommodity:{}},provinces:{},national:{demandIndex:{},supplyIndex:{},priceIndex:{},reserveIndex:{},tradeIndex:{},physicalDemand:{}},events:[],eventChancePerProvinceMonthly:0.006,calibrationStatus:"MIXED_OFFICIAL_REFERENCE_AND_EXPERIMENTAL_GAME_PARAMETERS"};provinceRecords.forEach(p=>{const state={population:p.population,inventory:{},production:{},demand:{},priceIndex:{},reserve:{},imports:{},unmetDemand:{},dailyProduction:{},dailyDemand:{},dailyPhysicalDemand:{},activeEffects:{},logisticsDisruption:0,physicalDemand:{},regionalPhysicalDemand:{},consumptionPressure:{},consumptionCategoryPressure:{}};items.forEach(item=>{const w=demandWeight(item);const monthlyDemand=p.population/1000*w;state.demand[item.id]=monthlyDemand;state.inventory[item.id]=monthlyDemand*0.5;state.production[item.id]=monthlyDemand/30*(SUPPLY_PROFILE[p.id]||1);state.priceIndex[item.id]=1;state.reserve[item.id]=monthlyDemand*0.25;state.consumptionPressure[item.id]=1;state.imports[item.id]=0;state.unmetDemand[item.id]=0;});Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*p.population;state.physicalDemand[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:a.status,year:a.year};});
-      Object.values(BAPANAS_CONSUMPTION_MODEL_2025.rows).forEach(row=>{const total=row.annualPerCapita*p.population;const pressure=1+(row.annualPerCapita/10)*0.02;if(row.mappingStatus==="physical"&&row.gameId){state.consumptionPressure[row.gameId]=pressure;state.physicalDemand[row.gameId]={unit:"kg",annualPerCapita:row.annualPerCapita,annualTotal:total,monthlyTotal:total/12,sourceCommodity:row.sourceCommodity,source:row.source,status:"official_bapanas_2025_physical_quantity",year:2025};}else if(row.mappingStatus==="downstream_signal"&&row.gameId){state.consumptionPressure[row.gameId]=pressure;}else if(row.category){state.consumptionCategoryPressure[row.category]=(state.consumptionCategoryPressure[row.category]||1)*pressure;}});items.forEach(item=>{const categoryPressure=state.consumptionCategoryPressure[item.category]||1;state.consumptionPressure[item.id]=(state.consumptionPressure[item.id]||1)*categoryPressure;});state.baseConsumptionPressure=Object.assign({},state.consumptionPressure);s.provinces[p.id]=state;});game.nationalEconomy=s;applyProvincialConsumptionRecordsToState(s,BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL);s.regionalConsumptionSeedVersion=1;applyKabupatenKotaConsumptionRecordsToState(s,BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL);s.kabkotaConsumptionSeedVersion=4;}else{provinceRecords.forEach(meta=>{const p=s.provinces[meta.id];if(p){if(!p.dailyProduction)p.dailyProduction={};if(!p.dailyDemand)p.dailyDemand={};if(!p.dailyPhysicalDemand)p.dailyPhysicalDemand={};if(!p.baseConsumptionPressure)p.baseConsumptionPressure=Object.assign({},p.consumptionPressure||{});if(!p.regionalPhysicalDemand)p.regionalPhysicalDemand={};}});if(!s.regionalConsumptionSeedVersion){applyProvincialConsumptionRecordsToState(s,BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL);s.regionalConsumptionSeedVersion=1;}if(!s.kabkotaConsumptionSeedVersion){applyKabupatenKotaConsumptionRecordsToState(s,BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL);s.kabkotaConsumptionSeedVersion=4;}}applyMaizeTotalDemandProjection(s);applyPaddyProductionReference(s);applyHorticultureProductionReference(s);applyCommodityPhysicalCoverage(s);provinceRecords.forEach(meta=>{if(s.localityConsumption2025)applyCompleteKabkotaConsumptionToProvince(s,meta.id);});return s;}
+      Object.values(BAPANAS_CONSUMPTION_MODEL_2025.rows).forEach(row=>{const total=row.annualPerCapita*p.population;const pressure=1+(row.annualPerCapita/10)*0.02;if(row.mappingStatus==="physical"&&row.gameId){state.consumptionPressure[row.gameId]=pressure;state.physicalDemand[row.gameId]={unit:"kg",annualPerCapita:row.annualPerCapita,annualTotal:total,monthlyTotal:total/12,sourceCommodity:row.sourceCommodity,source:row.source,status:"official_bapanas_2025_physical_quantity",year:2025};}else if(row.mappingStatus==="downstream_signal"&&row.gameId){state.consumptionPressure[row.gameId]=pressure;}else if(row.category){state.consumptionCategoryPressure[row.category]=(state.consumptionCategoryPressure[row.category]||1)*pressure;}});items.forEach(item=>{const categoryPressure=state.consumptionCategoryPressure[item.category]||1;state.consumptionPressure[item.id]=(state.consumptionPressure[item.id]||1)*categoryPressure;});state.baseConsumptionPressure=Object.assign({},state.consumptionPressure);s.provinces[p.id]=state;});game.nationalEconomy=s;applyProvincialConsumptionRecordsToState(s,BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL);s.regionalConsumptionSeedVersion=1;applyKabupatenKotaConsumptionRecordsToState(s,BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL);s.kabkotaConsumptionSeedVersion=4;}else{provinceRecords.forEach(meta=>{const p=s.provinces[meta.id];if(p){if(!p.dailyProduction)p.dailyProduction={};if(!p.dailyDemand)p.dailyDemand={};if(!p.dailyPhysicalDemand)p.dailyPhysicalDemand={};if(!p.baseConsumptionPressure)p.baseConsumptionPressure=Object.assign({},p.consumptionPressure||{});if(!p.regionalPhysicalDemand)p.regionalPhysicalDemand={};}});if(!s.regionalConsumptionSeedVersion){applyProvincialConsumptionRecordsToState(s,BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL);s.regionalConsumptionSeedVersion=1;}if(!s.kabkotaConsumptionSeedVersion){applyKabupatenKotaConsumptionRecordsToState(s,BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL);s.kabkotaConsumptionSeedVersion=4;}}applyMaizeTotalDemandProjection(s);applyPaddyProductionReference(s);applyHorticultureProductionReference(s);applyPlantationProductionReference(s);applyCommodityPhysicalCoverage(s);provinceRecords.forEach(meta=>{if(s.localityConsumption2025)applyCompleteKabkotaConsumptionToProvince(s,meta.id);});return s;}
  function applyProvincialConsumptionRecordsToState(s,records){
   const rows=Array.isArray(records)?records:[],seen=new Set(),byProvince={},expectedKeys=Object.keys(BAPANAS_CONSUMPTION_MODEL_2025.rows);
   rows.forEach(row=>{if(!row||row.year!==2025||row.unit!=="kg/kap/tahun"||!BAPANAS_CONSUMPTION_MODEL_2025.rows[row.key]||!Number.isFinite(row.annualPerCapita)||row.annualPerCapita<0)throw new Error("Invalid Bapanas provincial consumption record");const meta=provinceRecords.find(p=>p.id===row.provinceId);if(!meta||String(meta.adminCode)!==String(row.provinceCode))throw new Error("Unknown province or mismatched Bapanas province code");const key=row.provinceId+"|"+row.key;if(seen.has(key))throw new Error("Duplicate Bapanas province commodity record: "+key);seen.add(key);(byProvince[row.provinceId]||(byProvince[row.provinceId]={}))[row.key]=Object.assign({},row);});
@@ -621,6 +650,8 @@
   }
   const horticulture=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
   if(horticulture)add("bps_horticulture_production_2025_national_partial","Badan Pusat Statistik / Ditjen Hortikultura","official_statistic_final_national_partial_commodity_rows",Object.keys(horticulture.records||{}).length,"country");
+  const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
+  if(plantation?.coverage?.verifiedProvinceCount===7)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   if(paddy)add("bps_paddy_production_2025_provincial","Badan Pusat Statistik","official_statistic_final_all_provinces",Object.keys(paddy.records||{}).length,"province");
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
