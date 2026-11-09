@@ -1456,3 +1456,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Remaining **3/60** without sufficiently verified producer/product-stage unit references: `stroberi`, `kapas`, and `madu`. Do not infer units from common commercial convention.
 - All 60 catalog quantities remain `unconverted_legacy_simulation_index`. No conversion factors have been inferred from the 250 kg/head or 30 kg/head reference categories.
 - Node tests were not run locally. CI has not yet been confirmed for this change set. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+## 2026-11-10 — forest honey unit evidence (57 → 58)
+
+- Added `madu` as **kg**, but with a deliberately restricted product scope: `madu hutan` (forest honey). BPS Kabupaten Melawi, *Statistik Harga Produsen Perdesaan Kabupaten Melawi 2023*, Table 4.2 explicitly lists commodity `Madu Hutan` and unit `KG` in the forestry subsector. The survey's farm-gate price definition and direct producer interviews are documented in the same publication.
+- This evidence does **not** establish that managed apiary honey and forest honey have identical producer-price behavior, quality, moisture, or supply costs. Registry status is `official_forest_honey_producer_unit_scope_limited`; do not use this source to calibrate apiary prices or honey quality.
+- Source: https://web-api.bps.go.id/download.php?f=7tlwHt%2F6ImJPo8ETIdREK0kyNzJGdlhYK05ndklvakJkcGJ3SmtxcXZBem95Q1NzQW9SOFhGb3FBMVoxby9UQTd6T3FpeVkvRTV1Zm1tOFIwdWw5S2RWYk94SVRrY1l1RHF0TGcrSkFGOHRBeG1ERnZTRTRBMnQreEp5eDNXM3JvdE5uN3RscG1ZbG5rVnZB
+- Regression expectation increased to **58/60**, and the test asserts the restricted status string. Source commit `68349ec7673579c29b24bf463f447107e09cfc62`; test commit `187c1b59685c46e5c8f9dd8eee499084fc32aabb`.
+- Remaining **2/60** without sufficiently verified producer/product-stage unit references: `stroberi` and `kapas`. Current evidence searches did not yield an accessible official producer-price table with an explicit unit for these two catalog products. Mark them `butuh_riset_lanjutan`; do not infer kg.
+- All 60 catalog quantities remain `unconverted_legacy_simulation_index`; source transaction units are references only, not conversion factors. Node tests were not run locally and CI is unconfirmed. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
