@@ -1287,3 +1287,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Example encoded by test: DKI jagung is blank in the official 2025 table, so the engine uses Jawa Barat's Rp5,707/kg and applies the Jakarta fallback cap to Rp7,419/kg before the ordinary game price-index and corridor logic.
 - This source is a 2025 annual reference, not a live 2026 quote. Live/periodic prices may later replace the reference when a verified current source is available; the fallback hierarchy remains.
 - The normal market floor/ceiling contract remains independent. Regional fallback does not authorize a corridor breach. Only the existing national national_disaster / war emergency contract can break the normal corridor.
+
+
+## NPC quantity-unit integrity gate (2026-11-09)
+
+- The regional NPC order generator consumes the national economy's legacy inventory and unmetDemand simulation indexes. These values are NOT calibrated to kg, tonnes, litres, pieces, or another physical commodity unit. They must not be presented as official physical supply/demand.
+- NPC orders now carry quantityUnit: unconverted_simulation_market_units and quantityCalibrationStatus: legacy_index_to_physical_unit_conversion_pending, in addition to the existing quantity basis. Generator version is 0.3.0.
+- js/market_engine.js preserves quantity basis/unit/calibration metadata when it validates orders, matches them, emits open orders, and creates fills. Fills retain separate buyer-side and seller-side unit/calibration fields; a mixed or unverified aggregate unit is explicitly labelled rather than silently treated as physical.
+- Regression coverage: tests/npc-order-generator.test.js, tests/market-engine.test.js, and tests/player-order-book.test.js check the unit marker and verify it survives player/NPC matching and settlement records.
+- This is a provenance correction, not a physical conversion. Physical NPC kg/day orders remain blocked until source-backed province/commodity production, inventory conversion, demand reconciliation, harvest timing, loss, and shipment allocation are implemented. Status: butuh riset lanjutan.
