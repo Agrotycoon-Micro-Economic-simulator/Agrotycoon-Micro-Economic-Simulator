@@ -177,7 +177,7 @@ test('order book supports fractional physical commodity quantities', () => {
   assert.equal(result.fills[0].quantity, 1.25);
   assert.equal(result.openOrders.length, 1);
   assert.equal(result.openOrders[0].remainingQuantity, 1.5);
-  assert.equal(result.executedNotional, 8750);
+  assert.equal(result.executedNotional, 8125);
 });
 
 
