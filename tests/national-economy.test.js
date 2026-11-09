@@ -30,6 +30,18 @@ test('official Bapanas 2025 monthly demand coefficients are mapped by compatible
     assert.deepEqual(Array.from(source.records[id].coefficients), values);
     assert.equal(source.records[id].coefficients.length, 12);
   }
+  const unmappedExpected = {
+    daging_sapi: [0.0849,0.0811,0.0965,0.0822,0.0849,0.2336,0.0849,0.0849,0.0822,0.0849,0.0822,0.0855],
+    daging_ayam: [0.0849,0.0786,0.0910,0.0822,0.0849,0.0827,0.0849,0.0849,0.0822,0.0849,0.0822,0.0857],
+    telur_ayam: [0.0849,0.0825,0.0963,0.0822,0.0849,0.0824,0.0849,0.0849,0.0822,0.0849,0.0822,0.0858],
+    gula_pasir: [0.0849,0.0786,0.0892,0.0822,0.0849,0.0823,0.0849,0.0849,0.0822,0.0849,0.0822,0.0850],
+    minyak_goreng: [0.0849,0.0786,0.0901,0.0822,0.0849,0.0822,0.0849,0.0849,0.0822,0.0849,0.0822,0.0852]
+  };
+  for (const [id, values] of Object.entries(unmappedExpected)) {
+    assert.deepEqual(Array.from(source.unmappedRecords[id].coefficients), values);
+    assert.match(source.unmappedRecords[id].mappingStatus, /^research_only_/);
+  }
+  assert.equal(api.seasonalDemandFactor('daging_sapi', 151), 1);
   assert.equal(source.records.padi.mappingStatus, 'downstream_signal_rice_to_paddy_index_only');
   assert.equal(source.records.jagung.mappingStatus, 'physical_commodity_match');
   assert.equal(api.seasonalDemandCoefficient('jagung', 1), 0.0849);
