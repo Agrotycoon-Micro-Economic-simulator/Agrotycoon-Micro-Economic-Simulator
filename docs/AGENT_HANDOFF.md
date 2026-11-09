@@ -789,3 +789,9 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added regression tests for local quote behavior, physical demand snapshot, duplicate rejection, invalid locality code/unit and province-code mismatch.
 - Full resource file retrieval is still pending. Next step: acquire CSV/JSON/XLSX, reconcile every locality code and leaf/group row, import all locality observations, then obtain official locality population weights. Do not upgrade coverage status until all 514 kabupaten/kota are validated.
 - Model details: docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md section 12.
+### Green regression gate — kabupaten/kota local quote overlay (2026-11-09)
+
+- Initial implementation run 42549230170 failed because the locality-code validation regex was double escaped and rejected valid four-digit codes. Corrected to the four-digit numeric regex in commit a89759c2e6307c19d230384dc00dedd815abaa6f.
+- Final code/test workflow run 42549296642 completed SUCCESS on commit a89759c2e6307c19d230384dc00dedd815abaa6f. Node regression output: 51 tests, 51 passed, 0 failed. UTL oil-palm, UTP broiler, UTP cattle, official livestock price benchmark guards and all standalone Node regression tests succeeded.
+- The verified 3101 Kepulauan Seribu sample and quoteLocality overlay are partial data and an experimental local quote factor. They do not constitute a full 514-locality dataset, official locality population estimates, or a local order book.
+- Keep the next gate unchanged: acquire actual CSV/JSON/XLSX resource, import and reconcile all locality leaf observations, then source locality population weights and connect local quote/transactions to the order execution model.
