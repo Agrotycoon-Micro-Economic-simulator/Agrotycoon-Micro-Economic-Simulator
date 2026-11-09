@@ -8,7 +8,7 @@
     const n = Number(value);
     return Number.isFinite(n) && n > 0 ? n : 0;
   }
-  function buildDailyOrders(input) {
+  const DEFAULT_NPC_SPREAD_BPS = 100; // experimental 1.00% half-spread until province-stage transaction-cost evidence is calibrated.\n\n  function boundedQuote(item, value) {\n    const floor = positive(item && item.marketFloor);\n    const ceiling = positive(item && item.marketCeiling);\n    return Math.round(Math.min(ceiling, Math.max(floor, value)));\n  }\n\n  function buildDailyOrders(input) {
     const x = input && typeof input === "object" ? input : {};
     const day = Number(x.day);
     if (!Number.isSafeInteger(day) || day < 1) {
@@ -41,7 +41,7 @@
         const common = {
           commodityId: id, limitPrice: localPrice, createdAt: day, expiresAt: day + 1,
           actorType: "npc", regionId, stage: "producer",
-          calibrationStatus: "experimental_regional_simulation_aggregate",
+          calibrationStatus: "experimental_regional_simulation_aggregate",\n        spreadStatus: "experimental_unresearched_transaction_cost_proxy",
           sourceRegion: "AgroNationalEconomy.provinceSnapshot", sourceDay: day
         };
         if (marketableStock > 0) {
