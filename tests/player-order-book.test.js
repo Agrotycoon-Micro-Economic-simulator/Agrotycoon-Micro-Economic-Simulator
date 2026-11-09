@@ -230,3 +230,23 @@ test('partial player buy fills debit only executed notional and create valued, a
   assert.equal(snapshot.orders[0].remainingQuantity, 2);
   assert.equal(snapshot.reservedCash, 2 * price);
 });
+
+test('player orders may cross commodity bands only during an authorized national emergency', () => {
+  freshState();
+  const item = context.MARKET_ENGINE.byId.kelapa;
+  const limitPrice = item.marketCeiling * 1.5;
+  const blocked = context.AgroPlayerOrderBook.submit({ commodityId: 'kelapa', side: 'buy', quantity: 1, limitPrice });
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.reason, 'limit_price_outside_market_bounds');
+
+  context.AgroNationalEconomy = {
+    marketEmergencySnapshot: () => ({
+      active: true, scope: 'national', type: 'war', eventId: 'war-player-order', commodityIds: ['kelapa']
+    })
+  };
+  const allowed = context.AgroPlayerOrderBook.submit({ commodityId: 'kelapa', side: 'buy', quantity: 1, limitPrice });
+  assert.equal(allowed.ok, true);
+  assert.equal(allowed.order.limitPrice, limitPrice);
+  assert.equal(allowed.reservedCash, limitPrice);
+  context.AgroNationalEconomy = undefined;
+});
