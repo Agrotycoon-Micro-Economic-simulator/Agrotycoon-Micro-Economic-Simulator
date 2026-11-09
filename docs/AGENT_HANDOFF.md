@@ -863,3 +863,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The locality explorer now resolves Jakarta Selatan code 3174, attaches its 26 verified Bapanas leaf observations to the JSON output, and marks desa/kelurahan-level household records unavailable rather than fabricating a downscaled value.
 - GitHub Actions run `42551675711` completed SUCCESS: 52 tests, 52 passed, 0 failed; benchmark guards and all standalone regression tests passed.
 - Next demographic gate: replace equal-split locality population for the six DKI kabupaten/kota with the official BPS 2025 population table, then source official locality-level population weights outside DKI. Do not claim the six-city population anchor has been integrated until code/tests are committed.
+
+
+### Official BPS DKI 2025 locality population weights (2026-11-09)
+
+- Added `BPS_KABKOTA_POPULATION_2025` for all six DKI localities using BPS DKI Jakarta Table 3.1.1 (2025). Source unit is thousand persons and runtime stores persons after ×1,000 conversion.
+- Population values: 3101 Kepulauan Seribu 29,090; 3171 Jakarta Pusat 1,038,400; 3172 Jakarta Utara 1,819,010; 3173 Jakarta Barat 2,487,200; 3174 Jakarta Selatan 2,219,220; 3175 Jakarta Timur 3,085,060. Sum 10,677,980, matching BPS DKI total.
+- `localityConsumptionSnapshot()` and `getLocalityAggregateAsync()` now use official BPS population for these six localities, with source/status metadata. Per-capita Bapanas values are multiplied by these population weights for absolute annual/monthly physical demand. Other localities still use clearly marked equal-share estimates.
+- Added regression assertions for all six values, sum reconciliation, Jakarta Selatan population and its maize annual demand calculation. CI is pending for commits containing this change; verify before claiming green.
+- Source: https://jakarta.bps.go.id/en/statistics-table/2/MTI0IzI%3D/3-1-1-penduduk-laju-pertumbuhan-penduduk-distribusi-persentase-penduduk-
