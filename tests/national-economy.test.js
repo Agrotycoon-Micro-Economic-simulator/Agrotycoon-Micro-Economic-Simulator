@@ -548,8 +548,9 @@ test('official maize total-use projection becomes physical NPC market demand wit
   const lampung = state.provinces.lampung;
   assert.equal(lampung.physicalDemand.jagung.annualPerCapita, maize.directFoodConsumption2024.value);
   assert.equal(lampung.regionalPhysicalDemand.jagung.annualPerCapita, 1.0);
-  assert.equal(lampung.consumptionPressure.jagung, 1,
-    'provincial direct-food consumption must not scale all-channel feed and other-use demand');
+  const nationalMaizePressure = 1 + (maize.directFoodConsumption2024.value / 10) * 0.02;
+  assert.ok(Math.abs(lampung.consumptionPressure.jagung - nationalMaizePressure * (1.0 / 1.5)) < 1e-10,
+    'regional direct-food pressure remains separately available as a household signal');
   assert.equal(lampung.totalMarketDemand2025.jagung.scope,
     'all_channel_total_need_including_feed_and_other_uses');
   assert.equal(lampung.totalMarketDemand2025.jagung.sourceTotalNeedTon,
