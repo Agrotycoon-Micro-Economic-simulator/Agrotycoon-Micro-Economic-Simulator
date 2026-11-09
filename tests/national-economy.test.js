@@ -137,3 +137,19 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   assert.equal(results.length, 20);
   assert.ok(results.every(row => row.id && row.name && Number.isInteger(row.index)));
 });
+test('official 2025 physical demand anchors remain separate from the synthetic demand index', () => {
+  const api = context.AgroNationalEconomy;
+  vm.runInContext("S = { name: 'physical-demand-anchor-test' }", context);
+  const state = api.ensure();
+  const national = api.physicalDemandSnapshot();
+  assert.equal(national.population, 200000000);
+  assert.equal(national.anchors.jagung.annualPerCapita, 1.5);
+  assert.equal(national.anchors.jagung.annualTotal, 300000000);
+  assert.equal(national.anchors.jagung.monthlyTotal, 25000000);
+  assert.equal(national.anchors.ubi_kayu.annualPerCapita, 10.9);
+  assert.equal(national.anchors.kedelai.annualPerCapita, 8.8);
+  assert.equal(national.anchors.kelapa.status, 'official_consumption_anchor_conversion_pending');
+  assert.equal(state.provinces.lampung.physicalDemand.jagung.monthlyTotal, national.anchors.jagung.monthlyTotal * state.provinces.lampung.population / 200000000);
+  assert.equal(api.physicalDemandAnchors2025.jagung.source, 'Bapanas konsumsi nasional update 2025');
+  assert.equal(api.physicalDemandAnchors2025.kelapa.unit, 'kg');
+});
