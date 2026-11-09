@@ -1,3 +1,7 @@
+# Hierarchical locality demand mass balance (2026-11-09)
+
+Locality demand is now population-weighted from the hierarchical runtime population allocation. A locality receives `provinceDemand × localityPopulation / provincePopulation`; child locality demand therefore sums back to its parent demand under the same allocation. This prevents the previous distortion where a locality's demand depended only on the number of administrative units. Non-DKI locality population is still marked derived until official leaf population data is available; DKI kabupaten/kota continues to use BPS 2025 population weights.
+
 ## Hierarchical locality demand decomposition (2026-11-09)
 
 The 2025 administrative master is now used as a runtime hierarchy rather than merely a lookup list. For a locality without an authoritative population leaf, simulation population is allocated in two stages: province population is allocated across regencies/cities; each parent allocation is then distributed equally across its districts; each district allocation is distributed equally across its desa/kelurahan/UPT children. Local commodity demand is the corresponding population share of the parent/province runtime demand.
