@@ -795,3 +795,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Final code/test workflow run 42549296642 completed SUCCESS on commit a89759c2e6307c19d230384dc00dedd815abaa6f. Node regression output: 51 tests, 51 passed, 0 failed. UTL oil-palm, UTP broiler, UTP cattle, official livestock price benchmark guards and all standalone Node regression tests succeeded.
 - The verified 3101 Kepulauan Seribu sample and quoteLocality overlay are partial data and an experimental local quote factor. They do not constitute a full 514-locality dataset, official locality population estimates, or a local order book.
 - Keep the next gate unchanged: acquire actual CSV/JSON/XLSX resource, import and reconcile all locality leaf observations, then source locality population weights and connect local quote/transactions to the order execution model.
+
+### Expanded Bapanas locality extract — Kepulauan Seribu (2026-11-09)
+
+- Revisited the rendered official Bapanas 2025 kabupaten/kota table. It exposes the full 3101 Administrasi Kepulauan Seribu leaf set, including rows omitted from the earlier five-row sample. Imported all 26 leaf observations into `BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL`; retained zero values and excluded group aggregates to prevent double counting.
+- The data is now available to `localityConsumptionSnapshot('3101')` and `quoteLocality(...)`; the locality quote regression checks representative leaf/category behavior. This does not yet connect the locality overlay to order-book execution or daily stock-flow simulation.
+- Bumped `kabkotaConsumptionSeedVersion` to 2 so existing saves that already received the original five-row seed are migrated by merging the expanded 26-row seed. Existing national and provincial layers remain separate.
+- Source: Bapanas rendered table https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota; data.go.id catalogue ID `3cb84f31-ed74-4a71-b083-1eb4fa49c968`. Catalogue lists CSV/JSON/XLSX resources, but the actual bulk resource download is still not retrieved. Full 514-locality ingestion and official locality population remain pending.
