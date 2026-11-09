@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const context = vm.createContext({ console, Math, Number, Object, Array, Set, String, Error, JSON });
 context.window = context;
-for (const file of ['js/commodities.js', 'js/region_capacity.js', 'js/state.js', 'js/real_economic_data.js', 'js/national_economy.js']) {
+for (const file of ['js/commodities.js', 'js/commodity_storage.js', 'js/region_capacity.js', 'js/state.js', 'js/real_economic_data.js', 'js/national_economy.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
 }
 vm.runInContext("S = { name: 'national-economy-test' }", context);
