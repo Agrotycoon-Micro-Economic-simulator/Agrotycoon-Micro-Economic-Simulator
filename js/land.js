@@ -144,6 +144,7 @@ function harvestCommodity(landId,plotId){
  if(!receipt.ok){msg("Valuasi persediaan panen tidak valid; panen dibatalkan.");return;}
  S.landSystem.inventory[c.id]=receipt.quantity;
  S.landSystem.inventoryCost[c.id]=receipt.costValue;
+ if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.receiveLot){AgroCommodityStorage.receiveLot(S,{commodityId:c.id,quantity:qty,unitCost:qty>0?wipCost/qty:0,day:S.day,source:'harvest'});}
  p.wipCost=0;
  p.plantedDay=S.day;p.health=Math.max(50,(p.health||100)-10);p.worldEventLoss=0;p.risk="normal";
  if(!S.dayLog.commodityHarvests)S.dayLog.commodityHarvests=[];
@@ -259,6 +260,7 @@ function sellCommodity(id,channel){
  }
  S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
  S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
+ if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){const lotUse=AgroCommodityStorage.consumeLots(S,id,qty);if(!lotUse.ok){msg('Lot persediaan tidak sinkron; penjualan dihentikan.');return false;}}
  S.landSystem.inventory[id]=valuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
@@ -334,6 +336,7 @@ function processCommodity(id){
  // All receipt state is validated before cash/state mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
  if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
  if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
+ if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){const lotUse=AgroCommodityStorage.consumeLots(S,id,input);if(!lotUse.ok){msg('Lot bahan baku tidak sinkron; pengolahan dihentikan.');return;}}
  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
@@ -391,7 +394,7 @@ function resetTestCrops(){
  ensureAgriState();
  if(!confirm("Reset mode uji? Ini menghapus petak komoditas non-kelapa, stok cabai/jagung, dan statistik pasar uji. Kebun kelapa warisan, uang, bangunan, dan progres utama tidak dihapus."))return;
  S.landSystem.lands.forEach(l=>{l.plots=(l.plots||[]).filter(p=>p.commodity==="kelapa");});
- S.landSystem.inventory={};S.landSystem.market={};S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
+ S.landSystem.inventory={};if(Array.isArray(S.landSystem.storageLots))S.landSystem.storageLots=S.landSystem.storageLots.filter(l=>l.commodityId==='kelapa');S.landSystem.market={};S.landSystem.quiz={correct:0,attempts:0,mastery:{}};
  save();showGarden();render();msg("Mode uji komoditas direset. Kelapa warisan dan progres utama tetap ada.");
 }
 
