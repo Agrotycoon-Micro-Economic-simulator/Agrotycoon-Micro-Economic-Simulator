@@ -961,3 +961,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added a regression case: buy 2.75 units against sell 1.25 units, execute 1.25 and leave 1.50 open; notional is checked exactly.
 - Code commit: `3fba31364f0c46e612737900dbaf3dbee0c25c4a`; test commit: `974a92ac33d9390039cd586cfc6c7cb47d6ed644`.
 - GitHub Actions result for the latest test commit has not yet been retrieved. Do not claim this new test passed until a completed run is inspected.
+
+
+#### Executed-fill price-flow adapter (2026-11-09)
+
+- Each matched fill now records the incoming aggressor side and actor type. A resting bid hit by an incoming sell is a sell-side price event; a resting ask lifted by an incoming buy is a buy-side price event.
+- `matchOrderBook()` returns `priceTransactions` derived exclusively from fills. Each row carries commodity, aggressor side, executed quantity, maker execution price, actor type, region, stage and fill ID. Unfilled/open orders are never converted into price transactions.
+- This is an adapter output only. The daily game loop does not yet call it, and no cash, inventory, HPP or ledger settlement is implied.
+- Code commit: `8f3db601e91549bc00896e07c48783db962ac82a`; test commit: `90e4d04d895d532c45e1d59f9b8b8c7e5dea6504`. CI for this latest test commit remains unverified.
