@@ -335,3 +335,8 @@ The current code adds a persistence/reservation primitive, not completed matchin
 Regional daily flow snapshots expose `dailyProduction`, `dailyDemand`, and `unmetDemand`. The NPC proposal generator consumes daily production for producer-stage supply offers and unmet demand for producer-stage bids. It intentionally does not infer producer stock from the aggregate regional inventory or government reserve fields.
 
 Current production quantities remain experimental scenario outputs from the provisional regional supply profile, not official production observations. Bapanas household-consumption data influences demand where mapped, but the model still lacks complete provincial and non-household reconciliation. Generated aggregate NPC pools therefore carry the status `experimental_regional_simulation_aggregate`; they are not individual agent balances or empirically calibrated producer capacities. Proposal generation is separate from persistence, matching, settlement and price formation.
+
+
+### Daily NPC proposal persistence
+
+The daily game rollover now builds one deterministic NPC proposal batch from each province's executed `dailyProduction` and `unmetDemand` snapshot and persists it under `S.marketOrderBook.npcOrders`. The batch is replaced once per in-game day, with validation and an idempotency guard. It remains an aggregate experimental pool and is not yet passed to the matcher; no order fill, settlement, ledger posting, or order-book-derived repricing occurs at this stage.
