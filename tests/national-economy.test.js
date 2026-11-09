@@ -506,6 +506,22 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   assert.ok(Object.keys(api.bpsKabkotaPopulation2025).length === 6);
 });
 
+test('verified datasets are consumed by runtime calculations, not only registered', async () => {
+  const api = context.AgroNationalEconomy;
+  await api.loadAdministrativeMaster();
+  const report = api.runtimeDataUsageAudit();
+  assert.equal(report.runtimeAvailable, true);
+  assert.equal(report.audit.bapanasNationalConsumption.runtimeBound, true);
+  assert.equal(report.audit.bapanasNationalConsumption.runtimeStateSignals, true);
+  assert.equal(report.audit.bapanasMonthlyDemand.seasonalMappedRecords, Object.keys(api.bapanasMonthlyDemand2025.records).length);
+  assert.equal(report.audit.bapanasProvincialConsumption.runtimeApplied, true);
+  assert.equal(report.audit.bapanasKabkotaConsumption.runtimeApplied, true);
+  assert.equal(report.audit.bpsDkiKabkotaPopulation.runtimeApplied, true);
+  assert.equal(report.audit.physicalDemandAnchors.runtimeApplied, true);
+  assert.equal(report.audit.administrativeMaster.runtimeApplied, true);
+  assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
+});
+
 test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
   const api = context.AgroNationalEconomy;
   const master = await api.loadAdministrativeMaster();
