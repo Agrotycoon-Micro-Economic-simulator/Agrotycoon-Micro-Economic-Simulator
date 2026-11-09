@@ -440,6 +440,7 @@ test('daily regional production and demand are exposed as executed runtime signa
   assert.ok(lampung.dailyDemand.jagung > 0);
   assert.equal(lampung.dailyProduction.jagung, state.provinces.lampung.dailyProduction.jagung);
   assert.equal(lampung.dailyDemand.jagung, state.provinces.lampung.dailyDemand.jagung);
+  assert.equal(lampung.dailyPhysicalDemand.jagung, state.provinces.lampung.dailyPhysicalDemand.jagung);
   assert.equal(lampung.unmetDemand.jagung, state.provinces.lampung.unmetDemand.jagung);
 });
 
@@ -568,6 +569,14 @@ test('official maize total-use projection is stored as physical demand without c
     'not_compared_with_projected_demand_due_to_source_scope_and_methodology');
   api.updateDay(1);
   assert.ok(lampung.dailyDemand.jagung > 0);
+  assert.ok(lampung.dailyPhysicalDemand.jagung > 0);
+  assert.equal(lampung.dailyPhysicalDemand.jagung,
+    lampung.totalMarketDemand2025.jagung.annualTotalKg *
+    context.AgroNationalEconomy.seasonalDemandCoefficient('jagung', 1) / 30);
+  assert.equal(state.national.physicalDemandUnit, 'kg/day');
+  assert.ok(state.national.dailyPhysicalDemandKg >= lampung.dailyPhysicalDemand.jagung);
+  assert.equal(state.national.physicalDemandLedgerStatus,
+    'household_and_verified_total_use_reference_only_not_yet_order_book_settled');
   const audit = api.runtimeDataUsageAudit();
   assert.equal(audit.audit.maizeTotalMarketDemand.runtimeApplied, true);
   assert.equal(audit.audit.maizeProductionReference.runtimeApplied, true);
