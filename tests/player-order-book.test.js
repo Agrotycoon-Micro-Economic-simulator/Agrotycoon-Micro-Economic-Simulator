@@ -46,6 +46,19 @@ test('player sell orders reserve raw stock and prevent double-selling the same u
   assert.equal(vm.runInContext('S.landSystem.inventoryCost.jagung', context), beforeCost);
 });
 
+test('player orders carry the same explicit legacy quantity contract as NPC market orders', () => {
+  freshState();
+  const result = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'sell', quantity: 1, limitPrice: 6000 });
+  assert.equal(result.ok, true);
+  assert.equal(result.order.quantityBasis, 'player_inventory_legacy_simulation_units');
+  assert.equal(result.order.quantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(result.order.quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(result.order.referencePhysicalUnit, 'kg');
+  assert.equal(result.order.referenceProductForm, 'jagung pipilan kering');
+  assert.equal(result.order.referenceUnitStatus, 'official_reference_unit_quality_gate');
+  assert.equal(result.order.quantityScaleStatus, 'unconverted_legacy_simulation_index');
+});
+
 test('cancelling an open order releases its reservation and is idempotently rejected afterwards', () => {
   freshState();
   const result = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 2, limitPrice: 6000 });
@@ -207,7 +220,13 @@ test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain
   assert.equal(snapshot.trades[0].quantity, 3);
   assert.equal(snapshot.trades[0].buyQuantityUnit, 'unconverted_simulation_market_units');
   assert.equal(snapshot.trades[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
-  assert.equal(snapshot.trades[0].quantityUnit, 'mixed_or_unverified_quantity_units');
+  assert.equal(snapshot.trades[0].quantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].sellQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].sellQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(snapshot.trades[0].sellReferencePhysicalUnit, 'kg');
+  assert.equal(snapshot.trades[0].sellReferenceProductForm, 'jagung pipilan kering');
+  assert.equal(snapshot.trades[0].sellReferenceUnitStatus, 'official_reference_unit_quality_gate');
+  assert.equal(snapshot.trades[0].sellQuantityScaleStatus, 'unconverted_legacy_simulation_index');
   assert.equal(snapshot.trades[0].buyReferencePhysicalUnit, 'kg');
   assert.equal(snapshot.trades[0].buyReferenceProductForm, 'jagung pipilan kering');
   assert.equal(snapshot.trades[0].buyReferenceUnitStatus, 'official_reference_unit_quality_gate');
