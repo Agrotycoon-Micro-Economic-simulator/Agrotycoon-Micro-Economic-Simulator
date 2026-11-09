@@ -1145,3 +1145,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test coverage checks source coverage, unit/moisture basis, values, registry binding, audit consumption, and the explicit no-daily-supply boundary.
 - Next: ingest the complete BPS 2025 provincial table with exact monthly tonnage for all 38 provinces (or another official exact table), verify monthly totals against national totals, then model harvest timing and post-harvest loss before converting output into NPC physical stock.
 - CI status for this change set must be read from the latest branch workflow result; an empty commit status is not a passing test result.
+
+- Canonical runtime province key for NTB is `nusa-tenggara-barat` (not the shorthand `ntb`); the dataset and regression test use the canonical game identifier.
