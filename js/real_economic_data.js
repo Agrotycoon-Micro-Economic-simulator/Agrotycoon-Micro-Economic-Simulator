@@ -1,6 +1,6 @@
 /* Official-source economic data registry. Periods and scope are explicit; never treat stale periodic prices as today's prices. */
 window.REAL_ECONOMIC_DATA={
- meta:{schemaVersion:1,curatedAt:"2026-10-17"},
+ meta:{schemaVersion:1,curatedAt:"2026-11-09"},
  sources:{
   bpjt:{publisher:"BPJT Kementerian PU",title:"Data Tarif Jalan Tol",url:"https://bpjt.pu.go.id/wp-content/uploads/Tarif-Tol-TransJawa.pdf",accessed:"2026-10-17"},
   bapanas:{publisher:"Badan Pangan Nasional",title:"Harga pangan tingkat konsumen nasional periode Maret 2026",url:"https://data.badanpangan.go.id/nfs_storage/public/publication/documents/1776912136.pdf",period:"2026-03"},
