@@ -474,6 +474,27 @@ test('executed NPC order-book fills consume regional marketable stock and satisf
 });
 
 
+test('non-DKI locality demand index follows hierarchical population share and conserves province demand', async () => {
+  const api = context.AgroNationalEconomy;
+  const master = await api.loadAdministrativeMaster();
+  const province = api.provinces.find(p => p.id === 'lampung');
+  const state = api.ensure();
+  const bucket = master.byProvince[province.adminCode];
+  const regencyIndex = 0;
+  const regency = await api.getLocalityAggregateAsync('lampung', 'regency', regencyIndex);
+  assert.ok(regency);
+  const expected = state.provinces.lampung.demand.jagung * (regency.population / state.provinces.lampung.population);
+  assert.equal(regency.monthlyDemandIndex.jagung, expected);
+  const childRows = bucket.districts.filter(row => row.regency_id === bucket.regencies[0].id);
+  let childDemand = 0;
+  for (let i = 0; i < childRows.length; i++) {
+    const row = await api.getLocalityAggregateAsync('lampung', 'district', bucket.districts.findIndex(x => x.id === childRows[i].id));
+    childDemand += row.monthlyDemandIndex.jagung;
+  }
+  assert.equal(childDemand, regency.monthlyDemandIndex.jagung);
+  assert.equal(regency.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+});
+
 test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
   const api = context.AgroNationalEconomy;
   const master = await api.loadAdministrativeMaster();
