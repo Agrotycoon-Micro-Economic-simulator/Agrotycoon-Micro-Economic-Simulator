@@ -274,3 +274,18 @@ test('order-book fills preserve each side quantity-unit provenance without imply
   assert.equal(result.fills[0].quantityUnit, 'mixed_or_unverified_quantity_units');
   assert.equal(result.openOrders.length, 0);
 });
+
+test('60-item catalog exposes explicit market-unit evidence status without converting legacy quantities', () => {
+  const market = context.MARKET_ENGINE;
+  assert.equal(market.catalog.length, 60);
+  for (const item of market.catalog) {
+    assert.ok(item.marketUnitStatus, item.id + ' missing market-unit status');
+    assert.equal(item.quantityScaleStatus, 'unconverted_legacy_simulation_index', item.id + ' must not imply legacy index conversion');
+  }
+  assert.equal(market.byId.jagung.marketUnitReference.unit, 'kg');
+  assert.equal(market.byId.ayam_pedaging.marketUnitReference.unit, 'ekor');
+  assert.equal(market.byId.sapi_potong.marketUnitReference.unit, 'kg');
+  assert.equal(market.byId.kelapa.marketUnitReference.unit, 'buah');
+  assert.equal(market.byId.kedelai.marketUnitReference, null);
+  assert.equal(market.byId.kedelai.marketUnitStatus, 'butuh_riset_lanjutan');
+});
