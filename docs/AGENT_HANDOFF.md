@@ -855,3 +855,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `getLocalityAggregateAsync()` now returns `householdConsumption2025` for kabupaten/kota rows with a verified Bapanas 2025 extract. The existing `dunia-simulasi.html` locality explorer displays this object through its JSON result panel.
 - At district/desa/kelurahan depth, the API explicitly returns `not_available_at_this_administrative_depth`; it does not fabricate village consumption by equal-splitting kabupaten/kota leaf observations.
 - The output also marks `localMarketQuoteStatus` as a bounded experimental overlay, not order-book clearing. Added regression coverage by resolving Kota Administrasi Jakarta Selatan (3174) through the administrative master and checking its 26 source leaf rows appear in the locality explorer payload.
+
+
+### Locality explorer collection mapping fix — green gate (2026-11-09)
+
+- The locality explorer's master lookup used singular `regency`/`city`/`district` keys against plural master collections (`regencies`/`cities`/`districts`), so city/regency/district searches returned empty arrays. Fixed `getLocalityRows()` to map levels to the correct master collection keys in commit `f6994a4a47e697bfc696420ccdf1bb380ca9ed6c`.
+- The locality explorer now resolves Jakarta Selatan code 3174, attaches its 26 verified Bapanas leaf observations to the JSON output, and marks desa/kelurahan-level household records unavailable rather than fabricating a downscaled value.
+- GitHub Actions run `42551675711` completed SUCCESS: 52 tests, 52 passed, 0 failed; benchmark guards and all standalone regression tests passed.
+- Next demographic gate: replace equal-split locality population for the six DKI kabupaten/kota with the official BPS 2025 population table, then source official locality-level population weights outside DKI. Do not claim the six-city population anchor has been integrated until code/tests are committed.
