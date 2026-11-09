@@ -780,3 +780,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The 11 Lampung observations are an explicitly partial verified extract. Full 38-province import and all 514 kabupaten/kota numeric observations remain pending. Do not treat one province's data as national coverage.
 - The prior failing runs (42548591399, 42548605653, 42548615507, 42548668639, 42548677118) exposed and resolved: national-vs-regional physical layer overwrite, old national-only assertion mismatch, and host-vs-VM catalog lookup. The final run above is the verified green result.
 - Latest follow-up docs should retain this exact distinction: national anchor != regional observation; household consumption != non-household demand; consumption != production requirement.
+### Kabupaten/kota Bapanas 2025 runtime overlay (2026-11-09)
+
+- Verified data.go.id catalogue for Bapanas 2025 kabupaten/kota consumption: dataset ID 3cb84f31-ed74-4a71-b083-1eb4fa49c968; open dataset; fields include year, four-digit locality code, province, locality name, food group, commodity, kg/capita/year; three downloadable resources are listed. Bapanas source page: https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota.
+- Integrated five exact leaf observations for code 3101 Administrasi Kepulauan Seribu: beras 88.6, jagung 0.2, singkong 7.1, ubi jalar 0.8, kentang 0.8 kg/capita/year. The sample is explicitly partial; no full 514-locality import is claimed.
+- Added applyKabupatenKotaConsumptionRecords, localityConsumptionSnapshot and quoteLocality. Quote overlay applies a bounded experimental local-demand adjustment to province market price index. This is not an order book or cleared transaction.
+- Local population remains an equal-share estimate, so local annual physical totals are estimated, not official observed totals. Keep the status explicit.
+- Added regression tests for local quote behavior, physical demand snapshot, duplicate rejection, invalid locality code/unit and province-code mismatch.
+- Full resource file retrieval is still pending. Next step: acquire CSV/JSON/XLSX, reconcile every locality code and leaf/group row, import all locality observations, then obtain official locality population weights. Do not upgrade coverage status until all 514 kabupaten/kota are validated.
+- Model details: docs/NATIONAL_COUNTRY_AND_REGIONAL_MARKET_MODEL.md section 12.
