@@ -575,6 +575,19 @@ window.REAL_ECONOMIC_DATA={
   runtimeUse:"provincial_poultry_population_reference_only_not_daily_supply",
   note:"Population figures are standing poultry counts, not slaughter, meat output, egg output, or daily market supply. All 38 provincial rows are retained. DKI Jakarta has unavailable values for laying hens and broilers; the national totals reconcile to available provincial rows. Ayam buras is retained as a separate official species but has no separate ID in the fixed 60-item catalog. Do not convert animal population to meat/egg supply without turnover, flock age, mortality, laying rate, slaughter rate, carcass yield, and production-system data."
  },
+ aquacultureNationalProduction2024:{
+  geography:"Indonesia",
+  referenceYear:2024,
+  sourceUnit:"tonne/year",
+  source:{publisher:"Kementerian Kelautan dan Perikanan",title:"Rencana Strategis Ditjen Perikanan Budidaya 2025–2029, validated aquaculture production 2024",url:"https://kkp.go.id/storage/AkuntabilitasKinerja/4791/document-akuntabilitas-kinerja-6a2a4a3ea48c32025-2029_Kepdirjen%20No%20473%20Th%202025%20Rencana%20Strategis.pdf",reference:"KKP Portal Data, October 2025",qualityStatus:"official_national_validated_2024"},
+  status:"official_validated_national_annual_aquaculture_production",
+  coverage:{verifiedNationalCommodityCount:11,totalSourceCommodityCount:11,mappedCatalogCommodityCount:4,coverageStatus:"national_only_species_rows_no_provincial_allocation"},
+  recordsTon:{gurami:161402,patin:383209,lele:1158418,nila:1563327,udang:958463,rumput_laut:9853604,bandeng:792864,kerapu:16063,kakap:10563,ikan_mas:524781,ikan_lainnya:331918},
+  catalogMapping:{gurami:"gurami",patin:"patin",lele:"lele",nila:"nila"},
+  unmappedSpecies:{udang:"National aggregate udang is not species-specific; do not map to udang_vaname",rumput_laut:"No matching catalog item",bandeng:"No matching catalog item",kerapu:"No matching catalog item",kakap:"No matching catalog item",ikan_mas:"No matching catalog item",ikan_lainnya:"Aggregate residual category, no species mapping"},
+  runtimeUse:"national_annual_output_reference_only_no_provincial_allocation_or_daily_supply",
+  note:"This is validated aquaculture output, not standing stock. Four exact species names map to existing catalog items. The aggregate udang figure is deliberately not mapped to udang_vaname because the source does not identify vannamei specifically. No provincial allocation, daily harvest curve, inventory, or NPC order is inferred."
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
