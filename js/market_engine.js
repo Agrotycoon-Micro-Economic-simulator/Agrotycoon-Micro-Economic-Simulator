@@ -181,7 +181,10 @@
         orderId: id, commodityId: item.id, side, quantity, remainingQuantity: quantity,
         limitPrice: price, createdAt, expiresAt, actorType: String(order.actorType).toLowerCase(),
         ownerId: String(order.ownerId), regionId: String(order.regionId), stage: String(order.stage),
-        sequence: Number.isFinite(Number(order.sequence)) ? Number(order.sequence) : 0
+        sequence: Number.isFinite(Number(order.sequence)) ? Number(order.sequence) : 0,
+        quantityBasis: order.quantityBasis || null,
+        quantityUnit: order.quantityUnit || "unverified_catalog_quantity_unit",
+        quantityCalibrationStatus: order.quantityCalibrationStatus || "unit_calibration_unverified"
       });
     });
 
@@ -223,6 +226,10 @@
           quantity, price: executionPrice, notional: quantity * executionPrice,
           makerOrderId: buyIsMaker ? buy.orderId : sell.orderId,
           aggressorSide: aggressor.side, aggressorActorType: aggressor.actorType,
+          quantityBasis: buy.quantityBasis || sell.quantityBasis || null,
+          quantityUnit: buy.quantityUnit === sell.quantityUnit ? buy.quantityUnit : "mixed_or_unverified_quantity_units",
+          quantityCalibrationStatus: buy.quantityCalibrationStatus === sell.quantityCalibrationStatus
+            ? buy.quantityCalibrationStatus : "mixed_or_unverified_quantity_calibration",
           executedAt: now
         });
         buy.remainingQuantity -= quantity;
@@ -233,7 +240,9 @@
       orderId: order.orderId, commodityId: order.commodityId, side: order.side,
       remainingQuantity: order.remainingQuantity, limitPrice: order.limitPrice,
       createdAt: order.createdAt, expiresAt: order.expiresAt, actorType: order.actorType,
-      ownerId: order.ownerId, regionId: order.regionId, stage: order.stage
+      ownerId: order.ownerId, regionId: order.regionId, stage: order.stage,
+      quantityBasis: order.quantityBasis, quantityUnit: order.quantityUnit,
+      quantityCalibrationStatus: order.quantityCalibrationStatus
     }));
     const priceTransactions = fills.map((fill) => ({
       commodityId: fill.commodityId, side: fill.aggressorSide, quantity: fill.quantity,
