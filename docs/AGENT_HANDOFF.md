@@ -872,3 +872,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `localityConsumptionSnapshot()` and `getLocalityAggregateAsync()` now use official BPS population for these six localities, with source/status metadata. Per-capita Bapanas values are multiplied by these population weights for absolute annual/monthly physical demand. Other localities still use clearly marked equal-share estimates.
 - Added regression assertions for all six values, sum reconciliation, Jakarta Selatan population and its maize annual demand calculation. CI is pending for commits containing this change; verify before claiming green.
 - Source: https://jakarta.bps.go.id/en/statistics-table/2/MTI0IzI%3D/3-1-1-penduduk-laju-pertumbuhan-penduduk-distribusi-persentase-penduduk-
+
+
+### Population weight scaling correction (2026-11-09)
+
+- Important model correction: the 200m Arunika population is a scaled game population, not Indonesia's full 2025 projected population. Therefore raw BPS DKI locality counts must be used as relative weights, not copied directly as in-game population counts.
+- Added `BPS_DKI_LOCALITY_GAME_POPULATION_2025`, allocated by largest remainder from the six raw BPS 2025 locality weights against the game's DKI province population. The six allocated locality counts reconcile exactly to `provinceSnapshot('dki-jakarta').population`.
+- `localityConsumptionSnapshot()` and `getLocalityAggregateAsync()` return game-scale `population`, preserve raw BPS count in `sourcePopulation`, and mark `official_bps_2025_weights_scaled_to_game_population`. Per-capita Bapanas annual totals use game-scale population, not raw Indonesia counts.
+- Regression tests assert raw source values sum to 10,677,980 and scaled locality values sum exactly to the DKI game province population. Latest test run is pending.
