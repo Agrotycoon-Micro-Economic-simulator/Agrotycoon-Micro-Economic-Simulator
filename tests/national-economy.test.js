@@ -881,3 +881,42 @@ test('BPS 2025 poultry population preserves provisional and unavailable cells wi
   assert.equal(usage.audit.poultryPopulation2025.unavailableRecords, 2);
   assert.equal(usage.audit.poultryPopulation2025.runtimeApplied, true);
 });
+
+test('KKP 2024 aquaculture national production is bound without false provincial allocation', () => {
+  vm.runInContext("S = { name: 'aquaculture-national-reference-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const source = vm.runInContext("REAL_ECONOMIC_DATA.aquacultureNationalProduction2024", context);
+  assert.equal(Object.keys(source.recordsTon).length, 11);
+  const national = api.snapshot().national.marketSupplyReference2024.aquaculture;
+  assert.equal(national.referenceYear, 2024);
+  for (const [id, tonnes] of Object.entries(source.recordsTon)) {
+    assert.equal(national.recordsTon[id], tonnes);
+    assert.equal(national.recordsKg[id], tonnes * 1000);
+  }
+  assert.equal(national.recordsTon.gurami, 161402);
+  assert.equal(national.recordsTon.patin, 383209);
+  assert.equal(national.recordsTon.lele, 1158418);
+  assert.equal(national.recordsTon.nila, 1563327);
+  assert.equal(national.recordsTon.udang, 958463);
+  assert.equal(Object.keys(source.catalogMapping).length, 4);
+  assert.equal(source.catalogMapping.gurami, 'gurami');
+  assert.equal(source.catalogMapping.patin, 'patin');
+  assert.equal(source.catalogMapping.lele, 'lele');
+  assert.equal(source.catalogMapping.nila, 'nila');
+  assert.equal(source.catalogMapping.udang, undefined);
+  const lampung = api.provinceSnapshot('lampung');
+  for (const id of ['gurami', 'patin', 'lele', 'nila']) {
+    assert.equal(lampung.commodityPhysicalCoverage[id].aquacultureNationalProductionStatus, 'official_2024_national_aquaculture_output_reference_not_provincial_supply');
+    assert.equal(lampung.dailyPhysicalSupply[id], null);
+    assert.equal(lampung.commodityPhysicalCoverage[id].supplyStatus, 'official_provincial_supply_data_pending');
+  }
+  const entry = api.runtimeDataRegistry().verified.find(row => row.id === 'kkp_aquaculture_national_production_2024');
+  assert.ok(entry);
+  assert.equal(entry.records, 11);
+  assert.equal(entry.depth, 'country');
+  const usage = api.runtimeDataUsageAudit();
+  assert.equal(usage.audit.aquacultureNationalProduction2024.sourceRecords, 11);
+  assert.equal(usage.audit.aquacultureNationalProduction2024.mappedCatalogCommodities, 4);
+  assert.equal(usage.audit.aquacultureNationalProduction2024.runtimeApplied, true);
+});
