@@ -139,7 +139,13 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   assert.equal(jakartaSouth.length, 1);
   const jakartaSouthSnapshot = await api.getLocalityAggregateAsync('dki-jakarta', 'city', jakartaSouth[0].index);
   assert.equal(jakartaSouthSnapshot.id, '3174');
+  assert.equal(jakartaSouthSnapshot.population, 2219220);
+  assert.equal(jakartaSouthSnapshot.populationStatus, 'official_bps_2025_kabupaten_kota');
+  assert.match(jakartaSouthSnapshot.populationSource, /BPS DKI Jakarta/);
   assert.equal(jakartaSouthSnapshot.householdConsumption2025.recordCount, 26);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.population, 2219220);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.populationStatus, 'official_bps_2025_kabupaten_kota');
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.physicalDemand.jagung.annualTotal, 3772674);
   assert.equal(jakartaSouthSnapshot.householdConsumption2025.rows.ikan.annualPerCapita, 25.2);
   assert.equal(jakartaSouthSnapshot.demandLayers.household.status, 'partial_verified_observations');
   assert.match(jakartaSouthSnapshot.localMarketQuoteStatus, /not_order_book_clearing/);
@@ -263,6 +269,24 @@ test('existing national economy saves migrate regional consumption layers withou
   assert.equal(migrated.provinces['dki-jakarta'].regionalConsumption2025, undefined);
 });
 
+
+
+test('official BPS 2025 population weights cover all six DKI kabupaten/kota and reconcile to the province total', () => {
+  vm.runInContext("S = { name: 'bps-dki-population-2025-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const population = api.bpsKabkotaPopulation2025;
+  assert.equal(population['3101'].population, 29090);
+  assert.equal(population['3171'].population, 1038400);
+  assert.equal(population['3172'].population, 1819010);
+  assert.equal(population['3173'].population, 2487200);
+  assert.equal(population['3174'].population, 2219220);
+  assert.equal(population['3175'].population, 3085060);
+  assert.equal(Object.values(population).reduce((sum, row) => sum + row.population, 0), 10677980);
+  const snapshot = api.localityConsumptionSnapshot('3174');
+  assert.equal(snapshot.population, 2219220);
+  assert.equal(snapshot.populationStatus, 'official_bps_2025_kabupaten_kota');
+  assert.equal(snapshot.physicalDemand.jagung.annualTotal, 3772674);
+});
 
 test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a locality-specific demand quote', () => {
   vm.runInContext("S = { name: 'bapanas-kepulauan-seribu-locality-test' }", context);
