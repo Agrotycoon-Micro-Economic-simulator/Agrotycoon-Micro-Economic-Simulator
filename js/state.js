@@ -4,7 +4,7 @@ function defaultState(){
  const trees=[];
  for(let i=0;i<10;i++)trees.push({slot:i,type:'biasa',plantedDay:0,mature:true,lastHarvest:-30});
  return {v:15,name:'',avatar:0,playerRegionId:'dki-jakarta',day:1,phase:'pagi',gold:5000000, xp:0, level:1,
-  stock:{biasa:0,super:0},stockCostValue:0,harvestDay:-99,trees,quarterUsed:0,quarterCost:0,
+  stock:{biasa:0,super:0},stockCostValue:0,harvestDay:-99,trees,quarterUsed:0,quarterCost:0,quarterOpenedDay:null,
   cuaca:'panas',
   warung:{open:false,ice:0,sugar:0,cups:0,iceCost:0,sugarCost:0,cupsCost:0,operatedToday:false,fridge:false,fridgeCap:0,autoMode:false,successfulSales:0},
   purchases:{seedlingMonth:0,externalCoconutMonth:0},tutorialSeen:{},soundEnabled:true,
@@ -82,6 +82,7 @@ function loadSaved(){
    if(!S.finance)S.finance={debt:0,payablesPayroll:0};
    if(!Number.isFinite(S.finance.debt))S.finance.debt=0;
    if(!Number.isFinite(S.finance.payablesPayroll))S.finance.payablesPayroll=0;
+   if(!Number.isFinite(S.quarterOpenedDay))S.quarterOpenedDay=null;
    if(!S.purchases)S.purchases={seedlingMonth:0,externalCoconutMonth:0};
    if(!S.landSystem)S.landSystem=null;
    if(S.landSystem){
@@ -118,6 +119,6 @@ function rp(n){return 'Rp '+Math.round(n).toLocaleString('id-ID');}
 function monthOf(d){return Math.floor((d-1)/30)+1;}
 function stockQty(){return (S.stock.biasa||0)+(S.stock.super||0);}
 function stockAge(){return S.day-(S.harvestDay||0);}
-function stockClass(){const q=stockQty();if(q<=0)return null;const a=stockAge();return a<=DATA.degrade.muda?'muda':a<=DATA.degrade.tua?'tua':'busuk';}
+function stockClass(){const q=stockQty();if(q<=0)return null;if(typeof AgroCommodityStorage==='undefined')return 'muda';const age=stockAge(),weather=S.cuaca||'berawan',env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const a=AgroCommodityStorage.assessLot({commodityId:'kelapa',form:'mature_husked',ageDays:age,temperatureC:env.temperatureC,relativeHumidityPct:env.relativeHumidityPct,storageType:env.storageType||'ambient'});if(a.expired)return 'busuk';if(['high','critical'].includes(a.risk))return 'tua';return 'muda';}
 function rollWeather(){const r=Math.random();if(r<0.4)return 'panas';if(r<0.75)return 'berawan';return 'hujan';}
 function rollBuyers(base){const w=DATA.weather[S.cuaca];const vary=0.8+Math.random()*0.4;return Math.max(w.minBuyers,Math.floor(base*w.esMult*vary));}
