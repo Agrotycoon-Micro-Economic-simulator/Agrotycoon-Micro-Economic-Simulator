@@ -367,9 +367,9 @@
  }
  function applyPlantationProductionReference(s){
   const data=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
-  if(!s||!data||data.coverage?.verifiedProvinceCount!==7||data.coverage?.verifiedCommodityCount!==7)return {status:"source_not_loaded"};
+  if(!s||!data||data.coverage?.verifiedProvinceCount!==38||data.coverage?.verifiedCommodityCount!==7)return {status:"source_not_loaded"};
   const provinceIds=Object.keys(data.records||{}),commodityIds=Object.keys(data.commodityMap||{});
-  if(provinceIds.length!==7||commodityIds.length!==7||provinceIds.some(id=>!provinceRecords.some(p=>p.id===id))||commodityIds.some(id=>!catalog().some(item=>item.id===id)))return {status:"source_catalog_mismatch",provinceRows:provinceIds.length,commodityRows:commodityIds.length};
+  if(provinceIds.length!==38||commodityIds.length!==7||provinceIds.some(id=>!provinceRecords.some(p=>p.id===id))||commodityIds.some(id=>!catalog().some(item=>item.id===id)))return {status:"source_catalog_mismatch",provinceRows:provinceIds.length,commodityRows:commodityIds.length};
   if(!s.national.marketSupplyReference2024)s.national.marketSupplyReference2024={};
   s.national.marketSupplyReference2024.plantation={
    referenceYear:2024,sourceUnit:data.sourceUnit,conversion:data.conversion,
@@ -651,7 +651,7 @@
   const horticulture=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
   if(horticulture)add("bps_horticulture_production_2025_national_partial","Badan Pusat Statistik / Ditjen Hortikultura","official_statistic_final_national_partial_commodity_rows",Object.keys(horticulture.records||{}).length,"country");
   const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
-  if(plantation?.coverage?.verifiedProvinceCount===7)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
+  if(plantation?.coverage?.verifiedProvinceCount===38)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   if(paddy)add("bps_paddy_production_2025_provincial","Badan Pusat Statistik","official_statistic_final_all_provinces",Object.keys(paddy.records||{}).length,"province");
   const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
@@ -660,7 +660,7 @@
    const row=s.provinces[provinceId]?.marketSupplyReference2024?.plantation?.[id];
    return row&&row.referenceYear===2024&&Number.isFinite(row.productionKg)&&row.productionKg===plantation.records[provinceId][id]*1000000;
   }));
-  audit.plantationProduction2024Partial={sourceRecords:plantationProvinceIds.length*plantationCommodityIds.length,provinceRows:plantationProvinceIds.length,commodityRows:plantationCommodityIds.length,runtimeApplied:plantationApplied&&plantationProvinceIds.length===7&&plantationCommodityIds.length===7,runtimeBound:true};
+  audit.plantationProduction2024Partial={sourceRecords:plantationProvinceIds.length*plantationCommodityIds.length,provinceRows:plantationProvinceIds.length,commodityRows:plantationCommodityIds.length,runtimeApplied:plantationApplied&&plantationProvinceIds.length===38&&plantationCommodityIds.length===7,runtimeBound:true};
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
   const commodityCoverage={totalCatalogCommodities:catalog().length,registeredCoverageRecords:coverage?.coverage?.[0]?.commodities?.length||0,all60Registered:catalog().length===60&&(coverage?.coverage?.[0]?.commodities?.length||0)===60};
   const pending=[SOURCES.nonHouseholdConsumption];
