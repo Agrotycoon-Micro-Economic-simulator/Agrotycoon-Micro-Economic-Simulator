@@ -139,13 +139,15 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   assert.equal(jakartaSouth.length, 1);
   const jakartaSouthSnapshot = await api.getLocalityAggregateAsync('dki-jakarta', 'city', jakartaSouth[0].index);
   assert.equal(jakartaSouthSnapshot.id, '3174');
-  assert.equal(jakartaSouthSnapshot.population, 2219220);
-  assert.equal(jakartaSouthSnapshot.populationStatus, 'official_bps_2025_kabupaten_kota');
+  assert.equal(jakartaSouthSnapshot.population, context.AgroNationalEconomy.bpsKabkotaSimulationPopulation2025['3174']);
+  assert.equal(jakartaSouthSnapshot.sourcePopulation, 2219220);
+  assert.equal(jakartaSouthSnapshot.populationStatus, 'official_bps_2025_weights_scaled_to_game_population');
   assert.match(jakartaSouthSnapshot.populationSource, /BPS DKI Jakarta/);
   assert.equal(jakartaSouthSnapshot.householdConsumption2025.recordCount, 26);
-  assert.equal(jakartaSouthSnapshot.householdConsumption2025.population, 2219220);
-  assert.equal(jakartaSouthSnapshot.householdConsumption2025.populationStatus, 'official_bps_2025_kabupaten_kota');
-  assert.equal(jakartaSouthSnapshot.householdConsumption2025.physicalDemand.jagung.annualTotal, 3772674);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.population, context.AgroNationalEconomy.bpsKabkotaSimulationPopulation2025['3174']);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.sourcePopulation, 2219220);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.populationStatus, 'official_bps_2025_weights_scaled_to_game_population');
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.physicalDemand.jagung.annualTotal, 1.7 * context.AgroNationalEconomy.bpsKabkotaSimulationPopulation2025['3174']);
   assert.equal(jakartaSouthSnapshot.householdConsumption2025.rows.ikan.annualPerCapita, 25.2);
   assert.equal(jakartaSouthSnapshot.demandLayers.household.status, 'partial_verified_observations');
   assert.match(jakartaSouthSnapshot.localMarketQuoteStatus, /not_order_book_clearing/);
@@ -282,10 +284,13 @@ test('official BPS 2025 population weights cover all six DKI kabupaten/kota and 
   assert.equal(population['3174'].population, 2219220);
   assert.equal(population['3175'].population, 3085060);
   assert.equal(Object.values(population).reduce((sum, row) => sum + row.population, 0), 10677980);
+  const gamePopulation = api.bpsKabkotaSimulationPopulation2025;
+  assert.equal(Object.values(gamePopulation).reduce((sum, value) => sum + value, 0), api.provinceSnapshot('dki-jakarta').population);
   const snapshot = api.localityConsumptionSnapshot('3174');
-  assert.equal(snapshot.population, 2219220);
-  assert.equal(snapshot.populationStatus, 'official_bps_2025_kabupaten_kota');
-  assert.equal(snapshot.physicalDemand.jagung.annualTotal, 3772674);
+  assert.equal(snapshot.population, gamePopulation['3174']);
+  assert.equal(snapshot.sourcePopulation, 2219220);
+  assert.equal(snapshot.populationStatus, 'official_bps_2025_weights_scaled_to_game_population');
+  assert.equal(snapshot.physicalDemand.jagung.annualTotal, 1.7 * gamePopulation['3174']);
 });
 
 test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a locality-specific demand quote', () => {
@@ -307,9 +312,10 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   assert.equal(local.rows.beras.annualPerCapita, 88.6);
   assert.equal(local.rows.jagung.annualPerCapita, 0.2);
   assert.equal(local.physicalDemand.jagung.annualPerCapita, 0.2);
-  assert.equal(local.population, 29090);
-  assert.equal(local.populationStatus, 'official_bps_2025_kabupaten_kota');
-  assert.equal(local.physicalDemand.jagung.annualTotal, 5818);
+  assert.equal(local.population, api.bpsKabkotaSimulationPopulation2025['3101']);
+  assert.equal(local.sourcePopulation, 29090);
+  assert.equal(local.populationStatus, 'official_bps_2025_weights_scaled_to_game_population');
+  assert.equal(local.physicalDemand.jagung.annualTotal, 0.2 * api.bpsKabkotaSimulationPopulation2025['3101']);
   const quote = api.quoteLocality('3101', 'jagung', 5992);
   assert.ok(Number.isFinite(quote));
   assert.ok(quote < api.quote('dki-jakarta', 'jagung', 5992));
