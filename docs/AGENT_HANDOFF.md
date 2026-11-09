@@ -1380,3 +1380,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Registry now contains **42 unique commodity IDs**. `tests/commodity-storage.test.js` now expects 42 and asserts the distinct evidence statuses for `bayam`, `udang_vaname`, and `jamur_tiram`.
 - The 18 still-unregistered IDs remain: `sawi`, `jahe`, `kunyit`, `lengkuas`, `serai`, `tebu`, `teh`, `durian`, `alpukat`, `nanas`, `melon`, `stroberi`, `vanili`, `kapas`, `tembakau`, `sapi_perah`, `domba`, and `madu`. Do not infer units from retail prices or generic product knowledge where the registry requires a verified producer/product-stage reference.
 - No physical quantity conversion was enabled; all 60 commodities retain `unconverted_legacy_simulation_index`. Runtime Node tests and CI have not been executed in this environment.
+
+
+## 2026-11-10 — avocado producer-unit evidence
+
+- Added `alpukat` to `MARKET_UNIT_REGISTRY` as **kg**, status `official_producer_price_unit_provincial_reference`.
+- Evidence: BPS *Statistik Harga Produsen Sektor Pertanian Provinsi Sumatera Selatan 2024*, Table 24, explicitly titled **Harga Produsen Alpukat (Rp/kg), 2010–2024**. This verifies physical producer-stage unit in a provincial BPS series; it does not establish a national average price. Source: https://web-api.bps.go.id/download.php?f=W1VPevck%2FRcp3rWCf6MfKUtMV01JeCtkZzRuOTQ0ZHF0WXhXY1Viejk1R1R3bUdSQ09UcWFLcnluY1h5cEV4bWxhbm5EbWRwZkdvWUpoL3NNVllSUm9BaGU3SDdTUThVYmVmNzlmQjRwajdyTjN5emdycWtSZ0YxMit3U2NvM05ZOEgxelZLRC90eEgrSjlrV0Z3d3pEbURDVHFhQkc1blJxZUlaYkh2WTR2b3RnQU1uNWk2RlI3TlBsZzduWEluTWVXTVNTQkJXRCsxNmNRd0orb2lHdEVHcmxlV3VhbFQ1T0NBbEJLMm5pdUNiQVNiZ0FPRW02QjEyS2xvdjNoSFNPL2cyOE1iWC8zWERwYXJRYU82UXRqS1pJaTJnRjhGR3VUckdzL05XZXhHK0YrMXFKSk5PR3hBcnA2V2ZSRlZpNGJyZDk1Vmo4SkEyYk1M.
+- Registry now has **43 unique entries**. Regression test expects 43 and asserts the provincial-reference status for avocado.
+- Remaining 17 IDs without a sufficiently verified producer/product-stage unit reference: `sawi`, `jahe`, `kunyit`, `lengkuas`, `serai`, `tebu`, `teh`, `durian`, `nanas`, `melon`, `stroberi`, `vanili`, `kapas`, `tembakau`, `sapi_perah`, `domba`, `madu`.
+- Kementan's April 2025 Kramat Jati table reports several herbs/fruits in Rp/kg at a wholesale-market stage. Those are not promoted into producer-unit evidence because the transaction stage is different. BPS 2025 producer-price publication covers monthly rural producer prices in 37 provinces, but PDF table extraction still needs item-level verification.
+- All 60 commodities remain on `unconverted_legacy_simulation_index`; no physical quantity conversion was enabled. Node tests/CI remain unexecuted for this change set.
