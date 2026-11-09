@@ -982,3 +982,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: module `e81a052826e6527d2beb80760c7b1f06466399ca`, lexical state binding correction `f76f963e30e031a8f389a39759e8c642c55ca080`, subsequent reference corrections `cce0704a12706f9fd7b7f35af79e99cdf82242c1` and `45cba184b5556090d3fdf4762f5ecfb9777030b4`; script load `c72f905d0f188a6a2066e371a57a867c0ee9035e`; tests `0fa2df6d2043d6f752d28aa532b1cebbe0424aaa`; workflow inclusion `26178630836d20973471733e4698a929293817a8`.
 - Local execution was unavailable in the current environment (GitHub clone failed because network DNS was unavailable). Wait for the workflow run and inspect its result before claiming the tests pass.
 - Next required gate: add NPC limit orders with real region/stage provenance, run matching against persisted orders, then implement atomic settlement for both sides (cash, stock, weighted-average inventory cost/HPP, revenue/COGS ledger) with rollback and save/load/idempotency tests. Never convert abstract `BACKGROUND_ECONOMY` flow into limit orders without genuine regional quantity and stage data.
+
+
+## Player order-book expiry and reservation release (2026-11-09)
+
+- Added `AgroPlayerOrderBook.expire(targetDay)`. It expires only open orders whose `expiresAt` is less than or equal to the supplied in-game day, sets remaining quantity to zero, records `expiredAt`, and recomputes reserved cash/inventory from the remaining open orders.
+- The daily rollover calls expiry for `S.day + 1` immediately before advancing the game clock. An order with `expiresAt = 12` remains eligible during day 11 and is expired as day 12 begins.
+- Expiry is idempotent: already expired/cancelled orders are not processed again. Invalid target days are rejected without changing open orders. The operation writes a ledger informational event only when at least one order expires; it does not post a cash or inventory transaction.
+- Added regression coverage for buy-cash release, sell-stock release, day-boundary behavior, repeated expiry and invalid day input. GitHub Actions validation for the latest test commit must be inspected before declaring this slice green.
+- Commits: `0fc10895d3149441752ec46f1a40f7a42f67815e` (expiry API), `aa0818b7d849086bdd0d7fe7d27cc24b5a2d4e7f` (daily rollover hook), `9c71791796940558b618e86d6cecd9ea05c9726a` (regression tests).
+- Remaining next gate: create NPC orders only from explicit regional producer/inventory and consumption/capacity evidence; then connect the pure matcher. Do not infer NPC limit quantities from the aggregate background-economy price tick. Settlement remains unimplemented: no fill yet mutates cash, inventory, weighted-average cost/HPP, or double-entry ledger.
