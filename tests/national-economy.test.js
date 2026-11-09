@@ -834,3 +834,50 @@ test('BPS 2024 livestock population is bound for all provinces without fabricati
   assert.equal(usage.audit.livestockPopulation2024.sourceRecords, 266);
   assert.equal(usage.audit.livestockPopulation2024.runtimeApplied, true);
 });
+
+test('BPS 2025 poultry population preserves provisional and unavailable cells without inventing output', () => {
+  vm.runInContext("S = { name: 'poultry-population-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const source = vm.runInContext("REAL_ECONOMIC_DATA.poultryPopulation2025", context);
+  assert.equal(source.coverage.verifiedProvinceCount, 38);
+  assert.equal(source.coverage.verifiedSpeciesCount, 4);
+  assert.equal(source.coverage.observationCount, 152);
+  assert.equal(source.coverage.availableObservationCount, 150);
+  assert.equal(source.coverage.unavailableObservationCount, 2);
+  const speciesIds = Object.keys(source.species);
+  const totals = Object.fromEntries(speciesIds.map(id => [id, 0]));
+  let available = 0, unavailable = 0;
+  for (const [provinceId, values] of Object.entries(source.records)) {
+    assert.equal(values.length, 4, provinceId);
+    const snapshot = api.provinceSnapshot(provinceId);
+    for (let i = 0; i < speciesIds.length; i++) {
+      const value = values[i];
+      assert.equal(snapshot.poultryPopulationReference2025[speciesIds[i]], value, provinceId + '/' + speciesIds[i]);
+      if (value === null) unavailable++;
+      else { totals[speciesIds[i]] += value; available++; }
+    }
+    assert.equal(snapshot.dailyPhysicalSupply.ayam_pedaging, null);
+  }
+  for (const id of speciesIds) assert.equal(totals[id], source.nationalTotals[id], id);
+  assert.equal(available, 150);
+  assert.equal(unavailable, 2);
+  const dki = api.provinceSnapshot('dki-jakarta');
+  assert.equal(dki.poultryPopulationReference2025.ayam_ras_petelur, null);
+  assert.equal(dki.poultryPopulationReference2025.ayam_ras_pedaging, null);
+  assert.equal(dki.commodityPhysicalCoverage.ayam_petelur.poultryPopulationStatus, 'official_poultry_population_cell_unavailable');
+  const lampung = api.provinceSnapshot('lampung');
+  assert.equal(lampung.poultryPopulationReference2025.ayam_ras_pedaging, 94814874);
+  assert.equal(lampung.commodityPhysicalCoverage.ayam_pedaging.poultryPopulationHead, 94814874);
+  assert.equal(lampung.commodityPhysicalCoverage.bebek.poultryPopulationHead, 1123408);
+  assert.equal(Object.keys(source.catalogMapping).length, 3);
+  const entry = api.runtimeDataRegistry().verified.find(row => row.id === 'bps_poultry_population_2025');
+  assert.ok(entry);
+  assert.equal(entry.records, 152);
+  assert.equal(entry.depth, 'province');
+  const usage = api.runtimeDataUsageAudit();
+  assert.equal(usage.audit.poultryPopulation2025.sourceRecords, 152);
+  assert.equal(usage.audit.poultryPopulation2025.availableRecords, 150);
+  assert.equal(usage.audit.poultryPopulation2025.unavailableRecords, 2);
+  assert.equal(usage.audit.poultryPopulation2025.runtimeApplied, true);
+});
