@@ -555,6 +555,10 @@ test('official maize total-use projection becomes physical NPC market demand wit
     'all_channel_total_need_including_feed_and_other_uses');
   assert.equal(lampung.totalMarketDemand2025.jagung.sourceTotalNeedTon,
     maize.nationalBalanceProjection2025.totalNeedTon);
+  assert.equal(lampung.totalMarketDemand2025.jagung.unitCompatibilityStatus,
+    'tonne_to_kg_mass_conversion_only_moisture_basis_not_explicit_in_demand_source');
+  assert.equal(state.national.marketDemandReference2025.jagung.sourcePrecisionDifferenceTon, 163);
+  assert.equal(state.national.marketDemandReference2025.jagung.roundedSummaryTotalNeedTon, 14720000);
   const before = lampung.demand.jagung;
   api.ensure();
   assert.equal(lampung.demand.jagung, before, 'projection migration must be idempotent');
