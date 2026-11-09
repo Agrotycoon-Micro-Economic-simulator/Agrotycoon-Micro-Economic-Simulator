@@ -1,3 +1,10 @@
+
+## NPC quote formation — experimental producer-stage spread (2026-11-09)
+
+NPC producer-stage proposals now separate the regional midpoint from the submitted limit order: the midpoint is the bounded national quote × regional price-index result; producer sell orders use midpoint + 100 bps and NPC buy orders use midpoint − 100 bps by default. Each side is independently clamped to the commodity market floor/ceiling. The 100 bps half-spread is explicitly marked experimental because no source-backed Indonesian producer-stage bid/ask transaction-cost calibration has been verified. It is therefore a simulation parameter, not an empirical market statistic. The order-book matcher remains the mechanism that determines executed prices and settlement.
+
+The existing regional consumer-price fallback remains: exact province observation → nearest connected province observation → national reference. When DKI Jakarta requires a nearest-region fallback, the source regional price is increased by at most 30% before being stored as the Jakarta reference, as an explicit game rule rather than an observed official Jakarta retail markup.
+
 # Hierarchical locality demand mass balance (2026-11-09)
 
 Locality demand is now population-weighted from the hierarchical runtime population allocation. A locality receives `provinceDemand × localityPopulation / provincePopulation`; child locality demand therefore sums back to its parent demand under the same allocation. This prevents the previous distortion where a locality's demand depended only on the number of administrative units. Non-DKI locality population is still marked derived until official leaf population data is available; DKI kabupaten/kota continues to use BPS 2025 population weights.
