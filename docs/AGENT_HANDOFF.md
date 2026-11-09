@@ -1517,3 +1517,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - No physical quantity conversion, unit normalization, rounding, inventory rescaling, or price rescaling was introduced. All 60 catalog quantities remain `unconverted_legacy_simulation_index`.
 - Tests were added/updated but not executed in this session; no CI pass/fail is claimed.
 - `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+- Follow-up test hardening: all-60 player-order coverage now obtains each order price through `MARKET_ENGINE.getPrice(item.id)` rather than assuming `item.marketPrice` is initialized in the test harness. Test commit: `cb94c8f55bea9c0962876cea77d6dc9a619a551c`.
