@@ -72,7 +72,11 @@
           sourceRegion: "AgroNationalEconomy.provinceSnapshot",
           sourceDay: day,
           quantityUnit: "unconverted_simulation_market_units",
-          quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending"
+          quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
+          referencePhysicalUnit: item.marketUnitReference && item.marketUnitReference.unit || null,
+          referenceProductForm: item.marketUnitReference && item.marketUnitReference.productForm || null,
+          referenceUnitStatus: item.marketUnitStatus || "butuh_riset_lanjutan",
+          quantityScaleStatus: item.quantityScaleStatus || "unconverted_legacy_simulation_index"
         };
 
         if (marketableStock > 0) {
