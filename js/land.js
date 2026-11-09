@@ -183,6 +183,20 @@ function tickAgricultureDay(){
  }));
 }
 
+function configureCommodityStorage(){
+ const current=S.storageEnvironment||{storageType:'ambient',temperatureC:30,relativeHumidityPct:80};
+ const type=(prompt('Jenis penyimpanan: ambient / refrigerated / freezer',current.storageType||'ambient')||'').toLowerCase();
+ if(!['ambient','refrigerated','freezer'].includes(type)){msg('Jenis penyimpanan tidak valid.');return;}
+ const defaultTemp=type==='freezer'?-18:type==='refrigerated'?4:30;
+ const temperatureC=Number(prompt('Suhu gudang (°C):',String(current.temperatureC??defaultTemp)));
+ const relativeHumidityPct=Number(prompt('Kelembapan relatif gudang (%):',String(current.relativeHumidityPct??80)));
+ if(!Number.isFinite(temperatureC)||temperatureC< -30||temperatureC>60||!Number.isFinite(relativeHumidityPct)||relativeHumidityPct<0||relativeHumidityPct>100){msg('Suhu atau kelembapan di luar rentang valid.');return;}
+ if(type==='freezer'&&temperatureC> -18){msg('Freezer harus disetel pada -18°C atau lebih rendah.');return;}
+ if(type==='refrigerated'&&(temperatureC<0||temperatureC>8)){msg('Penyimpanan dingin untuk model ini harus 0–8°C.');return;}
+ S.storageEnvironment={storageType:type,temperatureC,relativeHumidityPct};
+ if(S.landSystem&&Array.isArray(S.landSystem.storageLots))S.landSystem.storageLots.forEach(lot=>{lot.storageType=type;lot.temperatureC=temperatureC;lot.relativeHumidityPct=relativeHumidityPct;});
+ save();msg('Kondisi gudang diperbarui. Penilaian umur simpan memakai suhu '+temperatureC+'°C dan RH '+relativeHumidityPct+'%.');showCommodityEconomics();
+}
 function showCommodityEconomics(focusId){
  ensureAgriState();
  const ids=["kelapa","cabai_merah","jagung"],labels={kelapa:"Kelapa warisan",cabai_merah:"Cabai merah",jagung:"Jagung"};
@@ -206,7 +220,7 @@ function showCommodityEconomics(focusId){
    h+='<section class="agri-card"><h4>'+p.name+'</h4><p>Stok: '+qty.toLocaleString("id-ID")+' '+(p.outputUnit||"unit")+' · nilai persediaan: '+safeRp(cost)+' · HPP rata-rata: '+safeRp(unitCost)+'/unit · harga jual saat ini: '+safeRp(Number(p.price))+'/unit</p><button class="btn btn-success" onclick="sellFinishedCommodity(\''+p.id+'\')">Jual produk jadi</button></section>';
   }
  });
- h+='<button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
+ h+='<button class="btn btn-info" onclick="configureCommodityStorage()">Atur suhu & kelembapan gudang</button> <button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
 function sellCommodity(id,channel){
  ensureAgriState();
