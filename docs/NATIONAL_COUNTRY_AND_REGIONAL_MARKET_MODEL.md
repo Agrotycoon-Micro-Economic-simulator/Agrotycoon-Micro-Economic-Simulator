@@ -317,3 +317,14 @@ The local matcher accepts any finite positive quantity, not only integers. This 
 ### Executed-fill price-flow adapter
 
 The matcher emits a `priceTransactions` array from fills only. The transaction side is the incoming aggressor side, not both buyer and seller, so one matched unit does not create artificial simultaneous buy and sell pressure. The price uses the resting maker order's execution price. Unfilled orders do not enter this array. The daily game loop has not yet wired this adapter into repricing or accounting settlement.
+
+
+## Player limit-order reservation layer (2026-11-09)
+
+The current code adds a persistence/reservation primitive, not completed matching or settlement:
+
+- `js/player_order_book.js` stores player orders in `S.marketOrderBook` and exposes submit/cancel/snapshot methods.
+- Buy-side buying power is reserved at the submitted limit price; sell-side raw producer inventory is reserved by commodity. Reservation totals are derived from open orders and released on cancellation.
+- Orders are scoped to the saved player region by default, restricted to the producer stage until stage-specific inventory is integrated, and expire after seven in-game days by default (1–365 configurable). Fractional quantities are supported.
+- No cash, inventory, inventory cost, HPP, ledger, or price is changed by order submission/cancellation. The matcher remains a separate pure primitive; matching and atomic settlement remain future work.
+- Regression tests are in `tests/player-order-book.test.js` and included in `.github/workflows/targeted-regression.yml`. CI result must be checked before claiming validation.
