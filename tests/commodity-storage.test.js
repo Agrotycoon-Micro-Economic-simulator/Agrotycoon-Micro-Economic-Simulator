@@ -12,6 +12,13 @@ test('all 60 catalog commodities have an explicit storage or live-stock profile'
  for(const id of storage.catalogIds)assert.ok(storage.profiles[id],id+' missing profile');
 });
 
+test('every actual COMMODITIES catalog ID has a matching storage profile',()=>{
+ vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js','commodities.js'),'utf8'),context);
+ const ids=vm.runInContext('COMMODITIES.map(c=>c.id)',context);
+ assert.equal(ids.length,60);
+ for(const id of ids)assert.ok(storage.profiles[id],'missing profile for '+id);
+});
+
 test('dry paddy and dry maize do not expire on a daily tick',()=>{
  for(const commodityId of ['padi','jagung']){
   const r=assess({commodityId,ageDays:1,moisturePct:12,temperatureC:28,relativeHumidityPct:65});
