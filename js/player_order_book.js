@@ -72,11 +72,11 @@
     if (side === "buy") {
       const requiredCash = quantity * limitPrice;
       if (!Number.isFinite(requiredCash) || requiredCash <= 0 ||
-          !Number.isFinite(Number(S.gold)) || Number(root.S.gold) - book.reservedCash < requiredCash) {
+          !Number.isFinite(Number(S.gold)) || Number(S.gold) - book.reservedCash < requiredCash) {
         return { ok: false, reason: "insufficient_unreserved_cash" };
       }
     } else {
-      const stock = Math.max(0, Number(S.landSystem && root.S.landSystem.inventory && root.S.landSystem.inventory[commodityId]) || 0);
+      const stock = Math.max(0, Number(S.landSystem && S.landSystem.inventory && root.S.landSystem.inventory[commodityId]) || 0);
       const alreadyReserved = Math.max(0, Number(book.reservedInventory[commodityId]) || 0);
       if (stock - alreadyReserved + 1e-9 < quantity) {
         return { ok: false, reason: "insufficient_unreserved_inventory" };
