@@ -1,3 +1,14 @@
+## 2026-11-09 — NPC spread integration repaired and audit checkpoint refreshed
+
+- Audit scope refreshed against the repository's three visible branches: `main`, `feat/production-tier-taxonomy`, and `fix/core-auto-warung-accounting-ui`. The feature branch remains the active implementation branch; no merge/cherry-pick from the older accounting/UI branch was performed.
+- The GitHub commit-search endpoint returned **35 searchable commits** for this repository, not 1,000. A branch comparison simultaneously reports the active feature branch as **1,533 commits ahead of main and 11 behind**, so the connector does not expose a truthful paginated 1,000-commit history through the available search wrapper. Therefore this session records the actual searchable count and does **not** claim a completed 1,000-commit object-level audit.
+- The visible 35-commit search window spans `5c4d62f5f7468b81aff554ad31709bc5dc4d9d2c` (2026-11-09) through `ec8fff03d2c653044b4fa136880ab5f52dca2926` (initial commit, 2026-10-15). The major implementation sequence in that window is: accounting/gameplay MVP → economy/data registry → world/map prototype → shared market engine → regional NPC order proposals → current fixes.
+- `peta.html` and `js/map_engine.js` are explicitly excluded from implementation work as requested. No map files were modified in this continuation.
+- The previous NPC spread edit contained malformed literal escape text in `js/npc_order_generator.js`. It has now been replaced with a clean syntactically valid implementation in commit `2ff5f08704ada0c4b20a54deadbaf3b2c08fedfa`. The generator now emits a bounded experimental 100 bps half-spread around the regional midpoint, with explicit pricing provenance. This remains a simulation proxy, not a claimed observed Indonesian transaction spread.
+- Existing test updates cover the spread metadata, midpoint, bid/ask values and floor/ceiling behavior. GitHub Actions for the latest repair commit has **not** yet produced a retrievable completed run; CI must remain marked pending.
+- The repository already implements the requested Jakarta fallback rule in `regionalConsumerPriceReference()`: exact province observation first; nearest connected province fallback when missing; **+30% only when the target is DKI Jakarta**; then national fallback if no regional observation exists. This is already encoded and should be retained, not reimplemented elsewhere.
+- The current major unfinished gates remain: full 514 kabupaten/kota Bapanas 2025 numeric ingestion (only 6/514 DKI localities are complete), official locality population outside DKI, BPS Non-Rumah-Tangga 2025 numeric extraction, physical provincial supply/monthly harvest allocation, interprovincial freight settlement, and complete lot-level spoilage/write-off accounting. These remain `butuh riset lanjutan` where official machine-readable evidence is not currently retrievable.
+
 
 ## NPC bid-ask spread integration (2026-11-09)
 
