@@ -1252,3 +1252,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Registry ID `bps_aquaculture_production_2024_provincial`, 418 records, province depth. Audit `audit.aquacultureProvincialProduction2024Bps` verifies all rows are bound. Regression tests check 418 cells, all province snapshots, annual supply references, daily supply null, BPS rounding differences, and BPS-vs-KKP discrepancies.
 
 - CI verification after the BPS provincial aquaculture binding and source-series tests: GitHub Actions run `42611614106` on code commit `f7072cca386a839cf4bc6995660ecfcb142f52fb` completed successfully on 2026-11-09. `node-regression` reported 109 tests, 109 passed, 0 failed. The workflow also completed the market/NPC/inventory accounting suites, UTL oil-palm benchmark guard, UTP broiler/cattle benchmark guards, official 2024 livestock price benchmark guard, and standalone regression suite. Run: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42611614106
+
+
+## Regional consumer-price fallback — Bapanas 2025 (2026-11-09)
+
+- Official source added to js/real_economic_data.js: Badan Pangan Nasional, Laporan Kinerja Deputi Bidang Ketersediaan dan Stabilisasi Pangan Tahun 2025, Tabel 27 “Harga Pangan Tingkat Konsumen Tahun 2025”. The table covers all 38 provinces and 25 food-price columns. Source PDF: https://badanpangan.go.id/storage/app/media/2026/PPID/Dep.%201/Lakin%20Deputi%20KSP%20Tahun%202025.pdf
+- Runtime-mapped catalog commodities: jagung, kedelai, bawang_merah, bawang_putih, cabai_merah (CMK), and cabai_rawit (CRM). Product-stage caveat is preserved: the Bapanas table labels JPK as producer-stage even though it is printed inside the consumer-price table; it is therefore not treated as a retail quote.
+- The 38-province source rows are preserved as annual reference data. Printed blanks remain null; they are never converted to zero.
+- Price lookup hierarchy is now: exact province → nearest connected province with a verified value → national reference. The nearest-region layer uses an explicit provincial adjacency graph rather than arbitrary random substitution.
+- Jakarta rule: when DKI has no exact value, the nearest-region reference is multiplied by 1.30 maximum before normal game-market bounds are applied. This implements the requested downstream distribution/market handling without allowing an arbitrary regional markup.
+- Example encoded by test: DKI jagung is blank in the official 2025 table, so the engine uses Jawa Barat's Rp5,707/kg and applies the Jakarta fallback cap to Rp7,419/kg before the ordinary game price-index and corridor logic.
+- This source is a 2025 annual reference, not a live 2026 quote. Live/periodic prices may later replace the reference when a verified current source is available; the fallback hierarchy remains.
+- The normal market floor/ceiling contract remains independent. Regional fallback does not authorize a corridor breach. Only the existing national national_disaster / war emergency contract can break the normal corridor.
