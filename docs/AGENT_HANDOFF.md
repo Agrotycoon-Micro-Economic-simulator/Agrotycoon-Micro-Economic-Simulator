@@ -832,3 +832,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - The first 3-locality code commit omitted the comma separating the final 3101 record from the first 3171 record. GitHub Actions runs `42551115807` and `42551127483` exposed `SyntaxError: Unexpected token '{'`; these runs are failures and must not be counted as green.
 - Corrected the array separator in commit `832c558a0117ac5ebaeac88a6a1b97656354afc9`. The corrected code is now queued for full targeted regression run `42551236544`. Wait for its conclusion and inspect logs before claiming the 4-locality expansion is validated.
+
+
+### Full DKI Jakarta kabupaten/kota household-consumption layer (2026-11-09)
+
+- Expanded the Bapanas 2025 leaf-observation set to all six DKI Jakarta administrative localities: 3101 Kepulauan Seribu, 3171 Jakarta Pusat, 3172 Jakarta Utara, 3173 Jakarta Barat, 3174 Jakarta Selatan and 3175 Jakarta Timur.
+- Each locality has 26 leaf records, total 156 observations. Group totals are excluded and zero leaf values retained. Source remains kg/capita/year.
+- Bumped `kabkotaConsumptionSeedVersion` from 3 to 4 to migrate existing saves and merge the two newly verified locality profiles.
+- Added tests for 3172/3175 values, all five non-3101 locality snapshots, six-locality/156-row coverage and the locality quote spread. Full 514-locality coverage remains pending.
+- Source evidence is the Bapanas 2025 rendered table at https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota. The complete bulk resource file remains inaccessible through the current retrieval path; only directly rendered rows were ingested.
