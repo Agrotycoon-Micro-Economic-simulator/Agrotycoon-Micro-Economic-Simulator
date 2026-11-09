@@ -248,3 +248,29 @@ test('national emergency is commodity-scoped and required for out-of-band order 
   assert.equal(allowed.fills.length, 1);
   officialEmergency = null;
 });
+
+test('order-book fills preserve each side quantity-unit provenance without implying physical conversion', () => {
+  const market = context.MARKET_ENGINE;
+  const item = market.byId.jagung;
+  const result = market.matchOrderBook([
+    {
+      orderId: 'npc-demand-unit-test', commodityId: 'jagung', side: 'buy', quantity: 4,
+      limitPrice: item.marketPrice, createdAt: 1, expiresAt: 2, actorType: 'npc',
+      ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer',
+      quantityBasis: 'regional_unmet_demand_after_inventory',
+      quantityUnit: 'unconverted_simulation_market_units',
+      quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending'
+    },
+    {
+      orderId: 'player-supply-unit-test', commodityId: 'jagung', side: 'sell', quantity: 4,
+      limitPrice: item.marketPrice, createdAt: 1, expiresAt: 2, actorType: 'player',
+      ownerId: 'player', regionId: 'lampung', stage: 'producer'
+    }
+  ], { now: 1 });
+  assert.equal(result.fills.length, 1);
+  assert.equal(result.fills[0].buyQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(result.fills[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(result.fills[0].sellQuantityUnit, 'unverified_catalog_quantity_unit');
+  assert.equal(result.fills[0].quantityUnit, 'mixed_or_unverified_quantity_units');
+  assert.equal(result.openOrders.length, 0);
+});
