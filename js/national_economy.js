@@ -360,7 +360,7 @@
   if(!s.national.marketSupplyReference2025)s.national.marketSupplyReference2025={};
   s.national.marketSupplyReference2025.horticulture={
    referenceYear:2025,unit:"kg/year",sourceUnit:data.unit,
-   coverage:data.coverage,source:data.source,status:data.status,
+   coverage:data.coverage,provincialCoverage:data.provincialCoverage,provincialSources:data.provincialSources,provincialRecords:Object.fromEntries(Object.entries(data.provincialRecords||{}).map(([provinceId,rows])=>[provinceId,Object.assign({},rows)])),source:data.source,status:data.status,
    runtimeUse:data.runtimeUse,records:Object.fromEntries(ids.map(id=>[id,Object.assign({},records[id])]))
   };
   return {status:"applied",commodityRows:ids.length};
