@@ -1339,3 +1339,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Corrected a contradictory regression assertion that previously expected `kedelai.marketUnitReference` to be null immediately before asserting it was `kg`. The test now consistently requires the verified reference.
 - Remaining catalog entries are still `butuh_riset_lanjutan` and must not be assigned units by inference. In particular, tea is not promoted from the consumer-price table because that would be the wrong price stage for the current producer-unit registry.
 - Static source/test inspection completed. Node execution and CI remain pending; no test pass is claimed.
+
+## 2026-11-10 — livestock unit-stage research gate
+
+- Added two verified livestock references: `ayam_petelur` = kg, product form telur ayam ras, based on BPS producer-price publication; `bebek` = ekor, product form itik/bebek hidup, with BPS explicit 1 ekor = 1.5 kg stage-weight reference.
+- BPS 2025 covers producer prices for livestock and fisheries monthly across 38 provinces. BPS/Kementan data also explicitly distinguish telur ayam ras as Rp/kg from liveweight livestock references. citeturn897645search0turn897645search21
+- `sapi_perah` and `domba` remain `butuh_riset_lanjutan`; no exact 2025 producer-unit row was sufficiently verified, so no unit was guessed.
+- This batch is provenance-only; legacy NPC quantities remain unconverted.
