@@ -12,6 +12,27 @@
     return typeof value === "number" && Number.isFinite(value) && value > 0;
   }
 
+  function migrateLegacyQuantityContract(order) {
+    if (!order || typeof order !== "object") return;
+    const hasAnyQuantityContract = order.quantityUnit != null ||
+      order.quantityCalibrationStatus != null || order.quantityScaleStatus != null;
+    if (hasAnyQuantityContract) return;
+    const item = root.MARKET_ENGINE && root.MARKET_ENGINE.byId
+      ? root.MARKET_ENGINE.byId[String(order.commodityId || "")] : null;
+    const reference = item && item.marketUnitReference || null;
+    order.quantityBasis = order.quantityBasis || (
+      order.actorType === "npc"
+        ? (order.side === "buy" ? "legacy_npc_unmet_demand_index" : "legacy_npc_marketable_inventory_index")
+        : "player_inventory_legacy_simulation_units"
+    );
+    order.quantityUnit = "unconverted_simulation_market_units";
+    order.quantityCalibrationStatus = "legacy_index_to_physical_unit_conversion_pending";
+    order.referencePhysicalUnit = reference && reference.unit || null;
+    order.referenceProductForm = reference && reference.productForm || null;
+    order.referenceUnitStatus = item && item.marketUnitStatus || "butuh_riset_lanjutan";
+    order.quantityScaleStatus = "unconverted_legacy_simulation_index";
+  }
+
   function ensureBook() {
     if (typeof S === "undefined" || !S || typeof S !== "object") throw new Error("Game state is not initialized");
     if (!S.marketOrderBook || typeof S.marketOrderBook !== "object") {
@@ -21,6 +42,7 @@
     if (!Array.isArray(book.orders)) book.orders = [];
     if (!Array.isArray(book.pendingSettlement)) book.pendingSettlement = [];
     if (!Array.isArray(book.npcOrders)) book.npcOrders = [];
+    book.orders.concat(book.npcOrders).forEach(migrateLegacyQuantityContract);
     if (!Number.isSafeInteger(book.lastNpcGenerationDay) || book.lastNpcGenerationDay < 0) book.lastNpcGenerationDay = 0;
     if (!book.reservedInventory || typeof book.reservedInventory !== "object") book.reservedInventory = {};
     if (!Number.isSafeInteger(book.sequence) || book.sequence < 0) book.sequence = 0;
