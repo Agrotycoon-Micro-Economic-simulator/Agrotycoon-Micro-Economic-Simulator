@@ -143,6 +143,11 @@ function finishDay(){
   S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
   S.marketLastTick={day:marketTick.gameDay,scope:marketTick.scope,npcTransactionCount:marketTick.npcTransactionCount,playerTransactionCount:marketTick.playerTransactionCount,priceUpdates:marketTick.priceUpdates.length,marketIsGloballyShared:false};
  }
+ // Expire open market orders at the start of the next in-game day.
+ if(typeof AgroPlayerOrderBook!=='undefined'&&typeof AgroPlayerOrderBook.expire==='function'){
+  const expiry=AgroPlayerOrderBook.expire(S.day+1);
+  if(expiry&&expiry.expiredCount)ledger('PASAR','Order kedaluwarsa '+expiry.expiredCount,0,{expiredOrderIds:expiry.expiredOrderIds,targetDay:expiry.targetDay});
+ }
  const mOld=monthOf(S.day);
  S.day++;
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
