@@ -375,7 +375,10 @@
    items.forEach(item=>{
     const id=item.id,profile=storage&&typeof storage.profileFor==="function"?storage.profileFor(id):null;
     const demandRecord=(p.totalMarketDemand2025&&p.totalMarketDemand2025[id])||(p.regionalPhysicalDemand&&p.regionalPhysicalDemand[id])||(p.physicalDemand&&p.physicalDemand[id]);
-    const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
+    const horticultureData=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
+    const provincialHorticultureValue=horticultureData?.provincialRecords?.[meta.id]?.[id];
+    const horticultureProvincialRecord=Number.isFinite(provincialHorticultureValue)?{productionKg:provincialHorticultureValue*100,productionQuintal:provincialHorticultureValue}:null;
+    const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(horticultureProvincialRecord||s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
     const economics=typeof COMMODITY_ECONOMICS!=="undefined"&&COMMODITY_ECONOMICS?COMMODITY_ECONOMICS[id]:null;
     const unit=economics?.unit||(item.unitType==="ternak"?"ekor":item.unitType==="pohon"?"kg_hasil_pohon":item.unitType==="kolam"?"kg_hasil_kolam":item.unitType==="koloni"?"kg_madu":item.unitType==="rak"?"kg_hasil_rak":"kg");
     p.commodityPhysicalCoverage[id]={
@@ -385,9 +388,9 @@
      storageProfileStatus:profile?"storage_profile_available":"storage_profile_missing",
      demandStatus:demandRecord?"official_physical_demand_reference_available":"official_physical_demand_data_pending",
      demandAnnual:demandRecord?Number(demandRecord.annualTotalKg||demandRecord.annualTotal||0):null,
-     supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
+     supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":horticultureProvincialRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
      supplyAnnualTon:id==="padi"&&supplyRecord?supplyRecord.productionKgGkg/1000:id==="jagung"&&supplyRecord?supplyRecord.productionTon:supplyRecord?supplyRecord.productionKg/1000:null,
-     dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
+     dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":horticultureProvincialRecord?"provincial_annual_reference_only_monthly_harvest_curve_pending":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
      qualityStatus:"mixed_verified_reference_and_pending_data"
     };
     if(p.dailyPhysicalSupply[id]===undefined)p.dailyPhysicalSupply[id]=null;
