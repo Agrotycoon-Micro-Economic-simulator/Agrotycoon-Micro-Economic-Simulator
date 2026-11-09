@@ -21,7 +21,7 @@ test('every actual COMMODITIES catalog ID has a matching storage profile',()=>{
 
 test('market-unit registry exposes only verified physical references and preserves legacy quantity status',()=>{
  const registry=vm.runInContext('MARKET_UNIT_REGISTRY',context);
- assert.equal(Object.keys(registry).length,41);
+ assert.equal(Object.keys(registry).length,42);
  for(const id of Object.keys(registry)){
   assert.ok(registry[id].unit,id+' missing unit');
   assert.ok(registry[id].productForm,id+' missing product form');
@@ -30,6 +30,11 @@ test('market-unit registry exposes only verified physical references and preserv
   assert.equal(registry[id].unit,'kg');
   assert.equal(registry[id].status,'official_producer_price_unit_stage_locked');
  }
+ assert.equal(registry.bayam.unit,'kg');
+ assert.equal(registry.udang_vaname.unit,'kg');
+ assert.equal(registry.udang_vaname.status,'official_aquaculture_production_value_unit');
+ assert.equal(registry.jamur_tiram.unit,'kg');
+ assert.equal(registry.jamur_tiram.status,'government_extension_farmer_sale_reference');
  const quantityStatuses=vm.runInContext('COMMODITIES.map(c=>c.quantityScaleStatus)',context);
  assert.equal(quantityStatuses.length,60);
  assert.ok(quantityStatuses.every(s=>s==='unconverted_legacy_simulation_index'));
