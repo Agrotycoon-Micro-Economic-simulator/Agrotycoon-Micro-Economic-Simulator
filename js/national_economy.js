@@ -654,13 +654,6 @@
   if(plantation?.coverage?.verifiedProvinceCount===38)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   if(paddy)add("bps_paddy_production_2025_provincial","Badan Pusat Statistik","official_statistic_final_all_provinces",Object.keys(paddy.records||{}).length,"province");
-  const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
-  const plantationProvinceIds=Object.keys(plantation?.records||{}),plantationCommodityIds=Object.keys(plantation?.commodityMap||{});
-  const plantationApplied=plantationProvinceIds.every(provinceId=>plantationCommodityIds.every(id=>{
-   const row=s.provinces[provinceId]?.marketSupplyReference2024?.plantation?.[id];
-   return row&&row.referenceYear===2024&&Number.isFinite(row.productionKg)&&row.productionKg===plantation.records[provinceId][id]*1000000;
-  }));
-  audit.plantationProduction2024Partial={sourceRecords:plantationProvinceIds.length*plantationCommodityIds.length,provinceRows:plantationProvinceIds.length,commodityRows:plantationCommodityIds.length,runtimeApplied:plantationApplied&&plantationProvinceIds.length===38&&plantationCommodityIds.length===7,runtimeBound:true};
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
   const commodityCoverage={totalCatalogCommodities:catalog().length,registeredCoverageRecords:coverage?.coverage?.[0]?.commodities?.length||0,all60Registered:catalog().length===60&&(coverage?.coverage?.[0]?.commodities?.length||0)===60};
   const pending=[SOURCES.nonHouseholdConsumption];
@@ -705,6 +698,13 @@
   audit.horticultureNationalProduction2025={sourceRecords:Object.keys(horticulture?.records||{}).length,provincialRows:Object.keys(horticulture?.provincialRecords||{}).length,runtimeApplied:Object.keys(s.national.marketSupplyReference2025?.horticulture?.records||{}).length===Object.keys(horticulture?.records||{}).length&&Object.keys(s.national.marketSupplyReference2025.horticulture?.provincialRecords||{}).length===Object.keys(horticulture?.provincialRecords||{}).length&&s.national.marketSupplyReference2025.horticulture?.coverage?.verifiedCommodityCount===18&&s.national.marketSupplyReference2025.horticulture?.provincialCoverage?.verifiedProvinceCount===3,runtimeBound:true};
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   audit.paddyProvincialProduction2025={sourceRecords:Object.keys(paddy?.records||{}).length,runtimeApplied:s.national.marketSupplyReference2025?.padi?.nationalProductionTonGkg===paddy?.nationalTotalTonGkg&&s.national.marketSupplyReference2025?.padi?.coverage?.verifiedProvinceCount===38,runtimeBound:true};
+  const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
+  const plantationProvinceIds=Object.keys(plantation?.records||{}),plantationCommodityIds=Object.keys(plantation?.commodityMap||{});
+  const plantationApplied=plantationProvinceIds.every(provinceId=>plantationCommodityIds.every(id=>{
+   const row=s.provinces[provinceId]?.marketSupplyReference2024?.plantation?.[id];
+   return row&&row.referenceYear===2024&&Number.isFinite(row.productionKg)&&row.productionKg===plantation.records[provinceId][id]*1000000;
+  }));
+  audit.plantationProduction2024Partial={sourceRecords:plantationProvinceIds.length*plantationCommodityIds.length,provinceRows:plantationProvinceIds.length,commodityRows:plantationCommodityIds.length,runtimeApplied:plantationApplied&&plantationProvinceIds.length===38&&plantationCommodityIds.length===7,runtimeBound:true};
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
   audit.all60CommodityCoverage={sourceRecords:catalog().length,runtimeApplied:catalog().length===60&&coverage?.coverage?.[0]?.commodities?.length===60&&coverage.coverage[0].commodities.every(x=>x.marketModelStatus==="active_catalog_and_market_index"&&x.storageProfileStatus==="storage_profile_available"),runtimeBound:true};
   audit.allVerifiedDatasetsRuntimeBound=Object.values(audit).every(x=>x&&x.runtimeBound===true&&x.runtimeApplied!==false&&x.runtimeStateSignals!==false);
