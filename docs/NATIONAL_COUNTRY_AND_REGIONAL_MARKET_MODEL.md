@@ -328,3 +328,10 @@ The current code adds a persistence/reservation primitive, not completed matchin
 - Orders are scoped to the saved player region by default, restricted to the producer stage until stage-specific inventory is integrated, and expire after seven in-game days by default (1–365 configurable). Fractional quantities are supported.
 - No cash, inventory, inventory cost, HPP, ledger, or price is changed by order submission/cancellation. The matcher remains a separate pure primitive; matching and atomic settlement remain future work.
 - Regression tests are in `tests/player-order-book.test.js` and included in `.github/workflows/targeted-regression.yml`. CI result must be checked before claiming validation.
+
+
+## NPC order proposal data contract (2026-11-09)
+
+Regional daily flow snapshots expose `dailyProduction`, `dailyDemand`, and `unmetDemand`. The NPC proposal generator consumes daily production for producer-stage supply offers and unmet demand for producer-stage bids. It intentionally does not infer producer stock from the aggregate regional inventory or government reserve fields.
+
+Current production quantities remain experimental scenario outputs from the provisional regional supply profile, not official production observations. Bapanas household-consumption data influences demand where mapped, but the model still lacks complete provincial and non-household reconciliation. Generated aggregate NPC pools therefore carry the status `experimental_regional_simulation_aggregate`; they are not individual agent balances or empirically calibrated producer capacities. Proposal generation is separate from persistence, matching, settlement and price formation.
