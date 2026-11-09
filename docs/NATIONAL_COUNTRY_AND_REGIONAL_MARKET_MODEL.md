@@ -307,3 +307,8 @@ The market engine now exposes `MARKET_ENGINE.matchOrderBook(orders, {now})`. It 
 **Execution contract:** an order is not a transaction. Only a returned fill is an executed transaction candidate. This first slice does not persist orders and does not yet mutate cash, stock, HPP, ledger or market prices. Do not display submitted order volume as traded volume. Full in-game settlement remains pending until atomic accounting integration and regression tests are complete.
 
 Code commit: `780f6d82ad81b6a408c506682da244ed02d00026`; tests: `26b08f712dee590cdbbae746a5dc07bbd749208c`. CI validation was not yet confirmed at this documentation checkpoint.
+
+
+### Fractional physical trade quantities
+
+The local matcher accepts any finite positive quantity, not only integers. This is required for kg/liter-based commodities where partial physical units are legitimate. Zero, negative, non-finite values remain invalid. Regression coverage checks a 2.75-unit bid matched against a 1.25-unit ask, with 1.50 units left open. This correction does not itself implement cash/inventory reservation or settlement.
