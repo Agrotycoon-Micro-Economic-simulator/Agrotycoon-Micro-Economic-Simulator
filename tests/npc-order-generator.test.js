@@ -7,7 +7,7 @@ const context = vm.createContext({ Math, Number, Object, Array, Set, String });
 context.window = context;
 vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'js', 'npc_order_generator.js'), 'utf8'), context, { filename: 'js/npc_order_generator.js' });
 const catalog = [
-  { id: 'jagung', marketFloor: 1000, marketCeiling: 10000 },
+  { id: 'jagung', marketFloor: 1000, marketCeiling: 10000, marketUnitReference: { unit: 'kg', productForm: 'jagung pipilan kering' }, marketUnitStatus: 'official_reference_unit_quality_gate', quantityScaleStatus: 'unconverted_legacy_simulation_index' },
   { id: 'padi', marketFloor: 5000, marketCeiling: 20000 }
 ];
 const province = (overrides = {}) => ({
@@ -43,6 +43,10 @@ test('NPC proposals use regional marketable inventory and unmet demand with expl
   assert.equal(supply.spreadStatus, 'experimental_unresearched_transaction_cost_proxy');
   assert.equal(supply.quantityUnit, 'unconverted_simulation_market_units');
   assert.equal(supply.quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(supply.referencePhysicalUnit, 'kg');
+  assert.equal(supply.referenceProductForm, 'jagung pipilan kering');
+  assert.equal(supply.referenceUnitStatus, 'official_reference_unit_quality_gate');
+  assert.equal(supply.quantityScaleStatus, 'unconverted_legacy_simulation_index');
   const bid = result.orders.find(order => order.side === 'buy' && order.commodityId === 'jagung');
   assert.equal(bid.limitPrice, 7128);
   assert.notEqual(supply.ownerId, demand.ownerId);
