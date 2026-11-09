@@ -1019,3 +1019,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Important boundary: the new assessor is loaded and testable, but the current national economy inventory remains aggregate (not age-cohort lots) and does not yet run automatic stock write-offs through this assessor. Do not claim commodity spoilage has been fully integrated into NPC or player inventory. The next required implementation is a lot/cohort inventory contract with source/harvest day, moisture, product form, storage conditions and flood event, then FIFO assessment, quantity/quality loss, valuation and ledger posting with idempotent tests.
 - The legacy player coconut freshness bands remain separate: `DATA.degrade.muda=14`, `DATA.degrade.tua=25`; this is the existing young-to-old-to-rotten game quality rule, not a generic shelf-life rule for all coconut forms or commodities. Do not replace it without explicit approval and field calibration.
 - Regression suite: `tests/commodity-storage.test.js`; targeted workflow now runs it. CI must be inspected before claiming the new suite passed.
+
+
+### Storage-model CI validation and VM fixture correction (2026-11-09)
+
+- First CI run 42570632024 failed 82/83 in the existing NPC-order persistence test, not in the new storage tests. Root cause: the test read top-level lexical S as context.S; lexical bindings in the VM context are not exposed as object properties. The storage tests all passed in that run (6/6); the one failure was "daily NPC order batches persist once...".
+- Corrected the fixture to read state through vm.runInContext('S.gold', context) and vm.runInContext('S.landSystem.inventory.jagung', context). Commit: ee5596bd6a1e1a88041fc6c28565d5bd484ecfc6.
+- GitHub Actions run 42570692777 (run 358) completed SUCCESS on the correction commit: 83/83 Node test-runner tests passed, all four official benchmark guards passed, and all standalone regression/browser smoke/E2E suites completed successfully. Run: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42570692777
+- Validation proves the assessor's unit contracts and the repository regression suite; it does not prove real inventory write-off integration. Actual age-cohort inventory, FIFO quality loss, flood event propagation and accounting write-off remain the next implementation gate.
