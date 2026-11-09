@@ -140,6 +140,8 @@ test('daily NPC order batches persist once, validate provenance and do not settl
   assert.equal(first.storedCount, 1);
   assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders[0].orderId, order.orderId);
   assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 9);
+  const serialized = saved.get('agrotycoon_save_v15');
+  assert.ok(serialized.includes('npc-supply-9-lampung-jagung'));
   const repeated = context.AgroPlayerOrderBook.replaceNpcOrders([], 9);
   assert.equal(repeated.ok, true);
   assert.equal(repeated.alreadyGenerated, true);
