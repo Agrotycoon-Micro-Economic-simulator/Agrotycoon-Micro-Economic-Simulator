@@ -1443,3 +1443,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Remaining **5/60** without sufficiently verified producer/product-stage unit references: `stroberi`, `kapas`, `sapi_perah`, `domba`, `madu`. Do not infer kg/liter/head from common trade convention.
 - All 60 catalog quantities remain `unconverted_legacy_simulation_index`; registry units are source transaction units and are not yet scale conversion factors. In particular, 50 kg, 100 kg, 10 kg, and bundle units must not be treated as kg until explicit conversion factors are introduced and tested.
 - Node tests were not run locally. CI has not yet been confirmed for this change set. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+## 2026-11-10 — BPS livestock producer-unit expansion (55 → 57)
+
+- Added two livestock asset references from BPS *Statistik Harga Produsen Perdesaan Provinsi Jawa Tengah 2023*, Volume 5 (2024), catalogue 7103017.33, publication 33000.24104:
+  - `sapi_perah`: **ekor**, product form live dairy cow with a source-defined reference weight of **250 kg/head**. Appendix 15 header explicitly states `Rp/Ekor (250 Kg)`.
+  - `domba`: **ekor**, product form live sheep with a source-defined reference weight of **30 kg/head**. Appendix 16 header explicitly states `1 Ekor (30 Kg)`.
+- This source is a provincial producer-price reference across 29 Jawa Tengah regencies for 2023. The weight reference is a classification denominator, not a universal biological weight distribution and not a conversion factor for all game animals.
+- Source PDF: https://web-api.bps.go.id/download.php?f=qRkDkqkpMIs03pHbWetS4XJuN3ZjYnByN0FkL3ZnZCtFd2FLRENOUzNnWDc3eEp6d1hBbWZkbWxIN1dadXJleEtCQTd0RC9sYXhwUkFaNndmR21JTW5LSEttYkdMeUhOLzc4QVJvWmU3LzUzWTJML2F3VlV4YWRkUkFSSk4xYlorWGR3WFpqdU5xOEt3V2xqblhDWkNHYWE1MVY1ano2NnJ3N3ZuT3lZNnplZ3orVklaSmpNZHd6Vjd3VW15SmpEZGsyOGROU1ZwcldVY2krbCthOElvTzhkY1ZVZ0ZLcWhWWWRmQWYxL2pvOXNDZzhNWVBkRkxjYTdFbmFWM2xtclUrWVJGR0RPR2lDaE1rNFFLbkFaR2p6ckVFaFZtUkkyNjFEM1VnPT0%3D
+- Regression expectation increased to **57/60** and checks both IDs, transaction units, and reference weights. Source commit `08abc6bbf22e2674a52bdfbfc5f29980b1c5bc8c`; test commit `908db18bc7086cd8f7a9e5d5ca137c22cf796b33`.
+- Remaining **3/60** without sufficiently verified producer/product-stage unit references: `stroberi`, `kapas`, and `madu`. Do not infer units from common commercial convention.
+- All 60 catalog quantities remain `unconverted_legacy_simulation_index`. No conversion factors have been inferred from the 250 kg/head or 30 kg/head reference categories.
+- Node tests were not run locally. CI has not yet been confirmed for this change set. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
