@@ -1,3 +1,7 @@
+# Hierarchical locality demand mass-balance update (2026-11-09)
+
+`getLocalityAggregateAsync()` now scales `monthlyDemandIndex` by the runtime hierarchical population share rather than dividing province demand equally by locality count. The allocation conserves the parent demand signal across regency/city → district → village/kelurahan levels. Population remains explicitly derived for non-DKI until official locality population observations are loaded. A regression test verifies child-demand conservation.
+
 ## Hierarchical locality consumer runtime (2026-11-09)
 
 - The locality aggregate runtime now allocates simulation population hierarchically instead of splitting the province equally at every administrative depth: province -> regency/city -> district within its parent -> village/kelurahan/UPT within its parent district.
