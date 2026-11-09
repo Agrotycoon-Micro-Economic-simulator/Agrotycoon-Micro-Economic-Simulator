@@ -1161,3 +1161,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Tests cover 38 paddy rows, source arithmetic, provincial runtime binding, 60 commodity coverage records, and the null daily physical supply boundary.
 - Coverage is not the same as complete official physical calibration: official per-commodity demand/supply, locality breakdown, monthly seasonality, price series, unit normalization, production inputs/HPP, livestock output and aquaculture harvest still require commodity-specific ingestion. For each of the remaining commodities, status remains pending until evidence is sourced and tested.
 - Next work must continue across all 60 IDs by commodity family: staple crops; horticulture and roots; plantation and spices; fruit; livestock and animal products; aquaculture and fisheries; then connect source-backed physical supply/demand to NPC transactions only after unit and timing validation.
+
+## National horticulture production references (2026-11-09)
+
+- `js/real_economic_data.js` adds `horticultureNationalProduction2025`, 18 mapped game commodities from BPS 2025 national annual production: bawang merah, bawang putih, bayam, cabai rawit, kacang panjang, kangkung, kentang, mentimun, kubis, melon, sawi, semangka, stroberi, terong, tomat, wortel, cabai merah, and jamur tiram.
+- Official source: BPS, *Produksi Tanaman Sayuran dan Buah-Buahan Semusim Menurut Jenis Tanaman, 2025*, last updated 2026-05-25: https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2022.html
+- Source unit is kuintal (kw/qui); conversion stored explicitly at 100 kg per kuintal. Original quintal and normalized kg values are both retained.
+- Game `cabai_merah` is mapped as the sum of BPS `Cabai Besar/TW/Teropong` and `Cabai Keriting`; component rows are retained so the aggregation is auditable.
+- Data is national annual production only. It is not allocated to any province, month, daily NPC stock or local market. The engine exposes `national_reference_only_provincial_allocation_pending` until provincial tables and monthly harvest series are loaded.
+- Runtime binding is in `applyHorticultureProductionReference()` and `commodityPhysicalCoverage`; registry and usage audit check all 18 records.
+- This adds supply references for 18 more catalog items. It does not mean all 60 have complete physical production data; remaining catalog items stay explicitly pending.
