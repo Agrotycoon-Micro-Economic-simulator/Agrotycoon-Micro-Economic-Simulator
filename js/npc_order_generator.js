@@ -119,7 +119,7 @@
     };
   }
 
-  root.AgroNpcOrderGenerator = { version: "0.2.0", buildDailyOrders };
+  root.AgroNpcOrderGenerator = { version: "0.3.0", buildDailyOrders };
 })(typeof window !== "undefined" ? window : globalThis);
 
 if (typeof module !== "undefined" && module.exports) module.exports = globalThis.AgroNpcOrderGenerator;
