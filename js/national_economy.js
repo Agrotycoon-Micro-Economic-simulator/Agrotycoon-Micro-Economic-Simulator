@@ -341,6 +341,11 @@
   s.national.marketDemandReference2025.jagung={unit:"tonne/year",officialNationalTotalNeedTon:data.balance.totalNeedTon,gamePopulationScaledNeedTon:nationalNeedTon,annualPerCapitaKg:annualPerCapita,roundedSummaryTotalNeedTon:data.projection.totalNeedTon,sourcePrecisionDifferenceTon:data.balance.totalNeedTon-data.projection.totalNeedTon,feedNeedTonRounded:data.projection.feedNeedTon,otherUsesNeedTonRounded:data.projection.otherUsesNeedTon,populationDenominator:data.denominator.value,unitCompatibilityStatus:"physical_demand_reference_only_supply_stock_conversion_pending",source:"Kementan Pusdatin / Bapanas national maize balance projection 2025",status:"official_projection_population_scaled_to_game",scope:"all_channel_total_need_including_feed_and_other_uses",year:2025};
   s.national.marketSupplyReference2025=s.national.marketSupplyReference2025||{};
   s.national.marketSupplyReference2025.jagung={unit:"tonne/year",officialNationalProductionTon:data.production.productionAt14MoistureTon,moisturePct:data.production.moisturePct,referenceYear:data.production.referenceYear,source:"BPS Luas Panen dan Produksi Jagung di Indonesia 2025 (Angka Tetap)",status:"official_statistic_final_reference_only",regionalAllocationStatus:"pending_official_provincial_production_data",balanceComparisonStatus:"not_compared_with_projected_demand_due_to_source_scope_and_methodology"};
+  const provincialProduction=REAL_ECONOMIC_DATA.maizeProvincialProduction2025Partial;
+  s.national.marketSupplyReference2025.jagung.provincialProduction2025Partial=provincialProduction?JSON.parse(JSON.stringify(provincialProduction)):null;
+  s.national.marketSupplyReference2025.jagung.provincialReferenceCoverage=provincialProduction?provincialProduction.coverage:null;
+  s.national.marketSupplyReference2025.jagung.provincialReferenceTotalTon=provincialProduction?Object.values(provincialProduction.records||{}).reduce((sum,row)=>sum+Number(row.productionTon||0),0):0;
+  s.national.marketSupplyReference2025.jagung.regionalAllocationStatus="partial_official_provincial_references_loaded_not_daily_supply_allocated";
   return {status:"applied_reference_only",annualPerCapitaKg:annualPerCapita,gamePopulationScaledNeedTon:nationalNeedTon,version,marketQuantityStatus:"physical_demand_reference_only_supply_stock_conversion_pending"};
  }
  function provinceShare(p){return p.population/POPULATION;}
@@ -535,6 +540,8 @@
   if(maizeData){
    add("kementan_maize_total_demand_projection_2025","Kementan Pusdatin / Bapanas","official_projection_runtime_market_demand",1,"country_to_province");
    add("bps_maize_production_2025","Badan Pusat Statistik","official_statistic_final_runtime_reference",1,"country");
+   const provincial=REAL_ECONOMIC_DATA.maizeProvincialProduction2025Partial;
+   if(provincial)add("bps_maize_provincial_production_2025_partial","Badan Pusat Statistik provincial offices","official_statistic_final_partial_rounded_reference",Object.keys(provincial.records||{}).length,"province");
   }
   const pending=[SOURCES.nonHouseholdConsumption];
   return {verified,pending,allRuntimeBound:verified.every(x=>x.runtimeBound),verifiedCount:verified.length,pendingCount:pending.length};
@@ -570,6 +577,8 @@
    const lampung=s.provinces.lampung,expectedPerCapita=maizeData.balance.totalNeedTon*1000/maizeData.denominator.value;
    audit.maizeTotalMarketDemand={sourceRecords:1,runtimeApplied:s.maizeTotalDemandRuntimeVersion===2&&Math.abs((lampung.totalMarketDemand2025?.jagung?.annualPerCapita||0)-expectedPerCapita)<1e-9&&lampung.totalMarketDemand2025?.jagung?.unitCompatibilityStatus==="physical_demand_reference_only_supply_stock_conversion_pending"&&lampung.demand.jagung>0,runtimeBound:true};
    audit.maizeProductionReference={sourceRecords:1,runtimeApplied:s.national.marketSupplyReference2025?.jagung?.officialNationalProductionTon===maizeData.production.productionAt14MoistureTon&&s.national.marketSupplyReference2025.jagung.regionalAllocationStatus==="pending_official_provincial_production_data",runtimeBound:true};
+   const provincial=REAL_ECONOMIC_DATA.maizeProvincialProduction2025Partial;
+   audit.maizeProvincialProduction2025Partial={sourceRecords:Object.keys(provincial?.records||{}).length,runtimeApplied:Object.keys(s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records||{}).length===Object.keys(provincial?.records||{}).length&&s.national.marketSupplyReference2025.jagung.provincialReferenceCoverage?.coverageStatus==="partial_official_provincial_observations"&&s.national.marketSupplyReference2025.jagung.regionalAllocationStatus==="partial_official_provincial_references_loaded_not_daily_supply_allocated",runtimeBound:true};
   }
   audit.allVerifiedDatasetsRuntimeBound=Object.values(audit).every(x=>x&&x.runtimeBound===true&&x.runtimeApplied!==false&&x.runtimeStateSignals!==false);
   return {runtimeAvailable:true,audit};
