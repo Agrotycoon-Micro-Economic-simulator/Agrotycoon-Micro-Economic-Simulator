@@ -81,6 +81,8 @@ function assessLot(input){
  if(!Number.isFinite(days)||days<=0)return {ok:true,commodityId:id,risk:'unclassified',expired:false,spoilageConfirmed:false,calibrationStatus:'research_required'};
  const effectiveAge=age*rate,ratio=effectiveAge/days,quality=Math.max(0,Math.min(100,100*(1-ratio)));
  let risk=ratio>=1?'expired':ratio>=.8?'critical':ratio>=.55?'high':ratio>=.3?'watch':'normal';
+ if(input.flooded===true&&!input.driedAfterFlood&&finite(input.daysSinceFlood)&&Number(input.daysSinceFlood)>=3&&['dry_grain','root_tuber'].includes(p.storageClass)&&rank[risk]<rank.critical)risk='critical';
+ if(p.moistureCriticalPct&&moist!==null&&moist>=p.moistureCriticalPct&&rank[risk]<rank.critical)risk='critical';
  if(input.moldObserved===true||input.rottingObserved===true)risk='spoiled';
  return {ok:true,commodityId:id,form:p.form,ageDays:age,effectiveAgeDays:Number(effectiveAge.toFixed(3)),shelfLifeDays:days,quality:Number(quality.toFixed(2)),risk,expired:['expired','spoiled'].includes(risk),spoilageConfirmed:['expired','spoiled'].includes(risk),automaticExpiry:false,calibrationStatus:p.evidence,reference:{temperatureC:p.referenceTempC,relativeHumidityPct:p.referenceRhPct},source:p.source,sourceUrl:p.sourceUrl,reasons:[...(input.flooded&&!input.driedAfterFlood?['flood_wet_not_dried']:[]),...(input.physicalDamage?['physical_damage']:[]),...(input.opened?['opened_or_cut']:[])]};
 }
