@@ -242,3 +242,15 @@ Runtime behavior:
 The 200m game population is allocated to provinces using the existing BPS provincial population shares; therefore regionalPhysicalDemand.annualTotal is an in-game scaled quantity, not a claim that the source population denominator exactly equals the 200m simulation population. National source anchors and regional observations remain separate layers.
 
 Pending: retrieve and import the complete 38-province file (all source leaf records), then replace the partial Lampung seed with the complete verified dataset. Do not mark provincial consumption complete until all province codes, leaf keys, row counts, units and duplicate keys pass reconciliation. BPS non-household consumption remains a separate missing layer.
+
+## 12. Kabupaten/kota household-consumption runtime overlay (2026-11-09)
+
+Source: Bapanas, Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Kabupaten Kota Tahun 2025, https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota; data.go.id catalogue ID 3cb84f31-ed74-4a71-b083-1eb4fa49c968. The dataset reports year, four-digit locality code, province, kabupaten/kota, food group, commodity and kg/capita/year. The data.go.id listing identifies three downloadable resources (CSV/JSON/XLSX); the dataset is marked open but its full resource file was not yet fetched into the repository.
+
+A verified partial sample for code 3101, Administrasi Kepulauan Seribu, is integrated as BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL: beras 88.6, jagung 0.2, singkong 7.1, ubi jalar 0.8 and kentang 0.8 kg/capita/year. These are leaf observations from the rendered source table, not a complete 514-locality import.
+
+Runtime APIs: applyKabupatenKotaConsumptionRecords(records), localityConsumptionSnapshot(localityCode), and quoteLocality(localityCode, commodityId, nationalPrice). Ingestion validates year, unit, key, non-negative finite quantity, four-digit locality code, province-code prefix and duplicate locality/commodity keys. The local quote applies a bounded experimental demand-pressure adjustment on top of the province price index. This is a local quote overlay, not yet a local order book or transaction-clearing market.
+
+Local population remains equal-split estimated across a province's kabupaten/kota count. Therefore per-capita observations are source data, while annual total demand is scaled using an estimated in-game locality population and must remain labelled as estimated. Complete locality population weights and the complete 514-locality Bapanas extract remain pending. Parent food-group aggregate rows must not be ingested with their child leaf rows.
+
+Next data gate: obtain the actual CSV/JSON/XLSX resource file, verify all locality codes against the administrative master, deduplicate `(locality_code, commodity, year)`, reconcile leaf/group totals, import all locality records, and add tests for complete 514-locality coverage before changing coverage status from partial.
