@@ -204,9 +204,9 @@
     playerSellFills.forEach(fill => { sellByCommodity[fill.commodityId] = (sellByCommodity[fill.commodityId] || 0) + fill.quantity; });
     const buyByCommodity = {};
     playerBuyFills.forEach(fill => { buyByCommodity[fill.commodityId] = (buyByCommodity[fill.commodityId] || 0) + fill.quantity; });
-    Object.keys(sellByCommodity).forEach(id => {
-      if (buyByCommodity[id] > 0) throw new Error("same_day_buy_sell_same_commodity:" + id);
-    });
+    if (Object.keys(sellByCommodity).some(id => buyByCommodity[id] > 0)) {
+      return { ok: false, reason: "same_day_player_buy_and_sell_not_supported", fills: [], matched };
+    }
     if (buyNotional > Math.max(0, Number(S.gold) || 0) + 1e-7) {
       return { ok: false, reason: "insufficient_cash_at_settlement", fills: [], matched };
     }
@@ -223,7 +223,6 @@
     }
     const hasBuy = playerBuyFills.length > 0;
     const hasSell = playerSellFills.length > 0;
-    if (hasBuy && hasSell) return { ok: false, reason: "same_day_player_buy_and_sell_not_supported", fills: [], matched };
 
     const settled = [];
     playerSellFills.forEach(fill => {
@@ -251,8 +250,6 @@
       if (S.dayLog) {
         S.dayLog.gross = (Number(S.dayLog.gross) || 0) + fill.notional;
         S.dayLog.cashIn = (Number(S.dayLog.cashIn) || 0) + fill.notional;
-        S.dayLog.cogs = (Number(S.dayLog.cogs) || 0) + consumedCost;
-        S.dayLog.expense = (Number(S.dayLog.expense) || 0) + consumedCost;
       }
       postLedger("PENJUALAN", "Penjualan pasar order-book " + id, fill.notional,
         { fillId: fill.fillId, quantity: qty, price: fill.price, commodityId: id, channel: "regional_order_book" },
@@ -261,9 +258,15 @@
       if (consumedCost > 0) {
         const components = [{ account: "Persediaan Bahan Baku Pertanian", amount: consumedCost }];
         if (typeof recordBusinessCogs === "function") recordBusinessCogs("HPP penjualan order-book " + id, components);
-        else postLedger("HPP", "HPP penjualan order-book " + id, -consumedCost, { components },
+        else {
+          if (S.dayLog) {
+            S.dayLog.cogs = (Number(S.dayLog.cogs) || 0) + consumedCost;
+            S.dayLog.expense = (Number(S.dayLog.expense) || 0) + consumedCost;
+          }
+          postLedger("HPP", "HPP penjualan order-book " + id, -consumedCost, { components },
           { classification: "business_cogs", debitAccount: "HPP Penjualan", creditAccount: components[0].account, debit: consumedCost, credit: consumedCost, basis: "noncash",
             lines: [{ account: "HPP Penjualan", debit: consumedCost, credit: 0 }, { account: components[0].account, debit: 0, credit: consumedCost }] });
+        }
       }
       settled.push(fill.fillId);
     });
