@@ -59,6 +59,23 @@ test('player orders carry the same explicit legacy quantity contract as NPC mark
   assert.equal(result.order.quantityScaleStatus, 'unconverted_legacy_simulation_index');
 });
 
+test('all 60 player order contracts retain legacy scale and expose only verified reference units', () => {
+  freshState();
+  vm.runInContext("S.gold = 1000000000000; S.playerRegionId = 'lampung'; S.landSystem.inventory = {}; S.landSystem.inventoryCost = {};", context);
+  for (const item of context.MARKET_ENGINE.catalog) {
+    const result = context.AgroPlayerOrderBook.submit({
+      commodityId: item.id, side: 'buy', quantity: 1, limitPrice: item.marketPrice
+    });
+    assert.equal(result.ok, true, item.id + ' order rejected');
+    assert.equal(result.order.quantityUnit, 'unconverted_simulation_market_units', item.id);
+    assert.equal(result.order.quantityScaleStatus, 'unconverted_legacy_simulation_index', item.id);
+    assert.equal(result.order.referencePhysicalUnit, item.marketUnitReference && item.marketUnitReference.unit || null, item.id);
+    assert.equal(result.order.referenceProductForm, item.marketUnitReference && item.marketUnitReference.productForm || null, item.id);
+    assert.equal(result.order.referenceUnitStatus, item.marketUnitStatus || 'butuh_riset_lanjutan', item.id);
+  }
+  assert.equal(context.AgroPlayerOrderBook.snapshot().orders.length, 60);
+});
+
 test('cancelling an open order releases its reservation and is idempotently rejected afterwards', () => {
   freshState();
   const result = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 2, limitPrice: 6000 });
