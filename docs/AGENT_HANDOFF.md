@@ -889,3 +889,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The earlier eager-allocation attempt failed with `ReferenceError: Cannot access 'provinceRecords' before initialization`; commit `e8e33bc4dc44322d9891fbd21e8dd59b0c5e631b` defers allocation until after initialization. Test expectations were corrected to validate game-scale population, raw source population, and exact DKI province reconciliation.
 - GitHub Actions run `42552100891` completed SUCCESS: 53 tests, 53 passed, 0 failed. All targeted Node suites, official benchmark guards, and standalone regression/E2E tests passed. Browser smoke test covered all 10 hamburger-menu pages; E2E covered harvest/sale/ledger, payroll/credit, legacy migration and corrupt-save recovery.
 - Remaining limitations: only six DKI locality consumption records have full leaf coverage (156 observations); the other 508/514 kabupaten/kota are not imported. Official population weights outside DKI, village/district population data, BPS non-household numeric extraction and actual local order-book settlement remain pending.
+
+
+### Complete DKI Jakarta consumption table coverage (2026-11-09)
+
+- Expanded locality 2025 Bapanas consumption profiles to all six DKI Jakarta administrative localities: 3101 Kepulauan Seribu, 3171 Jakarta Pusat, 3172 Jakarta Utara, 3173 Jakarta Barat, 3174 Jakarta Selatan and 3175 Jakarta Timur.
+- Each locality contributes 26 leaf commodities; total 156 rows. All values in this expansion were checked against the rendered Bapanas dataset table; source rows include per-capita kg/year, and zero-valued leaf observations are retained. Group aggregates are intentionally excluded.
+- Bumped `kabkotaConsumptionSeedVersion` to 4. Tests now assert 6 localities, 156 records, 26 leaf keys per locality and representative locality-specific values. Source: https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota.
+- This only completes DKI Jakarta's six locality profiles; it is 6/514 national locality coverage. The remaining 508 localities, official population weights and full downloadable dataset ingestion remain pending.
