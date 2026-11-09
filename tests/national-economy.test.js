@@ -525,7 +525,11 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   assert.equal(horticulture.records.bawang_merah.productionKg, 2186156844);
   assert.equal(horticulture.records.cabai_merah.productionQuintal, 17150291.81);
   assert.equal(horticulture.records.jamur_tiram.productionKg, 39121699);
-  assert.equal(horticulture.runtimeUse, 'national_annual_supply_reference_only_no_provincial_or_daily_allocation');
+  assert.equal(horticulture.provincialCoverage.verifiedProvinceCount, 3);
+  assert.equal(horticulture.provincialRecords.lampung.bawang_merah, 12897.80);
+  assert.equal(horticulture.provincialRecords['sumatera-utara'].cabai_merah, 2148738.55);
+  assert.equal(horticulture.provincialRecords.jambi.bawang_putih, 0);
+  assert.equal(horticulture.provincialSources.lampung.publisher, 'BPS Provinsi Lampung');
   const horticultureRegistry = registry.verified.find(entry => entry.id === 'bps_horticulture_production_2025_national_partial');
   assert.equal(horticultureRegistry.records, 18);
   const allCommodityCoverage = api.commodityPhysicalCoverageSnapshot('lampung');
@@ -538,7 +542,8 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'jagung').supplyStatus,
     'official_provincial_annual_supply_partial');
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').supplyStatus,
-    'official_national_annual_supply_reference');
+    'official_provincial_annual_supply_partial');
+  assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').supplyAnnualTon, 1289.78);
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').dailySupplyStatus,
     'national_reference_only_provincial_allocation_pending');
   const initializedState = api.ensure();
@@ -583,6 +588,7 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(report.audit.paddyProvincialProduction2025.sourceRecords, 38);
   assert.equal(report.audit.paddyProvincialProduction2025.runtimeApplied, true);
   assert.equal(report.audit.horticultureNationalProduction2025.sourceRecords, 18);
+  assert.equal(report.audit.horticultureNationalProduction2025.provincialRows, 3);
   assert.equal(report.audit.horticultureNationalProduction2025.runtimeApplied, true);
   assert.equal(report.audit.all60CommodityCoverage.sourceRecords, 60);
   assert.equal(report.audit.all60CommodityCoverage.runtimeApplied, true);
