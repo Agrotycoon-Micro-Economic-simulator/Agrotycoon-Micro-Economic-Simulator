@@ -6,6 +6,8 @@ const vm = require('node:vm');
 
 const context = vm.createContext({ console });
 context.window = context;
+let officialEmergency = null;
+context.AgroNationalEconomy = { marketEmergencySnapshot: () => officialEmergency };
 for (const file of ['js/commodities.js', 'js/market_engine.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
 }
@@ -200,10 +202,12 @@ test('only an active national disaster or war may break normal price bands', () 
   const start = item.marketCeiling;
   item.marketPrice = start;
   const invalid = { active: true, scope: 'province', type: 'national_disaster', eventId: 'local-only', commodityIds: ['kelapa'] };
+  officialEmergency = invalid;
   market.reprice([{ commodityId: 'kelapa', side: 'buy', quantity: 1000, price: start * 3 }], { emergency: invalid });
   assert.ok(item.marketPrice <= item.marketCeiling);
 
   const valid = { active: true, scope: 'national', type: 'national_disaster', eventId: 'nd-1', commodityIds: ['kelapa'] };
+  officialEmergency = valid;
   const result = market.reprice([{ commodityId: 'kelapa', side: 'buy', quantity: 1000, price: start * 3 }], { emergency: valid });
   assert.equal(result.length, 1);
   assert.equal(result[0].emergencyOverride, true);
@@ -211,15 +215,18 @@ test('only an active national disaster or war may break normal price bands', () 
 
   item.marketPrice = item.marketFloor;
   const war = { active: true, scope: 'national', type: 'war', eventId: 'war-1', commodityIds: ['kelapa'] };
+  officialEmergency = war;
   const lower = market.reprice([{ commodityId: 'kelapa', side: 'sell', quantity: 1000, price: item.marketFloor * 0.1 }], { emergency: war });
   assert.equal(lower[0].emergencyOverride, true);
   assert.ok(item.marketPrice < item.marketFloor);
+  officialEmergency = null;
 });
 
 test('national emergency is commodity-scoped and required for out-of-band order matching', () => {
   const market = context.MARKET_ENGINE;
   const item = market.byId.kelapa;
   const emergency = { active: true, scope: 'national', type: 'war', eventId: 'war-order', commodityIds: ['jagung'] };
+  officialEmergency = emergency;
   const blocked = market.matchOrderBook([
     makeOrder({ orderId: 'outside-band-bid', commodityId: 'kelapa', limitPrice: item.marketCeiling * 2 }),
     makeOrder({ orderId: 'outside-band-ask', commodityId: 'kelapa', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
@@ -228,9 +235,11 @@ test('national emergency is commodity-scoped and required for out-of-band order 
   assert.equal(blocked.rejected.length, 2);
 
   const allowedEmergency = Object.assign({}, emergency, { commodityIds: ['kelapa'] });
+  officialEmergency = allowedEmergency;
   const allowed = market.matchOrderBook([
     makeOrder({ orderId: 'emergency-bid', commodityId: 'kelapa', limitPrice: item.marketCeiling * 2 }),
     makeOrder({ orderId: 'emergency-ask', commodityId: 'kelapa', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
   ], { now: 10, emergency: allowedEmergency });
   assert.equal(allowed.fills.length, 1);
+  officialEmergency = null;
 });
