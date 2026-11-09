@@ -142,6 +142,30 @@ Per-commodity demand index = (province population / 1,000) × category weight. T
 
 Tier 1–4 processing, yield, HPP, inventory valuation and sale accounting remain governed by existing production/processing code. The national model must not bypass the validated HPP and ledger functions.
 
+### 4.1 Monthly seasonality from Bapanas 2025 coefficients
+
+The game starts from an average monthly demand index. The official Bapanas *Petunjuk Teknis Tata Cara Penyusunan Proyeksi Neraca Pangan Tahun 2025*, Table 2.5, supplies monthly coefficients that account for month length and HBKN uplift. The source defines monthly requirement as:
+
+\[
+D_m = \left(\frac{\beta_m}{\beta_{mt}}\right) D_y
+\]
+
+where \(D_m\) is monthly requirement, \(\beta_m\) is the commodity-specific monthly coefficient, \(\beta_{mt}\) is the annual coefficient, and \(D_y\) is annual requirement. In the runtime, the pre-existing average monthly demand index is multiplied by \(12\beta_m\), then divided by 30 game days. The 12-month game calendar is a 30-day-per-month seasonal template, not the Gregorian 2025 calendar.
+
+Official coefficient arrays are stored in `BAPANAS_MONTHLY_DEMAND_2025` in `js/national_economy.js` for:
+- `padi`: rice demand as a downstream index signal only; no rice-to-gabah physical conversion is asserted.
+- `jagung`, `kedelai`, `cabai_merah`, `cabai_rawit`, `bawang_merah`, and `bawang_putih`: mapped to the corresponding existing game commodity IDs.
+
+The source's four-decimal coefficients are retained verbatim and are **not normalized to sum to one**. The HBKN component intentionally adds seasonal demand above the normal day-count allocation; e.g. the padi coefficient sum is 1.0041. The Juknis explicitly excludes HBKN uplift for corn and soybean; their values follow the month-length distribution and sum to 0.9998 after source rounding.
+
+The same seasonal factor is used in daily demand, stock-cover/price formation, reserve procurement, reserve-release quantities, and import caps/deficit allocation. This keeps government policy denominators aligned with the current month's demand. The seasonality modifies the demand index; it does not convert physical units or overwrite the separate Bapanas per-capita consumption anchors.
+
+The source also defines total annual food need as household consumption plus non-household consumption. Non-household use includes seed, animal-feed industry, food/non-food industry, and Horeka (hotel, restaurant, canteen). If non-household data are unavailable, the Juknis permits use of the BPS 2017 staple-food survey/study, a study-based agreed estimate, or interagency coordination. The game has not yet numerically ingested these non-household series; therefore total demand remains pending reconciliation. Do not set non-household demand to zero or treat household consumption as the complete national requirement.
+
+Primary source: [Bapanas Juknis Proyeksi Neraca Pangan 2025](https://data.badanpangan.go.id/nfs_storage/public/publication/documents/1776218737.pdf), Table 2.5 and methodology section. The PDF cover cites Kepka Bapanas No. 27/2025 while its attachment heading cites No. 22/2025; this source-internal discrepancy is retained in runtime metadata.
+
+The source table includes meat, egg, sugar, and cooking-oil series, but these are not mapped to game livestock head-count IDs or absent catalog product stages. Extend only after matching physical stage and unit. **Butuh riset lanjutan** for those mappings and for the 2025 BPS non-household numeric tables.
+
 ## 5. Regional stock-flow and price formation
 
 For each province and catalog commodity, the daily index model uses:
