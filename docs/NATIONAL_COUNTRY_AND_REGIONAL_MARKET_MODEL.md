@@ -312,3 +312,8 @@ Code commit: `780f6d82ad81b6a408c506682da244ed02d00026`; tests: `26b08f712dee590
 ### Fractional physical trade quantities
 
 The local matcher accepts any finite positive quantity, not only integers. This is required for kg/liter-based commodities where partial physical units are legitimate. Zero, negative, non-finite values remain invalid. Regression coverage checks a 2.75-unit bid matched against a 1.25-unit ask, with 1.50 units left open. This correction does not itself implement cash/inventory reservation or settlement.
+
+
+### Executed-fill price-flow adapter
+
+The matcher emits a `priceTransactions` array from fills only. The transaction side is the incoming aggressor side, not both buyer and seller, so one matched unit does not create artificial simultaneous buy and sell pressure. The price uses the resting maker order's execution price. Unfilled orders do not enter this array. The daily game loop has not yet wired this adapter into repricing or accounting settlement.
