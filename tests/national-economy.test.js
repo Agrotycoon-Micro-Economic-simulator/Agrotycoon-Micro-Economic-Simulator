@@ -545,7 +545,7 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
     'official_provincial_annual_supply_partial');
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').supplyAnnualTon, 1289.78);
   assert.equal(allCommodityCoverage.coverage[0].commodities.find(row => row.commodityId === 'bawang_merah').dailySupplyStatus,
-    'national_reference_only_provincial_allocation_pending');
+    'provincial_annual_reference_only_monthly_harvest_curve_pending');
   const initializedState = api.ensure();
   assert.equal(initializedState.provinces.lampung.marketSupplyReference2025.padi.productionKgGkg, 3252627000);
   assert.equal(initializedState.provinces['nusa-tenggara-barat'].marketSupplyReference2025.padi.riceEquivalentKg, 973144000);
