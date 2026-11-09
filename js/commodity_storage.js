@@ -107,7 +107,7 @@ function consumeLots(state,id,qty){
 }
 function tickLots(state,day,environment){
  const b=ensureLotBook(state);if(!b.ok)return b;const env=environment||{},results=[];
- b.lots.forEach(l=>{if(!l.ageKnown){results.push({lotId:l.id,skipped:true,reason:'legacy_age_unknown'});return;}l.ageDays=Math.max(0,Number(day)-Number(l.receivedDay));if(finite(env.temperatureC))l.temperatureC=Number(env.temperatureC);if(finite(env.relativeHumidityPct))l.relativeHumidityPct=Number(env.relativeHumidityPct);const a=assessLot({...l,ageDays:l.ageDays});l.quality=a.quality??100;l.assessment=a;results.push({lotId:l.id,commodityId:l.commodityId,quantity:l.quantity,...a});});
+ b.lots.forEach(l=>{if(!l.ageKnown){results.push({lotId:l.id,skipped:true,reason:'legacy_age_unknown'});return;}l.ageDays=Math.max(0,Number(day)-Number(l.receivedDay));if(l.storageType==='ambient'&&finite(env.temperatureC))l.temperatureC=Number(env.temperatureC);if(l.storageType==='ambient'&&finite(env.relativeHumidityPct))l.relativeHumidityPct=Number(env.relativeHumidityPct);const a=assessLot({...l,ageDays:l.ageDays});l.quality=a.quality??100;l.assessment=a;results.push({lotId:l.id,commodityId:l.commodityId,quantity:l.quantity,...a});});
  return {ok:true,results,lots:b.lots};
 }
 function setLotConditions(state,id,conditions){
