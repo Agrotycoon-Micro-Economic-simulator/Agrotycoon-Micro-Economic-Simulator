@@ -36,6 +36,8 @@ test('market-unit registry exposes only verified physical references and preserv
  assert.equal(registry.jamur_tiram.unit,'kg');
  assert.equal(registry.jamur_tiram.status,'government_extension_farmer_sale_reference');
  assert.equal(registry.sawi.unit,'kg');
+ assert.equal(registry.stroberi,undefined);
+ assert.equal(registry.kapas,undefined);
  assert.equal(registry.madu.unit,'kg');
  assert.equal(registry.madu.status,'official_forest_honey_producer_unit_scope_limited');
  assert.equal(registry.sapi_perah.unit,'ekor');
