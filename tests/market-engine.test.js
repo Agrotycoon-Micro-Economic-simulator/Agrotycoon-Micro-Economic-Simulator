@@ -116,8 +116,8 @@ test('order book matches crossed orders at the resting order price with partial 
     makeOrder({ orderId: 'ask-2', side: 'sell', quantity: 8, limitPrice: 6600, createdAt: 3, ownerId: 'npc-2', actorType: 'npc' })
   ], { now: 10 });
   assert.equal(result.fills.length, 2);
-  assert.deepEqual(result.fills.map(fill => fill.quantity), [4, 6]);
-  assert.deepEqual(result.fills.map(fill => fill.price), [7000, 7000]);
+  assert.deepEqual(Array.from(result.fills, fill => fill.quantity), [4, 6]);
+  assert.deepEqual(Array.from(result.fills, fill => fill.price), [7000, 7000]);
   assert.equal(result.executedQuantity, 10);
   assert.equal(result.executedNotional, 70000);
   assert.equal(result.openOrders.length, 1);
