@@ -796,9 +796,6 @@
   if(plantation?.coverage?.verifiedProvinceCount===38)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   if(paddy)add("bps_paddy_production_2025_provincial","Badan Pusat Statistik","official_statistic_final_all_provinces",Object.keys(paddy.records||{}).length,"province");
-  const aquacultureBps=REAL_ECONOMIC_DATA.aquacultureProvincialProduction2024Bps,aquacultureProvinceIds=Object.keys(aquacultureBps?.records||{}),aquacultureSpeciesIds=Object.keys(aquacultureBps?.species||{});
-  const aquacultureBpsApplied=aquacultureProvinceIds.every(provinceId=>aquacultureSpeciesIds.every((id,index)=>s.provinces[provinceId]?.aquacultureProductionReference2024Bps?.countsTon?.[id]===aquacultureBps.records[provinceId][index]));
-  audit.aquacultureProvincialProduction2024Bps={sourceRecords:aquacultureProvinceIds.length*aquacultureSpeciesIds.length,provinceRows:aquacultureProvinceIds.length,speciesRows:aquacultureSpeciesIds.length,mappedCatalogCommodities:Object.keys(aquacultureBps?.catalogMapping||{}).length,runtimeApplied:aquacultureBpsApplied&&aquacultureProvinceIds.length===38&&aquacultureSpeciesIds.length===11,runtimeBound:true};
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
   const commodityCoverage={totalCatalogCommodities:catalog().length,registeredCoverageRecords:coverage?.coverage?.[0]?.commodities?.length||0,all60Registered:catalog().length===60&&(coverage?.coverage?.[0]?.commodities?.length||0)===60};
   const pending=[SOURCES.nonHouseholdConsumption];
@@ -859,6 +856,9 @@
   const poultry=REAL_ECONOMIC_DATA.poultryPopulation2025,poultryProvinceIds=Object.keys(poultry?.records||{}),poultrySpeciesIds=Object.keys(poultry?.species||{});
   const poultryApplied=poultryProvinceIds.every(provinceId=>poultrySpeciesIds.every((id,index)=>s.provinces[provinceId]?.poultryPopulationReference2025?.counts?.[id]===poultry.records[provinceId][index]));
   audit.poultryPopulation2025={sourceRecords:poultryProvinceIds.length*poultrySpeciesIds.length,availableRecords:poultryProvinceIds.reduce((sum,provinceId)=>sum+poultry.records[provinceId].filter(value=>value!==null).length,0),unavailableRecords:poultryProvinceIds.reduce((sum,provinceId)=>sum+poultry.records[provinceId].filter(value=>value===null).length,0),provinceRows:poultryProvinceIds.length,speciesRows:poultrySpeciesIds.length,runtimeApplied:poultryApplied&&poultryProvinceIds.length===38&&poultrySpeciesIds.length===4,runtimeBound:true};
+  const aquacultureBps=REAL_ECONOMIC_DATA.aquacultureProvincialProduction2024Bps,aquacultureProvinceIds=Object.keys(aquacultureBps?.records||{}),aquacultureSpeciesIds=Object.keys(aquacultureBps?.species||{});
+  const aquacultureBpsApplied=aquacultureProvinceIds.every(provinceId=>aquacultureSpeciesIds.every((id,index)=>s.provinces[provinceId]?.aquacultureProductionReference2024Bps?.countsTon?.[id]===aquacultureBps.records[provinceId][index]));
+  audit.aquacultureProvincialProduction2024Bps={sourceRecords:aquacultureProvinceIds.length*aquacultureSpeciesIds.length,provinceRows:aquacultureProvinceIds.length,speciesRows:aquacultureSpeciesIds.length,mappedCatalogCommodities:Object.keys(aquacultureBps?.catalogMapping||{}).length,runtimeApplied:aquacultureBpsApplied&&aquacultureProvinceIds.length===38&&aquacultureSpeciesIds.length===11,runtimeBound:true};
 
   const coverage=commodityPhysicalCoverageSnapshot("lampung");
   audit.all60CommodityCoverage={sourceRecords:catalog().length,runtimeApplied:catalog().length===60&&coverage?.coverage?.[0]?.commodities?.length===60&&coverage.coverage[0].commodities.every(x=>x.marketModelStatus==="active_catalog_and_market_index"&&x.storageProfileStatus==="storage_profile_available"),runtimeBound:true};
