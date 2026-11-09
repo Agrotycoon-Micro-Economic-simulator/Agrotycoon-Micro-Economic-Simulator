@@ -700,3 +700,21 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Follow-up adjustment: raised the engine-wide hard ceiling for one daily price step to 25% so per-commodity daily movement caps (5%–15%) can actually govern. Previously a 10% global cap unintentionally limited the highest-volatility profiles. New engine/test commits: `eac3f00915f4edc6a12c8d1c60618c2d9a3bda36` and `ea416a403fa677653fba841f9a5e79776addce64`; CI is pending.
 
 - Follow-up CI closure: engine max-step correction `eac3f00915f4edc6a12c8d1c60618c2d9a3bda36` passed run `42497656076`; the explicit per-commodity movement-limit regression `ea416a403fa677653fba841f9a5e79776addce64` passed run `42497660352`. Both workflows completed successfully. The last full regression after player-flow integration also passed run `42497597448`.
+
+
+## Household-consumption source expansion (2026-11-09, continuation)
+
+- Verified the official Badan Pangan Nasional 2025 provincial household-consumption dataset: “Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Provinsi Update Tahun 2025”. It is province-depth, unit kg/kap/tahun, and describes average quantities actually consumed per capita. Source URL: https://data.badanpangan.go.id/datasetpublications/x1y/konsumsi-provinsi.
+- Verified a second official Bapanas dataset at kabupaten/kota depth: “Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Kabupaten Kota Tahun 2025”, also kg/kap/tahun. Source URL: https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota. This is the correct next source for replacing equal-share estimates at regency/city level where population mapping is available.
+- The provincial page exposes 2025 observations for 38 provinces and commodity-level records; examples include Aceh 2025 rice 93.9 kg/capita/year, corn 0.6, cassava 4.9, sweet potato 1.5, potato 3.8, coconut 2.7, soybean 5.2, peanut 0.2 and mung bean 0.4. These values are source observations and must not be converted to game paddy/whole-coconut units without an explicit stage/unit conversion contract.
+- The kabupaten/kota dataset similarly exposes 2025 observations. Its first records include Kepulauan Seribu and the Jakarta administrative cities, demonstrating that locality-level consumption can be sourced directly rather than inferred from provincial equal-split. Do not treat every administrative village/district as having an official consumption observation; the verified dataset depth is kabupaten/kota.
+- Runtime source metadata was added to js/national_economy.js for both official Bapanas datasets. No synthetic values were inserted from these sources yet; existing synthetic demand and physical anchors remain unchanged until the numeric master is imported and reconciled.
+- BPS non-household consumption remains metadata-only. The official 2025 publication covers rice, dry corn, sweet corn, cassava, sweet potato, soybean, peanut, beef/buffalo, chicken, eggs, fresh fish, shallot, garlic, chili, cooking oil, sugar, wheat flour and salt, but numeric extraction is still pending. Do not fabricate non-household quantities.
+- Test guard added in tests/national-economy.test.js for source depth/unit/status. Static syntax should be rerun; full Node/GitHub Actions is still not claimed green until an actual workflow result is observed.
+
+### Next implementation gate
+1. Import the complete 2025 Bapanas provincial rows into a versioned CSV/JSON research master, preserving province code, source commodity, food group, value, unit, year and source URL.
+2. Import the complete 2025 Bapanas kabupaten/kota rows into a second master; validate unique (region_code, commodity, year) keys.
+3. Create an explicit game-commodity mapping table. Rice remains distinct from padi/gabah; coconut remains kg until a sourced kg-to-whole-coconut conversion is approved; broad categories such as “daging ruminansia” must not be split into sapi/kambing without a separate allocation source.
+4. Extract BPS non-household numeric tables and reconcile household + non-household demand before using it as physical national requirements.
+5. Only after those gates, connect physical demand to regional production, stock, reserve procurement/import and price formation.
