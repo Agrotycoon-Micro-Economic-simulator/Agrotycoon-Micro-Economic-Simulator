@@ -259,7 +259,10 @@ test('order-book fills preserve each side quantity-unit provenance without imply
       ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer',
       quantityBasis: 'regional_unmet_demand_after_inventory',
       quantityUnit: 'unconverted_simulation_market_units',
-      quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending'
+      quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending',
+      referencePhysicalUnit: 'kg', referenceProductForm: 'jagung pipilan kering',
+      referenceUnitStatus: 'official_reference_unit_quality_gate',
+      quantityScaleStatus: 'unconverted_legacy_simulation_index'
     },
     {
       orderId: 'player-supply-unit-test', commodityId: 'jagung', side: 'sell', quantity: 4,
@@ -272,6 +275,10 @@ test('order-book fills preserve each side quantity-unit provenance without imply
   assert.equal(result.fills[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
   assert.equal(result.fills[0].sellQuantityUnit, 'unverified_catalog_quantity_unit');
   assert.equal(result.fills[0].quantityUnit, 'mixed_or_unverified_quantity_units');
+  assert.equal(result.fills[0].buyReferencePhysicalUnit, 'kg');
+  assert.equal(result.fills[0].buyReferenceProductForm, 'jagung pipilan kering');
+  assert.equal(result.fills[0].buyReferenceUnitStatus, 'official_reference_unit_quality_gate');
+  assert.equal(result.fills[0].buyQuantityScaleStatus, 'unconverted_legacy_simulation_index');
   assert.equal(result.openOrders.length, 0);
 });
 
