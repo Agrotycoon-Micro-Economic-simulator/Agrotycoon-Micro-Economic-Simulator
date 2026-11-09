@@ -234,3 +234,22 @@ test('regional Bapanas ingestion rejects duplicate, invalid-year, and province-c
   assert.throws(() => api.applyProvincialConsumptionRecords([Object.assign({}, valid, { year: 2024 })]), /Invalid Bapanas/);
   assert.throws(() => api.applyProvincialConsumptionRecords([Object.assign({}, valid, { provinceCode: '19' })]), /mismatched Bapanas/);
 });
+
+
+test('existing national economy saves migrate regional consumption layers without discarding the national baseline', () => {
+  vm.runInContext("S = { name: 'regional-consumption-save-migration-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  state.regionalConsumptionSeedVersion = undefined;
+  for (const province of Object.values(state.provinces)) {
+    province.consumptionPressure = Object.assign({}, province.baseConsumptionPressure);
+    delete province.baseConsumptionPressure;
+    delete province.regionalPhysicalDemand;
+    delete province.regionalConsumption2025;
+  }
+  const migrated = api.ensure();
+  assert.equal(migrated.regionalConsumptionSeedVersion, 1);
+  assert.equal(migrated.provinces.lampung.regionalPhysicalDemand.jagung.annualPerCapita, 1.0);
+  assert.equal(migrated.provinces.lampung.physicalDemand.jagung.annualPerCapita, 1.5);
+  assert.equal(migrated.provinces['dki-jakarta'].regionalConsumption2025, undefined);
+});
