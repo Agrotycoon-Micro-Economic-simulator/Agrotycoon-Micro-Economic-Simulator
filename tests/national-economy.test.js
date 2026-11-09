@@ -360,3 +360,23 @@ test('kabupaten/kota Bapanas ingestion rejects invalid codes, units and duplicat
   assert.throws(() => api.applyKabupatenKotaConsumptionRecords([Object.assign({}, valid, { unit: 'kg/kap/bulan' })]), /Invalid Bapanas kabupaten\/kota/);
   assert.throws(() => api.applyKabupatenKotaConsumptionRecords([Object.assign({}, valid, { provinceCode: '32' })]), /mismatched province code/);
 });
+
+
+test('complete DKI locality consumption and BPS weights feed province daily demand and inventory', () => {
+  vm.runInContext("S = { name: 'bapanas-dki-runtime-demand-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const province = state.provinces['dki-jakarta'];
+  assert.equal(province.localityConsumption2025.status, 'complete_population_weighted_daily_demand_applied');
+  assert.equal(province.localityConsumption2025.localityCount, 6);
+  assert.equal(province.localityConsumption2025.expectedLocalityCount, 6);
+  assert.equal(province.localityConsumption2025.leafKeyCount, 26);
+  assert.equal(province.localityConsumption2025.recordCount, 156);
+  assert.notEqual(province.consumptionPressure.jagung, province.baseConsumptionPressure.jagung);
+  assert.equal(province.regionalPhysicalDemand.jagung.status, 'official_locality_leafs_weighted_by_bps_population');
+  assert.equal(province.regionalPhysicalDemand.jagung.annualTotal, province.regionalPhysicalDemand.jagung.annualPerCapita * province.population);
+  const before = province.inventory.jagung;
+  api.updateDay(1);
+  assert.notEqual(province.inventory.jagung, before);
+  assert.equal(state.dayProcessed, 1);
+});
