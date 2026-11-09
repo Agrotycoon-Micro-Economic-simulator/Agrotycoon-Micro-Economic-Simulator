@@ -155,6 +155,8 @@
     }
     const ids = new Set();
     const accepted = [];
+    const emergency = root.AgroNationalEconomy && typeof root.AgroNationalEconomy.marketEmergencySnapshot === "function"
+      ? root.AgroNationalEconomy.marketEmergencySnapshot() : null;
     for (const source of orders) {
       const order = source && typeof source === "object" ? source : {};
       const item = root.MARKET_ENGINE && root.MARKET_ENGINE.byId && root.MARKET_ENGINE.byId[String(order.commodityId || "")];
@@ -165,7 +167,7 @@
       const expiresAt = Number(order.expiresAt);
       if (!id || ids.has(id) || !item || order.actorType !== "npc" ||
           !["buy", "sell"].includes(order.side) || !finitePositive(quantity) ||
-          !finitePositive(price) || price < Number(item.marketFloor) || price > Number(item.marketCeiling) ||
+          !finitePositive(price) || (!root.MARKET_ENGINE.authorizedEmergency(emergency, String(order.commodityId || "")) && (price < Number(item.marketFloor) || price > Number(item.marketCeiling))) ||
           !String(order.ownerId || "").startsWith("npc-") || !String(order.regionId || "") ||
           order.stage !== "producer" || createdAt !== day || expiresAt !== day + 1) {
         return { ok: false, reason: "invalid_npc_order_contract", storedCount: book.npcOrders.length };
