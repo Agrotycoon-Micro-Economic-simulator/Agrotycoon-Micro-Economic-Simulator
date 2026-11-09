@@ -214,11 +214,17 @@
       if (!S.landSystem || !S.landSystem.inventory || !S.landSystem.inventoryCost) {
         return { ok: false, reason: "player_inventory_unavailable", fills: [], matched };
       }
+      const lotBook = root.AgroCommodityStorage && typeof root.AgroCommodityStorage.ensureLotBook === "function"
+        ? root.AgroCommodityStorage.ensureLotBook(S) : null;
       for (const id of Object.keys(sellByCommodity)) {
         const quantity = Math.max(0, Number(S.landSystem.inventory[id]) || 0);
         const cost = Math.max(0, Number(S.landSystem.inventoryCost[id]) || 0);
         if (quantity + 1e-9 < sellByCommodity[id]) return { ok: false, reason: "insufficient_inventory_at_settlement:" + id, fills: [], matched };
         if (cost <= 0) return { ok: false, reason: "missing_inventory_cost_at_settlement:" + id, fills: [], matched };
+        if (lotBook && lotBook.ok) {
+          const lotQuantity = lotBook.lots.filter(lot => lot.commodityId === id).reduce((sum, lot) => sum + Math.max(0, Number(lot.quantity) || 0), 0);
+          if (lotQuantity + 1e-6 < sellByCommodity[id]) return { ok: false, reason: "inventory_lot_shortfall_at_settlement:" + id, fills: [], matched };
+        }
       }
     }
     const hasBuy = playerBuyFills.length > 0;
@@ -239,8 +245,9 @@
             consumedCost += take * Math.max(0, Number(lot.unitCost) || 0);
             remaining -= take;
           });
-          if (remaining > 1e-6) consumedCost = costPool * qty / stock;
-          else root.AgroCommodityStorage.consumeLots(S, id, qty);
+          if (remaining > 1e-6) return;
+          const consumed = root.AgroCommodityStorage.consumeLots(S, id, qty);
+          if (!consumed.ok) return;
         }
       }
       consumedCost = Math.min(costPool, Math.max(0, consumedCost));
@@ -294,14 +301,17 @@
     });
 
     const remainingById = new Map(matched.openOrders.map(order => [order.orderId, order.remainingQuantity]));
+    const expiredIds = new Set(matched.expired.map(item => item.orderId));
+    const preventedIds = new Set(matched.prevented.map(item => item.orderId));
     (book.orders || []).forEach(order => {
       if (!order || order.status !== "open") return;
       const remaining = remainingById.has(order.orderId) ? remainingById.get(order.orderId) : 0;
       order.remainingQuantity = remaining;
-      if (remaining <= 1e-9) order.status = "filled";
+      if (expiredIds.has(order.orderId)) { order.status = "expired"; order.expiredAt = day; }
+      else if (preventedIds.has(order.orderId)) { order.status = "cancelled"; order.cancelledAt = day; }
+      else if (remaining <= 1e-9) order.status = "filled";
       order.lastMatchedDay = day;
     });
-    const preventedIds = new Set(matched.prevented.map(item => item.orderId));
     (book.orders || []).forEach(order => {
       if (order && order.status === "open" && preventedIds.has(order.orderId)) {
         order.status = "cancelled"; order.remainingQuantity = 0; order.cancelledAt = day;
