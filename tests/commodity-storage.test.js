@@ -19,6 +19,22 @@ test('every actual COMMODITIES catalog ID has a matching storage profile',()=>{
  for(const id of ids)assert.ok(storage.profiles[id],'missing profile for '+id);
 });
 
+test('market-unit registry exposes only verified physical references and preserves legacy quantity status',()=>{
+ const registry=vm.runInContext('MARKET_UNIT_REGISTRY',context);
+ assert.equal(Object.keys(registry).length,39);
+ for(const id of Object.keys(registry)){
+  assert.ok(registry[id].unit,id+' missing unit');
+  assert.ok(registry[id].productForm,id+' missing product form');
+ }
+ for(const id of ['lele','nila','gurami','patin']){
+  assert.equal(registry[id].unit,'kg');
+  assert.equal(registry[id].status,'official_producer_price_unit_stage_locked');
+ }
+ const quantityStatuses=vm.runInContext('COMMODITIES.map(c=>c.quantityScaleStatus)',context);
+ assert.equal(quantityStatuses.length,60);
+ assert.ok(quantityStatuses.every(s=>s==='unconverted_legacy_simulation_index'));
+});
+
 test('dry paddy and dry maize do not expire on a daily tick',()=>{
  for(const commodityId of ['padi','jagung']){
   const r=assess({commodityId,ageDays:1,moisturePct:12,temperatureC:28,relativeHumidityPct:65});
