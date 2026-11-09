@@ -1168,7 +1168,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Official source: BPS, *Produksi Tanaman Sayuran dan Buah-Buahan Semusim Menurut Jenis Tanaman, 2025*, last updated 2026-05-25: https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2022.html
 - Source unit is kuintal (kw/qui); conversion stored explicitly at 100 kg per kuintal. Original quintal and normalized kg values are both retained.
 - Game `cabai_merah` is mapped as the sum of BPS `Cabai Besar/TW/Teropong` and `Cabai Keriting`; component rows are retained so the aggregation is auditable.
-- Data is national annual production only. It is not allocated to any province, month, daily NPC stock or local market. The engine exposes `national_reference_only_provincial_allocation_pending` until provincial tables and monthly harvest series are loaded.
+- National annual production is available for all 18 mapped commodity rows; province-level annual observations are available for Lampung, Sumatera Utara, and Jambi (3/38 provinces). Provinces without a verified row fall back only to the national reference in the coverage display; no national remainder is allocated. None of these annual values is injected into monthly or daily NPC stock.
 - Runtime binding is in `applyHorticultureProductionReference()` and `commodityPhysicalCoverage`; registry and usage audit check all 18 records.
 - This adds supply references for 18 more catalog items. It does not mean all 60 have complete physical production data; remaining catalog items stay explicitly pending.
 
