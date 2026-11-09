@@ -709,3 +709,40 @@ test('non-DKI locality demand uses hierarchical population allocation instead of
     (master.villages.filter(row => row.district_id === firstDistrict.id).findIndex(row => row.id === firstVillage.id) < district.population % master.villages.filter(row => row.district_id === firstDistrict.id).length ? 1 : 0));
   assert.equal(state.provinces.lampung.population, province.population);
 });
+
+test('BPS 2024 plantation production is bound as partial provincial annual supply without fabricated daily stock', () => {
+  vm.runInContext("S = { name: 'bps-plantation-production-2024-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const source = context.REAL_ECONOMIC_DATA.plantationProduction2024Partial;
+  assert.equal(source.source.publisher, 'Badan Pusat Statistik');
+  assert.equal(source.referenceYear, 2024);
+  assert.equal(source.sourceUnit, 'thousand_tonne/year');
+  assert.equal(source.coverage.verifiedProvinceCount, 7);
+  assert.equal(source.coverage.totalProvinceCount, 38);
+  assert.equal(Object.keys(source.records).length, 7);
+  assert.deepEqual(Object.keys(source.commodityMap).sort(), ['kakao','kelapa','kelapa_sawit','karet','kopi','tebu','teh'].sort());
+  assert.equal(source.records.aceh.kelapa_sawit, 1092.71);
+  assert.equal(source.records['sumatera-utara'].kelapa, 103.64);
+  assert.equal(source.records['sumatera-selatan'].tebu, 124.37);
+  assert.equal(source.records.riau.kakao, 0.84);
+  const aceh = state.provinces.aceh;
+  assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.productionKg, 1092710000);
+  assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.productionThousandTon, 1092.71);
+  assert.equal(aceh.marketSupplyReference2024.plantation.kelapa_sawit.referenceYear, 2024);
+  for (const id of Object.keys(source.commodityMap)) {
+    const row = aceh.commodityPhysicalCoverage[id];
+    assert.equal(row.supplyStatus, 'official_provincial_annual_supply_partial', id);
+    assert.equal(row.dailySupplyStatus, 'provincial_annual_reference_only_monthly_harvest_curve_pending', id);
+    assert.equal(aceh.dailyPhysicalSupply[id], null, id);
+  }
+  const lampung = state.provinces.lampung;
+  assert.equal(lampung.commodityPhysicalCoverage.kelapa_sawit.supplyStatus, 'official_provincial_supply_data_pending');
+  assert.equal(lampung.dailyPhysicalSupply.kelapa_sawit, null);
+  const registry = api.runtimeDataRegistry();
+  const entry = registry.verified.find(row => row.id === 'bps_plantation_production_2024_partial');
+  assert.ok(entry);
+  assert.equal(entry.records, 49);
+  assert.equal(entry.depth, 'province');
+  assert.equal(entry.runtimeBound, true);
+});
