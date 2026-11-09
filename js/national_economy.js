@@ -428,7 +428,8 @@
     const horticultureData=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
     const provincialHorticultureValue=horticultureData?.provincialRecords?.[meta.id]?.[id];
     const horticultureProvincialRecord=Number.isFinite(provincialHorticultureValue)?{productionKg:provincialHorticultureValue*100,productionQuintal:provincialHorticultureValue}:null;
-    const livestockPopulationHead=p.livestockPopulationReference2024?.catalogPopulation?.[id];\n    const plantationValue=REAL_ECONOMIC_DATA.plantationProduction2024Partial?.records?.[meta.id]?.[id];
+    const livestockPopulationHead=p.livestockPopulationReference2024?.catalogPopulation?.[id];
+    const plantationValue=REAL_ECONOMIC_DATA.plantationProduction2024Partial?.records?.[meta.id]?.[id];
     const plantationProvincialRecord=Number.isFinite(plantationValue)?{productionKg:plantationValue*1000000,productionThousandTon:plantationValue,referenceYear:2024}:null;
     const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(plantationProvincialRecord||horticultureProvincialRecord||s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
     const economics=typeof COMMODITY_ECONOMICS!=="undefined"&&COMMODITY_ECONOMICS?COMMODITY_ECONOMICS[id]:null;
@@ -441,7 +442,9 @@
      demandStatus:demandRecord?"official_physical_demand_reference_available":"official_physical_demand_data_pending",
      demandAnnual:demandRecord?Number(demandRecord.annualTotalKg||demandRecord.annualTotal||0):null,
      supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":plantationProvincialRecord||horticultureProvincialRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
-     supplyAnnualTon:id==="padi"&&supplyRecord?supplyRecord.productionKgGkg/1000:id==="jagung"&&supplyRecord?supplyRecord.productionTon:supplyRecord?supplyRecord.productionKg/1000:null,\n     livestockPopulationHead:Number.isFinite(livestockPopulationHead)?livestockPopulationHead:null,\n     livestockPopulationStatus:Number.isFinite(livestockPopulationHead)?"official_2024_standing_animal_stock_not_meat_output":item.unitType==="ternak"?"official_species_population_reference_pending":"not_applicable",
+     supplyAnnualTon:id==="padi"&&supplyRecord?supplyRecord.productionKgGkg/1000:id==="jagung"&&supplyRecord?supplyRecord.productionTon:supplyRecord?supplyRecord.productionKg/1000:null,
+     livestockPopulationHead:Number.isFinite(livestockPopulationHead)?livestockPopulationHead:null,
+     livestockPopulationStatus:Number.isFinite(livestockPopulationHead)?"official_2024_standing_animal_stock_not_meat_output":item.unitType==="ternak"?"official_species_population_reference_pending":"not_applicable",
      dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":plantationProvincialRecord||horticultureProvincialRecord?"provincial_annual_reference_only_monthly_harvest_curve_pending":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
      qualityStatus:"mixed_verified_reference_and_pending_data"
     };
