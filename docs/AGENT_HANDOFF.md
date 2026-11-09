@@ -1318,3 +1318,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `tests/market-engine.test.js` now asserts that all seven registered reference units carry at least one valid evidence link. The test has been authored but not executed in this environment; CI must be checked before calling it passed.
 - Official BPS 2025 producer-price publications: crops/horticulture/people's plantations cover monthly rural producer prices in 37 provinces; livestock/fisheries cover monthly rural producer prices in 38 provinces. These publication-level descriptions establish dataset coverage, not a blanket unit or product-stage mapping for every game commodity. Each row still requires exact table/form/grade/unit validation.
 - Research next: extract exact commodity rows from both BPS 2025 PDFs, record printed table/page, Rp denominator, product form and grade, then promote only verified rows. Do not infer kg, ekor, butir, liter or liveweight solely from broad commodity category.
+
+## 2026-11-10 — expanded physical-unit registry from official Kementan annual producer-price series
+
+- Expanded `MARKET_UNIT_REGISTRY` from 7 to **24 unique commodity IDs** with evidence-backed physical unit/product-form references.
+- The new references are based on Kementan Pusdatin, *Statistik Harga Komoditas Pertanian 2025*, including the consolidated national annual producer-price series and specific tables already recorded in `docs/COMMODITY_60_BULK_DATA_REGISTER.md`.
+- Added references: kedelai, kacang hijau, kacang tanah, bawang merah, bawang putih, cabai merah, cabai rawit, ubi kayu, ubi jalar, tomat, wortel, mangga, jeruk, kopi, lada, pisang, kambing, plus retained the existing seven references.
+- `pisang` is intentionally represented as `sisir`, because that is the unit printed in the cited Kementan annual producer-price series. It must not be silently converted to kg or buah.
+- `ayam_pedaging` remains the earlier Bapanas `ekor` / ayam ras hidup reference; a conflicting annual-series row was not allowed to overwrite the stage-specific registry. `sapi_potong` likewise retains its existing Bapanas stage reference.
+- No transaction quantity conversion has been enabled. Every catalog item still carries `quantityScaleStatus = unconverted_legacy_simulation_index`.
+- Test coverage now checks evidence links for the expanded registry and validates selected newly mapped units.
+- Node execution and CI remain pending; source/static verification is not a test pass.
+- Remaining catalog IDs without a physical reference remain `butuh_riset_lanjutan`; they must be filled only after exact unit/form evidence is verified.
