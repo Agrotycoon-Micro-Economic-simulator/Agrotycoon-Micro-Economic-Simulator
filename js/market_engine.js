@@ -27,8 +27,15 @@
     if (!emergency || emergency.active !== true || emergency.scope !== "national") return false;
     if (!["national_disaster", "war"].includes(String(emergency.type || ""))) return false;
     if (typeof emergency.eventId !== "string" || !emergency.eventId.trim()) return false;
+    const authority = root.AgroNationalEconomy;
+    if (!authority || typeof authority.marketEmergencySnapshot !== "function") return false;
+    const current = authority.marketEmergencySnapshot();
+    if (!current || current.active !== true || current.scope !== "national" ||
+        current.eventId !== emergency.eventId || current.type !== emergency.type) return false;
     if (commodityId && Array.isArray(emergency.commodityIds) && emergency.commodityIds.length &&
         !emergency.commodityIds.includes(String(commodityId))) return false;
+    if (commodityId && Array.isArray(current.commodityIds) && current.commodityIds.length &&
+        !current.commodityIds.includes(String(commodityId))) return false;
     return true;
   }
 
