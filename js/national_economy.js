@@ -330,11 +330,11 @@
   const records=data.records||{},ids=Object.keys(records);
   const totalGkg=ids.reduce((sum,id)=>sum+Number(records[id]?.productionTonGkg||0),0);
   const totalRice=ids.reduce((sum,id)=>sum+Number(records[id]?.riceEquivalentTon||0),0);
-  if(ids.length!==38||totalGkg!==data.nationalTotalTonGkg||totalRice!==data.nationalRiceEquivalentTon)return {status:"source_reconciliation_failed",provinceRows:ids.length,totalGkg,totalRice};
+  if(ids.length!==38||totalGkg!==data.provincialRowSumTonGkg||totalGkg-data.nationalTotalTonGkg!==data.provincialToNationalDifferenceTonGkg||totalRice!==data.nationalRiceEquivalentTon)return {status:"source_reconciliation_failed",provinceRows:ids.length,totalGkg,totalRice};
   if(!s.national.marketSupplyReference2025)s.national.marketSupplyReference2025={};
   s.national.marketSupplyReference2025.padi={
    unit:"tonne_GKG/year",riceEquivalentUnit:"tonne_rice/year",referenceYear:2025,
-   nationalProductionTonGkg:totalGkg,nationalRiceEquivalentTon:totalRice,
+   nationalProductionTonGkg:data.nationalTotalTonGkg,provincialRowSumTonGkg:totalGkg,provincialToNationalDifferenceTonGkg:totalGkg-data.nationalTotalTonGkg,nationalRiceEquivalentTon:totalRice,
    coverage:{verifiedProvinceCount:38,totalProvinceCount:38,coverageStatus:"complete_official_provincial_table"},
    source:data.source,qualityDefinition:data.qualityDefinition,
    runtimeUse:data.runtimeUse,status:data.status,
