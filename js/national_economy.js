@@ -464,15 +464,22 @@
   if(populationAnchor){population=getBpsDkiLocalityGamePopulation2025()[row.id];populationStatus="official_bps_2025_weights_scaled_to_game_population";}
   else if(level==="regency"||level==="city"){population=equalAllocate(p.population,rows,row.id);}
   else if(level==="district"){
-    const parent=master.regencyById.get(row.regency_id),parentRows=parent?master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities).filter(x=>x.id===parent.id):[];
-    const parentPopulation=parentRows.length?equalAllocate(p.population,master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities),parent.id):0;
+    const parent=master.regencyById.get(row.regency_id),parentRows=parent?(
+      master.byProvince[meta.adminCode].regencies.some(x=>x.id===parent.id)
+        ? master.byProvince[meta.adminCode].regencies
+        : master.byProvince[meta.adminCode].cities
+    ):[],parentPopulation=parent?equalAllocate(p.population,parentRows,parent.id):0;
     const childRows=master.districts.filter(x=>x.regency_id===row.regency_id);
     population=equalAllocate(parentPopulation,childRows,row.id);
   } else if(level==="villageKelurahan"||level==="desa"||level==="kelurahan"){
     const parentDistrict=master.districtById.get(row.district_id);
     const parentRegency=parentDistrict?master.regencyById.get(parentDistrict.regency_id):null;
-    const parentLevelRows=master.byProvince[meta.adminCode].regencies.concat(master.byProvince[meta.adminCode].cities);
-    const parentPopulation=parentRegency?equalAllocate(p.population,parentLevelRows,parentRegency.id):0;
+    const parentLevelRows=parentRegency?(
+      master.byProvince[meta.adminCode].regencies.some(x=>x.id===parentRegency.id)
+        ? master.byProvince[meta.adminCode].regencies
+        : master.byProvince[meta.adminCode].cities
+    ):[],
+    parentPopulation=parentRegency?equalAllocate(p.population,parentLevelRows,parentRegency.id):0;
     const districtRows=parentDistrict?master.districts.filter(x=>x.regency_id===parentDistrict.regency_id):[];
     const districtPopulation=parentDistrict?equalAllocate(parentPopulation,districtRows,parentDistrict.id):0;
     const childRows=master.villages.filter(x=>x.district_id===row.district_id);
