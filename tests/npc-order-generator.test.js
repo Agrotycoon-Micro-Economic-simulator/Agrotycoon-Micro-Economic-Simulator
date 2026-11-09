@@ -33,8 +33,14 @@ test('NPC proposals use regional daily production and unmet demand with explicit
   assert.equal(supply.actorType, 'npc');
   assert.equal(supply.createdAt, 7);
   assert.equal(supply.expiresAt, 8);
-  assert.equal(supply.limitPrice, 7200);
+  assert.equal(supply.limitPrice, 7272);
   assert.equal(supply.calibrationStatus, 'experimental_regional_simulation_aggregate');
+  assert.equal(supply.pricingBasis, 'bounded_local_quote_experimental_npc_half_spread');
+  assert.equal(supply.spreadBps, 100);
+  assert.equal(supply.midPrice, 7200);
+  assert.equal(supply.spreadStatus, 'experimental_unresearched_transaction_cost_proxy');
+  const bid = result.orders.find(order => order.side === 'buy' && order.commodityId === 'jagung');
+  assert.equal(bid.limitPrice, 7128);
   assert.notEqual(supply.ownerId, demand.ownerId);
 });
 test('NPC order IDs and order sequence are deterministic and region-scoped', () => {
@@ -65,4 +71,43 @@ test('invalid day is rejected and duplicate regions are ignored', () => {
   const duplicate = context.AgroNpcOrderGenerator.buildDailyOrders({ day: 1, provinces: [province(), province()], catalog, getPrice });
   assert.equal(duplicate.summary.regionCount, 1);
   assert.equal(new Set(duplicate.orders.map(order => order.orderId)).size, duplicate.orders.length);
+});
+
+
+test('NPC bid and ask use an explicit bounded experimental spread and preserve the local quote midpoint', () => {
+  const result = context.AgroNpcOrderGenerator.buildDailyOrders({
+    day: 5, provinces: [province({ prices: { jagung: 1 }, inventory: { jagung: 10 }, unmetDemand: { jagung: 10 } })], catalog, getPrice
+  });
+  const ask = result.orders.find(order => order.side === 'sell');
+  const bid = result.orders.find(order => order.side === 'buy');
+  assert.equal(result.summary.npcSpreadBps, 100);
+  assert.equal(ask.midPrice, 6000);
+  assert.equal(ask.limitPrice, 6060);
+  assert.equal(bid.midPrice, 6000);
+  assert.equal(bid.limitPrice, 5940);
+  assert.equal(ask.limitPrice > bid.limitPrice, true);
+  assert.equal(ask.pricingBasis, bid.pricingBasis);
+});
+
+test('NPC spread remains inside commodity bounds at floor and ceiling', () => {
+  const result = context.AgroNpcOrderGenerator.buildDailyOrders({
+    day: 6,
+    provinces: [province({ prices: { jagung: 99 }, inventory: { jagung: 1 }, unmetDemand: { jagung: 1 } })],
+    catalog,
+    getPrice: id => id === 'jagung' ? 6000 : null
+  });
+  const ask = result.orders.find(order => order.side === 'sell');
+  const bid = result.orders.find(order => order.side === 'buy');
+  assert.equal(ask.limitPrice, 10000);
+  assert.equal(bid.limitPrice, 9900);
+  const floorResult = context.AgroNpcOrderGenerator.buildDailyOrders({
+    day: 7,
+    provinces: [province({ prices: { jagung: 0.1 }, inventory: { jagung: 1 }, unmetDemand: { jagung: 1 } })],
+    catalog,
+    getPrice: id => id === 'jagung' ? 6000 : null
+  });
+  const floorAsk = floorResult.orders.find(order => order.side === 'sell');
+  const floorBid = floorResult.orders.find(order => order.side === 'buy');
+  assert.equal(floorAsk.limitPrice, 1010);
+  assert.equal(floorBid.limitPrice, 1000);
 });
