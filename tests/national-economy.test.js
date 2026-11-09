@@ -501,6 +501,15 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   const registry = api.runtimeDataRegistry();
   assert.equal(registry.allRuntimeBound, true);
   assert.ok(registry.verifiedCount >= 6);
+  const provincialMaize = registry.verified.find(entry => entry.id === 'bps_maize_provincial_production_2025_partial');
+  assert.equal(provincialMaize.records, 2);
+  assert.equal(provincialMaize.depth, 'province');
+  const provincialSource = context.REAL_ECONOMIC_DATA.maizeProvincialProduction2025Partial;
+  assert.equal(provincialSource.coverage.verifiedProvinceCount, 2);
+  assert.equal(provincialSource.records.lampung.productionTon, 1260000);
+  assert.equal(provincialSource.records.ntb.productionTon, 1180000);
+  assert.equal(provincialSource.moisturePct, 14);
+  assert.equal(provincialSource.runtimeUse, 'reference_only_no_daily_supply_or_npc_inventory_injection');
   assert.ok(registry.verified.every(entry => entry.runtimeBound === true && entry.records > 0));
   assert.ok(registry.pending.some(entry => entry.status === 'official_source_metadata_only_numeric_extraction_pending'));
   assert.ok(api.bapanasNationalConsumption2025.length > 0);
@@ -532,6 +541,8 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(report.audit.bpsDkiKabkotaPopulation.runtimeApplied, true);
   assert.equal(report.audit.physicalDemandAnchors.runtimeApplied, true);
   assert.equal(report.audit.administrativeMaster.runtimeApplied, true);
+  assert.equal(report.audit.maizeProvincialProduction2025Partial.runtimeApplied, true);
+  assert.equal(report.audit.maizeProvincialProduction2025Partial.sourceRecords, 2);
   assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
@@ -564,7 +575,9 @@ test('official maize total-use projection is stored as physical demand without c
   assert.equal(state.national.marketSupplyReference2025.jagung.officialNationalProductionTon,
     real.maizeProduction2025.productionAt14MoistureTon);
   assert.equal(state.national.marketSupplyReference2025.jagung.regionalAllocationStatus,
-    'pending_official_provincial_production_data');
+    'partial_official_provincial_references_loaded_not_daily_supply_allocated');
+  assert.equal(state.national.marketSupplyReference2025.jagung.provincialReferenceTotalTon, 2440000);
+  assert.equal(state.national.marketSupplyReference2025.jagung.provincialReferenceCoverage.verifiedProvinceCount, 2);
   assert.equal(state.national.marketSupplyReference2025.jagung.balanceComparisonStatus,
     'not_compared_with_projected_demand_due_to_source_scope_and_methodology');
   api.updateDay(1);
@@ -581,6 +594,8 @@ test('official maize total-use projection is stored as physical demand without c
   const audit = api.runtimeDataUsageAudit();
   assert.equal(audit.audit.maizeTotalMarketDemand.runtimeApplied, true);
   assert.equal(audit.audit.maizeProductionReference.runtimeApplied, true);
+  assert.equal(audit.audit.maizeProvincialProduction2025Partial.runtimeApplied, true);
+  assert.equal(audit.audit.maizeProvincialProduction2025Partial.sourceRecords, 2);
   assert.equal(audit.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
