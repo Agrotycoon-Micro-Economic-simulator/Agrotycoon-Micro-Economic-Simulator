@@ -357,3 +357,22 @@ The current flood scenario escalates an undried, flood-wet lot to critical risk 
 **Integration boundary:** regional inventory is currently an aggregate daily balance, not a set of age-tracked lots. The new assessor is callable in the game runtime and covered by a dedicated test suite, but automatic NPC/player stock deterioration, FIFO, quality discounts, write-offs and ledger posting are not yet connected. The next implementation must first introduce persistent lot/cohort records and only then apply the assessment to actual stock. No daily expiry may be added as a shortcut.
 
 The existing player coconut quality progression (young through day 14, old through day 25, rotten thereafter) remains a separate owner-established game rule and must not be generalized to other commodities or coconut forms without approval.
+
+
+## Full 60-commodity storage and deterioration runtime
+
+The player agricultural inventory now uses condition-based lots rather than a universal one-day expiry. `js/commodity_storage.js` covers all 60 current catalog IDs and distinguishes dry grain, cured bulbs, roots/tubers, leafy vegetables, other fresh vegetables, rhizomes, fruits, plantation harvest forms, live livestock, live aquaculture, honey and mushrooms. A catalog test compares every runtime ID to the storage-profile registry.
+
+A lot records commodity ID, form, received day, quantity, unit cost, storage type, temperature, relative humidity and moisture when supplied. Daily game transition updates age and quality. High/critical risk produces an alert; only expired lots are removed from raw inventory and inventory value, with a COGS/loss posting. FIFO lot consumption is connected to raw commodity sales and processing. Existing saves with aggregate stock but no receipt date are preserved as age-unknown legacy lots; they are not falsely declared fresh or expired.
+
+The in-game storage control accepts ambient, refrigerated or freezer storage, temperature and relative humidity. Temperature and humidity alter effective age; moisture, opening/cutting, physical damage and flood-wetting add risk. Ambient shelf-life baselines are separate from refrigerated reference shelf lives. This is a transparent deterministic game approximation and must not be presented as a validated predictive microbiology model.
+
+Product form is essential:
+- whole mature coconut uses a months-scale ambient reference; opened flesh has a much shorter horizon and is separately tracked while in coconut work-in-process;
+- live poultry/livestock and live fish are not assigned a food shelf-life timer;
+- raw poultry, beef cuts and harvested fish have separate chilled forms and source-specific guidance;
+- ice is treated as a meltable material, not food spoilage; ambient warung ice retains the existing one-day loss rule, while freezer storage protects it.
+
+Source references: FAO grain storage https://www.fao.org/4/t0522e/T0522E09.htm ; FAO horticultural storage https://www.fao.org/4/x5403e/x5403e09.htm ; FAO chilled fish https://www.fao.org/4/v7180e/v7180e07.htm ; USDA raw meat https://ask.fsis.usda.gov/article/How-long-can-I-keep-meat-in-the-refrigerator ; USDA coconut storage https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf ; tender coconut study https://pmc.ncbi.nlm.nih.gov/articles/PMC3551135/.
+
+Research limitations: most plantation-harvest shelf-life values and some ambient crop horizons are provisional category/engineering calibrations rather than individually verified Indonesian field measurements. These remain **butuh riset lanjutan**. Livestock slaughter, fish harvest-to-chilled-product workflows, and age-cohort integration of the legacy whole-coconut stock pool remain open.
