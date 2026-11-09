@@ -183,7 +183,10 @@ test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain
     ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1,
     quantityBasis: 'regional_unmet_demand_after_inventory',
     quantityUnit: 'unconverted_simulation_market_units',
-    quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending'
+    quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending',
+    referencePhysicalUnit: 'kg', referenceProductForm: 'jagung pipilan kering',
+    referenceUnitStatus: 'official_reference_unit_quality_gate',
+    quantityScaleStatus: 'unconverted_legacy_simulation_index'
   };
   assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 1).ok, true);
   const beforeCash = vm.runInContext('S.gold', context);
@@ -205,6 +208,10 @@ test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain
   assert.equal(snapshot.trades[0].buyQuantityUnit, 'unconverted_simulation_market_units');
   assert.equal(snapshot.trades[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
   assert.equal(snapshot.trades[0].quantityUnit, 'mixed_or_unverified_quantity_units');
+  assert.equal(snapshot.trades[0].buyReferencePhysicalUnit, 'kg');
+  assert.equal(snapshot.trades[0].buyReferenceProductForm, 'jagung pipilan kering');
+  assert.equal(snapshot.trades[0].buyReferenceUnitStatus, 'official_reference_unit_quality_gate');
+  assert.equal(snapshot.trades[0].buyQuantityScaleStatus, 'unconverted_legacy_simulation_index');
 });
 
 test('partial player buy fills debit only executed notional and create valued, age-tracked inventory lots', () => {
