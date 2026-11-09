@@ -69,7 +69,6 @@
   kacang_hijau:{sourceCommodity:"Kacang Hijau",unit:"kg",annualPerCapita:0.3,source:"Bapanas konsumsi nasional update 2025",year:2025,status:"official_consumption_anchor"},
   kelapa:{sourceCommodity:"Kelapa",unit:"kg",annualPerCapita:1.0,source:"Bapanas konsumsi nasional update 2025",year:2025,status:"official_consumption_anchor_conversion_pending"}
  });
- const SUPPLY_PROFILE
  const SUPPLY_PROFILE={"jawa-barat":1.20,"jawa-tengah":1.28,"jawa-timur":1.32,"lampung":1.18,"sumatera-selatan":1.08,"sulawesi-selatan":1.16,"nusa-tenggara-barat":1.08,"aceh":0.92,"sumatera-utara":0.96,"sumatera-barat":0.94,"banten":0.88,"bali":0.86,"nusa-tenggara-timur":0.62,"papua-selatan":0.72};
  const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number.isFinite(Number(n))?Number(n):min));
  function largestRemainder(total,weights){const sum=weights.reduce((a,b)=>a+b,0)||1;const raw=weights.map(w=>total*w/sum);const out=raw.map(Math.floor);let left=total-out.reduce((a,b)=>a+b,0);raw.map((v,i)=>({i,r:v-out[i]})).sort((a,b)=>b.r-a.r).slice(0,left).forEach(x=>out[x.i]++);return out;}
