@@ -744,3 +744,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Inspection also found two runtime initialization defects in the same province-state constructor: `consumptionPressure` and `consumptionCategoryPressure` were not initialized on the state object, and the category-pressure object was reset inside the commodity loop. Corrected the constructor to initialize both maps once and removed the per-item reset.
 - Repair commit: `21de12ba199ec289400584de31b9daeb93e522f6` (`fix: initialize national consumption pressure runtime safely`). The repair only changes `js/national_economy.js`; no map files or default branch were changed.
 - Workflow run `42547955803` for the repair commit was observed in progress at handoff time. Do not mark this integration green until its final conclusion is successful and all targeted Node suites complete. If it fails, inspect the first failing step/log rather than inferring from later skipped steps.
+
+
+### Follow-up correction and regression isolation (2026-11-09)
+
+- The first runtime repair commit `21de12ba199ec289400584de31b9daeb93e522f6` did not remove the literal backslash+n token. Run `42547955803` therefore still failed at parse time. This was corrected in `00660b63d8ae1c5a6b3711ca1cd4d28e38a42a6f`; its workflow loaded the national economy suite and reached 46 assertions, confirming the syntax error was gone.
+- That run then exposed one test-isolation failure: `government reserve policy is bounded...` expected the default procurement share 0.05, but inherited the prior Lampung test's mutated shared game state where procurementShare had been set to 0. The test now resets `S` to a fresh named game before checking defaults.
+- Test isolation fix commit: `904990dbfd0ea23ebd035408a333fe00e4d5b237` (`test: isolate government reserve policy defaults`). Workflow run `42548283611` is the verification gate; do not mark green until it completes successfully.
