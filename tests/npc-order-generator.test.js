@@ -30,6 +30,9 @@ test('NPC proposals use regional marketable inventory and unmet demand with expl
   assert.equal(demand.quantityBasis, 'regional_unmet_demand_after_inventory');
   assert.equal(demand.quantityUnit, 'unconverted_simulation_market_units');
   assert.equal(demand.quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(demand.referencePhysicalUnit, 'kg');
+  assert.equal(demand.referenceProductForm, 'jagung pipilan kering');
+  assert.equal(demand.quantityScaleStatus, 'unconverted_legacy_simulation_index');
   assert.equal(supply.regionId, 'lampung');
   assert.equal(supply.stage, 'producer');
   assert.equal(supply.actorType, 'npc');
