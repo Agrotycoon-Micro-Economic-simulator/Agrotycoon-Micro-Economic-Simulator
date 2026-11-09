@@ -326,25 +326,22 @@
  }
  function applyMaizeTotalDemandProjection(s){
   const data=maizeProjectionRuntimeData();if(!s||!data)return {status:"source_not_loaded"};
-  const version=1,annualNationalKg=data.balance.totalNeedTon*1000,annualPerCapita=annualNationalKg/data.denominator.value;
-  if(s.maizeTotalDemandRuntimeVersion!==version){
-   provinceRecords.forEach(meta=>{
-    const p=s.provinces[meta.id];if(!p)return;
-    const previousMonthly=Number(p.demand.jagung)||0,newMonthly=annualPerCapita*p.population/12;
-    const ratio=previousMonthly>0?newMonthly/previousMonthly:1;
-    ["production","inventory","reserve","unmetDemand"].forEach(field=>{if(p[field]&&Number.isFinite(Number(p[field].jagung)))p[field].jagung=Math.max(0,Number(p[field].jagung)*ratio);});
-    p.demand.jagung=newMonthly;
-    if(!p.totalMarketDemand2025)p.totalMarketDemand2025={};
-    p.totalMarketDemand2025.jagung={unit:"kg",annualPerCapita,annualTotalKg:annualPerCapita*p.population,monthlyTotalKg:newMonthly,source:"Kementan Pusdatin / Bapanas national maize balance projection 2025",sourceTotalNeedTon:data.balance.totalNeedTon,populationDenominator:data.denominator.value,allocation:"national_per_capita_need_scaled_to_game_province_population",status:"official_national_projection_population_weighted_game_allocation",scope:"all_channel_total_need_including_feed_and_other_uses",unitCompatibilityStatus:"tonne_to_kg_mass_conversion_only_moisture_basis_not_explicit_in_demand_source",year:2025};
-   });
-   s.maizeTotalDemandRuntimeVersion=version;
-  }
+  const version=2,annualNationalKg=data.balance.totalNeedTon*1000,annualPerCapita=annualNationalKg/data.denominator.value;
+  // Keep physical kg demand separate from the legacy game demand index. No verified
+  // province-level physical supply/stock unit conversion exists yet, so never rescale
+  // inventory, production, reserve or unmet-demand index quantities into kilograms.
+  provinceRecords.forEach(meta=>{
+   const p=s.provinces[meta.id];if(!p)return;
+   if(!p.totalMarketDemand2025)p.totalMarketDemand2025={};
+   p.totalMarketDemand2025.jagung={unit:"kg",annualPerCapita,annualTotalKg:annualPerCapita*p.population,monthlyTotalKg:annualPerCapita*p.population/12,source:"Kementan Pusdatin / Bapanas national maize balance projection 2025",sourceTotalNeedTon:data.balance.totalNeedTon,populationDenominator:data.denominator.value,allocation:"national_per_capita_need_scaled_to_game_province_population",status:"official_national_projection_population_weighted_game_allocation",scope:"all_channel_total_need_including_feed_and_other_uses",unitCompatibilityStatus:"physical_demand_reference_only_supply_stock_conversion_pending",marketQuantityStatus:"not_converted_to_legacy_market_index",year:2025};
+  });
+  s.maizeTotalDemandRuntimeVersion=version;
   const nationalNeedTon=data.balance.totalNeedTon*POPULATION/data.denominator.value;
   s.national.marketDemandReference2025=s.national.marketDemandReference2025||{};
-  s.national.marketDemandReference2025.jagung={unit:"tonne/year",officialNationalTotalNeedTon:data.balance.totalNeedTon,gamePopulationScaledNeedTon:nationalNeedTon,annualPerCapitaKg:annualPerCapita,roundedSummaryTotalNeedTon:data.projection.totalNeedTon,sourcePrecisionDifferenceTon:data.balance.totalNeedTon-data.projection.totalNeedTon,feedNeedTonRounded:data.projection.feedNeedTon,otherUsesNeedTonRounded:data.projection.otherUsesNeedTon,populationDenominator:data.denominator.value,unitCompatibilityStatus:"tonne_to_kg_mass_conversion_only_moisture_basis_not_explicit_in_demand_source",source:"Kementan Pusdatin / Bapanas national maize balance projection 2025",status:"official_projection_population_scaled_to_game",scope:"all_channel_total_need_including_feed_and_other_uses",year:2025};
+  s.national.marketDemandReference2025.jagung={unit:"tonne/year",officialNationalTotalNeedTon:data.balance.totalNeedTon,gamePopulationScaledNeedTon:nationalNeedTon,annualPerCapitaKg:annualPerCapita,roundedSummaryTotalNeedTon:data.projection.totalNeedTon,sourcePrecisionDifferenceTon:data.balance.totalNeedTon-data.projection.totalNeedTon,feedNeedTonRounded:data.projection.feedNeedTon,otherUsesNeedTonRounded:data.projection.otherUsesNeedTon,populationDenominator:data.denominator.value,unitCompatibilityStatus:"physical_demand_reference_only_supply_stock_conversion_pending",source:"Kementan Pusdatin / Bapanas national maize balance projection 2025",status:"official_projection_population_scaled_to_game",scope:"all_channel_total_need_including_feed_and_other_uses",year:2025};
   s.national.marketSupplyReference2025=s.national.marketSupplyReference2025||{};
   s.national.marketSupplyReference2025.jagung={unit:"tonne/year",officialNationalProductionTon:data.production.productionAt14MoistureTon,moisturePct:data.production.moisturePct,referenceYear:data.production.referenceYear,source:"BPS Luas Panen dan Produksi Jagung di Indonesia 2025 (Angka Tetap)",status:"official_statistic_final_reference_only",regionalAllocationStatus:"pending_official_provincial_production_data",balanceComparisonStatus:"not_compared_with_projected_demand_due_to_source_scope_and_methodology"};
-  return {status:"applied",annualPerCapitaKg:annualPerCapita,gamePopulationScaledNeedTon:nationalNeedTon,version};
+  return {status:"applied_reference_only",annualPerCapitaKg:annualPerCapita,gamePopulationScaledNeedTon:nationalNeedTon,version,marketQuantityStatus:"physical_demand_reference_only_supply_stock_conversion_pending"};
  }
  function provinceShare(p){return p.population/POPULATION;}
  function ensure(){const game=gameState();if(!game)return null;let s=game.nationalEconomy;if(!s||s.version!==VERSION){const seed=hash((game.name||"player")+"|"+COUNTRY_NAME+"|"+VERSION);const items=catalog();s={version:VERSION,countryName:COUNTRY_NAME,population:POPULATION,dayProcessed:0,seed,activeAgents:buildAgents(seed),agentCap:5000,agentFloor:1000,government:{treasury:1000000000000,procurementShare:0.05,importShareCap:0.10,reserveTargetDays:30,releaseTriggerDays:10,releaseShare:0.15,monthlyProcurementSpent:0,monthlyImportSpent:0,monthlyReleased:0,monthlyPurchased:0,monthlyImported:0,monthlyImportedByCommodity:{}},provinces:{},national:{demandIndex:{},supplyIndex:{},priceIndex:{},reserveIndex:{},tradeIndex:{},physicalDemand:{}},events:[],eventChancePerProvinceMonthly:0.006,calibrationStatus:"MIXED_OFFICIAL_REFERENCE_AND_EXPERIMENTAL_GAME_PARAMETERS"};provinceRecords.forEach(p=>{const state={population:p.population,inventory:{},production:{},demand:{},priceIndex:{},reserve:{},imports:{},unmetDemand:{},dailyProduction:{},dailyDemand:{},activeEffects:{},logisticsDisruption:0,physicalDemand:{},regionalPhysicalDemand:{},consumptionPressure:{},consumptionCategoryPressure:{}};items.forEach(item=>{const w=demandWeight(item);const monthlyDemand=p.population/1000*w;state.demand[item.id]=monthlyDemand;state.inventory[item.id]=monthlyDemand*0.5;state.production[item.id]=monthlyDemand/30*(SUPPLY_PROFILE[p.id]||1);state.priceIndex[item.id]=1;state.reserve[item.id]=monthlyDemand*0.25;state.consumptionPressure[item.id]=1;state.imports[item.id]=0;state.unmetDemand[item.id]=0;});Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*p.population;state.physicalDemand[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:a.status,year:a.year};});
