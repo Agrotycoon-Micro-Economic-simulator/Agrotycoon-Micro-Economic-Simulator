@@ -110,6 +110,34 @@
       reservedInventory: Object.assign({}, book.reservedInventory) };
   }
 
+  function expirePlayerMarketOrders(targetDay) {
+    const book = ensureBook();
+    const day = Number(targetDay);
+    if (!Number.isSafeInteger(day) || day < 1) {
+      return { ok: false, reason: "invalid_expiry_day", expiredCount: 0, expiredOrderIds: [] };
+    }
+    const expiredOrderIds = [];
+    (book.orders || []).forEach(order => {
+      if (!order || order.status !== "open") return;
+      const expiresAt = Number(order.expiresAt);
+      if (!Number.isSafeInteger(expiresAt) || expiresAt > day) return;
+      order.status = "expired";
+      order.expiredAt = day;
+      order.remainingQuantity = 0;
+      expiredOrderIds.push(order.orderId);
+    });
+    if (expiredOrderIds.length) persist(book);
+    else recomputeReservations(book);
+    return {
+      ok: true,
+      targetDay: day,
+      expiredCount: expiredOrderIds.length,
+      expiredOrderIds,
+      reservedCash: book.reservedCash,
+      reservedInventory: Object.assign({}, book.reservedInventory)
+    };
+  }
+
   function playerOrderBookSnapshot() {
     const book = ensureBook();
     return JSON.parse(JSON.stringify({
@@ -121,6 +149,6 @@
 
   root.AgroPlayerOrderBook = {
     version: "0.1.0", maxOpenOrders: MAX_OPEN_ORDERS, defaultTtlDays: DEFAULT_TTL_DAYS,
-    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, snapshot: playerOrderBookSnapshot
+    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, expire: expirePlayerMarketOrders, snapshot: playerOrderBookSnapshot
   };
 })(typeof window !== "undefined" ? window : globalThis);
