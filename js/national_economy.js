@@ -509,7 +509,35 @@
   const pending=[SOURCES.nonHouseholdConsumption];
   return {verified,pending,allRuntimeBound:verified.every(x=>x.runtimeBound),verifiedCount:verified.length,pendingCount:pending.length};
  }
+ function runtimeDataUsageAudit(){
+  const s=ensure();
+  const audit={};
+  if(!s)return {runtimeAvailable:false,audit};
+  const nationalRows=BAPANAS_CONSUMPTION_MODEL_2025.rows;
+  audit.bapanasNationalConsumption={
+   sourceRecords:BAPANAS_NATIONAL_CONSUMPTION_2025.length,
+   modelRows:Object.keys(nationalRows).length,
+   runtimeMappedRows:Object.values(nationalRows).filter(row=>row.gameId||row.category).length,
+   runtimeStateSignals:Object.keys(s.provinces.lampung?.consumptionPressure||{}).length>0,
+   runtimeBound:true
+  };
+  audit.bapanasMonthlyDemand={
+   sourceRecords:Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).length,
+   seasonalMappedRecords:Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).filter(id=>Number.isFinite(seasonalDemandFactor(id,1))).length,
+   runtimeBound:true
+  };
+  const lampungRows=BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL.filter(r=>r.provinceId==="lampung");
+  audit.bapanasProvincialConsumption={sourceRecords:lampungRows.length,runtimeApplied:!!s.regionalConsumptionSeedVersion,runtimeBound:true};
+  const locality=localityConsumptionSnapshot("3101");
+  audit.bapanasKabkotaConsumption={sourceRecords:BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL.length,runtimeApplied:!!locality,runtimeBound:true};
+  const dkiPopulation=getBpsDkiLocalityGamePopulation2025();
+  audit.bpsDkiKabkotaPopulation={sourceRecords:Object.keys(BPS_KABKOTA_POPULATION_2025).length,runtimeApplied:Object.keys(dkiPopulation).length===Object.keys(BPS_KABKOTA_POPULATION_2025).length,runtimeBound:true};
+  audit.physicalDemandAnchors={sourceRecords:Object.keys(PHYSICAL_DEMAND_ANCHORS_2025).length,runtimeApplied:Object.keys(s.provinces.lampung?.physicalDemand||{}).length>0,runtimeBound:true};
+  audit.administrativeMaster={sourceRecords:NATIONAL_ADMIN.regencies+NATIONAL_ADMIN.cities+NATIONAL_ADMIN.districts+NATIONAL_ADMIN.desa+NATIONAL_ADMIN.kelurahan+NATIONAL_ADMIN.uptSpt,runtimeApplied:!!adminMasterCache,runtimeBound:true};
+  audit.allVerifiedDatasetsRuntimeBound=Object.values(audit).every(x=>x&&x.runtimeBound===true&&x.runtimeApplied!==false&&x.runtimeStateSignals!==false);
+  return {runtimeAvailable:true,audit};
+ }
  function physicalDemandSnapshot(provinceId){const s=ensure();if(!s)return null;const population=provinceId?((s.provinces[String(provinceId)]||{}).population):POPULATION;if(!population)return null;const anchors={};Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*population;anchors[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:a.status,year:a.year};});return {level:provinceId?"province":"country",provinceId:provinceId||null,population,anchors};}
  function snapshot(){const s=ensure();return {countryName:COUNTRY_NAME,population:POPULATION,provinceCount:provinceRecords.length,administrativeTotals:Object.assign({},NATIONAL_ADMIN),bpsAdministrativeReference:Object.assign({},BPS_ADMIN_REFERENCE),activeAgentCount:s.activeAgents.length,activeAgentCap:s.agentCap,government:Object.assign({},s.government),national:Object.assign({},s.national),calibrationStatus:s.calibrationStatus,administrativeMasterLoaded:!!adminMasterCache,provinces:provinceRecords.map(p=>({id:p.id,name:p.name,population:s.provinces[p.id].population,regencies:p.regencyCount,cities:p.cityCount,districts:p.districtCount,desa:p.desaCount,kelurahan:p.kelurahanCount,uptSpt:p.uptSptCount,villageKelurahan:p.villageKelurahanCount}))};}
- root.AgroNationalEconomy={version:VERSION,runtimeDataRegistry,countryName:COUNTRY_NAME,population:POPULATION,provinces:provinceRecords,nationalAdminTotals:NATIONAL_ADMIN,bpsAdminReference:BPS_ADMIN_REFERENCE,sources:SOURCES,podesMix:PODES_MIX,physicalDemandAnchors2025:PHYSICAL_DEMAND_ANCHORS_2025,bpsKabkotaPopulation2025:BPS_KABKOTA_POPULATION_2025,bpsKabkotaSimulationPopulation2025:getBpsDkiLocalityGamePopulation2025(),bapanasMonthlyDemand2025:BAPANAS_MONTHLY_DEMAND_2025,seasonalDemandCoefficient,seasonalDemandFactor,bapanasNationalConsumption2025:BAPANAS_NATIONAL_CONSUMPTION_2025,bapanasConsumptionModel2025:BAPANAS_CONSUMPTION_MODEL_2025,bapanasProvincialConsumption2025Partial:BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL,bapanasKabupatenKotaConsumption2025Partial:BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL,applyProvincialConsumptionRecords,applyKabupatenKotaConsumptionRecords,localityConsumptionSnapshot,quoteLocality,physicalDemandSnapshot,nonHouseholdConsumptionSource:SOURCES.nonHouseholdConsumption,ensure,applyDisaster,generateMonthlyEvents,updateDay,provinceSnapshot,getLocalityAggregate,getLocalityAggregateAsync,searchLocalities,loadAdministrativeMaster,quote,snapshot,activeAgentTarget,applyOrderBookFills};
+ root.AgroNationalEconomy={version:VERSION,runtimeDataRegistry,runtimeDataUsageAudit,countryName:COUNTRY_NAME,population:POPULATION,provinces:provinceRecords,nationalAdminTotals:NATIONAL_ADMIN,bpsAdminReference:BPS_ADMIN_REFERENCE,sources:SOURCES,podesMix:PODES_MIX,physicalDemandAnchors2025:PHYSICAL_DEMAND_ANCHORS_2025,bpsKabkotaPopulation2025:BPS_KABKOTA_POPULATION_2025,bpsKabkotaSimulationPopulation2025:getBpsDkiLocalityGamePopulation2025(),bapanasMonthlyDemand2025:BAPANAS_MONTHLY_DEMAND_2025,seasonalDemandCoefficient,seasonalDemandFactor,bapanasNationalConsumption2025:BAPANAS_NATIONAL_CONSUMPTION_2025,bapanasConsumptionModel2025:BAPANAS_CONSUMPTION_MODEL_2025,bapanasProvincialConsumption2025Partial:BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL,bapanasKabupatenKotaConsumption2025Partial:BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL,applyProvincialConsumptionRecords,applyKabupatenKotaConsumptionRecords,localityConsumptionSnapshot,quoteLocality,physicalDemandSnapshot,nonHouseholdConsumptionSource:SOURCES.nonHouseholdConsumption,ensure,applyDisaster,generateMonthlyEvents,updateDay,provinceSnapshot,getLocalityAggregate,getLocalityAggregateAsync,searchLocalities,loadAdministrativeMaster,quote,snapshot,activeAgentTarget,applyOrderBookFills};
 })(typeof window!=="undefined"?window:globalThis);
