@@ -472,3 +472,32 @@ test('executed NPC order-book fills consume regional marketable stock and satisf
   assert.equal(lampung.inventory.jagung, 40);
   assert.equal(lampung.unmetDemand.jagung, 10);
 });
+
+
+test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
+  const api = context.AgroNationalEconomy;
+  const master = await api.loadAdministrativeMaster();
+  const province = api.provinces.find(p => p.id === 'lampung');
+  const state = api.ensure();
+  const bucket = master.byProvince[province.adminCode];
+  const firstRegency = bucket.regencies[0];
+  const firstDistrict = bucket.districts.find(row => row.regency_id === firstRegency.id);
+  const firstVillage = bucket.villages.find(row => row.district_id === firstDistrict.id);
+  const regencyIndex = bucket.regencies.findIndex(row => row.id === firstRegency.id);
+  const districtIndex = bucket.districts.findIndex(row => row.id === firstDistrict.id);
+  const villageIndex = bucket.villages.findIndex(row => row.id === firstVillage.id);
+  const regency = await api.getLocalityAggregateAsync('lampung', 'regency', regencyIndex);
+  const district = await api.getLocalityAggregateAsync('lampung', 'district', districtIndex);
+  const village = await api.getLocalityAggregateAsync('lampung', 'desa', bucket.desa.findIndex(row => row.district_id === firstDistrict.id));
+  assert.equal(regency.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.equal(district.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.equal(village.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.ok(regency.population > 0);
+  assert.ok(district.population > 0);
+  assert.ok(village.population > 0);
+  assert.ok(district.population < regency.population);
+  assert.ok(village.population <= district.population);
+  assert.equal(village.population, Math.floor(district.population / bucket.villages.filter(row => row.district_id === firstDistrict.id).length) +
+    (bucket.villages.filter(row => row.district_id === firstDistrict.id).findIndex(row => row.id === firstVillage.id) < district.population % bucket.villages.filter(row => row.district_id === firstDistrict.id).length ? 1 : 0));
+  assert.equal(state.provinces.lampung.population, province.population);
+});
