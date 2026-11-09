@@ -1466,3 +1466,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression expectation increased to **58/60**, and the test asserts the restricted status string. Source commit `68349ec7673579c29b24bf463f447107e09cfc62`; test commit `187c1b59685c46e5c8f9dd8eee499084fc32aabb`.
 - Remaining **2/60** without sufficiently verified producer/product-stage unit references: `stroberi` and `kapas`. Current evidence searches did not yield an accessible official producer-price table with an explicit unit for these two catalog products. Mark them `butuh_riset_lanjutan`; do not infer kg.
 - All 60 catalog quantities remain `unconverted_legacy_simulation_index`; source transaction units are references only, not conversion factors. Node tests were not run locally and CI is unconfirmed. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+- Follow-up test hardening: `tests/commodity-storage.test.js` explicitly asserts that `registry.stroberi` and `registry.kapas` remain undefined until evidence is available. Test-only commit: `e55fc72e4c23aac76ea9b021deea68fe1957d5fb`.
