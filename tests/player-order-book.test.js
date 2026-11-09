@@ -242,7 +242,13 @@ test('partial player buy fills debit only executed notional and create valued, a
   const npc = {
     orderId: 'npc-supply-4-lampung-jagung', commodityId: 'jagung', side: 'sell',
     quantity: 3, limitPrice: price, createdAt: 4, expiresAt: 5, actorType: 'npc',
-    ownerId: 'npc-producer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1
+    ownerId: 'npc-producer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1,
+    quantityBasis: 'regional_marketable_inventory_after_daily_demand',
+    quantityUnit: 'unconverted_simulation_market_units',
+    quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending',
+    referencePhysicalUnit: 'kg', referenceProductForm: 'jagung pipilan kering',
+    referenceUnitStatus: 'official_reference_unit_quality_gate',
+    quantityScaleStatus: 'unconverted_legacy_simulation_index'
   };
   assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 4).ok, true);
   const beforeCash = vm.runInContext('S.gold', context);
@@ -259,6 +265,10 @@ test('partial player buy fills debit only executed notional and create valued, a
   assert.equal(lots[0].unitCost, price);
   assert.equal(lots[0].receivedDay, 4);
   const snapshot = context.AgroPlayerOrderBook.snapshot();
+  assert.equal(snapshot.trades[0].quantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].buyQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].sellQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
   assert.equal(snapshot.orders[0].remainingQuantity, 2);
   assert.equal(snapshot.reservedCash, 2 * price);
 });
