@@ -575,6 +575,30 @@ test('official maize total-use projection becomes physical NPC market demand wit
   assert.equal(audit.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
+test('legacy national economy saves migrate maize NPC quantities once while preserving stock cover ratios', () => {
+  vm.runInContext("S = { name: 'maize-demand-save-migration' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const lampung = state.provinces.lampung;
+  const oldMonthlyDemand = lampung.population / 1000;
+  lampung.demand.jagung = oldMonthlyDemand;
+  lampung.production.jagung = oldMonthlyDemand / 30 * 1.18;
+  lampung.inventory.jagung = oldMonthlyDemand * 0.5;
+  lampung.reserve.jagung = oldMonthlyDemand * 0.25;
+  lampung.unmetDemand.jagung = oldMonthlyDemand * 0.05;
+  delete state.maizeTotalDemandRuntimeVersion;
+  api.ensure();
+  const expectedMonthlyDemand = context.REAL_ECONOMIC_DATA.maizeNationalDemand.nationalBalanceProjection2025.totalNeedTon *
+    1000 / context.REAL_ECONOMIC_DATA.maizeNationalDemand.populationDenominator.value *
+    lampung.population / 12;
+  assert.ok(Math.abs(lampung.demand.jagung - expectedMonthlyDemand) < 1e-8);
+  assert.ok(Math.abs(lampung.inventory.jagung / lampung.demand.jagung - 0.5) < 1e-10);
+  assert.ok(Math.abs(lampung.reserve.jagung / lampung.demand.jagung - 0.25) < 1e-10);
+  assert.ok(Math.abs(lampung.unmetDemand.jagung / lampung.demand.jagung - 0.05) < 1e-10);
+  assert.ok(Math.abs(lampung.production.jagung / lampung.demand.jagung - (1.18 / 30)) < 1e-10);
+  assert.equal(state.maizeTotalDemandRuntimeVersion, 1);
+});
+
 test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
   const api = context.AgroNationalEconomy;
   const master = await api.loadAdministrativeMaster();
