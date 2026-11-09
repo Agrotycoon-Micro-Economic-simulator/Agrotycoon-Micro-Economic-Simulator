@@ -69,7 +69,10 @@ function assessLot(input){
  const age=finite(input.ageDays)?Math.max(0,Number(input.ageDays)):0;
  if(['live_animal','live_aquaculture'].includes(p.storageClass))return {ok:true,commodityId:id,form:p.form,risk:'normal',expired:false,spoilageConfirmed:false,quality:100,calibrationStatus:'live_health_model_required'};
  const temp=finite(input.temperatureC)?Number(input.temperatureC):30,rh=finite(input.relativeHumidityPct)?Number(input.relativeHumidityPct):80,moist=finite(input.moisturePct)?Number(input.moisturePct):null;
- let rate=Math.pow(2,Math.max(-3,Math.min(4,(temp-Number(p.referenceTempC||25))/10)));
+ const refrigerated=input.storageType==='refrigerated',frozen=input.storageType==='freezer'&&temp<=-18;
+ const baselineTemp=frozen?-18:refrigerated?Number(p.referenceTempC||4):30;
+ const baselineRh=refrigerated?Number(p.referenceRhPct||90):80;
+ let rate=Math.pow(2,Math.max(-3,Math.min(4,(temp-baselineTemp)/10)));
  if(['dry_grain','dry_vegetable','stable_food'].includes(p.storageClass)){if(rh>70)rate*=1+Math.min(2,(rh-70)/30);if(rh<25)rate*=1.15;}
  else {if(rh>90)rate*=1+Math.min(.75,(rh-90)/20);if(rh<55)rate*=1+Math.min(.5,(55-rh)/100);}
  if(input.physicalDamage===true)rate*=1.8;
@@ -78,14 +81,14 @@ function assessLot(input){
  if(p.moistureMaxPct&&moist!==null&&moist>p.moistureMaxPct)rate*=1+Math.min(3,(moist-p.moistureMaxPct)/4);
  if(p.moistureCriticalPct&&moist!==null&&moist>=p.moistureCriticalPct)rate*=2;
  if(input.flooded===true&&!input.driedAfterFlood){const wet=finite(input.daysSinceFlood)?Math.max(0,Number(input.daysSinceFlood)):0;rate*=1+Math.min(4,wet);if(wet>=3)rate*=1.5;}
- const frozen=input.storageType==='freezer'&&temp<=-18;const days=Number(frozen?Math.max(365,Number(p.idealDays)||365):input.storageType==='refrigerated'?p.idealDays:p.ambientDays);if(frozen)rate=Math.pow(2,Math.max(-3,Math.min(0,(temp+18)/10)));
+ const days=Number(frozen?Math.max(365,Number(p.idealDays)||365):refrigerated?p.idealDays:p.ambientDays);
  if(!Number.isFinite(days)||days<=0)return {ok:true,commodityId:id,risk:'unclassified',expired:false,spoilageConfirmed:false,calibrationStatus:'research_required'};
  const effectiveAge=age*rate,ratio=effectiveAge/days,quality=Math.max(0,Math.min(100,100*(1-ratio)));
  let risk=ratio>=1?'expired':ratio>=.8?'critical':ratio>=.55?'high':ratio>=.3?'watch':'normal';
  if(input.flooded===true&&!input.driedAfterFlood&&finite(input.daysSinceFlood)&&Number(input.daysSinceFlood)>=3&&['dry_grain','root_tuber'].includes(p.storageClass)&&!input.moldObserved&&!input.rottingObserved)risk='critical';
  if(p.moistureCriticalPct&&moist!==null&&moist>=p.moistureCriticalPct&&rank[risk]<rank.critical)risk='critical';
  if(input.moldObserved===true||input.rottingObserved===true)risk='spoiled';
- return {ok:true,commodityId:id,form:p.form,ageDays:age,effectiveAgeDays:Number(effectiveAge.toFixed(3)),shelfLifeDays:days,quality:Number(quality.toFixed(2)),risk,expired:['expired','spoiled'].includes(risk),spoilageConfirmed:['expired','spoiled'].includes(risk),automaticExpiry:false,calibrationStatus:p.evidence,reference:{temperatureC:p.referenceTempC,relativeHumidityPct:p.referenceRhPct},source:p.source,sourceUrl:p.sourceUrl,reasons:[...(input.flooded&&!input.driedAfterFlood?['flood_wet_not_dried']:[]),...(input.physicalDamage?['physical_damage']:[]),...(input.opened?['opened_or_cut']:[])]};
+ return {ok:true,commodityId:id,form:p.form,ageDays:age,effectiveAgeDays:Number(effectiveAge.toFixed(3)),shelfLifeDays:days,quality:Number(quality.toFixed(2)),risk,expired:['expired','spoiled'].includes(risk),spoilageConfirmed:['expired','spoiled'].includes(risk),automaticExpiry:false,calibrationStatus:p.evidence,reference:{temperatureC:baselineTemp,relativeHumidityPct:baselineRh},source:p.source,sourceUrl:p.sourceUrl,reasons:[...(input.flooded&&!input.driedAfterFlood?['flood_wet_not_dried']:[]),...(input.physicalDamage?['physical_damage']:[]),...(input.opened?['opened_or_cut']:[])]};
 }
 function ensureLotBook(state){
  if(!state||typeof state!=='object')return {ok:false,reason:'invalid_state'};
