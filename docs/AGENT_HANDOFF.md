@@ -718,3 +718,21 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 3. Create an explicit game-commodity mapping table. Rice remains distinct from padi/gabah; coconut remains kg until a sourced kg-to-whole-coconut conversion is approved; broad categories such as “daging ruminansia” must not be split into sapi/kambing without a separate allocation source.
 4. Extract BPS non-household numeric tables and reconcile household + non-household demand before using it as physical national requirements.
 5. Only after those gates, connect physical demand to regional production, stock, reserve procurement/import and price formation.
+
+
+## Bapanas 2025 consumption connected to runtime (2026-11-09)
+
+- Official Bapanas national 2025 consumption data was no longer left as source metadata. The 28 leaf consumption observations from the national dataset are registered in `js/national_economy.js` as `bapanasNationalConsumption2025` and transformed by `bapanasConsumptionModel2025`.
+- Runtime mapping modes are explicit: `physical` for game commodities with the same kg unit; `downstream_signal` for a downstream source such as rice feeding the paddy demand signal without pretending rice kg equals paddy/gabah kg; `category_signal` for broad source commodities that cannot legitimately be split into a specific game commodity; and `unit_conversion_pending` for coconut because Bapanas reports kg while the game commodity is whole fruit.
+- Every one of the 28 source leaf records has a mapping mode and is applied to a runtime demand signal. Category-level observations influence all game commodities in that category; exact physical observations also create annual/monthly physical demand quantities.
+- Daily national-economy demand now multiplies the existing behavioral demand by the Bapanas consumption-pressure signal. Therefore the data changes inventory depletion, unmet demand, reserve need and regional price formation; it is not merely stored for display.
+- Tests added to `tests/national-economy.test.js`: all 28 source rows must exist with matching values/unit/year/source commodity and a non-inert mapping mode; runtime demand must show a Bapanas-derived pressure and physical demand must be positive.
+- The national dataset is verified directly from Bapanas Open Data: 2025 values include rice 87.3, corn 1.5, cassava 10.9, sweet potato 4.0, potato 2.5, ruminant meat 5.1, poultry 10.5, eggs 7.7, milk 2.3, fish 23.1, coconut oil 0.2, palm oil 10.0, coconut 1.0, soybean 8.8, peanut 0.4, mung bean 0.3, sugar 8.4, vegetables 56.5 and fruit 39.1 kg/capita/year, plus the remaining leaf records in the runtime table. citeturn275370view0
+- Source definition: Bapanas states this dataset represents average quantities of main foods actually consumed per capita and uses kg/capita/year; it is not itself a production requirement dataset. citeturn464849view1
+- Provincial and kabupaten/kota Bapanas datasets remain the next localization layer. Their numeric observations are verified as official source pages but have not yet all been imported into the runtime; do not mark locality consumption as complete until those rows are connected and tested. citeturn534026search0turn481899search0
+
+### Required next gate
+1. Import the complete Bapanas 2025 provincial rows and apply the same runtime mapping contract per province.
+2. Import the complete kabupaten/kota rows and use them to replace equal-share locality consumption where an official observation exists.
+3. Extract BPS non-household numeric values and connect them to the same demand engine. BPS confirms its 2025 publication estimates consumption/use outside households for 18 staple commodities. citeturn534026search1
+4. Add regression tests proving a province-specific consumption shock changes only its local demand/price path and government reserve response.
