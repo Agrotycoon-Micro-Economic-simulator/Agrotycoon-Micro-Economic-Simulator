@@ -142,6 +142,7 @@ function harvestCommodity(landId,plotId){
   ? AgroCommodityTransformation.addInventoryCost(oldQty,oldCost,qty,wipCost)
   : {ok:true,quantity:oldQty+qty,costValue:oldCost+wipCost};
  if(!receipt.ok){msg("Valuasi persediaan panen tidak valid; panen dibatalkan.");return;}
+ if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.ensureLotBook)AgroCommodityStorage.ensureLotBook(S);
  S.landSystem.inventory[c.id]=receipt.quantity;
  S.landSystem.inventoryCost[c.id]=receipt.costValue;
  if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.receiveLot){AgroCommodityStorage.receiveLot(S,{commodityId:c.id,quantity:qty,unitCost:qty>0?wipCost/qty:0,day:S.day,source:'harvest'});}
