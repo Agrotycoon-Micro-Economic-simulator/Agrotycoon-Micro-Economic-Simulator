@@ -263,6 +263,7 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   assert.ok(local);
   assert.equal(local.localityName, 'Administrasi Kepulauan Seribu');
   assert.equal(local.recordCount, 26);
+  assert.deepEqual(Object.keys(local.rows).sort(), ['beras', 'buah', 'daging_ruminansia', 'daging_unggas', 'gula_merah', 'gula_pasir', 'ikan', 'jagung', 'kacang_hijau', 'kacang_lain', 'kacang_tanah', 'kedelai', 'kelapa', 'kemiri', 'kentang', 'minyak_kelapa', 'minyak_lainnya', 'minyak_sawit', 'sagu', 'sayur', 'singkong', 'susu', 'telur', 'terigu', 'ubi_jalar', 'umbi_lainnya'].sort());
   assert.equal(local.rows.terigu.annualPerCapita, 13.1);
   assert.equal(local.rows.daging_unggas.annualPerCapita, 9);
   assert.equal(local.rows.ikan.annualPerCapita, 45.4);
