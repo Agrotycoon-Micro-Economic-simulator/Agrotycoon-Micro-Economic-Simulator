@@ -1400,3 +1400,18 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - No new runtime registry entry or test assertion was added in this pass because the source-unit gate was not met. This is intentional evidence control, not an implementation omission. The registry remains 43/60; remaining 17 remain `butuh_riset_lanjutan`: `sawi`, `jahe`, `kunyit`, `lengkuas`, `serai`, `tebu`, `teh`, `durian`, `nanas`, `melon`, `stroberi`, `vanili`, `kapas`, `tembakau`, `sapi_perah`, `domba`, `madu`.
 - Next evidence targets: obtain a retrievable copy of the BPS 2025 producer-price PDF or provincial producer-price tables with item-level unit denominators; inspect the official source behind Kementan Table 48 to verify its denominator and distinguish fresh/processed forms; then research horticulture and livestock entries with explicit producer-stage units. Do not infer kg from ordinary commercial convention.
 - No production code or tests were changed. No local Node test execution was available; no CI result is claimed for this documentation-only update. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+## 2026-11-10 — verified plantation producer-unit expansion (43 → 47)
+
+- New primary-source evidence supersedes the earlier conservative checkpoint that had held four plantation commodities outside the registry because the October 2025 extraction lacked a visible unit header. The November 2025 official Pusdatin PDF is directly readable and prints the Table 48 unit explicitly as **Rp/Kg** (printed page 57; PDF page 70).
+- Added four registry records to `js/commodities.js`:
+  - `tebu`: kg, harvested sugarcane stalks; Table 48 has a producer-price row. October 2025 itself is blank, so the reference period records January–September 2025 observations and does not invent an October quote.
+  - `teh`: kg, fresh tea shoots at producer stage. Table 48 separately lists `Teh Pucuk Basah` and `Teh Hijau Kering`; the dry tea is a processed form and is not silently substituted for the catalog's harvested crop.
+  - `tembakau`: kg, dried tobacco leaf. The source separates `Tembakau Daun Kering` from `Tembakau Rajang Kering`; the latter remains a distinct processed form.
+  - `vanili`: kg, dried vanilla pods, matching the explicit `Vanili Kering` row.
+- Source: Kementerian Pertanian Pusdatin, *Statistik Terkini Ekonomi Pertanian — November 2025*, Table 48, printed p.57, PDF p.70, official PDF: https://satudata.pertanian.go.id/assets/docs/publikasi/Terkini_Ekonomi_Pertanian_November_2025_sign.pdf. Table 48's heading explicitly prints (Rp/Kg), and the source lists the four named product forms. The publication states it compiles producer prices from relevant official systems; Table 48 is separate from the Kramat Jati wholesale-market table.
+- Regression test updated from 43 to **47** unique registry entries and checks all four units plus product-form distinctions. Source commit: `a05ae9d904655e9b51459e91684e505c6531a2d0`; test commit: `cc278a6daeffdc13140f5496e1982c62312c00d5`.
+- Remaining **13/60** without sufficiently verified producer/product-stage unit references: `sawi`, `jahe`, `kunyit`, `lengkuas`, `serai`, `durian`, `nanas`, `melon`, `stroberi`, `kapas`, `sapi_perah`, `domba`, `madu`. Do not infer physical unit from common trade convention.
+- All 60 catalog commodities remain `unconverted_legacy_simulation_index`; this work only establishes reference units and product forms, not quantity conversion factors or scale. No local Node test execution was available. CI for the new test commit has not yet been confirmed.
+- `main`, `peta.html`, and `js/map_engine.js` remain untouched.
