@@ -153,3 +153,16 @@ test('official 2025 physical demand anchors remain separate from the synthetic d
   assert.equal(api.physicalDemandAnchors2025.jagung.source, 'Bapanas konsumsi nasional update 2025');
   assert.equal(api.physicalDemandAnchors2025.kelapa.unit, 'kg');
 });
+
+
+test('official Bapanas household-consumption sources are registered at province and kabupaten/kota depth', () => {
+  const api = context.AgroNationalEconomy;
+  assert.equal(api.sources.provincialHouseholdConsumption.period, '2025');
+  assert.equal(api.sources.provincialHouseholdConsumption.unit, 'kg/kap/tahun');
+  assert.equal(api.sources.provincialHouseholdConsumption.depth, 'province');
+  assert.match(api.sources.provincialHouseholdConsumption.url, /data\.badanpangan\.go\.id\/datasetpublications\/x1y\/konsumsi-provinsi/);
+  assert.equal(api.sources.regencyCityHouseholdConsumption.depth, 'regency_city');
+  assert.equal(api.sources.regencyCityHouseholdConsumption.unit, 'kg/kap/tahun');
+  assert.match(api.sources.regencyCityHouseholdConsumption.url, /data\.badanpangan\.go\.id\/datasetpublications\/4wx\/rata-rata-konsumsi-kab-kota/);
+  assert.equal(api.sources.nonHouseholdConsumption.status, 'official_source_metadata_only_numeric_extraction_pending');
+});
