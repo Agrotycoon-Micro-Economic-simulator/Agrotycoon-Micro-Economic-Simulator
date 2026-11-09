@@ -1,4 +1,16 @@
 
+## NPC bid-ask spread integration (2026-11-09)
+
+- Implemented the next local order-book gate in `js/npc_order_generator.js`: NPC producer asks are now placed at a bounded local-quote midpoint plus an explicit **1.00% experimental half-spread**, while NPC buyer bids are placed at midpoint minus 1.00%.
+- The midpoint remains the regional quote derived from the national price × regional price index and is still clamped to each commodity's `marketFloor`/`marketCeiling`. The spread is applied after midpoint formation and each side is independently bounded by the same corridor.
+- Every generated order now records `midPrice`, `spreadBps`, `pricingBasis`, and `spreadStatus`. Status is explicitly `experimental_unresearched_transaction_cost_proxy`; this is **not** claimed to be an observed Indonesian bid-ask spread.
+- Default spread is 100 bps and can be overridden by the generator input within 0–1000 bps for controlled simulation tests. No source-backed calibration exists yet; empirical regional producer/collector/wholesale transaction-cost data remains a research gate.
+- Regression coverage now checks midpoint preservation, ask/bid separation, deterministic spread metadata, and corridor behavior at both the floor and ceiling.
+- Code/test commits: `18b11429910d98776dbb6b41ac96413edc5b4e68` and `f6d98b18d362942f000f2bbacac6e0e7da97a2ca`. CI for these newest commits has not yet been verified; do not claim green until a completed Actions run is inspected.
+- No changes to `main`, `peta.html`, or `js/map_engine.js`.
+- Next implementation gates remain: source-backed NPC/province physical supply and demand calibration, BPS 2025 non-household numeric extraction, full 514 kabupaten/kota consumption/population ingestion, physical interprovincial shipment routing, and complete lot-level spoilage/write-off integration. These must not be bypassed with fabricated quantities.
+
+
 ## Maize physical-demand dimensional guard (2026-11-09)
 
 - Corrected a unit-integrity defect in the maize total-demand integration: the official total-use projection is now stored as a separate physical demand reference in kg/year and kg/month. It no longer rescales legacy province demand, production, inventory, government reserve or unmet-demand index values into kilograms.
