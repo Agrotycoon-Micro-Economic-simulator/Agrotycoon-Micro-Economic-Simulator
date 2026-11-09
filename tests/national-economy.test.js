@@ -745,4 +745,8 @@ test('BPS 2024 plantation production is bound as partial provincial annual suppl
   assert.equal(entry.records, 49);
   assert.equal(entry.depth, 'province');
   assert.equal(entry.runtimeBound, true);
+  const usage = api.runtimeDataUsageAudit();
+  assert.equal(usage.audit.plantationProduction2024Partial.sourceRecords, 49);
+  assert.equal(usage.audit.plantationProduction2024Partial.runtimeApplied, true);
+  assert.equal(usage.audit.allVerifiedDatasetsRuntimeBound, true);
 });
