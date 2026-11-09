@@ -1147,3 +1147,17 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - CI status for this change set must be read from the latest branch workflow result; an empty commit status is not a passing test result.
 
 - Canonical runtime province key for NTB is `nusa-tenggara-barat` (not the shorthand `ntb`); the dataset and regression test use the canonical game identifier.
+
+## All-60 commodity physical coverage and paddy supply integration (2026-11-09)
+
+- Scope is the full 60-ID catalog in `js/commodities.js`, not maize-only. `js/national_economy.js` now builds `commodityPhysicalCoverage` for every catalog ID in all 38 provinces and exposes `commodityPhysicalCoverageSnapshot(provinceId)`.
+- Each commodity coverage record carries catalog/market status, storage-profile status, growth cycle, unit and unit-quality status, physical-demand evidence status, physical-supply evidence status, annual supply reference where available, and daily-supply readiness. Missing official quantities remain pending/null; no fake physical quantities are generated.
+- Daily physical supply is explicitly separated from the legacy index market. Every commodity receives a `dailyPhysicalSupply` slot, but it remains null until source-backed monthly/harvest timing and product-form conversion are validated.
+- `js/real_economic_data.js` now contains `paddyProvincialProduction2025`: all 38 BPS province rows for 2025, both GKG paddy tonnes and BPS rice-equivalent tonnes, with source URL, method, units, year, and definition.
+- BPS source: Produksi Padi dan Beras Menurut Provinsi, 2025; last updated 2026-02-12; KSA and crop-cutting survey; paddy production is GKG, not rice: https://www.bps.go.id/id/statistics-table/3/ZDNaak0yODBUVTlGYW5sa2REUkVUVVY1YVZkbmR6MDkjMw%3D%3D/produksi-padisup1-sup-dan-beras-menurut-provinsi--2022.html
+- Published national GKG production is 60,207,101 tonnes. The 38 provincial GKG rows sum to 60,207,098 tonnes, a 3-tonne discrepancy. The dataset and engine preserve this difference rather than silently forcing equality. Provincial rice-equivalent rows sum to 34,690,959 tonnes.
+- Engine stores the paddy annual supply reference in `national.marketSupplyReference2025.padi` and each province's `marketSupplyReference2025.padi`. It does not divide annual production into daily production. Monthly harvest distribution, losses, moisture adjustment, milling yield and inventory conversion remain pending.
+- `runtimeDataRegistry()` now reports the all-60 commodity coverage separately from official-source verified datasets. `runtimeDataUsageAudit()` checks the paddy reference and that all 60 catalog IDs have active market and storage coverage.
+- Tests cover 38 paddy rows, source arithmetic, provincial runtime binding, 60 commodity coverage records, and the null daily physical supply boundary.
+- Coverage is not the same as complete official physical calibration: official per-commodity demand/supply, locality breakdown, monthly seasonality, price series, unit normalization, production inputs/HPP, livestock output and aquaculture harvest still require commodity-specific ingestion. For each of the remaining commodities, status remains pending until evidence is sourced and tested.
+- Next work must continue across all 60 IDs by commodity family: staple crops; horticulture and roots; plantation and spices; fruit; livestock and animal products; aquaculture and fisheries; then connect source-backed physical supply/demand to NPC transactions only after unit and timing validation.
