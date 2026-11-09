@@ -120,6 +120,9 @@ test('order book matches crossed orders at the resting order price with partial 
   assert.deepEqual(Array.from(result.fills, fill => fill.price), [7000, 7000]);
   assert.equal(result.executedQuantity, 10);
   assert.equal(result.executedNotional, 70000);
+  assert.equal(result.priceTransactions.length, 2);
+  assert.deepEqual(Array.from(result.priceTransactions, tx => tx.side), ['sell', 'sell']);
+  assert.ok(result.priceTransactions.every(tx => tx.source === 'order_book_execution'));
   assert.equal(result.openOrders.length, 1);
   assert.equal(result.openOrders[0].orderId, 'ask-2');
   assert.equal(result.openOrders[0].remainingQuantity, 2);
@@ -175,4 +178,18 @@ test('order book supports fractional physical commodity quantities', () => {
   assert.equal(result.openOrders.length, 1);
   assert.equal(result.openOrders[0].remainingQuantity, 1.5);
   assert.equal(result.executedNotional, 8750);
+});
+
+
+test('order book price transaction represents the incoming aggressor, not both sides', () => {
+  const result = context.MARKET_ENGINE.matchOrderBook([
+    makeOrder({ orderId: 'resting-ask', side: 'sell', quantity: 2, limitPrice: 6500, createdAt: 1, ownerId: 'npc-maker', actorType: 'npc' }),
+    makeOrder({ orderId: 'incoming-bid', side: 'buy', quantity: 2, limitPrice: 7000, createdAt: 2, ownerId: 'player-taker', actorType: 'player' })
+  ], { now: 10 });
+  assert.equal(result.fills.length, 1);
+  assert.equal(result.fills[0].aggressorSide, 'buy');
+  assert.equal(result.priceTransactions.length, 1);
+  assert.equal(result.priceTransactions[0].side, 'buy');
+  assert.equal(result.priceTransactions[0].quantity, 2);
+  assert.equal(result.priceTransactions[0].price, 6500);
 });
