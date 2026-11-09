@@ -1,3 +1,11 @@
+
+## Maize physical-demand dimensional guard (2026-11-09)
+
+- Corrected a unit-integrity defect in the maize total-demand integration: the official total-use projection is now stored as a separate physical demand reference in kg/year and kg/month. It no longer rescales legacy province demand, production, inventory, government reserve or unmet-demand index values into kilograms.
+- Reason: official total maize demand is a national all-channel projection (household + feed + other uses), while the game still lacks verified province-level maize supply allocation and a validated conversion from legacy index stocks to physical kg. Mixing these units would create false physical market quantities and distort stock-cover/price calculations.
+- Runtime metadata explicitly reports `physical_demand_reference_only_supply_stock_conversion_pending`; national BPS maize production remains a national reference and is not allocated across provinces.
+- Regression tests verify the physical demand reference, preservation of legacy index quantities, and daily market index operation. Physical kg-based NPC order quantities remain blocked until provincial production/supply and inventory conversion are source-backed.
+
 # Hierarchical locality demand mass-balance update (2026-11-09)
 
 `getLocalityAggregateAsync()` now scales `monthlyDemandIndex` by the runtime hierarchical population share rather than dividing province demand equally by locality count. The allocation conserves the parent demand signal across regency/city → district → village/kelurahan levels. Population remains explicitly derived for non-DKI until official locality population observations are loaded. A regression test verifies child-demand conservation.
