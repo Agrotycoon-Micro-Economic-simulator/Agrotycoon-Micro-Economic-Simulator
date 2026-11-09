@@ -20,6 +20,8 @@
     const book = S.marketOrderBook;
     if (!Array.isArray(book.orders)) book.orders = [];
     if (!Array.isArray(book.pendingSettlement)) book.pendingSettlement = [];
+    if (!Array.isArray(book.npcOrders)) book.npcOrders = [];
+    if (!Number.isSafeInteger(book.lastNpcGenerationDay) || book.lastNpcGenerationDay < 0) book.lastNpcGenerationDay = 0;
     if (!book.reservedInventory || typeof book.reservedInventory !== "object") book.reservedInventory = {};
     if (!Number.isSafeInteger(book.sequence) || book.sequence < 0) book.sequence = 0;
     recomputeReservations(book);
@@ -138,17 +140,53 @@
     };
   }
 
+  function replaceNpcOrders(orders, targetDay) {
+    const book = ensureBook();
+    const day = Number(targetDay);
+    if (!Number.isSafeInteger(day) || day < 1 || !Array.isArray(orders)) {
+      return { ok: false, reason: "invalid_npc_order_batch", storedCount: book.npcOrders.length };
+    }
+    if (book.lastNpcGenerationDay === day) {
+      return { ok: true, alreadyGenerated: true, day, storedCount: book.npcOrders.length };
+    }
+    const ids = new Set();
+    const accepted = [];
+    for (const source of orders) {
+      const order = source && typeof source === "object" ? source : {};
+      const item = root.MARKET_ENGINE && root.MARKET_ENGINE.byId && root.MARKET_ENGINE.byId[String(order.commodityId || "")];
+      const id = String(order.orderId || "");
+      const quantity = Number(order.quantity);
+      const price = Number(order.limitPrice);
+      const createdAt = Number(order.createdAt);
+      const expiresAt = Number(order.expiresAt);
+      if (!id || ids.has(id) || !item || order.actorType !== "npc" ||
+          !["buy", "sell"].includes(order.side) || !finitePositive(quantity) ||
+          !finitePositive(price) || price < Number(item.marketFloor) || price > Number(item.marketCeiling) ||
+          !String(order.ownerId || "").startsWith("npc-") || !String(order.regionId || "") ||
+          order.stage !== "producer" || createdAt !== day || expiresAt !== day + 1) {
+        return { ok: false, reason: "invalid_npc_order_contract", storedCount: book.npcOrders.length };
+      }
+      ids.add(id);
+      accepted.push(JSON.parse(JSON.stringify(order)));
+    }
+    book.npcOrders = accepted;
+    book.lastNpcGenerationDay = day;
+    persist(book);
+    return { ok: true, alreadyGenerated: false, day, storedCount: accepted.length };
+  }
+
   function playerOrderBookSnapshot() {
     const book = ensureBook();
     return JSON.parse(JSON.stringify({
       version: book.version, orders: book.orders, reservedCash: book.reservedCash,
       reservedInventory: book.reservedInventory, pendingSettlement: book.pendingSettlement,
-      lastMatch: book.lastMatch
+      lastMatch: book.lastMatch, npcOrders: book.npcOrders,
+      lastNpcGenerationDay: book.lastNpcGenerationDay
     }));
   }
 
   root.AgroPlayerOrderBook = {
     version: "0.1.0", maxOpenOrders: MAX_OPEN_ORDERS, defaultTtlDays: DEFAULT_TTL_DAYS,
-    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, expire: expirePlayerMarketOrders, snapshot: playerOrderBookSnapshot
+    submit: submitPlayerMarketOrder, cancel: cancelPlayerMarketOrder, expire: expirePlayerMarketOrders, replaceNpcOrders, snapshot: playerOrderBookSnapshot
   };
 })(typeof window !== "undefined" ? window : globalThis);
