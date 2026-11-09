@@ -952,3 +952,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added tests for maker-price execution, partial fills, price priority, regional/stage isolation, invalid/out-of-bound orders, expiry, self-trade prevention and residual open orders.
 - GitHub Actions is configured to run on pushes to this branch for `js/**` and `tests/**`. At handoff time, no completed run/status has yet been retrieved for latest test commit `0ae3174...`; validation remains pending and must not be described as green.
 - Next integration gate: persist a bounded daily order queue in save state; submit actual player and NPC bids/asks; settle fills atomically into cash, inventory, weighted-average HPP and double-entry ledger; only then pass executed fills to the price engine. Add rollback/atomicity and save-migration tests.
+
+
+#### Fractional commodity quantity correction (2026-11-09)
+
+- Code review found the initial matcher rejected every non-integer quantity. This is too restrictive for physical commodities whose trade units can be fractional (for example kg or liters).
+- Removed the integer-only quantity constraint while retaining finite-positive validation. Zero, negative, NaN and infinite quantities remain invalid.
+- Added a regression case: buy 2.75 units against sell 1.25 units, execute 1.25 and leave 1.50 open; notional is checked exactly.
+- Code commit: `3fba31364f0c46e612737900dbaf3dbee0c25c4a`; test commit: `974a92ac33d9390039cd586cfc6c7cb47d6ed644`.
+- GitHub Actions result for the latest test commit has not yet been retrieved. Do not claim this new test passed until a completed run is inspected.
