@@ -164,7 +164,7 @@ The source also defines total annual food need as household consumption plus non
 
 Primary source: [Bapanas Juknis Proyeksi Neraca Pangan 2025](https://data.badanpangan.go.id/nfs_storage/public/publication/documents/1776218737.pdf), Table 2.5 and methodology section. The PDF cover cites Kepka Bapanas No. 27/2025 while its attachment heading cites No. 22/2025; this source-internal discrepancy is retained in runtime metadata.
 
-The remaining five source columns (beef, chicken meat, eggs, sugar, cooking oil) are retained in `unmappedRecords` with `research_only_*` mapping statuses. They do not execute in daily demand because the current catalog has livestock head-count stages or lacks matching processed-food product stages. Extend only after matching physical stage and unit. **Butuh riset lanjutan** for those mappings and for the 2025 BPS non-household numeric tables.
+The remaining five source columns (beef, chicken meat, eggs, sugar, cooking oil) are retained in `unmappedRecords` with `research_only_*` mapping statuses. They do not execute in daily demand because the current catalog has livestock head-count stages or lacks matching processed-food product stages. Extend only after matching physical stage and unit. **Butuh riset lanjutan** for those mappings and for the 2025 BPS non-household numeric tables. Latest verification: GitHub Actions run [42556163711](https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42556163711) passed 55/55 Node tests plus the full benchmark, standalone, browser smoke and E2E sequence on runtime/test commit `44c11a8b67bca9d234e21a35feb153c9da287efd` / `d55ce29cdf62a5cd691599571acd91b50cd9c0e7`.
 
 ## 5. Regional stock-flow and price formation
 
