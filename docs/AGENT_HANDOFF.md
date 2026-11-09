@@ -736,3 +736,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 2. Import the complete kabupaten/kota rows and use them to replace equal-share locality consumption where an official observation exists.
 3. Extract BPS non-household numeric values and connect them to the same demand engine. BPS confirms its 2025 publication estimates consumption/use outside households for 18 staple commodities. (https://www.bps.go.id/id/publication/2026/06/12/162a342d33ebfe0f41a75487/konsumsi-bahan-pokok-nonrumah-tangga-2025.html)
 4. Add regression tests proving a province-specific consumption shock changes only its local demand/price path and government reserve response.
+
+
+## Bapanas runtime regression repair (2026-11-09)
+
+- GitHub Actions run 42547663283 for test commit 5fb69e8f5b2961025557356056b7871bcf95c80a failed while loading `tests/national-economy.test.js`: 35 preceding tests passed, then Node VM raised `SyntaxError: Invalid or unexpected token` at `js/national_economy.js:110`. The root cause was a literal escaped newline (`\\n`) inserted between the physical-demand initialization and Bapanas row mapping, so the runtime script could not parse.
+- Inspection also found two runtime initialization defects in the same province-state constructor: `consumptionPressure` and `consumptionCategoryPressure` were not initialized on the state object, and the category-pressure object was reset inside the commodity loop. Corrected the constructor to initialize both maps once and removed the per-item reset.
+- Repair commit: `21de12ba199ec289400584de31b9daeb93e522f6` (`fix: initialize national consumption pressure runtime safely`). The repair only changes `js/national_economy.js`; no map files or default branch were changed.
+- Workflow run `42547955803` for the repair commit was observed in progress at handoff time. Do not mark this integration green until its final conclusion is successful and all targeted Node suites complete. If it fails, inspect the first failing step/log rather than inferring from later skipped steps.
