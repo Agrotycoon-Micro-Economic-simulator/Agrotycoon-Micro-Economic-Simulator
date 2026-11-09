@@ -275,6 +275,7 @@
       if (!S.landSystem) S.landSystem = { inventory: {}, inventoryCost: {} };
       if (!S.landSystem.inventory) S.landSystem.inventory = {};
       if (!S.landSystem.inventoryCost) S.landSystem.inventoryCost = {};
+      if (root.AgroCommodityStorage && typeof root.AgroCommodityStorage.ensureLotBook === "function") root.AgroCommodityStorage.ensureLotBook(S);
       S.gold = (Number(S.gold) || 0) - value;
       S.landSystem.inventory[id] = (Number(S.landSystem.inventory[id]) || 0) + qty;
       S.landSystem.inventoryCost[id] = (Number(S.landSystem.inventoryCost[id]) || 0) + value;
