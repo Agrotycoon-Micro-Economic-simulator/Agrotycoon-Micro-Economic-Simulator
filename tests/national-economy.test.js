@@ -507,7 +507,7 @@ test('verified economic datasets are runtime-bound and pending datasets are isol
   const provincialSource = context.REAL_ECONOMIC_DATA.maizeProvincialProduction2025Partial;
   assert.equal(provincialSource.coverage.verifiedProvinceCount, 2);
   assert.equal(provincialSource.records.lampung.productionTon, 1260000);
-  assert.equal(provincialSource.records.ntb.productionTon, 1180000);
+  assert.equal(provincialSource.records['nusa-tenggara-barat'].productionTon, 1180000);
   assert.equal(provincialSource.moisturePct, 14);
   assert.equal(provincialSource.runtimeUse, 'reference_only_no_daily_supply_or_npc_inventory_injection');
   assert.ok(registry.verified.every(entry => entry.runtimeBound === true && entry.records > 0));
