@@ -1428,3 +1428,18 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression expectation increased to **50/60** and checks `sawi=kg`, `nanas=10 kg`, and `durian=10 kg`. Source commit `3c263266bfb6cbaac1d97252f22a3de7216c7a95`; test commit `764aded04fec3cc6055f0e9b688469846da04cbb`.
 - Remaining **10/60** without sufficiently verified producer/product-stage unit references: `jahe`, `kunyit`, `lengkuas`, `serai`, `melon`, `stroberi`, `kapas`, `sapi_perah`, `domba`, `madu`. Note: separate BPS evidence for melon may use a 100 kg lot; do not convert that transaction unit without preserving its source basis.
 - All 60 catalog quantities remain `unconverted_legacy_simulation_index`; no conversion factors or physical stock arithmetic were activated by these registry additions. Node tests were not run locally; CI remains unconfirmed. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+
+
+## 2026-11-10 — BPS Central Java producer-unit expansion (50 → 55)
+
+- Added five physical producer transaction-unit records from BPS *Statistik Harga Produsen Perdesaan Provinsi Jawa Tengah 2023*, Volume 5 (2024), catalogue 7103017.33, publication 33000.24104. The publication states the survey covers monthly rural producer prices across 29 regencies in Jawa Tengah and defines producer price as farm-gate transaction price; its standard wholesale units include kg, 100 kg, and other explicit lot units.
+  - `melon`: **100 kg**, Figure 8, printed p.28; explicitly `Rp/100 Kg`.
+  - `jahe`: **50 kg**, Appendix 11, printed p.62; table column header explicitly `(50 Kg)`.
+  - `kunyit`: **50 kg**, same Appendix 11 and header.
+  - `lengkuas`: **50 kg**, same Appendix 11 and header.
+  - `serai`: **1 ikat**, continued Appendix 11, printed p.63; table header explicitly `(1 Ikat)`, source spells the commodity `Sereh`.
+- Source PDF: https://web-api.bps.go.id/download.php?f=qRkDkqkpMIs03pHbWetS4XJuN3ZjYnByN0FkL3ZnZCtFd2FLRENOUzNnWDc3eEp6d1hBbWZkbWxIN1dadXJleEtCQTd0RC9sYXhwUkFaNndmR21JTW5LSEttYkdMeUhOLzc4QVJvWmU3LzUzWTJML2F3VlV4YWRkUkFSSk4xYlorWGR3WFpqdU5xOEt3V2xqblhDWkNHYWE1MVY1ano2NnJ3N3ZuT3lZNnplZ3orVklaSmpNZHd6Vjd3VW15SmpEZGsyOGROU1ZwcldVY2krbCthOElvTzhkY1ZVZ0ZLcWhWWWRmQWYxL2pvOXNDZzhNWVBkRkxjYTdFbmFWM2xtclUrWVJGR0RPR2lDaE1rNFFLbkFaR2p6ckVFaFZtUkkyNjFEM1VnPT0%3D
+- Regression expectation increased to **55/60** and now checks `melon=100 kg`, `jahe=50 kg`, `kunyit=50 kg`, `lengkuas=50 kg`, and `serai=ikat`. Source commit `69526321f296db4bace40c46606c500d6b8ecf19`; test commit `d9cbf8d85197eb623e66ffb1810c5c8f4b33528a`.
+- Remaining **5/60** without sufficiently verified producer/product-stage unit references: `stroberi`, `kapas`, `sapi_perah`, `domba`, `madu`. Do not infer kg/liter/head from common trade convention.
+- All 60 catalog quantities remain `unconverted_legacy_simulation_index`; registry units are source transaction units and are not yet scale conversion factors. In particular, 50 kg, 100 kg, 10 kg, and bundle units must not be treated as kg until explicit conversion factors are introduced and tested.
+- Node tests were not run locally. CI has not yet been confirmed for this change set. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
