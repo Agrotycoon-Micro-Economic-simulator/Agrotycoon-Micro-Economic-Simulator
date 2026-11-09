@@ -570,6 +570,7 @@ test('official maize total-use projection is stored as physical demand without c
   api.updateDay(1);
   assert.ok(lampung.dailyDemand.jagung > 0);
   assert.ok(lampung.dailyPhysicalDemand.jagung > 0);
+  assert.equal(lampung.dailyPhysicalDemand.kelapa, undefined);
   assert.equal(lampung.dailyPhysicalDemand.jagung,
     lampung.totalMarketDemand2025.jagung.annualTotalKg *
     context.AgroNationalEconomy.seasonalDemandCoefficient('jagung', 1) / 30);
