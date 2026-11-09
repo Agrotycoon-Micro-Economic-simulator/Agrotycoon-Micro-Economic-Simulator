@@ -797,3 +797,36 @@ test('only national disaster and war activate the emergency market-band authoriz
   assert.equal(api.endNationalEmergency('war-1').ok, true);
   assert.equal(api.marketEmergencySnapshot(), null);
 });
+
+test('BPS 2024 livestock population is bound for all provinces without fabricating meat supply', () => {
+  vm.runInContext("S = { name: 'livestock-population-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const source = context.REAL_ECONOMIC_DATA.livestockPopulation2024;
+  assert.equal(source.coverage.verifiedProvinceCount, 38);
+  assert.equal(source.coverage.verifiedSpeciesCount, 7);
+  assert.equal(source.coverage.observationCount, 266);
+  const speciesIds = Object.keys(source.species);
+  const totals = Object.fromEntries(speciesIds.map(id => [id, 0]));
+  for (const [provinceId, values] of Object.entries(source.records)) {
+    assert.equal(values.length, 7, provinceId);
+    const snapshot = api.provinceSnapshot(provinceId);
+    for (let i = 0; i < speciesIds.length; i++) {
+      totals[speciesIds[i]] += values[i];
+      assert.equal(snapshot.livestockPopulationReference2024[speciesIds[i]], values[i], provinceId + '/' + speciesIds[i]);
+    }
+    assert.equal(snapshot.dailyPhysicalSupply.sapi_potong, null);
+    assert.equal(snapshot.commodityPhysicalCoverage.sapi_potong.livestockPopulationStatus, 'official_2024_standing_animal_stock_not_meat_output');
+  }
+  assert.equal(JSON.stringify(totals), JSON.stringify(source.nationalTotals));
+  assert.deepEqual(Object.keys(source.catalogMapping).sort(), ['domba', 'kambing', 'sapi_perah', 'sapi_potong']);
+  assert.equal(api.provinceSnapshot('lampung').livestockPopulationReference2024.sapi_potong, 878393);
+  const registry = api.runtimeDataRegistry();
+  const entry = registry.verified.find(row => row.id === 'bps_livestock_population_2024');
+  assert.ok(entry);
+  assert.equal(entry.records, 266);
+  assert.equal(entry.depth, 'province');
+  const usage = api.runtimeDataUsageAudit();
+  assert.equal(usage.audit.livestockPopulation2024.sourceRecords, 266);
+  assert.equal(usage.audit.livestockPopulation2024.runtimeApplied, true);
+});
