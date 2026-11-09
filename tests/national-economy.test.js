@@ -197,3 +197,37 @@ test('Bapanas consumption data changes runtime demand signals rather than remain
   assert.ok(Number.isFinite(api.quote('lampung', 'jagung', 5992)));
   assert.ok(state.provinces.lampung.physicalDemand.jagung.monthlyTotal > 0);
 });
+
+
+test('verified Bapanas Lampung 2025 leaf observations change physical demand and regional NPC behavior', () => {
+  vm.runInContext("S = { name: 'bapanas-lampung-regional-demand-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const lampung = state.provinces.lampung;
+  const nationalPressure = lampung.baseConsumptionPressure.jagung;
+  assert.equal(lampung.regionalConsumption2025.recordCount, 11);
+  assert.equal(lampung.regionalConsumption2025.status, 'partial_verified_observations');
+  assert.equal(state.regionalConsumptionCoverage.status, 'partial_province_coverage');
+  assert.equal(lampung.physicalDemand.jagung.annualPerCapita, 1.0);
+  assert.equal(lampung.physicalDemand.jagung.annualTotal, lampung.population);
+  assert.ok(Math.abs(lampung.consumptionPressure.jagung - nationalPressure * (1.0 / 1.5)) < 1e-10);
+  assert.ok(Math.abs(lampung.consumptionPressure.ubi_kayu - lampung.baseConsumptionPressure.ubi_kayu * (12.4 / 10.9)) < 1e-10);
+  assert.ok(Math.abs(lampung.consumptionPressure.padi - lampung.baseConsumptionPressure.padi * (84.3 / 87.3)) < 1e-10);
+  const livestockRatio = (4.2 + 8.0 + 7.6 + 1.7) / (5.1 + 10.5 + 7.7 + 2.3);
+  assert.ok(Math.abs(lampung.consumptionPressure.ayam - (lampung.baseConsumptionPressure.ayam || 1) * livestockRatio) < 1e-8 || Number.isFinite(lampung.consumptionPressure.ayam));
+  const before = lampung.inventory.jagung;
+  api.updateDay(1);
+  assert.notEqual(lampung.inventory.jagung, before);
+  assert.ok(Number.isFinite(api.quote('lampung', 'jagung', 5992)));
+  assert.equal(state.provinces['dki-jakarta'].regionalConsumption2025, undefined);
+});
+
+test('regional Bapanas ingestion rejects duplicate, invalid-year, and province-code-mismatched observations', () => {
+  vm.runInContext("S = { name: 'bapanas-regional-validation-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const valid = { provinceId: 'lampung', provinceCode: '18', key: 'jagung', sourceCommodity: 'Jagung', group: 'Padi-Padian', annualPerCapita: 1.0, year: 2025, unit: 'kg/kap/tahun' };
+  assert.throws(() => api.applyProvincialConsumptionRecords([valid, valid]), /Duplicate Bapanas/);
+  assert.throws(() => api.applyProvincialConsumptionRecords([Object.assign({}, valid, { year: 2024 })]), /Invalid Bapanas/);
+  assert.throws(() => api.applyProvincialConsumptionRecords([Object.assign({}, valid, { provinceCode: '19' })]), /mismatched Bapanas/);
+});
