@@ -841,3 +841,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Bumped `kabkotaConsumptionSeedVersion` from 3 to 4 to migrate existing saves and merge the two newly verified locality profiles.
 - Added tests for 3172/3175 values, all five non-3101 locality snapshots, six-locality/156-row coverage and the locality quote spread. Full 514-locality coverage remains pending.
 - Source evidence is the Bapanas 2025 rendered table at https://data.badanpangan.go.id/datasetpublications/4wx/rata-rata-konsumsi-kab-kota. The complete bulk resource file remains inaccessible through the current retrieval path; only directly rendered rows were ingested.
+
+
+### Final green gate — all six DKI locality profiles (2026-11-09)
+
+- Corrected seed commit `9d73c28612bca9aa94ef55800c111418de6a1adc` and test commit `613c71227b2c6f3d1ef29e1993b012f768390573` cover six DKI locality profiles (156 leaf records).
+- GitHub Actions run `42551355735` completed SUCCESS: 52 tests, 52 passed, 0 failed. All benchmark guards and all standalone regression tests also completed successfully.
+- This validates the six DKI locality sample only. It does not validate the remaining 508 of 514 localities, official locality population weights, BPS non-household demand, or local order-book settlement.
