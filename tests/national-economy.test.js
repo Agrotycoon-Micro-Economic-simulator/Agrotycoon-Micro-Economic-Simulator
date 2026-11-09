@@ -534,34 +534,32 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(report.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
-test('official maize total-use projection becomes physical NPC market demand without double-counting direct household consumption', () => {
+test('official maize total-use projection is stored as physical demand without corrupting index-unit market stocks', () => {
   vm.runInContext("S = { name: 'maize-total-market-demand-runtime' }", context);
   const api = context.AgroNationalEconomy;
   const real = context.REAL_ECONOMIC_DATA;
   const maize = real.maizeNationalDemand;
   const state = api.ensure();
-  const expectedAnnualGameKg = maize.nationalBalanceProjection2025.totalNeedTon * 1000 *
-    api.population / maize.populationDenominator.value;
-  const annualDemand = api.provinces.reduce((sum, province) =>
-    sum + state.provinces[province.id].demand.jagung * 12, 0);
-  assert.ok(Math.abs(annualDemand - expectedAnnualGameKg) < 1e-5);
   const lampung = state.provinces.lampung;
-  assert.equal(lampung.physicalDemand.jagung.annualPerCapita, maize.directFoodConsumption2024.value);
-  assert.equal(lampung.regionalPhysicalDemand.jagung.annualPerCapita, 1.0);
-  assert.ok(Math.abs(lampung.consumptionPressure.jagung -
-    lampung.baseConsumptionPressure.jagung * (1.0 / 1.5)) < 1e-10,
-    'regional direct-food pressure remains separately available as a household signal');
+  const demandIndexBefore = lampung.demand.jagung;
+  const productionIndexBefore = lampung.production.jagung;
+  const inventoryIndexBefore = lampung.inventory.jagung;
+  const annualDemandKg = maize.nationalBalanceProjection2025.totalNeedTon * 1000 *
+    api.population / maize.populationDenominator.value;
+  assert.equal(lampung.totalMarketDemand2025.jagung.unit, 'kg');
+  assert.ok(Math.abs(lampung.totalMarketDemand2025.jagung.annualTotalKg -
+    annualDemandKg * (lampung.population / api.population)) < 1e-5);
   assert.equal(lampung.totalMarketDemand2025.jagung.scope,
     'all_channel_total_need_including_feed_and_other_uses');
-  assert.equal(lampung.totalMarketDemand2025.jagung.sourceTotalNeedTon,
-    maize.nationalBalanceProjection2025.totalNeedTon);
   assert.equal(lampung.totalMarketDemand2025.jagung.unitCompatibilityStatus,
-    'tonne_to_kg_mass_conversion_only_moisture_basis_not_explicit_in_demand_source');
+    'physical_demand_reference_only_supply_stock_conversion_pending');
+  assert.equal(lampung.totalMarketDemand2025.jagung.marketQuantityStatus,
+    'not_converted_to_legacy_market_index');
+  assert.equal(lampung.demand.jagung, demandIndexBefore);
+  assert.equal(lampung.production.jagung, productionIndexBefore);
+  assert.equal(lampung.inventory.jagung, inventoryIndexBefore);
   assert.equal(state.national.marketDemandReference2025.jagung.sourcePrecisionDifferenceTon, 163);
   assert.equal(state.national.marketDemandReference2025.jagung.roundedSummaryTotalNeedTon, 14720000);
-  const before = lampung.demand.jagung;
-  api.ensure();
-  assert.equal(lampung.demand.jagung, before, 'projection migration must be idempotent');
   assert.equal(state.national.marketSupplyReference2025.jagung.officialNationalProductionTon,
     real.maizeProduction2025.productionAt14MoistureTon);
   assert.equal(state.national.marketSupplyReference2025.jagung.regionalAllocationStatus,
@@ -570,38 +568,44 @@ test('official maize total-use projection becomes physical NPC market demand wit
     'not_compared_with_projected_demand_due_to_source_scope_and_methodology');
   api.updateDay(1);
   assert.ok(lampung.dailyDemand.jagung > 0);
-  const registry = api.runtimeDataRegistry();
-  assert.ok(registry.verified.some(entry => entry.id === 'kementan_maize_total_demand_projection_2025'));
-  assert.ok(registry.verified.some(entry => entry.id === 'bps_maize_production_2025'));
   const audit = api.runtimeDataUsageAudit();
   assert.equal(audit.audit.maizeTotalMarketDemand.runtimeApplied, true);
   assert.equal(audit.audit.maizeProductionReference.runtimeApplied, true);
   assert.equal(audit.audit.allVerifiedDatasetsRuntimeBound, true);
 });
 
-test('legacy national economy saves migrate maize NPC quantities once while preserving stock cover ratios', () => {
+
+test('legacy national economy saves preserve index quantities when maize physical demand reference is applied', () => {
   vm.runInContext("S = { name: 'maize-demand-save-migration' }", context);
   const api = context.AgroNationalEconomy;
   const state = api.ensure();
   const lampung = state.provinces.lampung;
-  const oldMonthlyDemand = lampung.population / 1000;
-  lampung.demand.jagung = oldMonthlyDemand;
-  lampung.production.jagung = oldMonthlyDemand / 30 * 1.18;
-  lampung.inventory.jagung = oldMonthlyDemand * 0.5;
-  lampung.reserve.jagung = oldMonthlyDemand * 0.25;
-  lampung.unmetDemand.jagung = oldMonthlyDemand * 0.05;
+  const oldMonthlyDemandIndex = lampung.population / 1000;
+  lampung.demand.jagung = oldMonthlyDemandIndex;
+  lampung.production.jagung = oldMonthlyDemandIndex / 30 * 1.18;
+  lampung.inventory.jagung = oldMonthlyDemandIndex * 0.5;
+  lampung.reserve.jagung = oldMonthlyDemandIndex * 0.25;
+  lampung.unmetDemand.jagung = oldMonthlyDemandIndex * 0.05;
   delete state.maizeTotalDemandRuntimeVersion;
+  const before = {
+    demand: lampung.demand.jagung,
+    production: lampung.production.jagung,
+    inventory: lampung.inventory.jagung,
+    reserve: lampung.reserve.jagung,
+    unmetDemand: lampung.unmetDemand.jagung
+  };
   api.ensure();
-  const expectedMonthlyDemand = context.REAL_ECONOMIC_DATA.maizeNationalDemand.nationalBalanceProjection2025.totalNeedTon *
-    1000 / context.REAL_ECONOMIC_DATA.maizeNationalDemand.populationDenominator.value *
-    lampung.population / 12;
-  assert.ok(Math.abs(lampung.demand.jagung - expectedMonthlyDemand) < 1e-8);
-  assert.ok(Math.abs(lampung.inventory.jagung / lampung.demand.jagung - 0.5) < 1e-10);
-  assert.ok(Math.abs(lampung.reserve.jagung / lampung.demand.jagung - 0.25) < 1e-10);
-  assert.ok(Math.abs(lampung.unmetDemand.jagung / lampung.demand.jagung - 0.05) < 1e-10);
-  assert.ok(Math.abs(lampung.production.jagung / lampung.demand.jagung - (1.18 / 30)) < 1e-10);
-  assert.equal(state.maizeTotalDemandRuntimeVersion, 1);
+  assert.equal(lampung.demand.jagung, before.demand);
+  assert.equal(lampung.production.jagung, before.production);
+  assert.equal(lampung.inventory.jagung, before.inventory);
+  assert.equal(lampung.reserve.jagung, before.reserve);
+  assert.equal(lampung.unmetDemand.jagung, before.unmetDemand);
+  assert.equal(lampung.totalMarketDemand2025.jagung.unit, 'kg');
+  assert.equal(lampung.totalMarketDemand2025.jagung.marketQuantityStatus,
+    'not_converted_to_legacy_market_index');
+  assert.equal(state.maizeTotalDemandRuntimeVersion, 2);
 });
+
 
 test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
   const api = context.AgroNationalEconomy;
