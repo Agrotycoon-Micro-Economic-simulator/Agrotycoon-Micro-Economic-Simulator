@@ -1123,3 +1123,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression coverage includes national demand conservation across 38 provinces, separate household-vs-all-channel signals, source precision discrepancy, runtime daily demand, registry/audit, and one-time legacy-save migration preserving stock-cover ratios.
 - Code/test checkpoint: `4d7bbadac10b84876232347b1da388d3383b50fd`. GitHub Actions run **42585406367** completed **SUCCESS**, with **100/100 Node tests** and the benchmark guards, browser smoke setup and standalone regression suite all successful: https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42585406367
 - Open work: do not allocate BPS national final production across provinces without a verified provincial distribution. Do not treat 14.72 Mt total demand as household consumption. More crop-specific physical-demand runtime integration requires verified demand scope, unit, product form and population denominators.
+
+
+## Physical daily-demand ledger (2026-11-09)
+
+- `runDaily()` now calculates a separate `dailyPhysicalDemand` ledger in kg/day from verified physical demand records. Province-level verified records take precedence over national per-capita anchors; the official all-channel maize projection takes precedence over the household-only maize anchor.
+- Bapanas monthly coefficients are applied to the corresponding commodity physical-demand ledger using the 30-day simulation month. Commodities without a verified monthly coefficient use an even 1/12 annual allocation per 30-day game month.
+- The aggregate is exposed as `national.dailyPhysicalDemandKg` with unit `kg/day`; province snapshots expose `dailyPhysicalDemand`.
+- This ledger is deliberately not fed into the legacy synthetic inventory, production, unmet-demand index, NPC order-book quantities, or price index. Those quantities do not yet share a verified physical kg basis. Order-book settlement remains blocked pending provincial physical supply, conversion/yield/loss factors, and stock-unit reconciliation.
+- The former maize special-case that suppressed consumption pressure was removed; legacy index demand continues to use the validated consumption-pressure signal, independently of the physical kg ledger.
+- Tests assert daily kg demand, monthly coefficient application, national aggregation, snapshot exposure, and preservation of the dimensional boundary.
