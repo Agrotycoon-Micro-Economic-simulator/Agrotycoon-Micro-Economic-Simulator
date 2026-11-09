@@ -11,7 +11,7 @@ const catalog = [
   { id: 'padi', marketFloor: 5000, marketCeiling: 20000 }
 ];
 const province = (overrides = {}) => ({
-  id: 'lampung', prices: { jagung: 1.2, padi: 0.9 },
+  id: 'lampung', prices: { jagung: 1.2, padi: 0.9 }, inventory: { jagung: 80, padi: 0 },
   dailyProduction: { jagung: 120, padi: 0 }, unmetDemand: { jagung: 15, padi: 40 }, ...overrides
 });
 const getPrice = id => ({ jagung: 6000, padi: 12000 }[id] || null);
@@ -24,8 +24,8 @@ test('NPC proposals use regional daily production and unmet demand with explicit
   assert.equal(result.summary.buyCount, 2);
   const supply = result.orders.find(order => order.side === 'sell');
   const demand = result.orders.find(order => order.side === 'buy' && order.commodityId === 'jagung');
-  assert.equal(supply.quantity, 120);
-  assert.equal(supply.quantityBasis, 'modeled_daily_regional_production');
+  assert.equal(supply.quantity, 80);
+  assert.equal(supply.quantityBasis, 'regional_marketable_inventory_after_daily_demand');
   assert.equal(demand.quantity, 15);
   assert.equal(demand.quantityBasis, 'regional_unmet_demand_after_inventory');
   assert.equal(supply.regionId, 'lampung');
@@ -44,7 +44,7 @@ test('NPC order IDs and order sequence are deterministic and region-scoped', () 
   assert.deepEqual(Array.from(a.orders, order => order.sequence), [1, 2, 3]);
   assert.ok(a.orders.every(order => order.orderId.includes('11-lampung-')));
 });
-test('NPC proposal quantities are never inferred from aggregate inventory or reserves', () => {
+test('NPC sell proposals use marketable inventory, not gross production or government reserves', () => {
   const result = context.AgroNpcOrderGenerator.buildDailyOrders({
     day: 3, provinces: [province({ inventory: { jagung: 999999 }, reserve: { jagung: 999999 }, dailyProduction: { jagung: 0 }, unmetDemand: { jagung: 0 } })],
     catalog, getPrice
