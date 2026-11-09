@@ -13,7 +13,7 @@ const context = vm.createContext({
   }
 });
 context.window = context;
-for (const file of ['js/commodities.js', 'js/market_engine.js', 'js/state.js', 'js/player_order_book.js']) {
+for (const file of ['js/commodities.js', 'js/market_engine.js', 'js/state.js', 'js/commodity_storage.js', 'js/player_order_book.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
 }
 function freshState() {
@@ -168,4 +168,65 @@ test('invalid NPC proposal batch is rejected without replacing the previous batc
   assert.equal(result.ok, false);
   assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 1);
   assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders[0].orderId, valid.orderId);
+});
+
+
+test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain only the unfilled reservation', () => {
+  freshState();
+  vm.runInContext("S.day = 1; S.playerRegionId = 'lampung'; S.gold = 1000000; S.landSystem.inventory.jagung = 10; S.landSystem.inventoryCost.jagung = 50000; S.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cogs: 0, cashIn: 0, cashOut: 0 }; S.ledger = [];", context);
+  const price = context.MARKET_ENGINE.getPrice('jagung');
+  const player = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'sell', quantity: 5, limitPrice: price });
+  assert.equal(player.ok, true);
+  const npc = {
+    orderId: 'npc-demand-1-lampung-jagung', commodityId: 'jagung', side: 'buy',
+    quantity: 3, limitPrice: price, createdAt: 1, expiresAt: 2, actorType: 'npc',
+    ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1
+  };
+  assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 1).ok, true);
+  const beforeCash = vm.runInContext('S.gold', context);
+  const result = context.AgroPlayerOrderBook.matchAndSettle(1);
+  assert.equal(result.ok, true);
+  assert.equal(result.settledPlayerFillCount, 1);
+  assert.equal(result.executedQuantity, 3);
+  assert.equal(vm.runInContext('S.gold', context), beforeCash + 3 * price);
+  assert.equal(vm.runInContext('S.landSystem.inventory.jagung', context), 7);
+  assert.equal(vm.runInContext('S.landSystem.inventoryCost.jagung', context), 35000);
+  assert.equal(vm.runInContext('S.dayLog.gross', context), 3 * price);
+  assert.equal(vm.runInContext('S.dayLog.cogs', context), 15000);
+  const snapshot = context.AgroPlayerOrderBook.snapshot();
+  assert.equal(snapshot.orders[0].status, 'open');
+  assert.equal(snapshot.orders[0].remainingQuantity, 2);
+  assert.equal(snapshot.reservedInventory.jagung, 2);
+  assert.equal(snapshot.trades[0].settlement, 'player_settled');
+  assert.equal(snapshot.trades[0].quantity, 3);
+});
+
+test('partial player buy fills debit only executed notional and create valued, age-tracked inventory lots', () => {
+  freshState();
+  vm.runInContext("S.day = 4; S.playerRegionId = 'lampung'; S.gold = 1000000; S.landSystem.inventory = {}; S.landSystem.inventoryCost = {}; S.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cogs: 0, cashIn: 0, cashOut: 0 }; S.ledger = [];", context);
+  const price = context.MARKET_ENGINE.getPrice('jagung');
+  const player = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 5, limitPrice: price });
+  assert.equal(player.ok, true);
+  const npc = {
+    orderId: 'npc-supply-4-lampung-jagung', commodityId: 'jagung', side: 'sell',
+    quantity: 3, limitPrice: price, createdAt: 4, expiresAt: 5, actorType: 'npc',
+    ownerId: 'npc-producer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1
+  };
+  assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 4).ok, true);
+  const beforeCash = vm.runInContext('S.gold', context);
+  const result = context.AgroPlayerOrderBook.matchAndSettle(4);
+  assert.equal(result.ok, true);
+  assert.equal(result.settledPlayerFillCount, 1);
+  assert.equal(vm.runInContext('S.gold', context), beforeCash - 3 * price);
+  assert.equal(vm.runInContext('S.landSystem.inventory.jagung', context), 3);
+  assert.equal(vm.runInContext('S.landSystem.inventoryCost.jagung', context), 3 * price);
+  assert.equal(vm.runInContext('S.dayLog.businessPurchases', context), 3 * price);
+  const lots = vm.runInContext('S.landSystem.storageLots', context);
+  assert.equal(lots.length, 1);
+  assert.equal(lots[0].quantity, 3);
+  assert.equal(lots[0].unitCost, price);
+  assert.equal(lots[0].receivedDay, 4);
+  const snapshot = context.AgroPlayerOrderBook.snapshot();
+  assert.equal(snapshot.orders[0].remainingQuantity, 2);
+  assert.equal(snapshot.reservedCash, 2 * price);
 });
