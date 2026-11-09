@@ -239,6 +239,38 @@ window.REAL_ECONOMIC_DATA={
   note:"All 38 provincial rows are loaded from the BPS 2025 table. Provincial GKG rows sum to 60,207,098 tonnes, 3 tonnes below the published national total of 60,207,101; preserve this source arithmetic discrepancy instead of forcing a false reconciliation. Rice-equivalent provincial rows sum exactly to 34,690,959 tonnes. Annual totals are not divided into daily production; harvest timing, moisture-loss and paddy-to-rice processing remain separate model stages."
  },
 
+ horticultureNationalProduction2025:{
+  geography:"Indonesia",
+  referenceYear:2025,
+  unit:"quintal/year",
+  conversion:{kgPerQuintal:100,tonnePerQuintal:0.1},
+  source:{publisher:"Badan Pusat Statistik / Kementerian Pertanian Direktorat Jenderal Hortikultura",title:"Produksi Tanaman Sayuran dan Buah-Buahan Semusim Menurut Jenis Tanaman, 2025",url:"https://www.bps.go.id/id/statistics-table/3/VFV4MmQxaG9kakZrVUdWeEx6aDFUMnN6WmpocVp6MDkjMw%3D%3D/produksi-tanaman-sayuran-dan-buah---buahan-semusim-menurut-jenis-tanaman--2022.html",lastUpdated:"2026-05-25",sourceUnit:"kuintal (kw/qui)",qualityStatus:"official_national_annual_production_table"},
+  status:"official_statistic_final_national_commodity_rows",
+  coverage:{verifiedCommodityCount:18,totalCatalogCommodities:60,coverageStatus:"partial_national_commodity_rows_no_provincial_split"},
+  records:{
+   bawang_merah:{sourceCommodity:"Bawang Merah",productionQuintal:21861568.44,productionKg:2186156844},
+   bawang_putih:{sourceCommodity:"Bawang Putih",productionQuintal:368616.73,productionKg:36861673},
+   bayam:{sourceCommodity:"Bayam",productionQuintal:1718827.65,productionKg:171882765},
+   cabai_rawit:{sourceCommodity:"Cabai Rawit",productionQuintal:17431254.35,productionKg:1743125435},
+   kacang_panjang:{sourceCommodity:"Kacang Panjang",productionQuintal:2845721.90,productionKg:284572190},
+   kangkung:{sourceCommodity:"Kangkung",productionQuintal:3207123.27,productionKg:320712327},
+   kentang:{sourceCommodity:"Kentang",productionQuintal:12495928.09,productionKg:1249592809},
+   mentimun:{sourceCommodity:"Ketimun",productionQuintal:4131375.86,productionKg:413137586},
+   kubis:{sourceCommodity:"Kubis",productionQuintal:13999169.82,productionKg:1399916982},
+   melon:{sourceCommodity:"Melon",productionQuintal:1139648.58,productionKg:113964858},
+   sawi:{sourceCommodity:"Petsai/Sawi",productionQuintal:6511039.92,productionKg:651103992},
+   semangka:{sourceCommodity:"Semangka",productionQuintal:3630095.45,productionKg:363009545},
+   stroberi:{sourceCommodity:"Stroberi",productionQuintal:441148.98,productionKg:44114898},
+   terong:{sourceCommodity:"Terung",productionQuintal:6820915.88,productionKg:682091588},
+   tomat:{sourceCommodity:"Tomat",productionQuintal:12279486.10,productionKg:1227948610},
+   wortel:{sourceCommodity:"Wortel",productionQuintal:6517285.33,productionKg:651728533},
+   cabai_merah:{sourceCommodity:"Cabai Besar/TW/Teropong + Cabai Keriting",components:[{sourceCommodity:"Cabai Besar/TW/Teropong",productionQuintal:3871164.47},{sourceCommodity:"Cabai Keriting",productionQuintal:13279127.34}],productionQuintal:17150291.81,productionKg:1715029181},
+   jamur_tiram:{sourceCommodity:"Jamur Tiram",productionQuintal:391216.99,productionKg:39121699}
+  },
+  runtimeUse:"national_annual_supply_reference_only_no_provincial_or_daily_allocation",
+  note:"The source is national annual production. It is not allocated to provinces, monthly harvest or daily NPC stock. Cabai Merah combines the BPS rows for big chili and curly chili; this mapping is explicit. BPS uses '–' for zero/no production and NA for unavailable values; no absent row has been fabricated."
+ },
+
  utpBroilerBenchmark2024:{
   geography:"Indonesia",
   unitType:"UTP",
