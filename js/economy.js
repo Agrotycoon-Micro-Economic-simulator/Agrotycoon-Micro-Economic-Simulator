@@ -357,7 +357,7 @@ function takeCoconut(){
  if(S.quarterUsed>0){
   const unitCost=Math.max(0,Number(S.quarterCost)||3500);
   S.quarterUsed++;
-  if(S.quarterUsed>=4){S.quarterUsed=0;S.quarterCost=0;}
+  if(S.quarterUsed>=4){S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}
   return {cost:unitCost/4,account:'Persediaan Kelapa Dalam Proses'};
  }
  const qty=stockQty();
@@ -366,7 +366,7 @@ function takeCoconut(){
  const unitCost=stockValue/qty;
  if(S.stock.biasa>0)S.stock.biasa--;else S.stock.super--;
  S.stockCostValue=Math.max(0,stockValue-unitCost);
- S.quarterUsed=1;S.quarterCost=unitCost;S.dayLog.materials.kelapa++;
+ S.quarterUsed=1;S.quarterCost=unitCost;S.quarterOpenedDay=Number(S.day)||0;S.dayLog.materials.kelapa++;
  // Remove the whole coconut from raw stock, but transfer the unconsumed 3/4 into work in process.
  const remainingCost=unitCost-(unitCost/4);
  if(remainingCost>0)transferInventoryValue('Transfer sisa kelapa ke persediaan dalam proses',remainingCost,'Persediaan Kelapa','Persediaan Kelapa Dalam Proses');
