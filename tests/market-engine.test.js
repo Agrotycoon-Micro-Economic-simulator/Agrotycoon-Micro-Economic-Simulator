@@ -315,3 +315,28 @@ test('60-item catalog exposes explicit market-unit evidence status without conve
     assert.ok(reference.evidenceLinks.every(url => /^https:\/\//.test(url) || url.startsWith('docs/')), id + ' has invalid evidence link');
   }
 });
+
+
+test('market matcher prevents fills across incompatible physical and legacy quantity contracts', () => {
+  const market = context.MARKET_ENGINE;
+  const price = market.byId.jagung.marketPrice;
+  const buy = makeOrder({
+    orderId: 'buy-physical-kg', side: 'buy', quantity: 5, limitPrice: price,
+    quantityUnit: 'kg',
+    quantityCalibrationStatus: 'verified_physical_quantity',
+    quantityScaleStatus: 'physical_unit_calibrated'
+  });
+  const sell = makeOrder({
+    orderId: 'sell-legacy-index', side: 'sell', quantity: 5, limitPrice: price,
+    quantityUnit: 'unconverted_simulation_market_units',
+    quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending',
+    quantityScaleStatus: 'unconverted_legacy_simulation_index'
+  });
+  const result = market.matchOrderBook([buy, sell], { now: 1 });
+  assert.equal(result.fills.length, 0);
+  assert.equal(result.quantityMismatches.length, 1);
+  assert.equal(result.quantityMismatches[0].reason, 'quantity_contract_mismatch');
+  assert.equal(result.quantityMismatches[0].buyQuantityUnit, 'kg');
+  assert.equal(result.quantityMismatches[0].sellQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(result.openOrders.length, 2);
+});
