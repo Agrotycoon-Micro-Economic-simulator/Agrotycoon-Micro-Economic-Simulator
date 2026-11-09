@@ -1133,3 +1133,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - This ledger is deliberately not fed into the legacy synthetic inventory, production, unmet-demand index, NPC order-book quantities, or price index. Those quantities do not yet share a verified physical kg basis. Order-book settlement remains blocked pending provincial physical supply, conversion/yield/loss factors, and stock-unit reconciliation.
 - The former maize special-case that suppressed consumption pressure was removed; legacy index demand continues to use the validated consumption-pressure signal, independently of the physical kg ledger.
 - Tests assert daily kg demand, monthly coefficient application, national aggregation, snapshot exposure, and preservation of the dimensional boundary.
+
+## Provincial maize production references (2026-11-09)
+
+- `js/real_economic_data.js` now contains `maizeProvincialProduction2025Partial`: official final BPS 2025 provincial production references for Lampung and Nusa Tenggara Barat (NTB), both dry shelled maize at 14% moisture.
+- Lampung: 1.26 million tonnes; harvested area 194.49 thousand ha; BPS Lampung release 2026-02-05: https://lampung.bps.go.id/id/pressrelease/2026/02/05/1636/pada-2025--luas-panen-jagung-pipilan-mencapai-194-49-ribu-hektare-dengan-produksi-jagung-pipilan-kering-kadar-air-14-persen-sebanyak-1-26-juta-ton-.html
+- NTB: 1.18 million tonnes; harvested area 173.09 thousand ha; BPS NTB release 2026-02-02: https://ntb.bps.go.id/id/pressrelease/2026/02/02/1115/corn-harvest-area-and-production-in-west-nusa-tenggara-province-in-2025--fixed-figures-.html
+- Both figures are rounded abstract values, not exact tonnes. Runtime metadata records their precision and provenance. The dataset is partial (2/38 provinces), not a complete supply distribution.
+- `js/national_economy.js` attaches these observations to `national.marketSupplyReference2025.jagung.provincialProduction2025Partial`, registers them, and includes them in `runtimeDataUsageAudit()`.
+- **Not used as daily NPC production, inventory, order-book stock, or price input.** Rounded annual totals are reference-only. No residual national production is distributed to the remaining 36 provinces.
+- Test coverage checks source coverage, unit/moisture basis, values, registry binding, audit consumption, and the explicit no-daily-supply boundary.
+- Next: ingest the complete BPS 2025 provincial table with exact monthly tonnage for all 38 provinces (or another official exact table), verify monthly totals against national totals, then model harvest timing and post-harvest loss before converting output into NPC physical stock.
+- CI status for this change set must be read from the latest branch workflow result; an empty commit status is not a passing test result.
