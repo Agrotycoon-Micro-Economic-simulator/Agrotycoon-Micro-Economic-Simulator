@@ -27,9 +27,9 @@
       catalog.forEach(item => {
         if (!item || !item.id) return;
         const id = String(item.id);
-        const production = positive(province.dailyProduction && province.dailyProduction[id]);
+        const marketableStock = positive(province.inventory && province.inventory[id]);
         const unmetDemand = positive(province.unmetDemand && province.unmetDemand[id]);
-        if (production <= 0 && unmetDemand <= 0) return;
+        if (marketableStock <= 0 && unmetDemand <= 0) return;
         const nationalPrice = positive(getPrice(id));
         if (nationalPrice <= 0) return;
         const index = positive(province.prices && province.prices[id]) || 1;
@@ -44,12 +44,12 @@
           calibrationStatus: "experimental_regional_simulation_aggregate",
           sourceRegion: "AgroNationalEconomy.provinceSnapshot", sourceDay: day
         };
-        if (production > 0) {
+        if (marketableStock > 0) {
           sequence += 1;
           orders.push(Object.assign({}, common, {
             orderId: "npc-supply-" + day + "-" + regionId + "-" + id,
-            side: "sell", quantity: production, ownerId: "npc-producer-pool-" + regionId,
-            sequence, quantityBasis: "modeled_daily_regional_production"
+            side: "sell", quantity: marketableStock, ownerId: "npc-producer-pool-" + regionId,
+            sequence, quantityBasis: "regional_marketable_inventory_after_daily_demand"
           }));
         }
         if (unmetDemand > 0) {
