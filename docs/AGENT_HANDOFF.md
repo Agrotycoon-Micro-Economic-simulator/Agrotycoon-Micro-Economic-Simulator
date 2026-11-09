@@ -1330,3 +1330,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Test coverage now checks evidence links for the expanded registry and validates selected newly mapped units.
 - Node execution and CI remain pending; source/static verification is not a test pass.
 - Remaining catalog IDs without a physical reference remain `butuh_riset_lanjutan`; they must be filled only after exact unit/form evidence is verified.
+
+## 2026-11-10 — second official Kementan producer-unit expansion
+
+- Expanded the physical-unit registry from **24 to 33 unique commodity IDs** using exact tables in Kementan Pusdatin, *Statistik Harga Komoditas Pertanian 2025*.
+- Added: kacang panjang (Table 2.14), kangkung (2.15), kentang (2.16), ketimun/mentimun (2.17), kol/kubis (2.18), terong (2.19), pepaya (2.24), semangka (2.28), and kakao (2.33). The cited producer-price tables state **Rp/Kg**.
+- Product-form labels follow the printed commodity names where relevant: ketimun/mentimun and kol/kubis. No kg conversion factor was introduced; these are unit references only.
+- Corrected a contradictory regression assertion that previously expected `kedelai.marketUnitReference` to be null immediately before asserting it was `kg`. The test now consistently requires the verified reference.
+- Remaining catalog entries are still `butuh_riset_lanjutan` and must not be assigned units by inference. In particular, tea is not promoted from the consumer-price table because that would be the wrong price stage for the current producer-unit registry.
+- Static source/test inspection completed. Node execution and CI remain pending; no test pass is claimed.
