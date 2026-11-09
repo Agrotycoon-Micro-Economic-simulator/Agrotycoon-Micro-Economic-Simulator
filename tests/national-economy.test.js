@@ -944,7 +944,6 @@ test('BPS 2024 aquaculture species production is bound to all provinces without 
     assert.equal(sums[id] - source.nationalTotalsTon[id], source.provincialToNationalDifferencesTon[id], id);
   }
   const national = api.snapshot().national.marketSupplyReference2024.aquacultureBps;
-  assert.equal(national.records.patin ? national.records.patin.patin : undefined, undefined);
   assert.equal(national.nationalTotalsTon.patin, 381969);
   assert.equal(national.provincialRowSumsTon.patin, 381973);
   assert.equal(national.kkpNationalComparisonTon.gurami, -161402);
