@@ -46,7 +46,7 @@ test('NPC order IDs and order sequence are deterministic and region-scoped', () 
 });
 test('NPC sell proposals use marketable inventory, not gross production or government reserves', () => {
   const result = context.AgroNpcOrderGenerator.buildDailyOrders({
-    day: 3, provinces: [province({ inventory: { jagung: 999999 }, reserve: { jagung: 999999 }, dailyProduction: { jagung: 0 }, unmetDemand: { jagung: 0 } })],
+    day: 3, provinces: [province({ inventory: { jagung: 0, padi: 0 }, reserve: { jagung: 999999 }, dailyProduction: { jagung: 999999 }, unmetDemand: { jagung: 0, padi: 0 } })],
     catalog, getPrice
   });
   assert.equal(result.orders.length, 0);
