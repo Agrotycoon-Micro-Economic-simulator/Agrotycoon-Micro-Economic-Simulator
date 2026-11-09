@@ -1079,3 +1079,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - The run includes the final 60-ID profile coverage fix, ambient/refrigerated baseline correction, FIFO lot-array synchronization, and expired-lot inventory/value write-off path.
 - Earlier push runs during incremental development failed on intermediate commits because the catalog registry omitted `kelapa`, flood-risk escalation was being overridden by expiry classification, and FIFO filtering was not written back to `state.landSystem.storageLots`. Those root causes were corrected before the successful run; do not report the intermediate failed runs as current state.
 - The subsequent documentation-only commits update this handoff and national model description; code tested by run 42571729040 is unchanged by those documentation commits.
+
+
+## Runtime data-binding guard — 2026-11-09
+
+- Latest feature-branch HEAD at this checkpoint: `af141267b45b61dbf96934b94c876efd7dfd5733`.
+- Verified numeric datasets are not merely exposed through `runtimeDataRegistry()`; `js/national_economy.js` now exposes `runtimeDataUsageAudit()`, which checks that each verified dataset reaches a live runtime calculation/state: Bapanas national consumption model, Bapanas monthly seasonal demand, verified Lampung provincial consumption, verified Kepulauan Seribu kab/kota consumption, BPS DKI kab/kota population weights, physical demand anchors, and the administrative master.
+- `tests/national-economy.test.js` now requires every verified dataset to report runtime application. This is a binding/usage guard, not a claim that pending datasets are complete.
+- BPS Non-Rumah Tangga 2025 remains pending because numeric extraction has not been verified; it is intentionally excluded from runtime demand totals.
+- No changes to `main`, `peta.html`, or `js/map_engine.js`.
+- CI for this newest checkpoint has not yet been observed as completed green; do not report it as passed until GitHub Actions provides a completed result.
