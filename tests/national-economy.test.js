@@ -262,7 +262,14 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   const local = api.localityConsumptionSnapshot('3101');
   assert.ok(local);
   assert.equal(local.localityName, 'Administrasi Kepulauan Seribu');
-  assert.equal(local.recordCount, 5);
+  assert.equal(local.recordCount, 26);
+  assert.equal(local.rows.terigu.annualPerCapita, 13.1);
+  assert.equal(local.rows.daging_unggas.annualPerCapita, 9);
+  assert.equal(local.rows.ikan.annualPerCapita, 45.4);
+  assert.equal(local.rows.minyak_sawit.annualPerCapita, 14.3);
+  assert.equal(local.rows.sayur.annualPerCapita, 47.1);
+  assert.equal(local.rows.buah.annualPerCapita, 35.9);
+  assert.equal(local.rows.umbi_lainnya.annualPerCapita, 0);
   assert.equal(local.rows.beras.annualPerCapita, 88.6);
   assert.equal(local.rows.jagung.annualPerCapita, 0.2);
   assert.equal(local.physicalDemand.jagung.annualPerCapita, 0.2);
@@ -271,6 +278,8 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   assert.ok(Number.isFinite(quote));
   assert.ok(quote < api.quote('dki-jakarta', 'jagung', 5992));
   assert.equal(state.kabkotaConsumptionCoverage.status, 'partial_verified_observations');
+  assert.equal(state.kabkotaConsumptionSeedVersion, 2);
+  assert.ok(api.quoteLocality('3101', 'lele', 26000) > 0);
 });
 
 test('kabupaten/kota Bapanas ingestion rejects invalid codes, units and duplicate commodity observations', () => {
