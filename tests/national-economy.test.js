@@ -112,17 +112,17 @@ test('Lampung supply shock changes its quote without cross-province price spillo
   control.eventChancePerProvinceMonthly = 0;
   control.government.procurementShare = 0;
   for (let day = 1; day <= 15; day++) api.updateDay(day);
-  const controlJakartaQuote = api.quote('dki-jakarta', 'padi', 1000);
+  const controlJakartaQuote = api.quote('dki-jakarta', 'padi', 6000);
 
   vm.runInContext("S = { name: 'lampung-isolation-test' }", context);
   const state = api.ensure();
   state.eventChancePerProvinceMonthly = 0;
   state.government.procurementShare = 0;
-  const beforeLampung = api.quote('lampung', 'padi', 1000);
+  const beforeLampung = api.quote('lampung', 'padi', 6000);
   api.applyDisaster({ provinceId: 'lampung', type: 'banjir', commodityIds: ['padi'], productionLossFraction: 0.95, logisticsLossFraction: 0.15, durationDays: 30 });
   for (let day = 1; day <= 15; day++) api.updateDay(day);
-  const afterLampung = api.quote('lampung', 'padi', 1000);
-  const afterJakarta = api.quote('dki-jakarta', 'padi', 1000);
+  const afterLampung = api.quote('lampung', 'padi', 6000);
+  const afterJakarta = api.quote('dki-jakarta', 'padi', 6000);
   assert.ok(afterLampung > beforeLampung);
   assert.equal(afterJakarta, controlJakartaQuote);
   assert.ok(state.government.monthlyReleased > 0);
@@ -772,9 +772,8 @@ test('only national disaster and war activate the emergency market-band authoriz
   const local = api.applyDisaster({ provinceId: 'lampung', type: 'banjir', productionLossFraction: 0.4, logisticsLossFraction: 0.2, durationDays: 10 });
   assert.equal(local.classification, 'SIMULATION');
   assert.equal(api.marketEmergencySnapshot(), null);
-  vm.runInContext("S.nationalEconomy.provinces.lampung.priceIndex.padi = 10", context);
   const padiCeiling = vm.runInContext("COMMODITIES.find(item => item.id === 'padi').marketCeiling", context);
-  assert.equal(api.quote('lampung', 'padi', 1000), padiCeiling);
+  assert.equal(api.quote('lampung', 'padi', 100000), padiCeiling);
   assert.throws(() => api.applyNationalEmergency({ type: 'earthquake', durationDays: 3 }), /Only national_disaster or war/);
 
   const emergency = api.applyNationalEmergency({ type: 'national_disaster', durationDays: 3, commodityIds: ['padi'], eventId: 'national-flood-1' });
@@ -787,15 +786,14 @@ test('only national disaster and war activate the emergency market-band authoriz
   assert.deepEqual(Array.from(snapshot.commodityIds), ['padi']);
   assert.equal(api.provinceSnapshot('aceh').activeEffects.padi.productionLoss, 0.25);
   assert.equal(api.provinceSnapshot('aceh').activeEffects.jagung, undefined);
-  assert.ok(api.quote('lampung', 'padi', 1000) > padiCeiling);
+  assert.ok(api.quote('lampung', 'padi', 100000) > padiCeiling);
   assert.throws(() => api.applyNationalEmergency({ type: 'war', durationDays: 2 }), /already active/);
 
   api.updateDay(1);
   assert.equal(api.marketEmergencySnapshot().active, true);
   api.updateDay(4);
   assert.equal(api.marketEmergencySnapshot(), null);
-  vm.runInContext("S.nationalEconomy.provinces.lampung.priceIndex.padi = 10", context);
-  assert.equal(api.quote('lampung', 'padi', 1000), padiCeiling);
+  assert.equal(api.quote('lampung', 'padi', 100000), padiCeiling);
   const war = api.applyNationalEmergency({ type: 'war', durationDays: 2, eventId: 'war-1' });
   assert.equal(war.type, 'war');
   assert.equal(api.marketEmergencySnapshot().active, true);
