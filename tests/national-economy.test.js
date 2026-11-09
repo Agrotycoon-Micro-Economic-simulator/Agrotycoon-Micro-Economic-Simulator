@@ -442,3 +442,33 @@ test('daily regional production and demand are exposed as executed runtime signa
   assert.equal(lampung.dailyDemand.jagung, state.provinces.lampung.dailyDemand.jagung);
   assert.equal(lampung.unmetDemand.jagung, state.provinces.lampung.unmetDemand.jagung);
 });
+
+
+test('executed NPC order-book fills consume regional marketable stock and satisfy only the matched unmet demand', () => {
+  vm.runInContext("S = { name: 'regional-order-book-settlement-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  const lampung = state.provinces.lampung;
+  lampung.inventory.jagung = 50;
+  lampung.unmetDemand.jagung = 20;
+  const result = api.applyOrderBookFills([{
+    fillId: 'fill-test-1', commodityId: 'jagung', regionId: 'lampung',
+    sellerId: 'npc-producer-pool-lampung', buyerId: 'npc-buyer-pool-lampung',
+    quantity: 10, price: 6200, executedAt: 1
+  }]);
+  assert.equal(result.ok, true);
+  assert.equal(result.applied, 1);
+  assert.equal(lampung.inventory.jagung, 40);
+  assert.equal(lampung.unmetDemand.jagung, 10);
+  assert.equal(lampung.tradeIndex.jagung.quantity, 10);
+  assert.equal(lampung.tradeIndex.jagung.notional, 62000);
+  const rejected = api.applyOrderBookFills([{
+    fillId: 'fill-test-2', commodityId: 'jagung', regionId: 'lampung',
+    sellerId: 'npc-producer-pool-lampung', buyerId: 'npc-buyer-pool-lampung',
+    quantity: 100, price: 6200, executedAt: 1
+  }]);
+  assert.equal(rejected.ok, false);
+  assert.equal(rejected.reason, 'regional_market_stock_shortfall:jagung');
+  assert.equal(lampung.inventory.jagung, 40);
+  assert.equal(lampung.unmetDemand.jagung, 10);
+});
