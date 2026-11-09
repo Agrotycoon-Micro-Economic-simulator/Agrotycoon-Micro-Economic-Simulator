@@ -131,6 +131,25 @@ for(const c of COMMODITIES){
 if(COMMODITIES.length!==60)throw new Error("Katalog harus berisi tepat 60 komoditas; saat ini "+COMMODITIES.length);
 const COMMODITY_BY_ID=Object.fromEntries(COMMODITIES.map(c=>[c.id,c]));
 
+// Physical market-unit references are kept separate from legacy game quantity indexes.
+// A reference unit does NOT mean existing NPC/player quantities have been converted.
+const MARKET_UNIT_REGISTRY=Object.freeze({
+ kelapa:{unit:"buah",productForm:"kelapa utuh",status:"owner_locked_reference_unit",source:"owner-locked direct retail benchmark; docs/COMMODITY_CHAIN_TIER_STANDARD.md",period:"owner benchmark"},
+ padi:{unit:"kg",productForm:"gabah; GKP/GKG basis unresolved",status:"reference_unit_form_basis_gate",source:"Bapanas monthly producer-price metadata; docs/COMMODITY_60_BULK_DATA_REGISTER.md",period:"2025-06; GKP is not GKG or milled rice"},
+ jagung:{unit:"kg",productForm:"jagung pipilan kering",status:"official_reference_unit_quality_gate",source:"Bapanas monthly producer-price metadata; docs/COMMODITY_60_BULK_DATA_REGISTER.md",period:"2025-06 and 2025-11; moisture/quality basis remains explicit"},
+ sapi_potong:{unit:"kg",productForm:"bobot hidup",status:"official_reference_unit_stage_locked",source:"Bapanas monthly producer-price metadata; docs/COMMODITY_60_BULK_DATA_REGISTER.md",period:"2025-06 live cattle producer price"},
+ ayam_pedaging:{unit:"ekor",productForm:"ayam ras hidup",status:"official_reference_unit_stage_locked",source:"Bapanas monthly producer-price metadata; docs/COMMODITY_60_BULK_DATA_REGISTER.md",period:"2025-06, 2025-11 and 2026-01; explicitly Rp/ekor hidup"},
+ kelapa_sawit:{unit:"kg",productForm:"tandan buah segar (TBS)",status:"cost_yield_reference_unit_scale_gate",source:"BPS SEP 2024 Table 2.8; docs/COMMODITY_60_BULK_AUDIT.md",period:"2024; production and cost/yield reference, not a current price quote"},
+ karet:{unit:"kg",productForm:"lateks",status:"cost_yield_reference_unit_scale_gate",source:"BPS SEP 2024 Table 2.9; docs/COMMODITY_60_BULK_AUDIT.md",period:"2024; production and cost/yield reference, not a current price quote"}
+});
+for(const c of COMMODITIES){
+ const reference=MARKET_UNIT_REGISTRY[c.id]||null;
+ c.marketUnitReference=reference?Object.assign({},reference):null;
+ c.marketUnitStatus=reference?reference.status:"butuh_riset_lanjutan";
+ c.quantityScaleStatus="unconverted_legacy_simulation_index";
+}
+if(typeof window!=="undefined")window.AgroCommodityUnits={version:"0.1.0",registry:MARKET_UNIT_REGISTRY};
+
 const COMMODITY_ECONOMICS={
  kelapa:{unit:"buah",growDays:1080,yieldPerCycle:20,cyclesDays:30,farmerPrice:3500,retailPrice:13000,processed:{name:"Es kelapa",outputUnit:"gelas",inputPerUnit:1,price:13000,otherCost:2500},notes:"Harga tengkulak mengikuti harga game kelapa yang sudah ada; bukan harga nasional yang seragam."},
  cabai_merah:{unit:"kg",growDays:100,yieldPer4m2:2.36,costPer4m2:24310,farmerPrice:27810,tengkulakPrice:25000,retailPrice:35000,processed:{id:"sambal_cabai_250g",name:"Sambal kemasan 250 g",inputKg:.25,price:18000,otherCost:4500,outputQty:1,outputUnit:"kemasan",inputTier:1,outputTier:4,routeId:"cabai-merah-to-sambal-250g"},notes:"Acuan statistik BPS SEP 2024: nilai produksi Rp159,09 juta/ha, biaya Rp60,78 juta/ha, produktivitas 0,59 kg/m², harga petani Rp27.810/kg dan biaya Rp13.340/kg. Game memakai 4 m² per unit petak; angka setup Rp24.310 sedikit di atas acuan biaya 4 m² untuk memasukkan biaya pengelolaan."},
