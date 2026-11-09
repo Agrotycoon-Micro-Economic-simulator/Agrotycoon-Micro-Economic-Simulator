@@ -76,6 +76,35 @@ test('all 60 player order contracts retain legacy scale and expose only verified
   assert.equal(context.AgroPlayerOrderBook.snapshot().orders.length, 60);
 });
 
+test('legacy saved player and NPC orders migrate to the same unconverted quantity contract', () => {
+  freshState();
+  vm.runInContext(`S.marketOrderBook = {
+    version: 1, sequence: 2, reservedCash: 0, reservedInventory: {},
+    orders: [{
+      orderId: 'legacy-player-sell', commodityId: 'jagung', side: 'sell', quantity: 2,
+      remainingQuantity: 2, limitPrice: 6000, createdAt: 1, expiresAt: 8,
+      actorType: 'player', ownerId: 'player', regionId: 'lampung', stage: 'producer',
+      sequence: 1, status: 'open'
+    }],
+    npcOrders: [{
+      orderId: 'legacy-npc-buy', commodityId: 'jagung', side: 'buy', quantity: 2,
+      remainingQuantity: 2, limitPrice: 6000, createdAt: 1, expiresAt: 2,
+      actorType: 'npc', ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung',
+      stage: 'producer', sequence: 2
+    }]
+  };`, context);
+  const snapshot = context.AgroPlayerOrderBook.snapshot();
+  for (const order of snapshot.orders.concat(snapshot.npcOrders)) {
+    assert.equal(order.quantityUnit, 'unconverted_simulation_market_units');
+    assert.equal(order.quantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+    assert.equal(order.quantityScaleStatus, 'unconverted_legacy_simulation_index');
+    assert.equal(order.referencePhysicalUnit, 'kg');
+    assert.equal(order.referenceProductForm, 'jagung pipilan kering');
+  }
+  assert.equal(snapshot.orders[0].quantityBasis, 'player_inventory_legacy_simulation_units');
+  assert.equal(snapshot.npcOrders[0].quantityBasis, 'legacy_npc_unmet_demand_index');
+});
+
 test('cancelling an open order releases its reservation and is idempotently rejected afterwards', () => {
   freshState();
   const result = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 2, limitPrice: 6000 });
