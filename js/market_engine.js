@@ -114,13 +114,111 @@
     return reprice(feed);
   }
 
+  // Local order-book matching primitive. This is a deterministic simulation engine,
+  // not a cross-player exchange or a ledger writer. Only returned fills are executions.
+  function matchOrderBook(orders, options) {
+    const opts = options || {};
+    const now = Number.isFinite(Number(opts.now)) ? Number(opts.now) : Date.now();
+    const input = Array.isArray(orders) ? orders : [];
+    const seen = new Set();
+    const accepted = [];
+    const rejected = [];
+    const expired = [];
+    input.forEach((source) => {
+      const order = source && typeof source === "object" ? source : {};
+      const id = String(order.orderId || "");
+      const side = String(order.side || "").toLowerCase();
+      const quantity = Number(order.quantity);
+      const price = Number(order.limitPrice);
+      const item = byId[order.commodityId];
+      const createdAt = Number(order.createdAt);
+      const expiresAt = order.expiresAt == null ? null : Number(order.expiresAt);
+      const invalid = !id || seen.has(id) || !item || !["buy", "sell"].includes(side) ||
+        !finitePositive(quantity) || !Number.isInteger(quantity) || !finitePositive(price) ||
+        !Number.isFinite(createdAt) || (expiresAt !== null && (!Number.isFinite(expiresAt) || expiresAt <= createdAt)) ||
+        !["player", "npc"].includes(String(order.actorType || "").toLowerCase()) ||
+        !String(order.ownerId || "") || !String(order.regionId || "") || !String(order.stage || "");
+      if (invalid) {
+        rejected.push({ orderId: id || null, reason: "invalid_order_contract" });
+        return;
+      }
+      seen.add(id);
+      const b = bounds(item);
+      if (price < b.floor || price > b.ceiling) {
+        rejected.push({ orderId: id, reason: "limit_price_outside_market_bounds" });
+        return;
+      }
+      if (expiresAt !== null && expiresAt <= now) {
+        expired.push({ orderId: id, remainingQuantity: quantity });
+        return;
+      }
+      accepted.push({
+        orderId: id, commodityId: item.id, side, quantity, remainingQuantity: quantity,
+        limitPrice: price, createdAt, expiresAt, actorType: String(order.actorType).toLowerCase(),
+        ownerId: String(order.ownerId), regionId: String(order.regionId), stage: String(order.stage),
+        sequence: Number.isFinite(Number(order.sequence)) ? Number(order.sequence) : 0
+      });
+    });
+
+    const groups = new Map();
+    accepted.forEach((order) => {
+      const key = [order.commodityId, order.regionId, order.stage].join("|");
+      if (!groups.has(key)) groups.set(key, { buys: [], sells: [] });
+      groups.get(key)[order.side === "buy" ? "buys" : "sells"].push(order);
+    });
+    const fills = [];
+    const prevented = [];
+    groups.forEach((group) => {
+      const priority = (a, b) => a.createdAt - b.createdAt || a.sequence - b.sequence || a.orderId.localeCompare(b.orderId);
+      group.buys.sort((a, b) => b.limitPrice - a.limitPrice || priority(a, b));
+      group.sells.sort((a, b) => a.limitPrice - b.limitPrice || priority(a, b));
+      let bi = 0;
+      let si = 0;
+      while (bi < group.buys.length && si < group.sells.length) {
+        const buy = group.buys[bi];
+        const sell = group.sells[si];
+        if (buy.remainingQuantity <= 0) { bi++; continue; }
+        if (sell.remainingQuantity <= 0) { si++; continue; }
+        if (buy.limitPrice < sell.limitPrice) break;
+        if (buy.ownerId === sell.ownerId) {
+          // Prevent self-trading by cancelling the newer order; keep the older order eligible.
+          const newer = priority(buy, sell) <= 0 ? sell : buy;
+          newer.remainingQuantity = 0;
+          prevented.push({ orderId: newer.orderId, reason: "self_trade_prevented" });
+          continue;
+        }
+        const quantity = Math.min(buy.remainingQuantity, sell.remainingQuantity);
+        const buyIsMaker = priority(buy, sell) <= 0;
+        const executionPrice = buyIsMaker ? buy.limitPrice : sell.limitPrice;
+        fills.push({
+          fillId: "fill-" + (fills.length + 1), commodityId: buy.commodityId,
+          regionId: buy.regionId, stage: buy.stage, buyOrderId: buy.orderId,
+          sellOrderId: sell.orderId, buyerId: buy.ownerId, sellerId: sell.ownerId,
+          quantity, price: executionPrice, notional: quantity * executionPrice,
+          makerOrderId: buyIsMaker ? buy.orderId : sell.orderId,
+          executedAt: now
+        });
+        buy.remainingQuantity -= quantity;
+        sell.remainingQuantity -= quantity;
+      }
+    });
+    const openOrders = accepted.filter((order) => order.remainingQuantity > 0).map((order) => ({
+      orderId: order.orderId, commodityId: order.commodityId, side: order.side,
+      remainingQuantity: order.remainingQuantity, limitPrice: order.limitPrice,
+      createdAt: order.createdAt, expiresAt: order.expiresAt, actorType: order.actorType,
+      ownerId: order.ownerId, regionId: order.regionId, stage: order.stage
+    }));
+    return { fills, openOrders, expired, rejected, prevented, executedQuantity: fills.reduce((sum, fill) => sum + fill.quantity, 0),
+      executedNotional: fills.reduce((sum, fill) => sum + fill.notional, 0) };
+  }
+
   function getPrice(commodityId) {
     const item = byId[commodityId];
     if (!item) return null;
     return clampPrice(item, Number(item.marketPrice) || Number(item.basePrice));
   }
 
-  const api = { initialize, reprice, recordTransaction, getPrice, catalog, byId };
+  const api = { initialize, reprice, recordTransaction, matchOrderBook, getPrice, catalog, byId };
   root.MARKET_ENGINE = api;
   initialize();
 })(typeof window !== "undefined" ? window : globalThis);
