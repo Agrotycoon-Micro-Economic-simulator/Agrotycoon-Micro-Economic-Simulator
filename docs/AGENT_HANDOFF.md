@@ -1089,3 +1089,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - BPS Non-Rumah Tangga 2025 remains pending because numeric extraction has not been verified; it is intentionally excluded from runtime demand totals.
 - No changes to `main`, `peta.html`, or `js/map_engine.js`.
 - CI for this newest checkpoint has not yet been observed as completed green; do not report it as passed until GitHub Actions provides a completed result.
+
+
+### Runtime dataset audit correction — 2026-11-09
+
+- The monthly Bapanas registry previously counted the two wrapper properties (`source` and `records`) instead of the actual commodity records. This was corrected: `runtimeDataRegistry()` now reports `Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records).length`.
+- `runtimeDataUsageAudit()` now checks that all monthly coefficients have 12 finite values and that a game-day calculation has produced daily regional demand. The regression test initializes a clean game state, runs day 1, and verifies the Bapanas rice-to-paddy seasonal coefficient plus a positive daily demand signal for the mapped runtime commodity `padi`.
+- The first new test attempt failed because its assertion checked `beras` instead of the mapped runtime ID `padi`. The failure was confirmed from the Actions log and corrected; this was a test assertion error, not a game-engine runtime failure.
+- Corrected code/test checkpoint: `9816daac0576047dbe166257ad6e3fb93d9b5daf`.
+- GitHub Actions run **42580552205** completed **SUCCESS**: Node regression suite, UTL oil-palm benchmark guard, UTP broiler and cattle benchmark guards, official 2024 livestock price benchmark guard, and all standalone Node regression tests completed successfully. https://github.com/Agrotycoon-Micro-Economic-simulator/Agrotycoon-Micro-Economic-Simulator/actions/runs/42580552205
+- The run is evidence for this branch checkpoint only. It does not imply that all BPS/Bapanas non-household data or every Indonesian locality has been imported. BPS non-household 2025 numeric extraction remains pending; the six DKI kab/kota population weights and one Kepulauan Seribu consumption extract remain explicitly scoped partial datasets.
+- No changes to `main`, `peta.html`, or `js/map_engine.js`.
