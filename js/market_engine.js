@@ -190,12 +190,14 @@
         const quantity = Math.min(buy.remainingQuantity, sell.remainingQuantity);
         const buyIsMaker = priority(buy, sell) <= 0;
         const executionPrice = buyIsMaker ? buy.limitPrice : sell.limitPrice;
+        const aggressor = buyIsMaker ? sell : buy;
         fills.push({
           fillId: "fill-" + (fills.length + 1), commodityId: buy.commodityId,
           regionId: buy.regionId, stage: buy.stage, buyOrderId: buy.orderId,
           sellOrderId: sell.orderId, buyerId: buy.ownerId, sellerId: sell.ownerId,
           quantity, price: executionPrice, notional: quantity * executionPrice,
           makerOrderId: buyIsMaker ? buy.orderId : sell.orderId,
+          aggressorSide: aggressor.side, aggressorActorType: aggressor.actorType,
           executedAt: now
         });
         buy.remainingQuantity -= quantity;
@@ -208,7 +210,13 @@
       createdAt: order.createdAt, expiresAt: order.expiresAt, actorType: order.actorType,
       ownerId: order.ownerId, regionId: order.regionId, stage: order.stage
     }));
-    return { fills, openOrders, expired, rejected, prevented, executedQuantity: fills.reduce((sum, fill) => sum + fill.quantity, 0),
+    const priceTransactions = fills.map((fill) => ({
+      commodityId: fill.commodityId, side: fill.aggressorSide, quantity: fill.quantity,
+      price: fill.price, actorType: fill.aggressorActorType, source: "order_book_execution",
+      regionId: fill.regionId, marketStage: fill.stage, fillId: fill.fillId
+    }));
+    return { fills, priceTransactions, openOrders, expired, rejected, prevented,
+      executedQuantity: fills.reduce((sum, fill) => sum + fill.quantity, 0),
       executedNotional: fills.reduce((sum, fill) => sum + fill.notional, 0) };
   }
 
