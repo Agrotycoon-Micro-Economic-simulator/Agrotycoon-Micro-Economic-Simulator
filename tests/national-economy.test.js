@@ -518,7 +518,7 @@ test('verified datasets are consumed by runtime calculations, not only registere
   assert.equal(monthlyEntry.records, Object.keys(api.bapanasMonthlyDemand2025.records).length);
   assert.ok(monthlyEntry.records > 0);
   assert.equal(api.seasonalDemandFactor('padi', 1), api.bapanasMonthlyDemand2025.records.padi.coefficients[0] * 12);
-  assert.ok(state.provinces.lampung.dailyDemand.beras > 0);
+  assert.ok(state.provinces.lampung.dailyDemand.padi > 0);
   const report = api.runtimeDataUsageAudit();
   assert.equal(report.runtimeAvailable, true);
   assert.equal(report.audit.bapanasNationalConsumption.runtimeBound, true);
