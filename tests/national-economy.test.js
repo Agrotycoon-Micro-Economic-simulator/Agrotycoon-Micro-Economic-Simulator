@@ -279,8 +279,28 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   assert.ok(Number.isFinite(quote));
   assert.ok(quote < api.quote('dki-jakarta', 'jagung', 5992));
   assert.equal(state.kabkotaConsumptionCoverage.status, 'partial_verified_observations');
-  assert.equal(state.kabkotaConsumptionSeedVersion, 2);
+  assert.equal(state.kabkotaConsumptionSeedVersion, 3);
   assert.ok(api.quoteLocality('3101', 'lele', 26000) > 0);
+});
+
+
+test('three additional DKI Jakarta localities load 26 verified leaf records and produce differentiated local quotes', () => {
+  vm.runInContext("S = { name: 'bapanas-jakarta-locality-expansion-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  for (const code of ['3171', '3173', '3174']) {
+    const local = api.localityConsumptionSnapshot(code);
+    assert.ok(local, code + ' locality snapshot');
+    assert.equal(local.recordCount, 26);
+    assert.equal(local.coverageStatus, 'partial_verified_observations');
+    assert.equal(Object.keys(local.rows).length, 26);
+  }
+  assert.equal(api.localityConsumptionSnapshot('3171').rows.ikan.annualPerCapita, 17.1);
+  assert.equal(api.localityConsumptionSnapshot('3173').rows.sayur.annualPerCapita, 49.6);
+  assert.equal(api.localityConsumptionSnapshot('3174').rows.ikan.annualPerCapita, 25.2);
+  assert.equal(state.kabkotaConsumptionCoverage.localityCount, 4);
+  assert.equal(state.kabkotaConsumptionCoverage.recordCount, 104);
+  assert.ok(api.quoteLocality('3174', 'lele', 26000) < api.quoteLocality('3101', 'lele', 26000));
 });
 
 test('kabupaten/kota Bapanas ingestion rejects invalid codes, units and duplicate commodity observations', () => {
