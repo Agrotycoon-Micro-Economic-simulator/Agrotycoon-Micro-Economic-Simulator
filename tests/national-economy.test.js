@@ -214,7 +214,9 @@ test('verified Bapanas Lampung 2025 leaf observations change physical demand and
   assert.ok(Math.abs(lampung.consumptionPressure.ubi_kayu - lampung.baseConsumptionPressure.ubi_kayu * (12.4 / 10.9)) < 1e-10);
   assert.ok(Math.abs(lampung.consumptionPressure.padi - lampung.baseConsumptionPressure.padi * (84.3 / 87.3)) < 1e-10);
   const livestockRatio = (4.2 + 8.0 + 7.6 + 1.7) / (5.1 + 10.5 + 7.7 + 2.3);
-  assert.ok(Math.abs(lampung.consumptionPressure.ayam - (lampung.baseConsumptionPressure.ayam || 1) * livestockRatio) < 1e-8 || Number.isFinite(lampung.consumptionPressure.ayam));
+  const livestockItem = context.COMMODITIES.find(item => item.category === 'peternakan');
+  assert.ok(livestockItem);
+  assert.ok(Math.abs(lampung.consumptionPressure[livestockItem.id] - lampung.baseConsumptionPressure[livestockItem.id] * livestockRatio) < 1e-8);
   const before = lampung.inventory.jagung;
   api.updateDay(1);
   assert.notEqual(lampung.inventory.jagung, before);
