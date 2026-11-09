@@ -1,5 +1,16 @@
 # Handover — National country, 200m population and regional government market (2026-11-08)
 
+## Latest physical-demand calibration checkpoint (2026-11-09)
+
+- Added a research-backed physical food-consumption layer without replacing the existing synthetic 60-commodity demand index.
+- Source: Badan Pangan Nasional, dataset “Rata-rata Konsumsi per Jenis Pangan Penduduk Indonesia Nasional Update Tahun 2025”, unit kg/kapita/tahun, dataset created 2026-04-20 and published 2026-01-31; the dataset defines consumption as actual average quantity consumed by population and uses nine food groups. Runtime source record must remain separate from production/availability/balance series.
+- Direct 2025 catalog anchors currently added: jagung 1.5 kg/capita/year, ubi_kayu 10.9 kg/capita/year, ubi_jalar 4.0 kg/capita/year, kentang 2.5 kg/capita/year, kedelai 8.8 kg/capita/year, kacang_tanah 0.4 kg/capita/year, kacang_hijau 0.3 kg/capita/year, and kelapa 1.0 kg/capita/year. These are household/food-consumption anchors, not total national requirements and not feed/industrial demand.
+- For the 200,000,000-resident Arunika scenario, the jagung anchor represents 300,000,000 kg/year or 25,000,000 kg/month of the mapped consumption series. This is deliberately not substituted into the existing padi demand because the official consumption observation is for rice, while the catalog commodity is paddy/gabah; conversion and stage definition require a separate verified coefficient.
+- kelapa is stored in kg with status official_consumption_anchor_conversion_pending; do not convert to game buah units until an explicit, sourced kg-per-coconut conversion is approved.
+- API added: AgroNationalEconomy.physicalDemandSnapshot(provinceId) and physicalDemandAnchors2025. Province totals scale by the scenario population while retaining the source unit and provenance. The synthetic demand index remains intact for unmapped commodities.
+- Test guard added in tests/national-economy.test.js for the 200m jagung annual/monthly arithmetic and anchor provenance. Static new Function syntax validation passed after correction; full Node/GitHub Actions execution for these newest commits is still NOT verified green.
+- Code commits: fe2ddb5570b12b89f3d381e40d1a284459ab82cf (anchor implementation), 24f504090b26850e0f6476315f3cbcbe9f431517 (declaration fix). Test commit: 5a21cf39a95d456192caae75f46115ed43a96811.
+- Research source: https://data.badanpangan.go.id/datasetpublications/hez/konsumsi_nasional. BPS 2025 weekly-consumption table corroborates several direct food observations but is a separate source series and should not be silently merged with Bapanas annual data.
 ## Current implementation checkpoint
 
 - Active branch: `feat/production-tier-taxonomy`. Continue on this branch only; never write to `main`. No map files were changed.
