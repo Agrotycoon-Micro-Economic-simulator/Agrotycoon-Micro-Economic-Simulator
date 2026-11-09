@@ -294,8 +294,12 @@ test('60-item catalog exposes explicit market-unit evidence status without conve
   assert.equal(market.byId.sapi_potong.marketUnitReference.unit, 'kg');
   assert.equal(market.byId.kelapa.marketUnitReference.unit, 'buah');
   assert.equal(market.byId.kedelai.marketUnitReference, null);
-  assert.equal(market.byId.kedelai.marketUnitStatus, 'butuh_riset_lanjutan');
-  for (const id of ['kelapa', 'padi', 'jagung', 'sapi_potong', 'ayam_pedaging', 'kelapa_sawit', 'karet']) {
+  assert.equal(market.byId.kedelai.marketUnitStatus, 'official_annual_producer_price_unit');
+  assert.equal(market.byId.kedelai.marketUnitReference.unit, 'kg');
+  assert.equal(market.byId.pisang.marketUnitReference.unit, 'sisir');
+  assert.equal(market.byId.kambing.marketUnitReference.productForm, 'berat hidup');
+
+  for (const id of ['kelapa', 'padi', 'jagung', 'sapi_potong', 'ayam_pedaging', 'kelapa_sawit', 'karet', 'kedelai', 'kacang_hijau', 'kacang_tanah', 'bawang_merah', 'bawang_putih', 'cabai_merah', 'cabai_rawit', 'ubi_kayu', 'ubi_jalar', 'tomat', 'wortel', 'mangga', 'jeruk', 'kopi', 'lada', 'pisang', 'kambing']) {
     const reference = market.byId[id].marketUnitReference;
     assert.ok(Array.isArray(reference.evidenceLinks) && reference.evidenceLinks.length > 0, id + ' missing evidence links');
     assert.ok(reference.evidenceLinks.every(url => /^https:\/\//.test(url) || url.startsWith('docs/')), id + ' has invalid evidence link');
