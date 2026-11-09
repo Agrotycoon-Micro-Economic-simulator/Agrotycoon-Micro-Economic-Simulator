@@ -307,7 +307,9 @@ test('verified Bapanas 2025 Kepulauan Seribu locality observations drive a local
   assert.equal(local.rows.beras.annualPerCapita, 88.6);
   assert.equal(local.rows.jagung.annualPerCapita, 0.2);
   assert.equal(local.physicalDemand.jagung.annualPerCapita, 0.2);
-  assert.equal(local.populationStatus, 'equal_share_estimate_pending_official_locality_population');
+  assert.equal(local.population, 29090);
+  assert.equal(local.populationStatus, 'official_bps_2025_kabupaten_kota');
+  assert.equal(local.physicalDemand.jagung.annualTotal, 5818);
   const quote = api.quoteLocality('3101', 'jagung', 5992);
   assert.ok(Number.isFinite(quote));
   assert.ok(quote < api.quote('dki-jakarta', 'jagung', 5992));
