@@ -13,11 +13,11 @@
   }
 
   function ensureBook() {
-    if (!root.S || typeof root.S !== "object") throw new Error("Game state is not initialized");
-    if (!root.S.marketOrderBook || typeof root.S.marketOrderBook !== "object") {
-      root.S.marketOrderBook = { version: 1, sequence: 0, orders: [], reservedCash: 0, reservedInventory: {}, pendingSettlement: [], lastMatch: null };
+    if (typeof S === "undefined" || !S || typeof S !== "object") throw new Error("Game state is not initialized");
+    if (!S.marketOrderBook || typeof S.marketOrderBook !== "object") {
+      S.marketOrderBook = { version: 1, sequence: 0, orders: [], reservedCash: 0, reservedInventory: {}, pendingSettlement: [], lastMatch: null };
     }
-    const book = root.S.marketOrderBook;
+    const book = S.marketOrderBook;
     if (!Array.isArray(book.orders)) book.orders = [];
     if (!Array.isArray(book.pendingSettlement)) book.pendingSettlement = [];
     if (!book.reservedInventory || typeof book.reservedInventory !== "object") book.reservedInventory = {};
@@ -40,7 +40,7 @@
 
   function persist(book) {
     recomputeReservations(book);
-    if (typeof root.save === "function") root.save();
+    if (typeof save === "function") save();
   }
 
   function submitPlayerMarketOrder(input) {
@@ -51,9 +51,9 @@
     const quantity = Number(source.quantity);
     const limitPrice = Number(source.limitPrice);
     const item = root.MARKET_ENGINE && root.MARKET_ENGINE.byId && root.MARKET_ENGINE.byId[commodityId];
-    const regionId = String(source.regionId || root.S.playerRegionId || "");
+    const regionId = String(source.regionId || S.playerRegionId || "");
     const stage = String(source.stage || "producer");
-    const day = Math.max(1, Math.floor(Number(root.S.day) || 1));
+    const day = Math.max(1, Math.floor(Number(S.day) || 1));
     const ttl = source.expiresInDays == null ? DEFAULT_TTL_DAYS : Number(source.expiresInDays);
 
     if (!item || !["buy", "sell"].includes(side) || !finitePositive(quantity) || !finitePositive(limitPrice)) {
@@ -72,11 +72,11 @@
     if (side === "buy") {
       const requiredCash = quantity * limitPrice;
       if (!Number.isFinite(requiredCash) || requiredCash <= 0 ||
-          !Number.isFinite(Number(root.S.gold)) || Number(root.S.gold) - book.reservedCash < requiredCash) {
+          !Number.isFinite(Number(S.gold)) || Number(root.S.gold) - book.reservedCash < requiredCash) {
         return { ok: false, reason: "insufficient_unreserved_cash" };
       }
     } else {
-      const stock = Math.max(0, Number(root.S.landSystem && root.S.landSystem.inventory && root.S.landSystem.inventory[commodityId]) || 0);
+      const stock = Math.max(0, Number(S.landSystem && root.S.landSystem.inventory && root.S.landSystem.inventory[commodityId]) || 0);
       const alreadyReserved = Math.max(0, Number(book.reservedInventory[commodityId]) || 0);
       if (stock - alreadyReserved + 1e-9 < quantity) {
         return { ok: false, reason: "insufficient_unreserved_inventory" };
@@ -102,7 +102,7 @@
     const order = book.orders.find(candidate => candidate && candidate.orderId === id && candidate.status === "open");
     if (!order) return { ok: false, reason: "open_order_not_found" };
     order.status = "cancelled";
-    order.cancelledAt = Math.max(1, Math.floor(Number(root.S.day) || 1));
+    order.cancelledAt = Math.max(1, Math.floor(Number(S.day) || 1));
     const releasedQuantity = Number(order.remainingQuantity) || 0;
     order.remainingQuantity = 0;
     persist(book);
