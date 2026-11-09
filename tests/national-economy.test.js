@@ -967,3 +967,40 @@ test('BPS 2024 aquaculture species production is bound to all provinces without 
   assert.equal(usage.audit.aquacultureProvincialProduction2024Bps.sourceRecords, 418);
   assert.equal(usage.audit.aquacultureProvincialProduction2024Bps.runtimeApplied, true);
 });
+
+
+test('official 2025 provincial consumer prices are runtime-bound and missing regional cells use nearest-region fallback with Jakarta cap', () => {
+  vm.runInContext("S = { name: 'regional-price-fallback-test' }", context);
+  const api = context.AgroNationalEconomy;
+  api.ensure();
+  const source = vm.runInContext("REAL_ECONOMIC_DATA.regionalConsumerPrices2025", context);
+  assert.equal(source.columns.length, 6);
+  assert.equal(Object.keys(source.records).length, 38);
+
+  const dki = api.provinceSnapshot('dki-jakarta');
+  assert.equal(dki.regionalPriceReference2025.kedelai.priceRp, 9849);
+  assert.equal(dki.regionalPriceReference2025.kedelai.sourceType, 'official_exact');
+
+  const dkiCorn = dki.regionalPriceReference2025.jagung;
+  assert.equal(dkiCorn.sourceProvinceId, 'jawa-barat');
+  assert.equal(dkiCorn.sourceType, 'nearest_region_fallback');
+  assert.equal(dkiCorn.jakartaMarkupApplied, true);
+  assert.equal(dkiCorn.jakartaMarkupRate, 0.30);
+  assert.equal(dkiCorn.priceRp, Math.round(5707 * 1.30));
+
+  const sumsel = api.provinceSnapshot('sumatera-selatan');
+  assert.equal(sumsel.regionalPriceReference2025.jagung.sourceProvinceId, 'jambi');
+  assert.equal(sumsel.regionalPriceReference2025.jagung.priceRp, 6617);
+  assert.equal(sumsel.regionalPriceReference2025.jagung.jakartaMarkupApplied, false);
+
+  const lampung = api.provinceSnapshot('lampung');
+  assert.equal(lampung.regionalPriceReference2025.jagung.sourceType, 'official_exact');
+  assert.equal(lampung.regionalPriceReference2025.jagung.priceRp, 6327);
+
+  const snap = api.snapshot();
+  assert.equal(snap.regionalPriceReference2025.provinceCount, 38);
+  assert.equal(snap.regionalPriceReference2025.coverageStatus, '38_province_source_with_nearest_region_fallback');
+
+  const quote = api.quote('dki-jakarta', 'jagung', 1);
+  assert.ok(Number.isFinite(quote));
+});
