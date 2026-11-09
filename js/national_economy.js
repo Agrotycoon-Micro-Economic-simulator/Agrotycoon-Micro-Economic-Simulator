@@ -355,7 +355,7 @@
   return adminMasterPromise;
  }
  function normalizeLocalityLevel(level){const aliases={kabupaten:"regency",kota:"city",kecamatan:"district",village:"desa",desa_kelurahan:"villageKelurahan"};return aliases[level]||level;}
- function getLocalityRows(meta,level,master){const b=master.byProvince[meta.adminCode];if(!b)return [];if(level==="villageKelurahan")return b.desa.concat(b.kelurahan,b.uptSpt);return b[level]||[];}
+ function getLocalityRows(meta,level,master){const b=master.byProvince[meta.adminCode];if(!b)return [];if(level==="villageKelurahan")return b.desa.concat(b.kelurahan,b.uptSpt);const key=level==="regency"?"regencies":level==="city"?"cities":level==="district"?"districts":level;return b[key]||[];}
  function getLocalityAggregate(provinceId,level,index){
   const s=ensure();if(!s)return null;
   if(level==="country"){const demand={};catalog().forEach(item=>{demand[item.id]=provinceRecords.reduce((sum,meta)=>sum+(s.provinces[meta.id].demand[item.id]||0),0);});const physicalDemand={};Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*POPULATION;physicalDemand[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:a.status,year:a.year};});return {id:"republik-arunika",name:COUNTRY_NAME,level,population:POPULATION,provinceCount:provinceRecords.length,administrativeTotals:Object.assign({},NATIONAL_ADMIN),bpsAdministrativeReference:Object.assign({},BPS_ADMIN_REFERENCE),monthlyDemandIndex:demand,physicalDemand,sourceStatus:"aggregate_game_population_and_demand"};}
