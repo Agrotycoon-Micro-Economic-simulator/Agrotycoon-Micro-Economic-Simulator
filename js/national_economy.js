@@ -500,7 +500,7 @@
   const s=ensure(), verified=[];
   const add=(id,source,status,records,depth)=>verified.push({id,source,status,records,depth,runtimeBound:true});
   add("bapanas_national_consumption_2025","Badan Pangan Nasional","official_source_numeric_dataset_verified",BAPANAS_NATIONAL_CONSUMPTION_2025.length,"country");
-  add("bapanas_monthly_demand_2025","Badan Pangan Nasional","official_source_numeric_dataset_verified",Object.keys(BAPANAS_MONTHLY_DEMAND_2025||{}).length,"country");
+  add("bapanas_monthly_demand_2025","Badan Pangan Nasional","official_source_numeric_dataset_verified",Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).length,"country");
   add("bapanas_provincial_consumption_2025_partial","Badan Pangan Nasional","official_source_numeric_dataset_verified_partial",BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL.length,"province");
   add("bapanas_kabkota_consumption_2025_partial","Badan Pangan Nasional","official_source_numeric_dataset_verified_partial",BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL.length,"regency_city");
   add("bps_dki_kabkota_population_2025","Badan Pusat Statistik DKI Jakarta","official_source_numeric_dataset_verified",Object.keys(BPS_KABKOTA_POPULATION_2025).length,"regency_city");
@@ -523,7 +523,8 @@
   };
   audit.bapanasMonthlyDemand={
    sourceRecords:Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).length,
-   seasonalMappedRecords:Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).filter(id=>Number.isFinite(seasonalDemandFactor(id,1))).length,
+   seasonalMappedRecords:Object.keys(BAPANAS_MONTHLY_DEMAND_2025.records||{}).filter(id=>Array.isArray(BAPANAS_MONTHLY_DEMAND_2025.records[id].coefficients)&&BAPANAS_MONTHLY_DEMAND_2025.records[id].coefficients.length===12&&BAPANAS_MONTHLY_DEMAND_2025.records[id].coefficients.every(Number.isFinite)).length,
+   runtimeApplied:Object.values(s.provinces).some(province=>Object.values(province.dailyDemand||{}).some(value=>value>0)),
    runtimeBound:true
   };
   const lampungRows=BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL.filter(r=>r.provinceId==="lampung");
