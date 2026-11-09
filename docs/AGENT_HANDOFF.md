@@ -1346,3 +1346,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - BPS 2025 covers producer prices for livestock and fisheries monthly across 38 provinces. BPS/Kementan data also explicitly distinguish telur ayam ras as Rp/kg from liveweight livestock references. citeturn897645search0turn897645search21
 - `sapi_perah` and `domba` remain `butuh_riset_lanjutan`; no exact 2025 producer-unit row was sufficiently verified, so no unit was guessed.
 - This batch is provenance-only; legacy NPC quantities remain unconverted.
+
+
+## 2026-11-10 — freshwater fish producer-unit expansion
+
+- Expanded `MARKET_UNIT_REGISTRY` from **35 to 39 unique commodity IDs**.
+- Added verified physical-unit references for `lele`, `nila`, `gurami`, and `patin`: all are **kg** at the producer-stage fish reference.
+- The unit basis is consistent with BPS producer-price fisheries methodology: producer fish prices are represented per kilogram, before downstream distribution/retail margins. BPS metadata for 2025 explicitly defines producer fish price in Rp/Kg and lists Nila, Lele, and Patin among the classified fish; the BPS 2025 annual producer-price publication covers fisheries producer prices across 38 provinces. citeturn248630search0turn532683search0
+- Historical BPS producer-price tables also report Gurami, Lele, Nila, and Patin in Rp/kg; these historical tables were used only to corroborate the unit convention, not to invent a 2025 price. Current runtime price remains the game's existing `basePrice` until a dedicated price-series integration is authorized.
+- `udang_vaname` is **not** promoted yet because an exact official national producer-unit row could not be verified from accessible 2025 evidence. It remains `butuh_riset_lanjutan`.
+- Added regression coverage in `tests/commodity-storage.test.js`: registry count = 39, all registry records require unit/product form, the four new fish references require kg and stage-locked status, and all 60 commodities must retain `unconverted_legacy_simulation_index`.
+- No physical quantity conversion has been enabled. These are provenance/reference units only.
+- Runtime Node execution and CI have **not** been executed in this environment; do not report these tests as passed until actual output is available.
+- Research next: verify `udang_vaname`, `sapi_perah`, `domba`, and remaining horticulture/plantation commodities from exact official table rows before promotion.
