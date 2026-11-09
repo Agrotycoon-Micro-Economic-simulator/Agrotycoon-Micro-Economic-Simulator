@@ -29,6 +29,7 @@ const BASE={
 };
 const OV={
  padi:{ambientDays:180,idealDays:365,moistureMaxPct:14,moistureCriticalPct:18,form:'gabah_kering',referenceTempC:25,referenceRhPct:65,sourceUrl:'https://www.fao.org/4/t0522e/T0522E09.htm'},
+ kelapa:{ambientDays:120,idealDays:150,form:'mature_husked',referenceTempC:25,referenceRhPct:70,source:'USDA commercial storage reference: mature husked coconut around 3-5 months ambient',sourceUrl:'https://www.ars.usda.gov/arsuserfiles/oc/np/commercialstorage/commercialstorage.pdf',evidence:'source_backed_form_specific'},
  jagung:{ambientDays:180,idealDays:365,moistureMaxPct:12,moistureCriticalPct:16,form:'pipilan_kering',referenceTempC:25,referenceRhPct:65,sourceUrl:'https://tanamanpangan.bsip.pertanian.go.id/storage/assets/uploads/publikasi/hWTgjjZIWenPLFk4Furv2cybMDDQ8GW39TtHKpbW.pdf'},
  bawang_merah:{ambientDays:45,idealDays:150,referenceTempC:15,referenceRhPct:70},bawang_putih:{ambientDays:90,idealDays:240,referenceTempC:0,referenceRhPct:70},
  ubi_kayu:{ambientDays:3,idealDays:14},ubi_jalar:{ambientDays:14,idealDays:90},kentang:{ambientDays:21,idealDays:120},
