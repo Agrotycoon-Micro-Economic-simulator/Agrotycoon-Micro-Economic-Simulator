@@ -918,3 +918,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - GitHub Actions run 42555141202 completed SUCCESS on test commit b7189ba182842513fa3c3fce3037a580ba1efd37: Node regression 54 tests, 54 passed, 0 failed; market/NPC/inventory suites, all four official benchmark guards, all standalone regression tests, browser smoke test (10 hamburger pages), gameplay E2E, finance/payroll E2E, legacy migration E2E and corrupt-save recovery E2E passed. Run 42555130528 (schema gate) and 42555118456 (save migration reapplication) also completed SUCCESS. Run 42555087894 validated the runtime code commit and completed SUCCESS. Review logs before reclassifying any future regression.
 - Data access investigation: the data.go.id catalogue confirms the Bapanas dataset is open and lists three downloadable resources, but its page does not expose resource IDs/URLs in the rendered content. The attempted CKAN package_show URL is inaccessible through the current web retrieval path; the model container also cannot resolve external DNS. No source data was fabricated or imported from incomplete snippets. Full 514-locality CSV/JSON/XLSX ingestion remains blocked pending a recoverable official download or user-provided source file.
 - Coverage remains 6/514 localities. Official BPS population weights outside DKI, BPS non-household numeric extraction, district/village population and consumption, and local order-book settlement remain pending.
+
+
+### Final green gate — strict 26-leaf coverage contract (2026-11-09)
+
+- Tightened the DKI daily-demand activation gate to require the exact 26 leaf commodity keys present in the Bapanas 2025 kabupaten/kota table, with all six DKI localities carrying every key and all six official BPS locality weights. Equal or identically incomplete subsets can no longer be mistaken for complete source coverage.
+- Commit: be354222701845560145f5bc70c539888eaa046b.
+- GitHub Actions run 42555294636 completed SUCCESS: 54 Node regression tests, 54 passed, 0 failed; all four official benchmark guards and all standalone Node regression/browser smoke/E2E tests passed.
+- Current data coverage is unchanged at 6/514 localities. The stricter gate improves data-integrity protection; it does not expand the source dataset.
