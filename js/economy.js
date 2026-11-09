@@ -357,7 +357,7 @@ function takeCoconut(){
  if(S.quarterUsed>0){
   const unitCost=Math.max(0,Number(S.quarterCost)||3500);
   S.quarterUsed++;
-  if(S.quarterUsed>=4){S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}
+  if(S.quarterUsed>=4){S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;S.quarterOpenedDay=null;}
   return {cost:unitCost/4,account:'Persediaan Kelapa Dalam Proses'};
  }
  const qty=stockQty();
@@ -540,7 +540,7 @@ function trySellWhole(){
  if(S.quarterUsed>0){
   const remainingCost=(Number(S.quarterCost)||3500)*(4-S.quarterUsed)/4;
   if(remainingCost>0&&recordBusinessCogs('Susut kelapa terbuka sebelum penjualan utuh',[{account:'Persediaan Kelapa Dalam Proses',amount:remainingCost}])!==remainingCost)return false;
-  S.quarterUsed=0;S.quarterCost=0;
+  S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;
  }
  if(stockQty()<=0)return false;
  const qty=stockQty();
