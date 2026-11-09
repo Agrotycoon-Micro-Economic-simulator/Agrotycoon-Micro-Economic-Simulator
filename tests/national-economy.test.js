@@ -191,7 +191,8 @@ test('Bapanas consumption data changes runtime demand signals rather than remain
   vm.runInContext("S = { name: 'bapanas-runtime-demand-test' }", context);
   const state = api.ensure();
   const baseline = state.provinces.lampung.demand.jagung;
-  assert.ok(state.provinces.lampung.consumptionPressure.jagung > 1);
+  assert.notEqual(state.provinces.lampung.consumptionPressure.jagung, state.provinces.lampung.baseConsumptionPressure.jagung);
+  assert.equal(state.provinces.lampung.regionalPhysicalDemand.jagung.annualPerCapita, 1.0);
   for (let day = 1; day <= 2; day++) api.updateDay(day);
   assert.notEqual(state.provinces.lampung.inventory.jagung, baseline * 0.5);
   assert.ok(Number.isFinite(api.quote('lampung', 'jagung', 5992)));
@@ -208,8 +209,8 @@ test('verified Bapanas Lampung 2025 leaf observations change physical demand and
   assert.equal(lampung.regionalConsumption2025.recordCount, 11);
   assert.equal(lampung.regionalConsumption2025.status, 'partial_verified_observations');
   assert.equal(state.regionalConsumptionCoverage.status, 'partial_province_coverage');
-  assert.equal(lampung.physicalDemand.jagung.annualPerCapita, 1.0);
-  assert.equal(lampung.physicalDemand.jagung.annualTotal, lampung.population);
+  assert.equal(lampung.regionalPhysicalDemand.jagung.annualPerCapita, 1.0);
+  assert.equal(lampung.regionalPhysicalDemand.jagung.annualTotal, lampung.population);
   assert.ok(Math.abs(lampung.consumptionPressure.jagung - nationalPressure * (1.0 / 1.5)) < 1e-10);
   assert.ok(Math.abs(lampung.consumptionPressure.ubi_kayu - lampung.baseConsumptionPressure.ubi_kayu * (12.4 / 10.9)) < 1e-10);
   assert.ok(Math.abs(lampung.consumptionPressure.padi - lampung.baseConsumptionPressure.padi * (84.3 / 87.3)) < 1e-10);
