@@ -1370,3 +1370,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `teh` also remains unpromoted. The publication contains a consumer-price row in **Rp/40 gram**, while the game's current registry is intended to preserve producer-stage/product-form semantics; no silent conversion to kg is allowed. citeturn438733view5
 - `sapi_perah` and `domba` remain `butuh_riset_lanjutan`; current producer dashboards expose prices but the exact unit/stage definition needed for the registry was not sufficiently verified from the accessible official documentation.
 - Regression coverage updated from 39 to **41 registry records**. Runtime Node/CI execution remains pending.
+
+
+## 2026-11-10 — registry reconciliation and oyster mushroom reference
+
+- Re-inspected the actual `feat/production-tier-taxonomy` branch files rather than relying on the prior handoff count. The source registry contained **39** entries while the regression test and previous handoff claimed **41**. This was a real source/test/documentation mismatch.
+- Restored the two previously documented entries that were absent from the source object: `bayam` (kg; Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.10, producer-price table explicitly Rp/Kg) and `udang_vaname` (kg; BPS Sumenep citing KKP 2024 aquaculture production volume/value; production-value unit only, not a national producer-price series).
+- Added `jamur_tiram` as kg with status `government_extension_farmer_sale_reference`. Ditjen Hortikultura Kementan's 2023 farmer case reports harvest volume and direct farmer sale price per kilogram. This supports the product's physical sale unit, but is a local enterprise example, not a national producer-price series: https://hortikultura.pertanian.go.id/meraup-rupiah-dari-usaha-tani-jamur-tiram/.
+- Registry now contains **42 unique commodity IDs**. `tests/commodity-storage.test.js` now expects 42 and asserts the distinct evidence statuses for `bayam`, `udang_vaname`, and `jamur_tiram`.
+- The 18 still-unregistered IDs remain: `sawi`, `jahe`, `kunyit`, `lengkuas`, `serai`, `tebu`, `teh`, `durian`, `alpukat`, `nanas`, `melon`, `stroberi`, `vanili`, `kapas`, `tembakau`, `sapi_perah`, `domba`, and `madu`. Do not infer units from retail prices or generic product knowledge where the registry requires a verified producer/product-stage reference.
+- No physical quantity conversion was enabled; all 60 commodities retain `unconverted_legacy_simulation_index`. Runtime Node tests and CI have not been executed in this environment.
