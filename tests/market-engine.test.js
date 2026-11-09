@@ -221,16 +221,16 @@ test('national emergency is commodity-scoped and required for out-of-band order 
   const item = market.byId.kelapa;
   const emergency = { active: true, scope: 'national', type: 'war', eventId: 'war-order', commodityIds: ['jagung'] };
   const blocked = market.matchOrderBook([
-    makeOrder({ orderId: 'outside-band-bid', limitPrice: item.marketCeiling * 2 }),
-    makeOrder({ orderId: 'outside-band-ask', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
+    makeOrder({ orderId: 'outside-band-bid', commodityId: 'kelapa', limitPrice: item.marketCeiling * 2 }),
+    makeOrder({ orderId: 'outside-band-ask', commodityId: 'kelapa', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
   ], { now: 10, emergency });
   assert.equal(blocked.fills.length, 0);
   assert.equal(blocked.rejected.length, 2);
 
   const allowedEmergency = Object.assign({}, emergency, { commodityIds: ['kelapa'] });
   const allowed = market.matchOrderBook([
-    makeOrder({ orderId: 'emergency-bid', limitPrice: item.marketCeiling * 2 }),
-    makeOrder({ orderId: 'emergency-ask', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
+    makeOrder({ orderId: 'emergency-bid', commodityId: 'kelapa', limitPrice: item.marketCeiling * 2 }),
+    makeOrder({ orderId: 'emergency-ask', commodityId: 'kelapa', side: 'sell', limitPrice: item.marketCeiling * 1.5, ownerId: 'npc', actorType: 'npc' })
   ], { now: 10, emergency: allowedEmergency });
   assert.equal(allowed.fills.length, 1);
 });
