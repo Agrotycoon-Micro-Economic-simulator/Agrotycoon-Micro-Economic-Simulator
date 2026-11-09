@@ -427,3 +427,18 @@ test('complete DKI locality consumption and BPS weights feed province daily dema
   assert.notEqual(province.inventory.jagung, before);
   assert.equal(state.dayProcessed, 1);
 });
+
+
+test('daily regional production and demand are exposed as executed runtime signals for NPC order proposals', () => {
+  vm.runInContext("S = { name: 'npc-daily-regional-flow-test' }", context);
+  const api = context.AgroNationalEconomy;
+  const state = api.ensure();
+  state.eventChancePerProvinceMonthly = 0;
+  api.updateDay(1);
+  const lampung = api.provinceSnapshot('lampung');
+  assert.ok(lampung.dailyProduction.jagung > 0);
+  assert.ok(lampung.dailyDemand.jagung > 0);
+  assert.equal(lampung.dailyProduction.jagung, state.provinces.lampung.dailyProduction.jagung);
+  assert.equal(lampung.dailyDemand.jagung, state.provinces.lampung.dailyDemand.jagung);
+  assert.equal(lampung.unmetDemand.jagung, state.provinces.lampung.unmetDemand.jagung);
+});
