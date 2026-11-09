@@ -84,3 +84,40 @@ test('player orders are scoped to the saved player region and have bounded expir
   assert.equal(result.order.createdAt, 12);
   assert.equal(result.order.expiresAt, 19);
 });
+
+
+test('daily expiry releases remaining buy cash and sell inventory reservations exactly once', () => {
+  freshState();
+  vm.runInContext("S.day = 10; S.gold = 1000000;", context);
+  const buy = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 10, limitPrice: 6000, expiresInDays: 2 });
+  const sell = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'sell', quantity: 4, limitPrice: 6000, expiresInDays: 2 });
+  assert.equal(buy.ok, true);
+  assert.equal(sell.ok, true);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().reservedCash, 60000);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().reservedInventory.jagung, 4);
+
+  const early = context.AgroPlayerOrderBook.expire(11);
+  assert.equal(early.expiredCount, 0);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().reservedCash, 60000);
+
+  const expired = context.AgroPlayerOrderBook.expire(12);
+  assert.equal(expired.ok, true);
+  assert.equal(expired.expiredCount, 2);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().reservedCash, 0);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().reservedInventory.jagung, undefined);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().orders.every(order => order.status === 'expired' && order.remainingQuantity === 0), true);
+
+  const repeated = context.AgroPlayerOrderBook.expire(12);
+  assert.equal(repeated.expiredCount, 0);
+  assert.equal(context.AgroPlayerOrderBook.snapshot().orders.length, 2);
+});
+
+test('expiry rejects invalid game-day values without changing open orders', () => {
+  freshState();
+  const order = context.AgroPlayerOrderBook.submit({ commodityId: 'jagung', side: 'buy', quantity: 1, limitPrice: 6000 });
+  assert.equal(order.ok, true);
+  const result = context.AgroPlayerOrderBook.expire(1.5);
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, 'invalid_expiry_day');
+  assert.equal(context.AgroPlayerOrderBook.snapshot().orders[0].status, 'open');
+});
