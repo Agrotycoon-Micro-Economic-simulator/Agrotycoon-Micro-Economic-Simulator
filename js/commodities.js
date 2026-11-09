@@ -158,6 +158,15 @@ const MARKET_UNIT_REGISTRY=Object.freeze({
  lada:{unit:"kg",productForm:"lada/merica",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.1; national annual producer-price series",period:"2021-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
  pisang:{unit:"sisir",productForm:"pisang",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.1; national annual producer-price series",period:"2021-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
  kambing:{unit:"kg",productForm:"berat hidup",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.1; national annual producer-price series",period:"2021-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ kacang_panjang:{unit:"kg",productForm:"kacang panjang",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.14; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ kangkung:{unit:"kg",productForm:"kangkung",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.15; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ kentang:{unit:"kg",productForm:"kentang",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.16; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ mentimun:{unit:"kg",productForm:"ketimun/mentimun",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.17; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ kubis:{unit:"kg",productForm:"kol/kubis",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.18; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ terong:{unit:"kg",productForm:"terong",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.19; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ pepaya:{unit:"kg",productForm:"pepaya",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.24; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ semangka:{unit:"kg",productForm:"semangka",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.28; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
+ kakao:{unit:"kg",productForm:"kakao",status:"official_annual_producer_price_unit",source:"Kementan Pusdatin Statistik Harga Komoditas Pertanian 2025 Table 2.33; national provincial producer-price series",period:"2020-2024",evidenceLinks:["https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf"]},
 });
 for(const c of COMMODITIES){
  const reference=MARKET_UNIT_REGISTRY[c.id]||null;
@@ -165,7 +174,7 @@ for(const c of COMMODITIES){
  c.marketUnitStatus=reference?reference.status:"butuh_riset_lanjutan";
  c.quantityScaleStatus="unconverted_legacy_simulation_index";
 }
-if(typeof window!=="undefined")window.AgroCommodityUnits={version:"0.1.0",registry:MARKET_UNIT_REGISTRY};
+if(typeof window!=="undefined")window.AgroCommodityUnits={version:"0.1.1",registry:MARKET_UNIT_REGISTRY};
 
 const COMMODITY_ECONOMICS={
  kelapa:{unit:"buah",growDays:1080,yieldPerCycle:20,cyclesDays:30,farmerPrice:3500,retailPrice:13000,processed:{name:"Es kelapa",outputUnit:"gelas",inputPerUnit:1,price:13000,otherCost:2500},notes:"Harga tengkulak mengikuti harga game kelapa yang sudah ada; bukan harga nasional yang seragam."},
