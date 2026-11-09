@@ -166,3 +166,33 @@ test('official Bapanas household-consumption sources are registered at province 
   assert.match(api.sources.regencyCityHouseholdConsumption.url, /data\.badanpangan\.go\.id\/datasetpublications\/4wx\/rata-rata-konsumsi-kab-kota/);
   assert.equal(api.sources.nonHouseholdConsumption.status, 'official_source_metadata_only_numeric_extraction_pending');
 });
+
+test('every Bapanas national 2025 leaf consumption record is represented in the runtime model and has a game mapping mode', () => {
+  const api = context.AgroNationalEconomy;
+  const rows = api.bapanasNationalConsumption2025;
+  const model = api.bapanasConsumptionModel2025;
+  assert.equal(rows.length, 28);
+  for (const [key, group, sourceCommodity, value] of rows) {
+    assert.ok(model.rows[key], key + ' missing runtime model');
+    assert.equal(model.rows[key].year, 2025);
+    assert.equal(model.rows[key].unit, 'kg/kap/tahun');
+    assert.equal(model.rows[key].sourceCommodity, sourceCommodity);
+    assert.equal(model.rows[key].annualPerCapita, value);
+    assert.notEqual(model.rows[key].mappingStatus, 'unmapped', key + ' must affect a game demand signal');
+  }
+  assert.equal(model.rows.jagung.mappingStatus, 'physical');
+  assert.equal(model.rows.beras.mappingStatus, 'downstream_signal');
+  assert.equal(model.rows.kelapa.mappingStatus, 'unit_conversion_pending');
+});
+
+test('Bapanas consumption data changes runtime demand signals rather than remaining inert source metadata', () => {
+  const api = context.AgroNationalEconomy;
+  vm.runInContext("S = { name: 'bapanas-runtime-demand-test' }", context);
+  const state = api.ensure();
+  const baseline = state.provinces.lampung.demand.jagung;
+  assert.ok(state.provinces.lampung.consumptionPressure.jagung > 1);
+  for (let day = 1; day <= 2; day++) api.updateDay(day);
+  assert.notEqual(state.provinces.lampung.inventory.jagung, baseline * 0.5);
+  assert.ok(Number.isFinite(api.quote('lampung', 'jagung', 5992)));
+  assert.ok(state.provinces.lampung.physicalDemand.jagung.monthlyTotal > 0);
+});
