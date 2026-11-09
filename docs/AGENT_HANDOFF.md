@@ -817,3 +817,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - GitHub Actions run `42550969640` completed SUCCESS on the test commit. Node regression summary: 51 tests, 51 passed, 0 failed. The UTL oil-palm, UTP broiler, UTP cattle, official livestock price guards and all standalone Node regression steps also completed successfully.
 - The earlier code-only run `42550858148` failure is a commit-order race: it tested the code expansion before the subsequent test commit updated the old expected count. The corrected test commit and exact-key follow-up both pass; do not report the transient run as an unresolved product defect.
 - Current limitation remains: the 26 rows cover one locality only; the full 514-locality resource is not yet ingested, and `quoteLocality` remains a bounded local quote API rather than order-book clearing or daily local stock-flow execution.
+
+
+### DKI Jakarta locality consumption expansion (2026-11-09)
+
+- Expanded Bapanas 2025 locality leaf ingestion from one to four DKI localities: 3101 Administrasi Kepulauan Seribu, 3171 Kota Administrasi Jakarta Pusat, 3173 Kota Administrasi Jakarta Barat and 3174 Kota Administrasi Jakarta Selatan.
+- Each locality has 26 leaf observations (104 records total). Values include rice, maize, wheat flour, tubers, animal foods, oils, coconut/candlenut, legumes, sugar, vegetables and fruit. Group totals are excluded; zero leaf values are retained.
+- Bumped `kabkotaConsumptionSeedVersion` from 2 to 3. Existing saves already seeded with 3101 merge the three additional locality profiles on next `ensure()` without discarding previous rows.
+- Added regression checks for all three new locality snapshots, 26-row completeness per locality, representative source values, 4-locality/104-row coverage, and differentiated fish-category local quote behavior.
+- Source is the Bapanas 2025 rendered table. The complete CSV/JSON/XLSX resource and the remaining 510 localities are still pending; 4/514 is partial coverage only.
