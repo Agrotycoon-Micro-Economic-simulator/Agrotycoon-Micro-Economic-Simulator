@@ -23,9 +23,17 @@
     return { floor, ceiling };
   }
 
-  function clampPrice(item, value) {
+  function authorizedEmergency(emergency) {
+    if (!emergency || emergency.active !== true || emergency.scope !== "national") return false;
+    if (!["national_disaster", "war"].includes(String(emergency.type || ""))) return false;
+    return typeof emergency.eventId === "string" && emergency.eventId.trim().length > 0;
+  }
+
+  function clampPrice(item, value, emergency) {
     const b = bounds(item);
-    return Math.round(Math.min(b.ceiling, Math.max(b.floor, Number(value) || Number(item.marketPrice) || b.floor)));
+    const numeric = Number(value) || Number(item.marketPrice) || b.floor;
+    if (authorizedEmergency(emergency)) return Math.round(Math.min(1e12, Math.max(0.01, numeric)));
+    return Math.round(Math.min(b.ceiling, Math.max(b.floor, numeric)));
   }
 
   function initialize() {
@@ -51,6 +59,7 @@
   // Each record: {commodityId, side, quantity, price, timestamp?}
   function reprice(transactions, options) {
     const opts = options || {};
+    const emergency = authorizedEmergency(opts.emergency) ? opts.emergency : null;
     const elasticity = finitePositive(opts.elasticity) ? Math.min(0.25, opts.elasticity) : DEFAULT_ELASTICITY;
     const maxStep = finitePositive(opts.maxStep) ? Math.min(0.25, opts.maxStep) : MAX_STEP;
     const grouped = Object.create(null);
@@ -63,7 +72,7 @@
       if (!["buy", "sell"].includes(side) || !finitePositive(quantity) || !finitePositive(price)) return;
       const item = byId[tx.commodityId];
       const b = bounds(item);
-      const safePrice = Math.min(b.ceiling, Math.max(b.floor, price));
+      const safePrice = emergency ? Math.min(1e12, Math.max(0.01, price)) : Math.min(b.ceiling, Math.max(b.floor, price));
       const bucket = grouped[item.id] || (grouped[item.id] = { buyQty: 0, sellQty: 0, turnover: 0, volume: 0 });
       if (side === "buy") bucket.buyQty += quantity;
       else bucket.sellQty += quantity;
@@ -75,17 +84,18 @@
     Object.keys(grouped).forEach((id) => {
       const item = byId[id];
       const g = grouped[id];
-      const current = clampPrice(item, Number(item.marketPrice) || Number(item.basePrice));
+      const current = clampPrice(item, Number(item.marketPrice) || Number(item.basePrice), emergency);
       const totalFlow = g.buyQty + g.sellQty;
       if (totalFlow <= 0 || g.volume <= 0) return;
       const imbalance = (g.buyQty - g.sellQty) / totalFlow;
       const vwap = g.turnover / g.volume;
       const tradeSignal = current > 0 ? (vwap - current) / current : 0;
       const itemElasticity = finitePositive(item.marketElasticity) ? Math.min(0.25, item.marketElasticity) : elasticity;
-      const itemMaxStep = finitePositive(item.marketDailyMoveLimit) ? Math.min(maxStep, item.marketDailyMoveLimit) : maxStep;
+      const normalMaxStep = finitePositive(item.marketDailyMoveLimit) ? Math.min(maxStep, item.marketDailyMoveLimit) : maxStep;
+      const itemMaxStep = emergency ? Math.max(0.75, normalMaxStep) : normalMaxStep;
       const rawChange = (itemElasticity * imbalance) + (0.25 * tradeSignal);
       const boundedChange = Math.max(-itemMaxStep, Math.min(itemMaxStep, rawChange));
-      const next = clampPrice(item, current * (1 + boundedChange));
+      const next = clampPrice(item, current * (1 + boundedChange), emergency);
       item.marketPrice = next;
       results.push({
         commodityId: id,
@@ -93,6 +103,8 @@
         price: next,
         floor: Number(item.marketFloor),
         ceiling: Number(item.marketCeiling),
+        emergencyOverride: !!emergency,
+        emergencyEventId: emergency ? emergency.eventId : null,
         buyQuantity: g.buyQty,
         sellQuantity: g.sellQty,
         transactionVolume: g.volume,
@@ -118,6 +130,7 @@
   // not a cross-player exchange or a ledger writer. Only returned fills are executions.
   function matchOrderBook(orders, options) {
     const opts = options || {};
+    const emergency = authorizedEmergency(opts.emergency) ? opts.emergency : null;
     const now = Number.isFinite(Number(opts.now)) ? Number(opts.now) : Date.now();
     const input = Array.isArray(orders) ? orders : [];
     const seen = new Set();
@@ -144,7 +157,7 @@
       }
       seen.add(id);
       const b = bounds(item);
-      if (price < b.floor || price > b.ceiling) {
+      if (!emergency && (price < b.floor || price > b.ceiling)) {
         rejected.push({ orderId: id, reason: "limit_price_outside_market_bounds" });
         return;
       }
@@ -220,13 +233,14 @@
       executedNotional: fills.reduce((sum, fill) => sum + fill.notional, 0) };
   }
 
-  function getPrice(commodityId) {
+  function getPrice(commodityId, options) {
     const item = byId[commodityId];
     if (!item) return null;
-    return clampPrice(item, Number(item.marketPrice) || Number(item.basePrice));
+    const emergency = authorizedEmergency(options && options.emergency) ? options.emergency : null;
+    return clampPrice(item, Number(item.marketPrice) || Number(item.basePrice), emergency);
   }
 
-  const api = { initialize, reprice, recordTransaction, matchOrderBook, getPrice, catalog, byId };
+  const api = { initialize, reprice, recordTransaction, matchOrderBook, getPrice, authorizedEmergency, catalog, byId };
   root.MARKET_ENGINE = api;
   initialize();
 })(typeof window !== "undefined" ? window : globalThis);
