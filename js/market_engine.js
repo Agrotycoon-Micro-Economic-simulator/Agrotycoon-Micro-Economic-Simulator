@@ -200,57 +200,90 @@
     });
     const fills = [];
     const prevented = [];
+    const quantityMismatches = [];
     groups.forEach((group) => {
-      const priority = (a, b) => a.createdAt - b.createdAt || a.sequence - b.sequence || a.orderId.localeCompare(b.orderId);
-      group.buys.sort((a, b) => b.limitPrice - a.limitPrice || priority(a, b));
-      group.sells.sort((a, b) => a.limitPrice - b.limitPrice || priority(a, b));
-      let bi = 0;
-      let si = 0;
-      while (bi < group.buys.length && si < group.sells.length) {
-        const buy = group.buys[bi];
-        const sell = group.sells[si];
-        if (buy.remainingQuantity <= 0) { bi++; continue; }
-        if (sell.remainingQuantity <= 0) { si++; continue; }
-        if (buy.limitPrice < sell.limitPrice) break;
-        if (buy.ownerId === sell.ownerId) {
-          // Prevent self-trading by cancelling the newer order; keep the older order eligible.
-          const newer = priority(buy, sell) <= 0 ? sell : buy;
-          newer.remainingQuantity = 0;
-          prevented.push({ orderId: newer.orderId, reason: "self_trade_prevented" });
-          continue;
-        }
-        const quantity = Math.min(buy.remainingQuantity, sell.remainingQuantity);
-        const buyIsMaker = priority(buy, sell) <= 0;
-        const executionPrice = buyIsMaker ? buy.limitPrice : sell.limitPrice;
-        const aggressor = buyIsMaker ? sell : buy;
-        fills.push({
-          fillId: "fill-" + (fills.length + 1), commodityId: buy.commodityId,
-          regionId: buy.regionId, stage: buy.stage, buyOrderId: buy.orderId,
-          sellOrderId: sell.orderId, buyerId: buy.ownerId, sellerId: sell.ownerId,
-          quantity, price: executionPrice, notional: quantity * executionPrice,
-          makerOrderId: buyIsMaker ? buy.orderId : sell.orderId,
-          aggressorSide: aggressor.side, aggressorActorType: aggressor.actorType,
-          quantityBasis: buy.quantityBasis || sell.quantityBasis || null,
-          quantityUnit: buy.quantityUnit === sell.quantityUnit ? buy.quantityUnit : "mixed_or_unverified_quantity_units",
-          quantityCalibrationStatus: buy.quantityCalibrationStatus === sell.quantityCalibrationStatus
-            ? buy.quantityCalibrationStatus : "mixed_or_unverified_quantity_calibration",
-          buyQuantityUnit: buy.quantityUnit,
-          sellQuantityUnit: sell.quantityUnit,
-          buyQuantityCalibrationStatus: buy.quantityCalibrationStatus,
-          sellQuantityCalibrationStatus: sell.quantityCalibrationStatus,
-          buyReferencePhysicalUnit: buy.referencePhysicalUnit,
-          sellReferencePhysicalUnit: sell.referencePhysicalUnit,
-          buyReferenceProductForm: buy.referenceProductForm,
-          sellReferenceProductForm: sell.referenceProductForm,
-          buyReferenceUnitStatus: buy.referenceUnitStatus,
-          sellReferenceUnitStatus: sell.referenceUnitStatus,
-          buyQuantityScaleStatus: buy.quantityScaleStatus,
-          sellQuantityScaleStatus: sell.quantityScaleStatus,
-          executedAt: now
+      const compatible = (a, b) =>
+        a.quantityUnit === b.quantityUnit &&
+        a.quantityCalibrationStatus === b.quantityCalibrationStatus &&
+        a.quantityScaleStatus === b.quantityScaleStatus;
+      group.buys.forEach((buy) => {
+        group.sells.forEach((sell) => {
+          if (buy.limitPrice >= sell.limitPrice && !compatible(buy, sell)) {
+            quantityMismatches.push({
+              buyOrderId: buy.orderId,
+              sellOrderId: sell.orderId,
+              commodityId: buy.commodityId,
+              regionId: buy.regionId,
+              stage: buy.stage,
+              reason: "quantity_contract_mismatch",
+              buyQuantityUnit: buy.quantityUnit,
+              sellQuantityUnit: sell.quantityUnit,
+              buyQuantityCalibrationStatus: buy.quantityCalibrationStatus,
+              sellQuantityCalibrationStatus: sell.quantityCalibrationStatus,
+              buyQuantityScaleStatus: buy.quantityScaleStatus,
+              sellQuantityScaleStatus: sell.quantityScaleStatus
+            });
+          }
         });
-        buy.remainingQuantity -= quantity;
-        sell.remainingQuantity -= quantity;
-      }
+      });
+      const contractGroups = new Map();
+      group.buys.concat(group.sells).forEach((order) => {
+        const contractKey = JSON.stringify([
+          order.quantityUnit, order.quantityCalibrationStatus, order.quantityScaleStatus
+        ]);
+        if (!contractGroups.has(contractKey)) contractGroups.set(contractKey, { buys: [], sells: [] });
+        contractGroups.get(contractKey)[order.side === "buy" ? "buys" : "sells"].push(order);
+      });
+      contractGroups.forEach((compatibleGroup) => {
+        const priority = (a, b) => a.createdAt - b.createdAt || a.sequence - b.sequence || a.orderId.localeCompare(b.orderId);
+        compatibleGroup.buys.sort((a, b) => b.limitPrice - a.limitPrice || priority(a, b));
+        compatibleGroup.sells.sort((a, b) => a.limitPrice - b.limitPrice || priority(a, b));
+        let bi = 0;
+        let si = 0;
+        while (bi < compatibleGroup.buys.length && si < compatibleGroup.sells.length) {
+          const buy = compatibleGroup.buys[bi];
+          const sell = compatibleGroup.sells[si];
+          if (buy.remainingQuantity <= 0) { bi++; continue; }
+          if (sell.remainingQuantity <= 0) { si++; continue; }
+          if (buy.limitPrice < sell.limitPrice) break;
+          if (buy.ownerId === sell.ownerId) {
+            const newer = priority(buy, sell) <= 0 ? sell : buy;
+            newer.remainingQuantity = 0;
+            prevented.push({ orderId: newer.orderId, reason: "self_trade_prevented" });
+            continue;
+          }
+          const quantity = Math.min(buy.remainingQuantity, sell.remainingQuantity);
+          const buyIsMaker = priority(buy, sell) <= 0;
+          const executionPrice = buyIsMaker ? buy.limitPrice : sell.limitPrice;
+          const aggressor = buyIsMaker ? sell : buy;
+          fills.push({
+            fillId: "fill-" + (fills.length + 1), commodityId: buy.commodityId,
+            regionId: buy.regionId, stage: buy.stage, buyOrderId: buy.orderId,
+            sellOrderId: sell.orderId, buyerId: buy.ownerId, sellerId: sell.ownerId,
+            quantity, price: executionPrice, notional: quantity * executionPrice,
+            makerOrderId: buyIsMaker ? buy.orderId : sell.orderId,
+            aggressorSide: aggressor.side, aggressorActorType: aggressor.actorType,
+            quantityBasis: buy.quantityBasis || sell.quantityBasis || null,
+            quantityUnit: buy.quantityUnit,
+            quantityCalibrationStatus: buy.quantityCalibrationStatus,
+            buyQuantityUnit: buy.quantityUnit,
+            sellQuantityUnit: sell.quantityUnit,
+            buyQuantityCalibrationStatus: buy.quantityCalibrationStatus,
+            sellQuantityCalibrationStatus: sell.quantityCalibrationStatus,
+            buyReferencePhysicalUnit: buy.referencePhysicalUnit,
+            sellReferencePhysicalUnit: sell.referencePhysicalUnit,
+            buyReferenceProductForm: buy.referenceProductForm,
+            sellReferenceProductForm: sell.referenceProductForm,
+            buyReferenceUnitStatus: buy.referenceUnitStatus,
+            sellReferenceUnitStatus: sell.referenceUnitStatus,
+            buyQuantityScaleStatus: buy.quantityScaleStatus,
+            sellQuantityScaleStatus: sell.quantityScaleStatus,
+            executedAt: now
+          });
+          buy.remainingQuantity -= quantity;
+          sell.remainingQuantity -= quantity;
+        }
+      });
     });
     const openOrders = accepted.filter((order) => order.remainingQuantity > 0).map((order) => ({
       orderId: order.orderId, commodityId: order.commodityId, side: order.side,
@@ -269,7 +302,7 @@
       price: fill.price, actorType: fill.aggressorActorType, source: "order_book_execution",
       regionId: fill.regionId, marketStage: fill.stage, fillId: fill.fillId
     }));
-    return { fills, priceTransactions, openOrders, expired, rejected, prevented,
+    return { fills, priceTransactions, openOrders, expired, rejected, prevented, quantityMismatches,
       executedQuantity: fills.reduce((sum, fill) => sum + fill.quantity, 0),
       executedNotional: fills.reduce((sum, fill) => sum + fill.notional, 0) };
   }
