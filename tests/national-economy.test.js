@@ -340,6 +340,10 @@ test('three additional DKI Jakarta localities load 26 verified leaf records and 
   assert.equal(api.localityConsumptionSnapshot('3173').rows.sayur.annualPerCapita, 49.6);
   assert.equal(api.localityConsumptionSnapshot('3172').rows.ikan.annualPerCapita, 27.5);
   assert.equal(api.localityConsumptionSnapshot('3174').rows.ikan.annualPerCapita, 25.2);
+  assert.equal(api.localityConsumptionSnapshot('3172').rows.ikan.annualPerCapita, 27.5);
+  assert.equal(api.localityConsumptionSnapshot('3172').rows.terigu.annualPerCapita, 20.3);
+  assert.equal(api.localityConsumptionSnapshot('3175').rows.ikan.annualPerCapita, 24.7);
+  assert.equal(api.localityConsumptionSnapshot('3175').rows.minyak_kelapa.annualPerCapita, 0);
   assert.equal(api.localityConsumptionSnapshot('3175').rows.ikan.annualPerCapita, 24.7);
   assert.equal(state.kabkotaConsumptionCoverage.localityCount, 6);
   assert.equal(state.kabkotaConsumptionCoverage.recordCount, 156);
