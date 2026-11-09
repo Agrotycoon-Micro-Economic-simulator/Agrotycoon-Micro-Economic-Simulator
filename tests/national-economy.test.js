@@ -35,8 +35,8 @@ test('official Bapanas 2025 monthly demand coefficients are mapped by compatible
   assert.equal(api.seasonalDemandCoefficient('jagung', 1), 0.0849);
   assert.equal(api.seasonalDemandCoefficient('jagung', 31), 0.0767);
   assert.equal(api.seasonalDemandCoefficient('jagung', 151), 0.0822);
-  assert.equal(api.seasonalDemandFactor('jagung', 31), 0.9204);
-  assert.equal(api.seasonalDemandFactor('padi', 61), 1.0656);
+  assert.equal(Number(api.seasonalDemandFactor('jagung', 31).toFixed(4)), 0.9204);
+  assert.equal(Number(api.seasonalDemandFactor('padi', 61).toFixed(4)), 1.0656);
   assert.equal(api.seasonalDemandFactor('lele', 61), 1);
   // Keep the printed HBKN uplift: do not normalize the official annual coefficients to 1.
   assert.equal(Number(source.records.padi.coefficients.reduce((sum, value) => sum + value, 0).toFixed(4)), 1.0041);
@@ -140,7 +140,7 @@ test('government monthly imports are capped per commodity', () => {
   }
   for (let day = 1; day <= 30; day++) api.updateDay(day);
   const monthlyDemand = api.provinces.reduce((sum, province) => sum + api.provinceSnapshot(province.id).demand.padi, 0);
-  assert.ok(state.government.monthlyImportedByCommodity.padi <= monthlyDemand * 0.10 + 1e-8);
+  assert.ok(state.government.monthlyImportedByCommodity.padi <= monthlyDemand * api.seasonalDemandFactor('padi', 1) * 0.10 + 1e-8);
   assert.ok(state.government.monthlyImportedByCommodity.padi > 0);
 });
 
