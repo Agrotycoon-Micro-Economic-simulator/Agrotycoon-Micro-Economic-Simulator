@@ -170,10 +170,10 @@ The remaining five source columns (beef, chicken meat, eggs, sugar, cooking oil)
 
 For each province and catalog commodity, the daily index model uses:
 
-- Daily demand = monthly demand index / 30.
+- Daily demand = (monthly demand index × `seasonalDemandFactor(commodityId, gameDay)` / 30) × representative buyer response × household-consumption pressure × price-response adjustment. Unmapped commodities use factor 1.0.
 - Daily production = baseline monthly demand index / 30 × province supply factor × (1 − active production loss).
-- Closing inventory = max(0, opening inventory + production − demand).
-- Stock cover days = closing inventory / daily demand.
+- Closing inventory = max(0, opening inventory + production − seasonally adjusted daily demand).
+- Stock cover days = closing inventory / seasonally adjusted daily demand. Reserve procurement targets, release sizing, monthly import caps and deficit allocation use the same current-month seasonal factor.
 - Regional price index = clamp((15 / max(0.25, stock-cover-days))^(0.45 + 0.6 × commodity elasticity) + logistics disruption × 0.9, 0.55, 4.00).
 - Regional quote = national market quote × regional price index.
 
