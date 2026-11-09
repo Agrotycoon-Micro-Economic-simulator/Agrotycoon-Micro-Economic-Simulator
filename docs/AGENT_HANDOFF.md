@@ -1359,3 +1359,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - No physical quantity conversion has been enabled. These are provenance/reference units only.
 - Runtime Node execution and CI have **not** been executed in this environment; do not report these tests as passed until actual output is available.
 - Research next: verify `udang_vaname`, `sapi_perah`, `domba`, and remaining horticulture/plantation commodities from exact official table rows before promotion.
+
+
+## 2026-11-10 — additional verified physical-unit references
+
+- Expanded `MARKET_UNIT_REGISTRY` from **39 to 41 unique commodity IDs**.
+- `bayam` is now registered as **kg**, based on Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025*, Table 2.10, which explicitly labels the producer-price table **Rp/Kg**. citeturn438733view1
+- `udang_vaname` is now registered as **kg**, but deliberately with a different provenance status: `official_aquaculture_production_value_unit`. BPS Sumenep reports KKP 2024 aquaculture production for Udang Vaname with a weighted-average value explicitly expressed in **Rp/kg**. This verifies the physical unit and production-value stage, but it is **not** treated as a national BPS producer-price series. citeturn484234search7
+- `sawi` remains unpromoted because the accessible Kementan 2025 publication result is a **consumer-price** table (Table 5.23), not an exact producer-price row; therefore no producer-stage unit was inferred from it. citeturn438733view2
+- `teh` also remains unpromoted. The publication contains a consumer-price row in **Rp/40 gram**, while the game's current registry is intended to preserve producer-stage/product-form semantics; no silent conversion to kg is allowed. citeturn438733view5
+- `sapi_perah` and `domba` remain `butuh_riset_lanjutan`; current producer dashboards expose prices but the exact unit/stage definition needed for the registry was not sufficiently verified from the accessible official documentation.
+- Regression coverage updated from 39 to **41 registry records**. Runtime Node/CI execution remains pending.
