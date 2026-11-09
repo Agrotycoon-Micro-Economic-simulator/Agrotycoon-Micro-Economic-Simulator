@@ -452,7 +452,8 @@
     const horticultureData=REAL_ECONOMIC_DATA.horticultureNationalProduction2025;
     const provincialHorticultureValue=horticultureData?.provincialRecords?.[meta.id]?.[id];
     const horticultureProvincialRecord=Number.isFinite(provincialHorticultureValue)?{productionKg:provincialHorticultureValue*100,productionQuintal:provincialHorticultureValue}:null;
-    const livestockPopulationHead=p.livestockPopulationReference2024?.catalogPopulation?.[id];\n    const poultryPopulationHead=p.poultryPopulationReference2025?.catalogPopulation?.[id];
+    const livestockPopulationHead=p.livestockPopulationReference2024?.catalogPopulation?.[id];
+    const poultryPopulationHead=p.poultryPopulationReference2025?.catalogPopulation?.[id];
     const plantationValue=REAL_ECONOMIC_DATA.plantationProduction2024Partial?.records?.[meta.id]?.[id];
     const plantationProvincialRecord=Number.isFinite(plantationValue)?{productionKg:plantationValue*1000000,productionThousandTon:plantationValue,referenceYear:2024}:null;
     const supplyRecord=id==="padi"?p.marketSupplyReference2025?.padi:(id==="jagung"?s.national.marketSupplyReference2025?.jagung?.provincialProduction2025Partial?.records?.[meta.id]:(plantationProvincialRecord||horticultureProvincialRecord||s.national.marketSupplyReference2025?.horticulture?.records?.[id]||null));
@@ -468,7 +469,9 @@
      supplyStatus:id==="padi"&&supplyRecord?"official_provincial_annual_supply_complete":id==="jagung"&&supplyRecord?"official_provincial_annual_supply_partial":plantationProvincialRecord||horticultureProvincialRecord?"official_provincial_annual_supply_partial":supplyRecord?"official_national_annual_supply_reference":"official_provincial_supply_data_pending",
      supplyAnnualTon:id==="padi"&&supplyRecord?supplyRecord.productionKgGkg/1000:id==="jagung"&&supplyRecord?supplyRecord.productionTon:supplyRecord?supplyRecord.productionKg/1000:null,
      livestockPopulationHead:Number.isFinite(livestockPopulationHead)?livestockPopulationHead:null,
-     livestockPopulationStatus:Number.isFinite(livestockPopulationHead)?"official_2024_standing_animal_stock_not_meat_output":item.unitType==="ternak"?"official_species_population_reference_pending":"not_applicable",\n     poultryPopulationHead:Number.isFinite(poultryPopulationHead)?poultryPopulationHead:null,\n     poultryPopulationStatus:poultryPopulationHead===null&&item.unitType==="ternak"?"official_poultry_population_cell_unavailable":Number.isFinite(poultryPopulationHead)?"official_2025_provisional_standing_poultry_stock_not_meat_or_egg_output":item.unitType==="ternak"?"poultry_species_population_reference_pending":"not_applicable",
+     livestockPopulationStatus:Number.isFinite(livestockPopulationHead)?"official_2024_standing_animal_stock_not_meat_output":item.unitType==="ternak"?"official_species_population_reference_pending":"not_applicable",
+     poultryPopulationHead:Number.isFinite(poultryPopulationHead)?poultryPopulationHead:null,
+     poultryPopulationStatus:poultryPopulationHead===null&&item.unitType==="ternak"?"official_poultry_population_cell_unavailable":Number.isFinite(poultryPopulationHead)?"official_2025_provisional_standing_poultry_stock_not_meat_or_egg_output":item.unitType==="ternak"?"poultry_species_population_reference_pending":"not_applicable",
      dailySupplyStatus:id==="padi"?"annual_reference_only_monthly_harvest_curve_pending":id==="jagung"&&supplyRecord?"rounded_annual_partial_reference_only":plantationProvincialRecord||horticultureProvincialRecord?"provincial_annual_reference_only_monthly_harvest_curve_pending":supplyRecord?"national_reference_only_provincial_allocation_pending":"official_monthly_supply_data_pending",
      qualityStatus:"mixed_verified_reference_and_pending_data"
     };
@@ -744,7 +747,9 @@
   if(horticulture)add("bps_horticulture_production_2025_national_partial","Badan Pusat Statistik / Ditjen Hortikultura","official_statistic_final_national_partial_commodity_rows",Object.keys(horticulture.records||{}).length,"country");
   const livestock=REAL_ECONOMIC_DATA.livestockPopulation2024;
   if(livestock?.coverage?.verifiedProvinceCount===38)add("bps_livestock_population_2024","Badan Pusat Statistik / Kementerian Pertanian Ditjen PKH","official_statistic_final_all_provinces_population_stock",Object.keys(livestock.records||{}).length*Object.keys(livestock.species||{}).length,"province");
-  const poultry=REAL_ECONOMIC_DATA.poultryPopulation2025;\n  if(poultry?.coverage?.verifiedProvinceCount===38)add("bps_poultry_population_2025","Badan Pusat Statistik / Kementerian Pertanian Ditjen PKH","official_statistic_provisional_all_provinces_population_stock",Object.keys(poultry.records||{}).length*Object.keys(poultry.species||{}).length,"province");\n  const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
+  const poultry=REAL_ECONOMIC_DATA.poultryPopulation2025;
+  if(poultry?.coverage?.verifiedProvinceCount===38)add("bps_poultry_population_2025","Badan Pusat Statistik / Kementerian Pertanian Ditjen PKH","official_statistic_provisional_all_provinces_population_stock",Object.keys(poultry.records||{}).length*Object.keys(poultry.species||{}).length,"province");
+  const plantation=REAL_ECONOMIC_DATA.plantationProduction2024Partial;
   if(plantation?.coverage?.verifiedProvinceCount===38)add("bps_plantation_production_2024_partial","Badan Pusat Statistik","official_statistic_partial_provincial_annual_runtime_reference",Object.keys(plantation.records||{}).length*Object.keys(plantation.commodityMap||{}).length,"province");
   const paddy=REAL_ECONOMIC_DATA.paddyProvincialProduction2025;
   if(paddy)add("bps_paddy_production_2025_provincial","Badan Pusat Statistik","official_statistic_final_all_provinces",Object.keys(paddy.records||{}).length,"province");
