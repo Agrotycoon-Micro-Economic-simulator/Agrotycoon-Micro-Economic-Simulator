@@ -150,6 +150,16 @@ function finishDay(){
   if(proposal&&proposal.ok){
    const stored=AgroPlayerOrderBook.replaceNpcOrders(proposal.orders,S.day);
    if(stored&&stored.ok&&!stored.alreadyGenerated)ledger('PASAR','Order NPC regional dibuat '+stored.storedCount,0,{day:S.day,summary:proposal.summary,calibrationStatus:proposal.summary.calibrationStatus});
+   if(stored&&stored.ok&&typeof AgroPlayerOrderBook.matchAndSettle==='function'){
+    const matched=AgroPlayerOrderBook.matchAndSettle(S.day);
+    if(matched&&matched.ok&&!matched.alreadyMatched){
+     const regional=AgroNationalEconomy.applyOrderBookFills(matched.fills);
+     if(!regional||!regional.ok)ledger('PASAR','Rekonsiliasi transaksi regional ditolak',0,{day:S.day,reason:regional&&regional.reason,fillCount:matched.fills.length});
+     else if(matched.fills.length)ledger('PASAR','Transaksi order-book regional dieksekusi '+matched.fills.length,0,{day:S.day,executedQuantity:matched.executedQuantity,executedNotional:matched.executedNotional,settledPlayerFillCount:matched.settledPlayerFillCount,regionalApplied:regional.applied});
+     S.marketPrices=Object.fromEntries(MARKET_ENGINE.catalog.map(item=>[item.id,item.marketPrice]));
+     S.marketLastOrderBook={day:S.day,fillCount:matched.fills.length,executedQuantity:matched.executedQuantity,executedNotional:matched.executedNotional,settledPlayerFillCount:matched.settledPlayerFillCount};
+    }else if(matched&&!matched.ok)ledger('PASAR','Pencocokan order-book gagal',0,{day:S.day,reason:matched.reason});
+   }
   }
  }
  // Expire open market orders at the start of the next in-game day.
