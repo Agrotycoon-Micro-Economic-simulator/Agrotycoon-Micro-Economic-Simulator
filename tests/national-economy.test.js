@@ -134,6 +134,15 @@ test('official Kepmendagri locality master loads only on demand and resolves act
   assert.equal(desa.sourceStatus, 'derived_kemendagri_2025_name_and_code');
   assert.equal(desa.populationStatus, 'equal_share_estimate_pending_official_locality_population');
   assert.match(kelurahan.id, /^\d{10}$/);
+  assert.equal(desa.householdConsumption2025.status, 'not_available_at_this_administrative_depth');
+  const jakartaSouth = await api.searchLocalities('dki-jakarta', 'city', 'Jakarta Selatan', 10);
+  assert.equal(jakartaSouth.length, 1);
+  const jakartaSouthSnapshot = await api.getLocalityAggregateAsync('dki-jakarta', 'city', jakartaSouth[0].index);
+  assert.equal(jakartaSouthSnapshot.id, '3174');
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.recordCount, 26);
+  assert.equal(jakartaSouthSnapshot.householdConsumption2025.rows.ikan.annualPerCapita, 25.2);
+  assert.equal(jakartaSouthSnapshot.demandLayers.household.status, 'partial_verified_observations');
+  assert.match(jakartaSouthSnapshot.localMarketQuoteStatus, /not_order_book_clearing/);
   const results = await api.searchLocalities('lampung', 'desa', '', 20);
   assert.equal(results.length, 20);
   assert.ok(results.every(row => row.id && row.name && Number.isInteger(row.index)));
