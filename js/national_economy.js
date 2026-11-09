@@ -122,8 +122,7 @@
   {localityCode:"3101",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Administrasi Kepulauan Seribu",key:"gula_pasir",sourceCommodity:"Gula pasir",group:"Gula",annualPerCapita:6,year:2025,unit:"kg/kap/tahun"},
   {localityCode:"3101",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Administrasi Kepulauan Seribu",key:"gula_merah",sourceCommodity:"Gula merah",group:"Gula",annualPerCapita:0.1,year:2025,unit:"kg/kap/tahun"},
   {localityCode:"3101",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Administrasi Kepulauan Seribu",key:"sayur",sourceCommodity:"Sayur",group:"Sayur dan Buah",annualPerCapita:47.1,year:2025,unit:"kg/kap/tahun"},
-  {localityCode:"3101",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Administrasi Kepulauan Seribu",key:"buah",sourceCommodity:"Buah",group:"Sayur dan Buah",annualPerCapita:35.9,year:2025,unit:"kg/kap/tahun"}
-
+  {localityCode:"3101",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Administrasi Kepulauan Seribu",key:"buah",sourceCommodity:"Buah",group:"Sayur dan Buah",annualPerCapita:35.9,year:2025,unit:"kg/kap/tahun"},
   {localityCode:"3171",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Kota Administrasi Jakarta Pusat",key:"beras",sourceCommodity:"Beras",group:"Padi-Padian",annualPerCapita:76.9,year:2025,unit:"kg/kap/tahun"},
   {localityCode:"3171",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Kota Administrasi Jakarta Pusat",key:"jagung",sourceCommodity:"Jagung",group:"Padi-Padian",annualPerCapita:0.5,year:2025,unit:"kg/kap/tahun"},
   {localityCode:"3171",provinceId:"dki-jakarta",provinceCode:"31",localityName:"Kota Administrasi Jakarta Pusat",key:"terigu",sourceCommodity:"Terigu",group:"Padi-Padian",annualPerCapita:17.2,year:2025,unit:"kg/kap/tahun"},
