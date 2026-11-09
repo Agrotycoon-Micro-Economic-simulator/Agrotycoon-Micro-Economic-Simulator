@@ -77,7 +77,7 @@ function assessLot(input){
  if(p.moistureMaxPct&&moist!==null&&moist>p.moistureMaxPct)rate*=1+Math.min(3,(moist-p.moistureMaxPct)/4);
  if(p.moistureCriticalPct&&moist!==null&&moist>=p.moistureCriticalPct)rate*=2;
  if(input.flooded===true&&!input.driedAfterFlood){const wet=finite(input.daysSinceFlood)?Math.max(0,Number(input.daysSinceFlood)):0;rate*=1+Math.min(4,wet);if(wet>=3)rate*=1.5;}
- const days=Number(input.storageType==='refrigerated'?p.idealDays:p.ambientDays);
+ const frozen=input.storageType==='freezer'&&temp<=-18;const days=Number(frozen?Math.max(365,Number(p.idealDays)||365):input.storageType==='refrigerated'?p.idealDays:p.ambientDays);if(frozen)rate=Math.pow(2,Math.max(-3,Math.min(0,(temp+18)/10)));
  if(!Number.isFinite(days)||days<=0)return {ok:true,commodityId:id,risk:'unclassified',expired:false,spoilageConfirmed:false,calibrationStatus:'research_required'};
  const effectiveAge=age*rate,ratio=effectiveAge/days,quality=Math.max(0,Math.min(100,100*(1-ratio)));
  let risk=ratio>=1?'expired':ratio>=.8?'critical':ratio>=.55?'high':ratio>=.3?'watch':'normal';
@@ -95,7 +95,7 @@ function ensureLotBook(state){
 }
 function receiveLot(state,input){
  const b=ensureLotBook(state);if(!b.ok||!input||!PROFILES[input.commodityId]||!finite(input.quantity)||Number(input.quantity)<=0)return {ok:false,reason:'invalid_receipt'};
- const p=PROFILES[input.commodityId],q=Number(input.quantity),lot={id:String(input.id||('lot-'+input.commodityId+'-'+(state.day||0)+'-'+b.lots.length)),commodityId:input.commodityId,quantity:q,unitCost:Math.max(0,Number(input.unitCost)||0),receivedDay:Number(input.day??state.day)||0,ageDays:0,ageKnown:true,form:input.form||p.form,storageType:input.storageType||'ambient',temperatureC:finite(input.temperatureC)?Number(input.temperatureC):30,relativeHumidityPct:finite(input.relativeHumidityPct)?Number(input.relativeHumidityPct):80,moisturePct:finite(input.moisturePct)?Number(input.moisturePct):null,quality:100,physicalDamage:input.physicalDamage===true};
+ const p=PROFILES[input.commodityId],q=Number(input.quantity),lot={id:String(input.id||('lot-'+input.commodityId+'-'+(state.day||0)+'-'+b.lots.length)),commodityId:input.commodityId,quantity:q,unitCost:Math.max(0,Number(input.unitCost)||0),receivedDay:Number(input.day??state.day)||0,ageDays:0,ageKnown:true,form:input.form||p.form,storageType:input.storageType||(state.storageEnvironment&&state.storageEnvironment.storageType)||'ambient',temperatureC:finite(input.temperatureC)?Number(input.temperatureC):finite(state.storageEnvironment&&state.storageEnvironment.temperatureC)?Number(state.storageEnvironment.temperatureC):30,relativeHumidityPct:finite(input.relativeHumidityPct)?Number(input.relativeHumidityPct):finite(state.storageEnvironment&&state.storageEnvironment.relativeHumidityPct)?Number(state.storageEnvironment.relativeHumidityPct):80,moisturePct:finite(input.moisturePct)?Number(input.moisturePct):null,quality:100,physicalDamage:input.physicalDamage===true};
  b.lots.push(lot);return {ok:true,lot};
 }
 function consumeLots(state,id,qty){
