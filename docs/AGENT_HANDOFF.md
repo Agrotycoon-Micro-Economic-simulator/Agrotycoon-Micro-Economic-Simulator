@@ -1483,3 +1483,20 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression target remains **58/60**. Existing tests should continue to assert `registry.stroberi === undefined` and `registry.kapas === undefined`.
 - No physical quantity conversion is authorized by this research. All 60 catalogue quantities remain `unconverted_legacy_simulation_index`; a production tonnage series, price unit, and game inventory base unit are separate data contracts.
 - Node tests were not executed in this session. No CI run/status was verified. No changes to `main`, `peta.html`, or `js/map_engine.js`.
+
+
+## 2026-11-10 — player order quantity provenance alignment (legacy scale retained)
+
+- Official methodology check: Kementan Pusdatin *Statistik Harga Komoditas Pertanian 2025* explains that producer-price units can be kg, quintal (100 kg), 10 pieces, bundles, etc.; local units are converted to standard units for statistical reporting. The printed transaction basis, the statistical standardized basis, and Agrotycoon's inventory base unit are therefore separate data layers. Do not assume that a displayed statistical unit is already the game's physical inventory unit.
+- Source: https://satudata.pertanian.go.id/assets/docs/publikasi/c9c87ec57f8a22249659ace0dc306047.pdf (methodology section, producer prices); supporting BPS methodology text: https://web-api.bps.go.id/download.php?f=RudLOKdWED+bcBwvwic1unB4MG5vdnUyOUJEQUNITmQvb3FFRXdXZkpqS1g0ckowYW5LU0EyY3IrMGpKRFFFK09ScVllNURsL0lEQXVINHVZVnplQm5lYzg3Z3l4Zi9NMWZkbURyWkpycWgxNnFHUFhwTEdRK2xpWmFVNzB0TDNuMXhrWHlBZ0dEK1RtRUtLUWFITHpXYmsrWTU4TTV0L3RnQmdZS3VReFhYaU5NdmNXZ29MVkU1UCtUR0xJdUV0eGtzRzZmM3BLVTdlRTJHWWx5YVpaS041blU5eDRSMEJaRlY1VlhvYVhLSlZHeVRiN1A2dmhFdnp3S2dSOWJ5cVoxd2pXRDZvR0dJZEZPbzAwZWNjdVZaNmZLVTBMaFZpd3JVWFhRPT0%3D
+- Code change: `js/player_order_book.js` now attaches explicit quantity provenance to every newly submitted player order:
+  - `quantityUnit: unconverted_simulation_market_units`
+  - `quantityCalibrationStatus: legacy_index_to_physical_unit_conversion_pending`
+  - `quantityScaleStatus: unconverted_legacy_simulation_index`
+  - the verified `referencePhysicalUnit`, `referenceProductForm`, and `referenceUnitStatus` are copied from the commodity registry when available; unresolved references remain null / `butuh_riset_lanjutan`.
+  - `quantityBasis` identifies player inventory's legacy simulation-unit basis. This is metadata only; it does not convert, round, rescale, or change any inventory quantity.
+- Regression tests in `tests/player-order-book.test.js` now check player-order provenance, fill-side provenance on player/NPC trades, and metadata consistency across all 60 catalog commodities. The two commodities without a verified physical reference (`stroberi`, `kapas`) retain null reference physical unit while their quantities remain explicitly legacy simulation units.
+- Commits: implementation `21d120307fbe1e9775b181d9c24731d2322b6144`; initial provenance tests `d33c9f7c3f968ac68913288b5719d66a37531bd7`; NPC/player fill fixture alignment `d3646825febaea768807bdf84516ae894c5ce1bd`; all-60 coverage `72da0fd91b8bcfed366f1c9b33876a79c081ab39`.
+- Important remaining control: `market_engine.js` still permits matching orders with different or missing quantity metadata and only labels the fill as mixed/unverified. A subsequent change should add a compatibility gate that prevents unlike quantity contracts from matching, while preserving/migrating pre-existing legacy save orders safely. Do not activate physical conversion as part of that gate.
+- All 60 catalog quantities remain `unconverted_legacy_simulation_index`. No conversion factor is introduced. No test execution or CI result is claimed for this commit set.
+- `main`, `peta.html`, and `js/map_engine.js` remain untouched.
