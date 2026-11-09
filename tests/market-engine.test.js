@@ -297,6 +297,8 @@ test('60-item catalog exposes explicit market-unit evidence status without conve
   assert.equal(market.byId.kedelai.marketUnitReference.unit, 'kg');
   assert.equal(market.byId.pisang.marketUnitReference.unit, 'sisir');
   assert.equal(market.byId.kambing.marketUnitReference.productForm, 'berat hidup');
+  assert.equal(market.byId.ayam_petelur.marketUnitReference.unit, 'kg');
+  assert.equal(market.byId.bebek.marketUnitReference.unit, 'ekor');
   assert.equal(market.byId.kentang.marketUnitReference.unit, 'kg');
   assert.equal(market.byId.kacang_panjang.marketUnitReference.unit, 'kg');
   assert.equal(market.byId.kangkung.marketUnitReference.unit, 'kg');
