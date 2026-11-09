@@ -152,7 +152,7 @@ D_m = \left(\frac{\beta_m}{\beta_{mt}}\right) D_y
 
 where \(D_m\) is monthly requirement, \(\beta_m\) is the commodity-specific monthly coefficient, \(\beta_{mt}\) is the annual coefficient, and \(D_y\) is annual requirement. In the runtime, the pre-existing average monthly demand index is multiplied by \(12\beta_m\), then divided by 30 game days. The 12-month game calendar is a 30-day-per-month seasonal template, not the Gregorian 2025 calendar.
 
-Official coefficient arrays are stored in `BAPANAS_MONTHLY_DEMAND_2025` in `js/national_economy.js` for:
+All 12 coefficient columns from Table 2.5 are retained in `BAPANAS_MONTHLY_DEMAND_2025` in `js/national_economy.js`. Seven compatible game mappings are active in `records`:
 - `padi`: rice demand as a downstream index signal only; no rice-to-gabah physical conversion is asserted.
 - `jagung`, `kedelai`, `cabai_merah`, `cabai_rawit`, `bawang_merah`, and `bawang_putih`: mapped to the corresponding existing game commodity IDs.
 
@@ -164,7 +164,7 @@ The source also defines total annual food need as household consumption plus non
 
 Primary source: [Bapanas Juknis Proyeksi Neraca Pangan 2025](https://data.badanpangan.go.id/nfs_storage/public/publication/documents/1776218737.pdf), Table 2.5 and methodology section. The PDF cover cites Kepka Bapanas No. 27/2025 while its attachment heading cites No. 22/2025; this source-internal discrepancy is retained in runtime metadata.
 
-The source table includes meat, egg, sugar, and cooking-oil series, but these are not mapped to game livestock head-count IDs or absent catalog product stages. Extend only after matching physical stage and unit. **Butuh riset lanjutan** for those mappings and for the 2025 BPS non-household numeric tables.
+The remaining five source columns (beef, chicken meat, eggs, sugar, cooking oil) are retained in `unmappedRecords` with `research_only_*` mapping statuses. They do not execute in daily demand because the current catalog has livestock head-count stages or lacks matching processed-food product stages. Extend only after matching physical stage and unit. **Butuh riset lanjutan** for those mappings and for the 2025 BPS non-household numeric tables.
 
 ## 5. Regional stock-flow and price formation
 
