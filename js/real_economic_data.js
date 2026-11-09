@@ -410,6 +410,28 @@ window.REAL_ECONOMIC_DATA={
   note:"Aggregate values and table labels were transcribed from an accessible text mirror of BPS Peternakan Dalam Angka 2025; the official BPS publication metadata is confirmed, but the original table images/PDF were not visually verified in this pass. Component arithmetic is explicitly audited: beef cattle has Rp0.01 thousand rounding gaps in both cost-component sum and income; dairy has a Rp0.01 thousand cost-component gap; buffalo has an unresolved Rp106.65 thousand gap between listed components and reported total cost. Preserve source and derived fields separately. These are national UTP research references, not local farm quotes, not UTL/UPB values, and not Tier 1–4 recipes. Do not promote until primary PDF/table verification and unresolved cost-component gaps are reviewed."
  },
 
+ plantationProduction2024Partial:{
+  geography:"Indonesia",
+  referenceYear:2024,
+  sourceUnit:"thousand_tonne/year",
+  conversion:{kgPerThousandTonne:1000000},
+  source:{publisher:"Badan Pusat Statistik",title:"Produksi Tanaman Perkebunan Menurut Provinsi dan Jenis Tanaman (Ribu Ton), 2024",url:"https://www.bps.go.id/id/statistics-table/2/MjU2NiMy/produksi-tanaman-perkebunan-menurut-provinsi-dan-jenis-tanaman--ribu-ton-.html",lastUpdated:"2026-08-27",qualityStatus:"official_bps_table_partial_rows_transcribed_from_visible_table"},
+  status:"official_statistic_partial_provincial_rows",
+  coverage:{verifiedProvinceCount:7,totalProvinceCount:38,verifiedCommodityCount:7,totalMappedCommodities:7,coverageStatus:"partial_official_provincial_annual_rows"},
+  commodityMap:{kelapa_sawit:"Kelapa Sawit",kelapa:"Kelapa",karet:"Karet",kopi:"Kopi",kakao:"Kakao",teh:"Teh",tebu:"Tebu"},
+  records:{
+   aceh:{kelapa_sawit:1092.71,kelapa:64.10,karet:51.17,kopi:74.13,kakao:34.17,teh:0,tebu:0},
+   "sumatera-utara":{kelapa_sawit:5120.02,kelapa:103.64,karet:251.52,kopi:91.69,kakao:38.47,teh:10.14,tebu:14.52},
+   "sumatera-barat":{kelapa_sawit:1410.64,kelapa:79.06,karet:99.67,kopi:15.32,kakao:34.58,teh:5.60,tebu:0},
+   riau:{kelapa_sawit:9136.10,kelapa:399.95,karet:180.74,kopi:1.83,kakao:0.84,teh:0,tebu:0},
+   jambi:{kelapa_sawit:2113.97,kelapa:115.35,karet:222.56,kopi:23.23,kakao:0.69,teh:4.24,tebu:0},
+   "sumatera-selatan":{kelapa_sawit:3967.39,kelapa:61.65,karet:619.55,kopi:219.59,kakao:4.40,teh:2.62,tebu:124.37},
+   bengkulu:{kelapa_sawit:1298.17,kelapa:7.25,karet:64.60,kopi:55.63,kakao:2.36,teh:1.88,tebu:0}
+  },
+  zeroInterpretation:"0.00 is retained as the BPS-published numeric value; it is not inferred for provinces without a source row.",
+  runtimeUse:"annual_provincial_reference_only_no_daily_stock_or_harvest_curve",
+  note:"Only the seven provincial rows visible in the BPS table extraction are ingested. Do not extrapolate these values to the remaining 31 provinces or claim full 38-province coverage. The table reports aggregate plantation production; harvested product form/quality can differ by commodity and must be resolved before inventory conversion."
+ },
  caveats:["Tarif tol hanya mencakup segmen terdaftar; jangan mengarang tarif ruas yang belum tercantum.","Harga pangan Maret 2026 adalah data periode historis, bukan harga hari ini.","Harga pupuk subsidi hanya untuk penerima dan komoditas yang memenuhi syarat.","Biaya kandang, FCR, konsumsi pakan per ternak, dan mesin pelet belum boleh diisi sebagai data real tanpa sumber spesifik yang tervalidasi."]
 };
 window.getRealTollFare=function(segment,vehicleClass){
