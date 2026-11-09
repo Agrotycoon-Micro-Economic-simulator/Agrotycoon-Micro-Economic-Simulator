@@ -180,7 +180,10 @@ test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain
   const npc = {
     orderId: 'npc-demand-1-lampung-jagung', commodityId: 'jagung', side: 'buy',
     quantity: 3, limitPrice: price, createdAt: 1, expiresAt: 2, actorType: 'npc',
-    ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1
+    ownerId: 'npc-buyer-pool-lampung', regionId: 'lampung', stage: 'producer', sequence: 1,
+    quantityBasis: 'regional_unmet_demand_after_inventory',
+    quantityUnit: 'unconverted_simulation_market_units',
+    quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending'
   };
   assert.equal(context.AgroPlayerOrderBook.replaceNpcOrders([npc], 1).ok, true);
   const beforeCash = vm.runInContext('S.gold', context);
@@ -199,6 +202,9 @@ test('partial player sell fills settle cash, FIFO inventory cost, HPP and retain
   assert.equal(snapshot.reservedInventory.jagung, 2);
   assert.equal(snapshot.trades[0].settlement, 'player_settled');
   assert.equal(snapshot.trades[0].quantity, 3);
+  assert.equal(snapshot.trades[0].buyQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(snapshot.trades[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
+  assert.equal(snapshot.trades[0].quantityUnit, 'mixed_or_unverified_quantity_units');
 });
 
 test('partial player buy fills debit only executed notional and create valued, age-tracked inventory lots', () => {
