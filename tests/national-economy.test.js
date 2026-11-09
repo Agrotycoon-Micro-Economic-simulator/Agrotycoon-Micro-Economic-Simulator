@@ -495,7 +495,45 @@ test('non-DKI locality demand index follows hierarchical population share and co
   assert.equal(regency.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
 });
 
+test('verified economic datasets are runtime-bound and pending datasets are isolated', () => {
+  const api = context.AgroNationalEconomy;
+  const registry = api.runtimeDataRegistry();
+  assert.equal(registry.allRuntimeBound, true);
+  assert.ok(registry.verifiedCount >= 6);
+  assert.ok(registry.verified.every(entry => entry.runtimeBound === true && entry.records > 0));
+  assert.ok(registry.pending.some(entry => entry.status === 'official_source_metadata_only_numeric_extraction_pending'));
+  assert.ok(api.bapanasNationalConsumption2025.length > 0);
+  assert.ok(Object.keys(api.bpsKabkotaPopulation2025).length === 6);
+});
+
 test('non-DKI locality demand uses hierarchical population allocation instead of province-wide equal split', async () => {
+  const api = context.AgroNationalEconomy;
+  const master = await api.loadAdministrativeMaster();
+  const province = api.provinces.find(p => p.id === 'lampung');
+  const state = api.ensure();
+  const bucket = master.byProvince[province.adminCode];
+  const firstRegency = bucket.regencies[0];
+  const firstDistrict = bucket.districts.find(row => row.regency_id === firstRegency.id);
+  const firstVillage = master.villages.find(row => row.district_id === firstDistrict.id);
+  const regencyIndex = bucket.regencies.findIndex(row => row.id === firstRegency.id);
+  const districtIndex = bucket.districts.findIndex(row => row.id === firstDistrict.id);
+  const villageIndex = master.villages.findIndex(row => row.id === firstVillage.id);
+  const regency = await api.getLocalityAggregateAsync('lampung', 'regency', regencyIndex);
+  const district = await api.getLocalityAggregateAsync('lampung', 'district', districtIndex);
+  const village = await api.getLocalityAggregateAsync('lampung', 'desa', bucket.desa.findIndex(row => row.district_id === firstDistrict.id));
+  assert.equal(regency.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.equal(district.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.equal(village.populationStatus, 'derived_hierarchical_equal_share_pending_official_locality_population');
+  assert.ok(regency.population > 0);
+  assert.ok(district.population > 0);
+  assert.ok(village.population > 0);
+  assert.ok(district.population < regency.population);
+  assert.ok(village.population <= district.population);
+  assert.equal(village.population, Math.floor(district.population / master.villages.filter(row => row.district_id === firstDistrict.id).length) +
+    (master.villages.filter(row => row.district_id === firstDistrict.id).findIndex(row => row.id === firstVillage.id) < district.population % master.villages.filter(row => row.district_id === firstDistrict.id).length ? 1 : 0));
+  assert.equal(state.provinces.lampung.population, province.population);
+});
+
   const api = context.AgroNationalEconomy;
   const master = await api.loadAdministrativeMaster();
   const province = api.provinces.find(p => p.id === 'lampung');
