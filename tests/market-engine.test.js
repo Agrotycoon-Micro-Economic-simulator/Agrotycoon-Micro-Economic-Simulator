@@ -94,7 +94,7 @@ test('unknown and malformed transactions are ignored without mutating prices', (
 
 
 const makeOrder = (overrides = {}) => ({
-  orderId: 'o-' + Math.random().toString(36).slice(2),
+  orderId: 'order-default',
   commodityId: 'jagung',
   side: 'buy',
   quantity: 5,
