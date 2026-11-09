@@ -70,7 +70,9 @@
           midPrice: localPrice,
           pricingBasis: "bounded_local_quote_experimental_npc_half_spread",
           sourceRegion: "AgroNationalEconomy.provinceSnapshot",
-          sourceDay: day
+          sourceDay: day,
+          quantityUnit: "unconverted_simulation_market_units",
+          quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending"
         };
 
         if (marketableStock > 0) {
@@ -82,9 +84,7 @@
             limitPrice: askPrice,
             ownerId: "npc-producer-pool-" + regionId,
             sequence,
-            quantityBasis: "regional_marketable_inventory_after_daily_demand",
-          quantityUnit: "unconverted_simulation_market_units",
-          quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending"
+            quantityBasis: "regional_marketable_inventory_after_daily_demand"
           }));
         }
 
