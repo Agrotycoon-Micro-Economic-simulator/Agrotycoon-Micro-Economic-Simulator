@@ -275,6 +275,7 @@ function sellCommodity(id,channel){
  if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
   const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,qty);
   if(!lotPlan||!lotPlan.ok){msg("Lot persediaan tidak sinkron; penjualan dibatalkan sebelum pencatatan HPP/kas.");return false;}
+  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-Math.max(0,Number(S.landSystem.inventory[id])||0))>1e-6){msg("Jumlah lot dan agregat persediaan tidak sinkron; penjualan dibatalkan.");return false;}
  }
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+" "+channel+"\\nOmzet: "+safeRp(rev)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(grossProfit)+"\\n"+logisticsBreakdown(logistics)+"\\nKas bersih setelah distribusi: "+safeRp(net)))return false;
  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
@@ -365,6 +366,7 @@ function processCommodity(id){
  if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
   const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,input);
   if(!lotPlan||!lotPlan.ok){msg("Lot bahan baku tidak sinkron; pengolahan dibatalkan sebelum pencatatan kas.");return;}
+  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-stock)>1e-6){msg("Jumlah lot dan agregat persediaan bahan baku tidak sinkron; pengolahan dibatalkan.");return;}
  }
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
  // Lot consumption is preflighted before any cash/accounting mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
