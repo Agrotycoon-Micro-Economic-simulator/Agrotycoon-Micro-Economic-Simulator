@@ -58,10 +58,10 @@
     return { ok: errors.length === 0, complete: errors.length === 0 && missing.length === 0, errors, missing };
   }
 
-  function quantityContractFor(commodityId, declaredUnit) {
+  function quantityContractFor(commodityId, declaredUnit, explicitQuantityUnit) {
     const legacy = {
       quantityBasis: "legacy_simulation_market_quantity",
-      quantityUnit: "unconverted_simulation_market_units",
+      quantityUnit: explicitQuantityUnit == null ? "unconverted_simulation_market_units" : String(explicitQuantityUnit),
       quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
       quantityScaleStatus: "unconverted_legacy_simulation_index"
     };
@@ -104,7 +104,7 @@
       commodityId: input.commodityId,
       unit: input.unit,
       quantity: input.qtyPerBatch == null ? null : input.qtyPerBatch * batchCount,
-      quantityContract: quantityContractFor(input.commodityId, input.unit)
+      quantityContract: quantityContractFor(input.commodityId, input.unit, input.quantityUnit)
     }));
     const outputPlan = recipe.outputs.map((output) => ({
       commodityId: output.commodityId,
@@ -112,7 +112,7 @@
       role: output.role,
       saleable: output.saleable === true,
       quantity: output.qtyPerBatch == null ? null : output.qtyPerBatch * batchCount,
-      quantityContract: quantityContractFor(output.commodityId, output.unit)
+      quantityContract: quantityContractFor(output.commodityId, output.unit, output.quantityUnit)
     }));
     const contractErrors = inputRequirements.concat(outputPlan).map(x => quantityContractError(x.quantityContract)).filter(Boolean);
     const shortages = [];
