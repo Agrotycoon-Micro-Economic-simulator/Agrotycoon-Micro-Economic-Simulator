@@ -1,3 +1,14 @@
+# Quantity-contract integration — transformation & unit economics (2026-11-10)
+
+- Implemented the next quantity-integrity gate after the 3-layer commodity/storage contract.
+- `js/commodity_transformation.js` now preserves the declared recipe unit as metadata only: `declaredUnitSemantics=recipe_label_not_physical_quantity`. A recipe saying `kg`, `buah`, `ikat`, etc. does not activate a physical conversion.
+- Production plans now expose `quantityContractStatus`. Existing legacy quantities remain executable under the explicit legacy contract; an input/output carrying a physical quantity unit without a verified conversion is blocked from execution instead of guessing a factor.
+- `js/unit_economics.js` now attaches the same quantity-contract state to every input breakdown. Physical execution requires an explicit verified conversion flag; otherwise the scenario remains legacy-index based.
+- Numerical production quantities, prices, HPP formulas, and existing financial behavior were not rescaled.
+- Regression coverage added in `tests/commodity-transformation.test.js` and `tests/unit_economics.test.js`.
+- Implementation commits: `2801703903d067d9e489201e22f2c70427fcbc3b`, `c2667eb275a7e2c41901f32cdcae3639a434b2b8`; tests: `64ba66fd3003c6f77cf2af2117b6463c258f32ca`, `5cf7391092476442e98ffdc9536afaa6d34e9e52`.
+- Test execution must be verified from an actual Node/CI result before claiming green.
+
 ## 2026-11-09 — NPC spread integration repaired and audit checkpoint refreshed
 
 - Audit scope refreshed against the repository's three visible branches: `main`, `feat/production-tier-taxonomy`, and `fix/core-auto-warung-accounting-ui`. The feature branch remains the active implementation branch; no merge/cherry-pick from the older accounting/UI branch was performed.
