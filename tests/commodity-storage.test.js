@@ -135,6 +135,33 @@ test('new harvest lots age daily and FIFO consumption removes oldest quantity fi
  assert.equal(state.landSystem.storageLots[0].quantity,6);
 });
 
+test('expired or spoiled lots are never eligible for FIFO consumption',()=>{
+ const state={day:10,landSystem:{inventory:{tomat:7},inventoryCost:{tomat:700},storageLots:[
+  {id:'expired',commodityId:'tomat',quantity:3,unitCost:100,receivedDay:1,ageDays:9,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:30,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'},
+  {id:'fresh',commodityId:'tomat',quantity:4,unitCost:100,receivedDay:10,ageDays:0,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:30,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'}
+ ]}};
+ const plan=storage.planLotConsumption(state,'tomat',4);
+ assert.equal(plan.ok,true);
+ assert.equal(plan.available,4);
+ assert.equal(plan.unusable,3);
+ assert.deepEqual(plan.unusableLots.map(x=>x.lotId),['expired']);
+ assert.deepEqual(plan.used.map(x=>x.lot.id),['fresh']);
+ assert.deepEqual(state.landSystem.storageLots.map(x=>x.quantity),[3,4]);
+});
+
+test('spoilage shortfall blocks consumption without mutating lots',()=>{
+ const state={day:10,landSystem:{inventory:{tomat:4},inventoryCost:{tomat:400},storageLots:[
+  {id:'expired',commodityId:'tomat',quantity:4,unitCost:100,receivedDay:1,ageDays:9,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:30,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'}
+ ]}};
+ const before=JSON.stringify(state.landSystem.storageLots);
+ const plan=storage.planLotConsumption(state,'tomat',1);
+ assert.equal(plan.ok,false);
+ assert.equal(plan.reason,'lot_quantity_unavailable_due_to_spoilage');
+ assert.equal(plan.unusable,4);
+ assert.equal(plan.available,0);
+ assert.equal(JSON.stringify(state.landSystem.storageLots),before);
+});
+
 test('unknown commodity IDs never receive invented expiry rules',()=>{
  const r=assess({commodityId:'unknown',ageDays:999});
  assert.equal(r.risk,'unclassified');assert.equal(r.expired,false);
