@@ -40,6 +40,18 @@ const sandbox = {
   },
   AgroCommodityTransformation: transformation,
   AgroUnitEconomics: unitEconomics,
+  AgroCommodityStorage: {
+    planAllowed: true,
+    calls: [],
+    planLotConsumption: function(_state, commodityId, quantity) {
+      this.calls.push({ type: "plan", commodityId, quantity });
+      return this.planAllowed ? { ok: true, plannedQuantity: quantity } : { ok: false, reason: "lot_quantity_shortfall" };
+    },
+    consumeLots: function(_state, commodityId, quantity) {
+      this.calls.push({ type: "consume", commodityId, quantity });
+      return { ok: true, consumedQuantity: quantity };
+    }
+  },
   ensureAgriState: () => {},
   prompt: () => prompts.shift() || "tidak",
   confirm: () => true,
@@ -100,6 +112,7 @@ assert.equal(state.dayLog.cogs, 0, "processing alone must not recognize COGS bef
 assert.equal(state.dayLog.businessPurchases, 100000);
 assert.equal(state.dayLog.cashOut, 100100);
 assert.equal(state.dayLog.gross, 0);
+assert.deepEqual(sandbox.AgroCommodityStorage.calls.slice(0,2).map(x => x.type), ["plan", "consume"], "processing must preflight lots before consuming them");
 
 state.gold = 50000;
 state.landSystem.inventory.cabai_merah = 10;
@@ -113,6 +126,26 @@ const beforeInsufficient = JSON.stringify({
   cogs: state.dayLog.cogs,
   gross: state.dayLog.gross
 });
+sandbox.AgroCommodityStorage.planAllowed = false;
+const beforeLotPlanFailure = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  ledger: state.ledger.length
+});
+sandbox.processCommodity("cabai_merah");
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  finishedInventory: state.landSystem.finishedInventory.sambal_cabai_250g,
+  finishedInventoryCost: state.landSystem.finishedInventoryCost.sambal_cabai_250g,
+  ledger: state.ledger.length
+}), beforeLotPlanFailure, "processing lot preflight failure must leave cash/accounting/inventory unchanged");
+sandbox.AgroCommodityStorage.planAllowed = true;
+
 sandbox.processCommodity("cabai_merah");
 assert.equal(JSON.stringify({
   gold: state.gold,
@@ -213,6 +246,27 @@ state.ledger = [];
 sandbox.prompt = () => "0";
 sandbox.confirm = () => true;
 sandbox.logisticsPrompt = () => ({ total: 100 });
+sandbox.AgroCommodityStorage.planAllowed = false;
+const rawBeforeLotPlanFailure = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+});
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+}), rawBeforeLotPlanFailure, "raw-sale lot preflight failure must leave cash/accounting/inventory unchanged");
+sandbox.AgroCommodityStorage.planAllowed = true;
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
 assert.equal(rawSaleOk, true);
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
