@@ -213,6 +213,7 @@ test('storage consumption preflight is non-mutating and shortfall is atomic', ()
 
   const okPlan = storage.planLotConsumption(state, 'padi', 4);
   assert.equal(okPlan.ok, true);
+  assert.equal(okPlan.available, 5);
   assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), before);
   const result = storage.consumeLots(state, 'padi', 4);
   assert.equal(result.ok, true);
