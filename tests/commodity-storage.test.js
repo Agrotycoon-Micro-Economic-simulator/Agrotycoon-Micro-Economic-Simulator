@@ -198,3 +198,24 @@ test('legacy storage lots receive only the explicit legacy quantity contract dur
  assert.equal(book.lots[0].quantityCalibrationStatus,'legacy_index_to_physical_unit_conversion_pending');
  assert.equal(book.lots[0].quantityScaleStatus,'unconverted_legacy_simulation_index');
 });
+
+
+test('storage consumption preflight is non-mutating and shortfall is atomic', () => {
+  const state = { day: 1, landSystem: { inventory: { padi: 5 }, inventoryCost: { padi: 500 }, storageLots: [
+    { id: 'a', commodityId: 'padi', quantity: 2, unitCost: 100, receivedDay: 1, quantityUnit: 'unconverted_simulation_market_units', quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending', quantityScaleStatus: 'unconverted_legacy_simulation_index' },
+    { id: 'b', commodityId: 'padi', quantity: 3, unitCost: 100, receivedDay: 1, quantityUnit: 'unconverted_simulation_market_units', quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending', quantityScaleStatus: 'unconverted_legacy_simulation_index' }
+  ]}};
+  const before = state.landSystem.storageLots.map(l => l.quantity);
+  const plan = storage.planLotConsumption(state, 'padi', 6);
+  assert.equal(plan.ok, false);
+  assert.equal(plan.reason, 'lot_quantity_shortfall');
+  assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), before);
+
+  const okPlan = storage.planLotConsumption(state, 'padi', 4);
+  assert.equal(okPlan.ok, true);
+  assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), before);
+  const result = storage.consumeLots(state, 'padi', 4);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.consumed, [{ lotId: 'a', quantity: 2 }, { lotId: 'b', quantity: 2 }]);
+  assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), [1]);
+});
