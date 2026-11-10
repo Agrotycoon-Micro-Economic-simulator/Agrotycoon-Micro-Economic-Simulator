@@ -71,7 +71,7 @@
     return Object.freeze({
       ...legacy,
       referencePhysicalUnit: reference ? reference.transactionUnit : null,
-      referenceProductForm: reference && reference.sourceRef ? reference.sourceRef.source : null,
+      referenceProductForm: reference ? reference.transactionProductForm : null,
       referenceUnitStatus: reference ? reference.sourceUnitStatus : "butuh_riset_lanjutan",
       conversionStatus: reference ? reference.conversionStatus : "pending_registry_reference"
     });
