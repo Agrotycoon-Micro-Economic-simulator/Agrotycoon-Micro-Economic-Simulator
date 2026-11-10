@@ -1550,3 +1550,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - No conversion factor, physical yield calibration, unit normalization, stock rescaling, or price rescaling was introduced. Existing recipe unit labels and agronomy yield values remain game-model parameters, not independently validated physical calibration. Butuh riset lanjutan for yield calibration and processing output ratios by commodity/form.
 - Tests were added/updated but not executed in this session. No CI pass/fail is claimed.
 - main, peta.html, and js/map_engine.js remain untouched.
+
+- CI wiring: `.github/workflows/targeted-regression.yml` now explicitly runs `tests/commodity-processing-runtime.test.js` and `tests/commodity-harvest-quantity.test.js` in the standalone Node regression step. Workflow commit: `1f7a0889cb841c7613b886532c607fc1e1e1ace2`. The latest commit has no reported status checks yet; workflow execution is not claimed.
