@@ -267,14 +267,20 @@ test('order-book fills preserve each side quantity-unit provenance without imply
     {
       orderId: 'player-supply-unit-test', commodityId: 'jagung', side: 'sell', quantity: 4,
       limitPrice: item.marketPrice, createdAt: 1, expiresAt: 2, actorType: 'player',
-      ownerId: 'player', regionId: 'lampung', stage: 'producer'
+      ownerId: 'player', regionId: 'lampung', stage: 'producer',
+      quantityBasis: 'player_inventory_legacy_simulation_units',
+      quantityUnit: 'unconverted_simulation_market_units',
+      quantityCalibrationStatus: 'legacy_index_to_physical_unit_conversion_pending',
+      referencePhysicalUnit: 'kg', referenceProductForm: 'jagung pipilan kering',
+      referenceUnitStatus: 'official_reference_unit_quality_gate',
+      quantityScaleStatus: 'unconverted_legacy_simulation_index'
     }
   ], { now: 1 });
   assert.equal(result.fills.length, 1);
   assert.equal(result.fills[0].buyQuantityUnit, 'unconverted_simulation_market_units');
   assert.equal(result.fills[0].buyQuantityCalibrationStatus, 'legacy_index_to_physical_unit_conversion_pending');
-  assert.equal(result.fills[0].sellQuantityUnit, 'unverified_catalog_quantity_unit');
-  assert.equal(result.fills[0].quantityUnit, 'mixed_or_unverified_quantity_units');
+  assert.equal(result.fills[0].sellQuantityUnit, 'unconverted_simulation_market_units');
+  assert.equal(result.fills[0].quantityUnit, 'unconverted_simulation_market_units');
   assert.equal(result.fills[0].buyReferencePhysicalUnit, 'kg');
   assert.equal(result.fills[0].buyReferenceProductForm, 'jagung pipilan kering');
   assert.equal(result.fills[0].buyReferenceUnitStatus, 'official_reference_unit_quality_gate');
