@@ -117,4 +117,28 @@ const scenario = {
   assert.equal(economics.evidenceStatus(null), "unknown");
 }
 
-console.log("PASS: unit economics, own-vs-buy sourcing, internal chain costing, opportunity cost, capex depreciation and missing-data guards.");
+
+
+{
+  const legacy = structuredClone(scenario);
+  legacy.inputs[0].quantityUnit = "unconverted_simulation_market_units";
+  legacy.inputs[0].quantityCalibrationStatus = "legacy_index_to_physical_unit_conversion_pending";
+  legacy.inputs[0].quantityScaleStatus = "unconverted_legacy_simulation_index";
+  const result = economics.calculate(legacy);
+  assert.equal(result.ok, true);
+  assert.equal(result.inputBreakdown[0].quantityContract.status, "legacy_quantity_contract");
+  assert.equal(result.inputBreakdown[0].quantityContract.physicalConversionEnabled, false);
+}
+
+{
+  const physicalWithoutFactor = structuredClone(scenario);
+  physicalWithoutFactor.inputs[0].quantityUnit = "kg";
+  physicalWithoutFactor.inputs[0].quantityCalibrationStatus = "verified_candidate";
+  physicalWithoutFactor.inputs[0].quantityScaleStatus = "physical";
+  const result = economics.calculate(physicalWithoutFactor);
+  assert.equal(result.ok, false);
+  assert.equal(result.complete, false);
+  assert.ok(result.errors.some(error => error.includes("physical quantity execution requires a verified conversion factor")));
+}
+
+console.log("PASS: unit economics quantity-contract guard prevents unverified physical conversion.");
