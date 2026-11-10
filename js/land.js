@@ -373,6 +373,8 @@ function sellFinishedCommodity(productId, requestedQuantity){
  const product=Object.values(COMMODITY_ECONOMICS||{}).map(e=>e&&e.processed).find(p=>p&&p.id===id);
  if(!product){msg("Produk jadi tidak dikenali; penjualan dibatalkan.");return false;}
  const stock=Math.max(0,Number(S.landSystem.finishedInventory[id])||0);
+ const quantityMeta=S.landSystem.finishedInventoryQuantityMeta&&S.landSystem.finishedInventoryQuantityMeta[id];
+ if(quantityMeta&&(quantityMeta.quantityUnit!=="unconverted_simulation_market_units"||quantityMeta.quantityCalibrationStatus!=="legacy_index_to_physical_unit_conversion_pending"||quantityMeta.quantityScaleStatus!=="unconverted_legacy_simulation_index")){msg("Kontrak satuan produk jadi tidak kompatibel; penjualan dibatalkan.");return false;}
  const stockCost=Math.max(0,Number(S.landSystem.finishedInventoryCost[id])||0);
  if(!Number.isFinite(stock)||stock<=0||!Number.isFinite(stockCost)||stockCost<=0){msg("Persediaan produk jadi kosong atau nilai persediaannya tidak valid.");return false;}
  const rawQuantity=requestedQuantity==null?Number(prompt("Jumlah "+product.name+" yang dijual. Maksimum "+stock.toFixed(2)+":",String(Math.min(1,stock)))):Number(requestedQuantity);
