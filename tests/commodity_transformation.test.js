@@ -72,3 +72,22 @@ assert.deepEqual(received, { ok: true, quantity: 10, costValue: 500, unitCost: 5
 assert.equal(engine.addInventoryCost(1, 0, 0, 10).ok, false);
 
 console.log("PASS: generic transformation schema, input/output quantities, stock shortage, cost/provenance gating, weighted-average inventory valuation, and no invented revenue.");
+
+
+const previousUnits = global.AgroCommodityUnits;
+global.AgroCommodityUnits = {
+  getQuantityContract: id => id === "raw_a" ? {
+    transactionUnit: "100 kg",
+    transactionProductForm: "grain lot",
+    sourceUnitStatus: "official_reference_unit",
+    conversionStatus: "pending_verified_factor_and_product_form"
+  } : null
+};
+const contractPlan = engine.planProduction(recipe, 1, { raw_a: 10 });
+assert.equal(contractPlan.quantityUnit, "unconverted_simulation_market_units");
+assert.equal(contractPlan.quantityScaleStatus, "unconverted_legacy_simulation_index");
+assert.equal(contractPlan.inputRequirements[0].quantityContract.referencePhysicalUnit, "100 kg");
+assert.equal(contractPlan.inputRequirements[0].quantityContract.referenceProductForm, "grain lot");
+assert.equal(contractPlan.inputRequirements[0].quantityContract.quantityUnit, "unconverted_simulation_market_units");
+assert.equal(contractPlan.outputs[0].quantityContract.conversionStatus, "pending_registry_reference");
+global.AgroCommodityUnits = previousUnits;
