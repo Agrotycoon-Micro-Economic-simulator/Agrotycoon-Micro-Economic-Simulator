@@ -39,6 +39,44 @@
     return statuses;
   }
 
+  function quantityContractForInput(input) {
+    const quantityUnit = input && input.quantityUnit != null
+      ? String(input.quantityUnit)
+      : "unconverted_simulation_market_units";
+    const calibration = input && input.quantityCalibrationStatus
+      ? String(input.quantityCalibrationStatus)
+      : "legacy_index_to_physical_unit_conversion_pending";
+    const scale = input && input.quantityScaleStatus
+      ? String(input.quantityScaleStatus)
+      : "unconverted_legacy_simulation_index";
+    const physicalEnabled = input && input.physicalConversionEnabled === true;
+    const status = physicalEnabled
+      ? "verified_physical_conversion"
+      : "legacy_quantity_contract";
+    return Object.freeze({
+      quantityBasis: input && input.quantityBasis
+        ? String(input.quantityBasis)
+        : "legacy_simulation_market_quantity",
+      quantityUnit,
+      quantityCalibrationStatus: calibration,
+      quantityScaleStatus: scale,
+      physicalConversionEnabled: physicalEnabled,
+      status
+    });
+  }
+
+  function quantityContractError(contract) {
+    if (contract.physicalConversionEnabled) return null;
+    if (contract.quantityUnit !== "unconverted_simulation_market_units") {
+      return "physical quantity execution requires a verified conversion factor";
+    }
+    if (contract.quantityCalibrationStatus !== "legacy_index_to_physical_unit_conversion_pending" ||
+        contract.quantityScaleStatus !== "unconverted_legacy_simulation_index") {
+      return "quantity contract is incomplete or inconsistent";
+    }
+    return null;
+  }
+
   function validateScenario(scenario) {
     const errors = [];
     if (!scenario || typeof scenario !== "object") return { ok: false, errors: ["scenario harus berupa objek"] };
@@ -57,6 +95,9 @@
       if (!["buy", "own"].includes(input.sourcingMode)) errors.push("inputs[" + i + "].sourcingMode wajib buy atau own");
       if (input.sourcingMode === "buy" && !finiteNonNegative(input.purchasePricePerUnit)) errors.push("inputs[" + i + "].purchasePricePerUnit belum diketahui");
       if (input.sourcingMode === "own" && !finiteNonNegative(input.ownProductionCostPerUnit)) errors.push("inputs[" + i + "].ownProductionCostPerUnit belum diketahui");
+      const quantityContract = quantityContractForInput(input);
+      const quantityContractErrorMessage = quantityContractError(quantityContract);
+      if (quantityContractErrorMessage) errors.push("inputs[" + i + "] " + quantityContractErrorMessage);
       if (input.sourcingMode === "own" && !finiteNonNegative(input.marketOpportunityPricePerUnit)) errors.push("inputs[" + i + "].marketOpportunityPricePerUnit belum diketahui");
     });
     if (Array.isArray(scenario.variableCosts)) scenario.variableCosts.forEach((cost, i) => {
@@ -113,6 +154,7 @@
       opportunityInputCost += qty * opportunityUnitCost;
       inputBreakdown.push({
         id: input.id, sourcingMode: input.sourcingMode, totalQuantity: qty,
+        quantityContract: quantityContractForInput(input),
         standCashCost: qty * standUnitCost,
         integratedChainCost: qty * integratedUnitCost,
         opportunityValue: qty * opportunityUnitCost,
