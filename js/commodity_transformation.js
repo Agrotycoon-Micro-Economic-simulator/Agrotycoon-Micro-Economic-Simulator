@@ -58,6 +58,25 @@
     return { ok: errors.length === 0, complete: errors.length === 0 && missing.length === 0, errors, missing };
   }
 
+  function quantityContractFor(commodityId) {
+    const legacy = {
+      quantityBasis: "legacy_simulation_market_quantity",
+      quantityUnit: "unconverted_simulation_market_units",
+      quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
+      quantityScaleStatus: "unconverted_legacy_simulation_index"
+    };
+    const units = root.AgroCommodityUnits;
+    const reference = units && typeof units.getQuantityContract === "function"
+      ? units.getQuantityContract(commodityId) : null;
+    return Object.freeze({
+      ...legacy,
+      referencePhysicalUnit: reference ? reference.transactionUnit : null,
+      referenceProductForm: reference && reference.sourceRef ? reference.sourceRef.source : null,
+      referenceUnitStatus: reference ? reference.sourceUnitStatus : "butuh_riset_lanjutan",
+      conversionStatus: reference ? reference.conversionStatus : "pending_registry_reference"
+    });
+  }
+
   function planProduction(recipe, batchCount, inventory) {
     const validation = validateRecipe(recipe);
     if (!Number.isInteger(batchCount) || batchCount <= 0) {
@@ -71,14 +90,16 @@
     const inputRequirements = recipe.inputs.map((input) => ({
       commodityId: input.commodityId,
       unit: input.unit,
-      quantity: input.qtyPerBatch == null ? null : input.qtyPerBatch * batchCount
+      quantity: input.qtyPerBatch == null ? null : input.qtyPerBatch * batchCount,
+      quantityContract: quantityContractFor(input.commodityId)
     }));
     const outputPlan = recipe.outputs.map((output) => ({
       commodityId: output.commodityId,
       unit: output.unit,
       role: output.role,
       saleable: output.saleable === true,
-      quantity: output.qtyPerBatch == null ? null : output.qtyPerBatch * batchCount
+      quantity: output.qtyPerBatch == null ? null : output.qtyPerBatch * batchCount,
+      quantityContract: quantityContractFor(output.commodityId)
     }));
     const shortages = [];
     const inventoryChecked = Boolean(inventory && typeof inventory === "object");
@@ -113,6 +134,9 @@
       errors: [],
       missing: validation.missing.slice(),
       batchCount,
+      quantityBasis: "legacy_simulation_market_quantity",
+      quantityUnit: "unconverted_simulation_market_units",
+      quantityScaleStatus: "unconverted_legacy_simulation_index",
       inputRequirements,
       outputs: outputPlan,
       shortages,
@@ -199,6 +223,7 @@
 
   const api = Object.freeze({
     validateRecipe,
+    quantityContractFor,
     planProduction,
     calculateEconomics,
     weightedAverageUnitCost,
