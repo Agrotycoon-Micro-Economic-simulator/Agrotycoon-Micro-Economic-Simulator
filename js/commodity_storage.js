@@ -108,11 +108,16 @@ function planLotConsumption(state,id,qty){
  const contracts=new Set(commodityLots.map(l=>[l.quantityUnit||'missing',l.quantityCalibrationStatus||'missing',l.quantityScaleStatus||'missing'].join('|')));
  if(contracts.size>1)return {ok:false,reason:'quantity_contract_mismatch',commodityId:id,contracts:[...contracts]};
  if(commodityLots.some(l=>l.quantityUnit!=='unconverted_simulation_market_units'||l.quantityCalibrationStatus!=='legacy_index_to_physical_unit_conversion_pending'||l.quantityScaleStatus!=='unconverted_legacy_simulation_index'))return {ok:false,reason:'quantity_contract_not_enabled',commodityId:id};
- let rem=remTarget;const used=[];
+ let rem=remTarget;let available=0;const used=[];
  const lots=commodityLots.slice().sort((a,c)=>a.receivedDay-c.receivedDay);
- for(const l of lots){if(rem<=1e-9)break;const n=Math.min(Math.max(0,Number(l.quantity)||0),rem);if(!n)continue;used.push({lot:l,quantity:n});rem-=n;}
- if(rem>1e-6)return {ok:false,reason:'lot_quantity_shortfall',remaining:rem};
- return {ok:true,commodityId:id,requested:remTarget,used};
+ for(const l of lots){
+  const lotQuantity=Math.max(0,Number(l.quantity)||0);
+  available+=lotQuantity;
+  if(rem<=1e-9)continue;
+  const n=Math.min(lotQuantity,rem);if(!n)continue;used.push({lot:l,quantity:n});rem-=n;
+ }
+ if(rem>1e-6)return {ok:false,reason:'lot_quantity_shortfall',remaining:rem,available};
+ return {ok:true,commodityId:id,requested:remTarget,available,used};
 }
 function consumeLots(state,id,qty){
  const plan=planLotConsumption(state,id,qty);if(!plan.ok)return plan;
