@@ -104,20 +104,27 @@ function receiveLot(state,input){
 }
 function planLotConsumption(state,id,qty){
  const b=ensureLotBook(state);if(!b.ok||!finite(qty)||Number(qty)<=0)return {ok:false,reason:'invalid_consumption'};
- const remTarget=Number(qty),commodityLots=b.lots.filter(l=>l.commodityId===id);
+ const remTarget=Number(qty),commodityLots=b.lots.filter(l=>l.commodityId===id&&Math.max(0,Number(l.quantity)||0)>0);
  const contracts=new Set(commodityLots.map(l=>[l.quantityUnit||'missing',l.quantityCalibrationStatus||'missing',l.quantityScaleStatus||'missing'].join('|')));
  if(contracts.size>1)return {ok:false,reason:'quantity_contract_mismatch',commodityId:id,contracts:[...contracts]};
  if(commodityLots.some(l=>l.quantityUnit!=='unconverted_simulation_market_units'||l.quantityCalibrationStatus!=='legacy_index_to_physical_unit_conversion_pending'||l.quantityScaleStatus!=='unconverted_legacy_simulation_index'))return {ok:false,reason:'quantity_contract_not_enabled',commodityId:id};
- let rem=remTarget;let available=0;const used=[];
- const lots=commodityLots.slice().sort((a,c)=>a.receivedDay-c.receivedDay);
+ let rem=remTarget;let available=0;let unusable=0;const unusableLots=[];const used=[];
+ const lots=commodityLots.slice().sort((a,c)=>Number(a.receivedDay||0)-Number(c.receivedDay||0));
  for(const l of lots){
-  const lotQuantity=Math.max(0,Number(l.quantity)||0);
+  const lotQuantity=Math.max(0,Number(l.quantity)||0);if(!lotQuantity)continue;
+  const assessment=l.ageKnown===true?assessLot({...l,ageDays:finite(l.ageDays)?Number(l.ageDays):0}):null;
+  const unusableNow=assessment&&assessment.expired===true;
+  if(unusableNow){
+   unusable+=lotQuantity;
+   unusableLots.push({lotId:l.id,quantity:lotQuantity,risk:assessment.risk,reason:assessment.spoilageConfirmed?'lot_expired_or_spoiled':'lot_unusable',assessment});
+   continue;
+  }
   available+=lotQuantity;
   if(rem<=1e-9)continue;
   const n=Math.min(lotQuantity,rem);if(!n)continue;used.push({lot:l,quantity:n});rem-=n;
  }
- if(rem>1e-6)return {ok:false,reason:'lot_quantity_shortfall',remaining:rem,available};
- return {ok:true,commodityId:id,requested:remTarget,available,used};
+ if(rem>1e-6)return {ok:false,reason:unusable>0?'lot_quantity_unavailable_due_to_spoilage':'lot_quantity_shortfall',commodityId:id,requested:remTarget,remaining:rem,available,unusable,unusableLots};
+ return {ok:true,commodityId:id,requested:remTarget,available,unusable,unusableLots,used};
 }
 function consumeLots(state,id,qty){
  const plan=planLotConsumption(state,id,qty);if(!plan.ok)return plan;
