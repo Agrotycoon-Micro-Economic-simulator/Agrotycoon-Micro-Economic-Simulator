@@ -1563,3 +1563,10 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - main, peta.html, and js/map_engine.js remain untouched.
 
 - CI wiring: `.github/workflows/targeted-regression.yml` now explicitly runs `tests/commodity-processing-runtime.test.js` and `tests/commodity-harvest-quantity.test.js` in the standalone Node regression step. Workflow commit: `1f7a0889cb841c7613b886532c607fc1e1e1ace2`. The latest commit has no reported status checks yet; workflow execution is not claimed.
+
+## Quantity-contract correction — explicit physical declaration guard (2026-11-10)
+
+- Corrected `js/commodity_transformation.js` so an explicit `quantityUnit` on a recipe input/output is no longer ignored. Declaring `kg`, `buah`, etc. still does not prove a conversion; if no verified conversion exists, execution is blocked with `physical quantity execution is not enabled`.
+- This preserves the separation between a recipe's human-readable unit label and the actual legacy simulation quantity scale.
+- Correction commit: `c497bdfb22189e4de397f4ae2630022488e7b0d4`.
+- CI execution remains unverified because no workflow run is currently retrievable for the new branch commits.
