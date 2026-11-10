@@ -45,7 +45,7 @@ const sandbox = {
     calls: [],
     planLotConsumption: function(_state, commodityId, quantity) {
       this.calls.push({ type: "plan", commodityId, quantity });
-      return this.planAllowed ? { ok: true, plannedQuantity: quantity } : { ok: false, reason: "lot_quantity_shortfall" };
+      return this.planAllowed ? { ok: true, plannedQuantity: quantity, available: quantity } : { ok: false, reason: "lot_quantity_shortfall" };
     },
     consumeLots: function(_state, commodityId, quantity) {
       this.calls.push({ type: "consume", commodityId, quantity });
@@ -267,6 +267,33 @@ assert.equal(JSON.stringify({
   ledger: state.ledger.length
 }), rawBeforeLotPlanFailure, "raw-sale lot preflight failure must leave cash/accounting/inventory unchanged");
 sandbox.AgroCommodityStorage.planAllowed = true;
+sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, quantity) {
+  this.calls.push({ type: "plan", commodityId, quantity });
+  return { ok: true, plannedQuantity: quantity, available: quantity - 1 };
+};
+const beforeLotAggregateMismatch = JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+});
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify({
+  gold: state.gold,
+  inventory: state.landSystem.inventory.cabai_merah,
+  inventoryCost: state.landSystem.inventoryCost.cabai_merah,
+  cogs: state.dayLog.cogs,
+  gross: state.dayLog.gross,
+  expense: state.dayLog.expense,
+  ledger: state.ledger.length
+}), beforeLotAggregateMismatch, "aggregate/lot mismatch must block raw sale before mutation");
+sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, quantity) {
+  this.calls.push({ type: "plan", commodityId, quantity });
+  return { ok: true, plannedQuantity: quantity, available: quantity };
+};
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
 assert.equal(rawSaleOk, true);
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
