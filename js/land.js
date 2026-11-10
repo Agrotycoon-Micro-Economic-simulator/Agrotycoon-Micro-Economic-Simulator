@@ -272,6 +272,10 @@ function sellCommodity(id,channel){
  const rev=qty*price,net=rev-logistics.total,grossProfit=rev-valuation.consumedCost;
  if(!Number.isFinite(rev)||rev<=0||!Number.isFinite(net)||!Number.isFinite(grossProfit)){msg("Nilai penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!Number.isFinite(S.gold)||S.gold+rev<logistics.total){msg("Kas dan hasil penjualan tidak cukup untuk membayar distribusi; penjualan dibatalkan.");return false;}
+ if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
+  const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,qty);
+  if(!lotPlan||!lotPlan.ok){msg("Lot persediaan tidak sinkron; penjualan dibatalkan sebelum pencatatan HPP/kas.");return false;}
+ }
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+" "+channel+"\\nOmzet: "+safeRp(rev)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(grossProfit)+"\\n"+logisticsBreakdown(logistics)+"\\nKas bersih setelah distribusi: "+safeRp(net)))return false;
  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
@@ -358,8 +362,12 @@ function processCommodity(id){
    finishedCost
  );
  if(!received.ok){msg("Penerimaan persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
+ if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
+  const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,input);
+  if(!lotPlan||!lotPlan.ok){msg("Lot bahan baku tidak sinkron; pengolahan dibatalkan sebelum pencatatan kas.");return;}
+ }
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
- // All receipt state is validated before cash/state mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
+ // Lot consumption is preflighted before any cash/accounting mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
  if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
  if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
  if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){const lotUse=AgroCommodityStorage.consumeLots(S,id,input);if(!lotUse.ok){msg('Lot bahan baku tidak sinkron; pengolahan dihentikan.');return;}}
