@@ -1583,3 +1583,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: `284ba938962d1a216e9e09f85fa73f265e685d3b`, `4f29150d08e2294a382bf76ac64c03a312e7be52`, `0fed23ce0a7a217dab0b9f777c462c6958921f36`, `cdef9a504df5c56153706d816523fb41c2c090d3`.
 - Test execution is still not claimed; latest branch workflow result is not available through the current GitHub workflow-run connector.
 
+
+
+## 2026-11-11 — agriculture transaction lot preflight / atomicity continuation
+
+- js/land.js now preflights AgroCommodityStorage.planLotConsumption() before any HPP/cash mutation for raw agricultural sales and before conversion/distribution cash mutations for processing.
+- A lot shortfall or quantity-contract failure therefore aborts before recordBusinessCogs() or spend() can change accounting/cash. The existing consumeLots() remains the final FIFO mutation step after the preflight.
+- Added regression coverage in tests/commodity-processing-runtime.test.js with a storage stub: successful processing must call plan before consume, while failed lot preflight must leave cash, accounting, and inventory unchanged. Raw-sale lot preflight failure is covered as well.
+- Commits: implementation 9ea8f571b5574a0ed7b356a64d1ed2fd464c3cad; regression 1c36bdd27198f583c91cb1819bc693ecc89320a3.
+- This is a preflight/atomicity guard, not a rollback mechanism. Because spend() checks cash synchronously and the total cash requirement is validated before mutation, the expected second-spend cash failure is prevented; unexpected runtime exceptions still require broader transaction rollback infrastructure.
+- No commodity quantity, physical conversion factor, price, HPP, or map code was changed. main, peta.html, and js/map_engine.js remain untouched.
+- Tests were not executed in this session; no CI pass/fail is claimed.
