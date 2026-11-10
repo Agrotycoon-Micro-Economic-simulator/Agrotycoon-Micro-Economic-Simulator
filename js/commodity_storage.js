@@ -102,13 +102,26 @@ function receiveLot(state,input){
  const p=PROFILES[input.commodityId],q=Number(input.quantity),legacyUnit='unconverted_simulation_market_units';if((input.quantityUnit&&input.quantityUnit!==legacyUnit)||(input.quantityScaleStatus&&input.quantityScaleStatus!=='unconverted_legacy_simulation_index')||(input.quantityCalibrationStatus&&input.quantityCalibrationStatus!=='legacy_index_to_physical_unit_conversion_pending'))return {ok:false,reason:'quantity_contract_not_enabled',quantityUnit:input.quantityUnit||null};const lot={id:String(input.id||('lot-'+input.commodityId+'-'+(state.day||0)+'-'+b.lots.length)),commodityId:input.commodityId,quantity:q,quantityBasis:input.quantityBasis||'legacy_storage_inventory',quantityUnit:legacyUnit,quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index',unitCost:Math.max(0,Number(input.unitCost)||0),receivedDay:Number(input.day??state.day)||0,ageDays:0,ageKnown:true,form:input.form||p.form,storageType:input.storageType||(state.storageEnvironment&&state.storageEnvironment.storageType)||'ambient',temperatureC:finite(input.temperatureC)?Number(input.temperatureC):finite(state.storageEnvironment&&state.storageEnvironment.temperatureC)?Number(state.storageEnvironment.temperatureC):30,relativeHumidityPct:finite(input.relativeHumidityPct)?Number(input.relativeHumidityPct):finite(state.storageEnvironment&&state.storageEnvironment.relativeHumidityPct)?Number(state.storageEnvironment.relativeHumidityPct):80,moisturePct:finite(input.moisturePct)?Number(input.moisturePct):null,quality:100,physicalDamage:input.physicalDamage===true};
  b.lots.push(lot);return {ok:true,lot};
 }
-function consumeLots(state,id,qty){
+function planLotConsumption(state,id,qty){
  const b=ensureLotBook(state);if(!b.ok||!finite(qty)||Number(qty)<=0)return {ok:false,reason:'invalid_consumption'};
- let rem=Number(qty);const used=[];const commodityLots=b.lots.filter(l=>l.commodityId===id);const contracts=new Set(commodityLots.map(l=>[l.quantityUnit||'missing',l.quantityCalibrationStatus||'missing',l.quantityScaleStatus||'missing'].join('|')));if(contracts.size>1)return {ok:false,reason:'quantity_contract_mismatch',commodityId:id,contracts:[...contracts]};if(commodityLots.some(l=>l.quantityUnit!=='unconverted_simulation_market_units'||l.quantityCalibrationStatus!=='legacy_index_to_physical_unit_conversion_pending'||l.quantityScaleStatus!=='unconverted_legacy_simulation_index'))return {ok:false,reason:'quantity_contract_not_enabled',commodityId:id};const lots=commodityLots.sort((a,c)=>a.receivedDay-c.receivedDay);
- for(const l of lots){if(rem<=1e-9)break;const n=Math.min(Math.max(0,Number(l.quantity)||0),rem);if(!n)continue;l.quantity-=n;rem-=n;used.push({lotId:l.id,quantity:n});}
+ const remTarget=Number(qty),commodityLots=b.lots.filter(l=>l.commodityId===id);
+ const contracts=new Set(commodityLots.map(l=>[l.quantityUnit||'missing',l.quantityCalibrationStatus||'missing',l.quantityScaleStatus||'missing'].join('|')));
+ if(contracts.size>1)return {ok:false,reason:'quantity_contract_mismatch',commodityId:id,contracts:[...contracts]};
+ if(commodityLots.some(l=>l.quantityUnit!=='unconverted_simulation_market_units'||l.quantityCalibrationStatus!=='legacy_index_to_physical_unit_conversion_pending'||l.quantityScaleStatus!=='unconverted_legacy_simulation_index'))return {ok:false,reason:'quantity_contract_not_enabled',commodityId:id};
+ let rem=remTarget;const used=[];
+ const lots=commodityLots.slice().sort((a,c)=>a.receivedDay-c.receivedDay);
+ for(const l of lots){if(rem<=1e-9)break;const n=Math.min(Math.max(0,Number(l.quantity)||0),rem);if(!n)continue;used.push({lot:l,quantity:n});rem-=n;}
  if(rem>1e-6)return {ok:false,reason:'lot_quantity_shortfall',remaining:rem};
- b.lots=b.lots.filter(l=>l.quantity>1e-9);state.landSystem.storageLots=b.lots;return {ok:true,consumed:used};
+ return {ok:true,commodityId:id,requested:remTarget,used};
 }
+function consumeLots(state,id,qty){
+ const plan=planLotConsumption(state,id,qty);if(!plan.ok)return plan;
+ const used=[];
+ for(const item of plan.used){item.lot.quantity-=item.quantity;used.push({lotId:item.lot.id,quantity:item.quantity});}
+ state.landSystem.storageLots=state.landSystem.storageLots.filter(l=>l.quantity>1e-9);
+ return {ok:true,consumed:used};
+}
+
 function tickLots(state,day,environment){
  const b=ensureLotBook(state);if(!b.ok)return b;const env=environment||{},results=[];
  b.lots.forEach(l=>{if(!l.ageKnown){results.push({lotId:l.id,skipped:true,reason:'legacy_age_unknown'});return;}l.ageDays=Math.max(0,Number(day)-Number(l.receivedDay));if(l.storageType==='ambient'&&finite(env.temperatureC))l.temperatureC=Number(env.temperatureC);if(l.storageType==='ambient'&&finite(env.relativeHumidityPct))l.relativeHumidityPct=Number(env.relativeHumidityPct);const a=assessLot({...l,ageDays:l.ageDays});l.quality=a.quality??100;l.assessment=a;results.push({lotId:l.id,commodityId:l.commodityId,quantity:l.quantity,...a});});
@@ -119,5 +132,5 @@ function setLotConditions(state,id,conditions){
  ['form','storageType','temperatureC','relativeHumidityPct','moisturePct','physicalDamage','opened','flooded','driedAfterFlood','daysSinceFlood','moldObserved','rottingObserved','pestObserved'].forEach(k=>{if(Object.prototype.hasOwnProperty.call(conditions||{},k))l[k]=conditions[k];});
  return {ok:true,lot:l,assessment:assessLot({...l,ageDays:l.ageDays})};
 }
-root.AgroCommodityStorage=Object.freeze({profiles:Object.freeze(PROFILES),catalogIds:Object.freeze(Object.keys(PROFILES)),profileFor,assessLot,ensureLotBook,receiveLot,consumeLots,tickLots,setLotConditions});
+root.AgroCommodityStorage=Object.freeze({profiles:Object.freeze(PROFILES),catalogIds:Object.freeze(Object.keys(PROFILES)),profileFor,assessLot,ensureLotBook,receiveLot,planLotConsumption,consumeLots,tickLots,setLotConditions});
 })(typeof window!=='undefined'?window:globalThis);
