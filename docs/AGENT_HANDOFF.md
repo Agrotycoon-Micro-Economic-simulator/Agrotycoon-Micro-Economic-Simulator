@@ -1604,3 +1604,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression coverage: tests/commodity-processing-runtime.test.js blocks aggregate/lot divergence; tests/commodity-storage.test.js verifies the preflight available quantity and non-mutating behavior.
 - Commits: storage availability de754c09d6d37f94846455126d7cc830acf35b64; land invariant b98d51c3f45e508e230b444c8adc2d9ac9a46a79; processing/runtime regression abed6ae5b0d2f39bebd3da9db92cb0e26923b8fe; storage regression be3fca36f297a66b34fbdd77f94597471fef4c14.
 - No physical conversion, quantity rescaling, price change, HPP formula change, or map change was made. Tests were not executed in this session; no CI pass/fail is claimed.
+
+
+## 2026-11-11 — spoilage consumption gate and lot-cost write-off correction
+
+- `js/commodity_storage.js`: `planLotConsumption()` now reassesses every age-known lot before it can be consumed. Lots assessed as `expired` or `spoiled` are excluded from FIFO eligibility and are surfaced as `unusableLots`; they are never silently sold or processed.
+- The preflight `available` quantity now means **eligible, non-expired/non-spoiled lot quantity**. If requested quantity cannot be met because spoiled/expired lots are the only remaining stock, the result is `lot_quantity_unavailable_due_to_spoilage`. The preflight remains non-mutating.
+- `js/day.js` already owns the daily write-off path for expired/spoiled storage lots. It now values each lot's write-off using that lot's `unitCost` when available, rather than applying the aggregate average inventory cost to every expired lot. This preserves lot-level HPP/cost provenance when batches have different acquisition costs.
+- Existing daily write-off behavior remains: aggregate inventory and `inventoryCost` are reduced, the expired/spoiled lot is zeroed and removed, `recordBusinessCogs()` posts the loss to the agricultural inventory-susutan account, and `dayLog.storageWriteoffs` records day/lot/commodity/quantity/value/reason.
+- Regression coverage in `tests/commodity-storage.test.js` verifies that an expired lot is excluded while a later good lot remains consumable, and that a spoilage-only shortfall leaves storage lots unchanged.
+- Commits: storage gate `cc667fecf805d3aa1b43efe159c65b608cf5f651`; storage regression `22b1ff4a77b24257a55debf5f56294fbfedd6345`; lot-cost write-off correction `f8b21b40ec2d2818398965bbc4c45774d403c43e`.
+- Important invariant: an expired/spoiled lot that has not yet gone through the daily write-off still causes the land transaction aggregate-vs-eligible-lot check to fail; the transaction is blocked rather than consuming unusable stock. The daily cycle must perform the write-off to restore aggregate inventory/lot consistency.
+- No physical conversion, quantity rescaling, price change, HPP formula change, or map change was made. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
+- Node tests were **not executed in this session** and no CI pass/fail status is claimed.
