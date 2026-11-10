@@ -144,3 +144,57 @@ test('observed mold or rot confirms spoilage',()=>{
  const r=assess({commodityId:'padi',ageDays:1,moisturePct:12,moldObserved:true});
  assert.equal(r.risk,'spoiled');assert.equal(r.spoilageConfirmed,true);
 });
+
+
+test('all 60 commodities expose separate source, transaction and inventory quantity layers without guessed conversion',()=>{
+ const units=vm.runInContext('AgroCommodityUnits',context);
+ const contracts=units.quantityContracts;
+ assert.equal(units.version,'0.2.0');
+ assert.equal(Object.keys(contracts).length,60);
+ for(const id of storage.catalogIds){
+  const c=contracts[id];
+  assert.ok(c,id+' missing quantity contract');
+  assert.equal(c.inventoryBaseUnit,'legacy_simulation_index');
+  assert.equal(c.physicalInventoryBaseUnit,null);
+  assert.equal(c.conversionFactor,null);
+  assert.equal(c.conversionStatus,'pending_verified_factor_and_product_form');
+  assert.equal(c.conversionTest,'blocked_no_verified_conversion_fixture');
+  assert.equal(c.quantityScaleStatus,'unconverted_legacy_simulation_index');
+  assert.equal(units.canConvertQuantity(id),false);
+ }
+ assert.equal(contracts.melon.sourceUnit,'100 kg');
+ assert.equal(contracts.melon.transactionUnit,'100 kg');
+ assert.equal(contracts.jahe.transactionUnit,'50 kg');
+ assert.equal(contracts.serai.transactionUnit,'ikat');
+ assert.equal(contracts.nanas.transactionUnit,'10 kg');
+ assert.equal(contracts.kelapa.transactionUnit,'buah');
+ assert.equal(contracts.stroberi.sourceUnit,null);
+ assert.equal(contracts.kapas.sourceUnit,null);
+ assert.equal(contracts.stroberi.sourceUnitStatus,'butuh_riset_lanjutan');
+ assert.equal(contracts.kapas.sourceUnitStatus,'butuh_riset_lanjutan');
+});
+
+test('storage receipts and FIFO consumption remain on legacy index until conversion is verified',()=>{
+ const state={day:1,landSystem:{inventory:{},inventoryCost:{}}};
+ const blocked=storage.receiveLot(state,{commodityId:'tomat',quantity:2,quantityUnit:'kg',unitCost:100});
+ assert.equal(blocked.ok,false);
+ assert.equal(blocked.reason,'quantity_contract_not_enabled');
+ const accepted=storage.receiveLot(state,{commodityId:'tomat',quantity:5,unitCost:100});
+ assert.equal(accepted.ok,true);
+ assert.equal(accepted.lot.quantityUnit,'unconverted_simulation_market_units');
+ assert.equal(accepted.lot.quantityScaleStatus,'unconverted_legacy_simulation_index');
+ const mismatch={id:'physical-lot',commodityId:'tomat',quantity:3,receivedDay:2,quantityUnit:'kg',quantityCalibrationStatus:'verified',quantityScaleStatus:'physical_kg'};
+ state.landSystem.storageLots.push(mismatch);
+ const consumed=storage.consumeLots(state,'tomat',1);
+ assert.equal(consumed.ok,false);
+ assert.equal(consumed.reason,'quantity_contract_mismatch');
+ assert.equal(state.landSystem.storageLots[0].quantity,5);
+});
+
+test('legacy storage lots receive only the explicit legacy quantity contract during migration',()=>{
+ const state={day:10,landSystem:{inventory:{},inventoryCost:{},storageLots:[{id:'old-lot',commodityId:'padi',quantity:8,receivedDay:9}]}};
+ const book=storage.ensureLotBook(state);
+ assert.equal(book.lots[0].quantityUnit,'unconverted_simulation_market_units');
+ assert.equal(book.lots[0].quantityCalibrationStatus,'legacy_index_to_physical_unit_conversion_pending');
+ assert.equal(book.lots[0].quantityScaleStatus,'unconverted_legacy_simulation_index');
+});
