@@ -199,7 +199,27 @@ for(const c of COMMODITIES){
  c.marketUnitStatus=reference?reference.status:"butuh_riset_lanjutan";
  c.quantityScaleStatus="unconverted_legacy_simulation_index";
 }
-if(typeof window!=="undefined")window.AgroCommodityUnits={version:"0.1.1",registry:MARKET_UNIT_REGISTRY};
+// Three distinct quantity layers: source statistic, producer transaction, and game inventory.
+// No physical conversion is enabled until a commodity-specific factor and test are verified.
+const QUANTITY_CONTRACT_REGISTRY=Object.freeze(Object.fromEntries(COMMODITIES.map(c=>{
+ const ref=MARKET_UNIT_REGISTRY[c.id]||null;
+ return [c.id,Object.freeze({
+  commodityId:c.id,
+  sourceUnit:ref?ref.unit:null,
+  transactionUnit:ref?ref.unit:null,
+  inventoryBaseUnit:"legacy_simulation_index",
+  physicalInventoryBaseUnit:null,
+  conversionFactor:null,
+  conversionStatus:"pending_verified_factor_and_product_form",
+  conversionTest:"blocked_no_verified_conversion_fixture",
+  sourceRef:ref?Object.freeze({source:ref.source,period:ref.period,evidenceLinks:Object.freeze([...(ref.evidenceLinks||[])])}):null,
+  sourceUnitStatus:ref?ref.status:"butuh_riset_lanjutan",
+  quantityScaleStatus:"unconverted_legacy_simulation_index"
+ })];
+})));
+function getQuantityContract(commodityId){return QUANTITY_CONTRACT_REGISTRY[String(commodityId)]||null;}
+function canConvertQuantity(commodityId){const c=getQuantityContract(commodityId);return !!(c&&c.conversionStatus==="verified"&&Number.isFinite(c.conversionFactor)&&c.conversionFactor>0&&c.physicalInventoryBaseUnit);}
+if(typeof window!=="undefined")window.AgroCommodityUnits={version:"0.2.0",registry:MARKET_UNIT_REGISTRY,quantityContracts:QUANTITY_CONTRACT_REGISTRY,getQuantityContract,canConvertQuantity};
 
 const COMMODITY_ECONOMICS={
  kelapa:{unit:"buah",growDays:1080,yieldPerCycle:20,cyclesDays:30,farmerPrice:3500,retailPrice:13000,processed:{name:"Es kelapa",outputUnit:"gelas",inputPerUnit:1,price:13000,otherCost:2500},notes:"Harga tengkulak mengikuti harga game kelapa yang sudah ada; bukan harga nasional yang seragam."},
