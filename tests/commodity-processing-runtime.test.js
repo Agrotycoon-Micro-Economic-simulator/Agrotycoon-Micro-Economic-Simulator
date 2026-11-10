@@ -323,3 +323,13 @@ assert.equal(JSON.stringify({
 sandbox.COMMODITY_ECONOMICS.jagung.processed.inputTier = validInputTier;
 
 console.log("PASS: live commodity processing consumes weighted-average raw inventory, posts HPP once, charges conversion/distribution cash, and prevents execution without cash.");
+
+
+test('processing runtime keeps recipe units as labels and records legacy quantity contract', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'js', 'land.js'), 'utf8');
+  assert.match(source, /quantityBasis:"legacy_transformation_output"/);
+  assert.match(source, /quantityUnit:"unconverted_simulation_market_units"/);
+  assert.match(source, /quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending"/);
+  assert.match(source, /quantityScaleStatus:"unconverted_legacy_simulation_index"/);
+  assert.match(source, /physicalConversionEnabled:false/);
+});
