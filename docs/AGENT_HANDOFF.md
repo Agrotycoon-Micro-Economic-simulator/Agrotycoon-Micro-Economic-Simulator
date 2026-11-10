@@ -1570,3 +1570,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - This preserves the separation between a recipe's human-readable unit label and the actual legacy simulation quantity scale.
 - Correction commit: `c497bdfb22189e4de397f4ae2630022488e7b0d4`.
 - CI execution remains unverified because no workflow run is currently retrievable for the new branch commits.
+
+
+## Storage / harvest / processing quantity-integrity continuation (2026-11-11)
+
+- `js/commodity_storage.js`: added non-mutating `planLotConsumption()`. `consumeLots()` now plans the complete FIFO consumption before mutating any lot, so a shortfall cannot partially consume stock.
+- Quantity-contract checks remain mandatory for storage consumption. Mixed/incomplete contracts are rejected before mutation.
+- Added regression coverage in `tests/commodity-storage.test.js` for non-mutating preflight and atomic shortfall behavior.
+- `js/land.js`: processing unit-economics inputs and finished-goods metadata now explicitly carry the legacy quantity contract. Recipe units remain labels; they do not activate physical conversion.
+- Added runtime source regression coverage in `tests/commodity-processing-runtime.test.js`.
+- No numerical harvest yield, conversion quantity, HPP, price, or accounting amount was rescaled.
+- Commits: `284ba938962d1a216e9e09f85fa73f265e685d3b`, `4f29150d08e2294a382bf76ac64c03a312e7be52`, `0fed23ce0a7a217dab0b9f777c462c6958921f36`, `cdef9a504df5c56153706d816523fb41c2c090d3`.
+- Test execution is still not claimed; latest branch workflow result is not available through the current GitHub workflow-run connector.
+
