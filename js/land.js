@@ -252,7 +252,12 @@ function sellCommodity(id,channel){
       id:id,quantityPerOutput:1,sourcingMode:"own",
       ownProductionCostPerUnit:valuation.unitCost,
       ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current harvested inventory",geography:"game scenario"},
-      quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"}
+      quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"},
+      quantityBasis:"legacy_transformation_output",
+      quantityUnit:"unconverted_simulation_market_units",
+      quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
+      quantityScaleStatus:"unconverted_legacy_simulation_index",
+      physicalConversionEnabled:false
     }],
     variableCosts:[],
     fixedCostsMonthly:[],capex:[]
@@ -362,7 +367,16 @@ function processCommodity(id){
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
  S.landSystem.finishedInventoryCost[p.id]=received.costValue;
- S.landSystem.finishedInventoryQuantityMeta[p.id]={quantityBasis:"legacy_transformation_output",declaredRecipeUnit:p.outputUnit||"unspecified",quantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",sourceCommodityId:id,routeId:p.routeId||null};
+ S.landSystem.finishedInventoryQuantityMeta[p.id]={
+   quantityBasis:"legacy_transformation_output",
+   declaredRecipeUnit:p.outputUnit||"unspecified",
+   quantityUnit:"unconverted_simulation_market_units",
+   quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
+   quantityScaleStatus:"unconverted_legacy_simulation_index",
+   physicalConversionEnabled:false,
+   sourceCommodityId:id,
+   routeId:p.routeId||null
+ };
  if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
  S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,inputQuantityUnit:"unconverted_simulation_market_units",outputQuantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",declaredInputRecipeUnit:e.unit||"unspecified",declaredOutputRecipeUnit:p.outputUnit||"unspecified",conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
  save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
