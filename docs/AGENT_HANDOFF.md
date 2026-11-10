@@ -1520,3 +1520,21 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Follow-up test hardening: all-60 player-order coverage now obtains each order price through `MARKET_ENGINE.getPrice(item.id)` rather than assuming `item.marketPrice` is initialized in the test harness. Test commit: `cb94c8f55bea9c0962876cea77d6dc9a619a551c`.
+
+## 2026-11-10 — three-layer commodity quantity contract and storage guard
+
+- Added QUANTITY_CONTRACT_REGISTRY to js/commodities.js for all 60 catalogue commodities. The schema separates:
+  - sourceUnit: exact source-statistic/producer-price unit when verified;
+  - transactionUnit: source-defined producer transaction lot (preserving kg, 100 kg, 50 kg, 10 kg, ikat, sisir, ekor, and buah without normalization);
+  - inventoryBaseUnit: explicitly remains legacy_simulation_index;
+  - physicalInventoryBaseUnit: null until a physical storage basis is established;
+  - conversionFactor: null for all 60;
+  - conversionStatus, conversionTest, sourceRef, sourceUnitStatus, and quantityScaleStatus.
+- window.AgroCommodityUnits version advanced to 0.2.0; it now exposes quantityContracts, getQuantityContract(id), and canConvertQuantity(id). canConvertQuantity returns false unless a verified positive factor and physical inventory base unit both exist.
+- Registry coverage remains 58/60 source transaction units. stroberi and kapas remain null with butuh_riset_lanjutan; no conventional unit was inferred.
+- js/commodity_storage.js now tags newly received lots and legacy migrated lots with the legacy quantity contract. A receipt explicitly declaring physical kg or another non-legacy scale is rejected with quantity_contract_not_enabled. FIFO consumption refuses to mix multiple or incomplete quantity contracts for the same commodity and returns quantity_contract_mismatch rather than consuming ambiguous quantities.
+- Added tests/commodity-storage.test.js coverage for all 60 quantity contracts, preserved source lot units, unresolved strawberry/cotton references, blocked conversion, physical receipt rejection, mixed-lot consumption protection, and legacy lot migration.
+- Commits: quantity registry bb0b26d2a8ac809d0886a03651c62da42427ecb9; storage guard 9a16ef43fd3a6dc778fe0a1492527d5f4de2c274; regression tests b654a5d881774b46ba0523c9f7c1227345d1813f.
+- No physical conversion factor, inventory rescaling, unit normalization, or price rescaling was introduced. Existing gameplay quantities remain legacy indices. Test files were updated but tests were not executed in this session; no CI result is claimed.
+- Next required work: map production/harvest yield, transformation recipes, inventory accounting, HPP, and player/NPC order interfaces to explicit quantity contracts. Physical conversion must remain blocked until each commodity/form has a measured or official conversion factor and a regression fixture.
+- main, peta.html, and js/map_engine.js remain untouched.
