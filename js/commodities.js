@@ -207,6 +207,7 @@ const QUANTITY_CONTRACT_REGISTRY=Object.freeze(Object.fromEntries(COMMODITIES.ma
   commodityId:c.id,
   sourceUnit:ref?ref.unit:null,
   transactionUnit:ref?ref.unit:null,
+  transactionProductForm:ref?ref.productForm:null,
   inventoryBaseUnit:"legacy_simulation_index",
   physicalInventoryBaseUnit:null,
   conversionFactor:null,
