@@ -58,7 +58,7 @@
     return { ok: errors.length === 0, complete: errors.length === 0 && missing.length === 0, errors, missing };
   }
 
-  function quantityContractFor(commodityId) {
+  function quantityContractFor(commodityId, declaredUnit) {
     const legacy = {
       quantityBasis: "legacy_simulation_market_quantity",
       quantityUnit: "unconverted_simulation_market_units",
@@ -68,13 +68,26 @@
     const units = root.AgroCommodityUnits;
     const reference = units && typeof units.getQuantityContract === "function"
       ? units.getQuantityContract(commodityId) : null;
+    const declared = declaredUnit == null ? null : String(declaredUnit);
     return Object.freeze({
       ...legacy,
+      declaredUnit: declared,
+      declaredUnitSemantics: declared ? "recipe_label_not_physical_quantity" : "unspecified",
       referencePhysicalUnit: reference ? reference.transactionUnit : null,
       referenceProductForm: reference ? reference.transactionProductForm : null,
       referenceUnitStatus: reference ? reference.sourceUnitStatus : "butuh_riset_lanjutan",
-      conversionStatus: reference ? reference.conversionStatus : "pending_registry_reference"
+      conversionStatus: reference ? reference.conversionStatus : "pending_registry_reference",
+      physicalConversionEnabled: Boolean(reference && reference.conversionStatus === "verified")
     });
+  }
+
+  function quantityContractError(contract) {
+    if (!contract || typeof contract !== "object") return "missing quantity contract";
+    if (contract.physicalConversionEnabled) return null;
+    if (contract.quantityUnit !== "unconverted_simulation_market_units") {
+      return "physical quantity execution is not enabled";
+    }
+    return null;
   }
 
   function planProduction(recipe, batchCount, inventory) {
@@ -91,7 +104,7 @@
       commodityId: input.commodityId,
       unit: input.unit,
       quantity: input.qtyPerBatch == null ? null : input.qtyPerBatch * batchCount,
-      quantityContract: quantityContractFor(input.commodityId)
+      quantityContract: quantityContractFor(input.commodityId, input.unit)
     }));
     const outputPlan = recipe.outputs.map((output) => ({
       commodityId: output.commodityId,
@@ -99,8 +112,9 @@
       role: output.role,
       saleable: output.saleable === true,
       quantity: output.qtyPerBatch == null ? null : output.qtyPerBatch * batchCount,
-      quantityContract: quantityContractFor(output.commodityId)
+      quantityContract: quantityContractFor(output.commodityId, output.unit)
     }));
+    const contractErrors = inputRequirements.concat(outputPlan).map(x => quantityContractError(x.quantityContract)).filter(Boolean);
     const shortages = [];
     const inventoryChecked = Boolean(inventory && typeof inventory === "object");
     if (inventoryChecked) {
@@ -131,7 +145,7 @@
     return {
       ok: true,
       complete: validation.complete && costComplete,
-      errors: [],
+      errors: contractErrors.slice(),
       missing: validation.missing.slice(),
       batchCount,
       quantityBasis: "legacy_simulation_market_quantity",
@@ -149,7 +163,8 @@
         required: cost.required !== false
       })),
       totalCost,
-      canExecute: inventoryChecked && shortages.length === 0 && inputRequirements.every((x) => x.quantity != null) &&
+      quantityContractStatus: contractErrors.length ? "legacy_only_physical_execution_blocked" : "legacy_quantity_contract_explicit",
+      canExecute: contractErrors.length === 0 && inventoryChecked && shortages.length === 0 && inputRequirements.every((x) => x.quantity != null) &&
         outputPlan.every((x) => x.quantity != null) && costComplete
     };
   }
