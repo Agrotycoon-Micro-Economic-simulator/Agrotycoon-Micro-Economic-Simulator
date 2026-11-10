@@ -1594,3 +1594,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - This is a preflight/atomicity guard, not a rollback mechanism. Because spend() checks cash synchronously and the total cash requirement is validated before mutation, the expected second-spend cash failure is prevented; unexpected runtime exceptions still require broader transaction rollback infrastructure.
 - No commodity quantity, physical conversion factor, price, HPP, or map code was changed. main, peta.html, and js/map_engine.js remain untouched.
 - Tests were not executed in this session; no CI pass/fail is claimed.
+
+
+## 2026-11-11 — aggregate inventory vs storage-lot invariant
+
+- js/commodity_storage.js planLotConsumption() now returns the total available quantity in eligible storage lots during preflight. The value is informational for callers and is computed without mutation.
+- js/land.js raw agricultural sale and commodity processing now require the preflight lot quantity to equal the aggregate inventory quantity for that commodity within a small floating-point tolerance. Divergence blocks the transaction before HPP, cash, revenue, or inventory mutation.
+- This closes a consistency gap where aggregate inventory could previously disagree with the lot book while the requested quantity itself was still satisfiable from lots.
+- Regression coverage: tests/commodity-processing-runtime.test.js blocks aggregate/lot divergence; tests/commodity-storage.test.js verifies the preflight available quantity and non-mutating behavior.
+- Commits: storage availability de754c09d6d37f94846455126d7cc830acf35b64; land invariant b98d51c3f45e508e230b444c8adc2d9ac9a46a79; processing/runtime regression abed6ae5b0d2f39bebd3da9db92cb0e26923b8fe; storage regression be3fca36f297a66b34fbdd77f94597471fef4c14.
+- No physical conversion, quantity rescaling, price change, HPP formula change, or map change was made. Tests were not executed in this session; no CI pass/fail is claimed.
