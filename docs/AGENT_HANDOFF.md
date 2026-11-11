@@ -1793,3 +1793,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Raw-sale CI after adding opportunity-price evidence progressed past unit economics but failed with `NaN` remaining inventory quantity. The test's replacement `planLotConsumption()` fixture supplied `plannedQuantity` but omitted the actual contract field `requested` used by `sellCommodity()`. Added `requested: quantity` to that fixture. Commit: `0803b6817e038fbff8b82b6c4599eb2e4e6b3ad6`.
+
+
+- Raw rollback injection in run `43061667711` reached the failure path and restored cash, inventory, lot book, journal, and ledger. The only whole-state difference was `getCommodityPrice()` refreshing the market quote to Rp25,000 before the transaction snapshot/confirmation boundary. This quote refresh is pre-transaction market state, not a sale posting. The regression fixture now seeds that same quote before taking its baseline snapshot. Commit: `51c221a780cd8cbfdb46ebfadc59b7397d0b4268`.
