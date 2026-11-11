@@ -144,8 +144,8 @@ test('expired or spoiled lots are never eligible for FIFO consumption',()=>{
  assert.equal(plan.ok,true);
  assert.equal(plan.available,4);
  assert.equal(plan.unusable,3);
- assert.deepEqual(plan.unusableLots.map(x=>x.lotId),['expired']);
- assert.deepEqual(plan.used.map(x=>x.lot.id),['fresh']);
+ assert.deepEqual(Array.from(plan.unusableLots, x=>x.lotId),['expired']);
+ assert.deepEqual(Array.from(plan.used, x=>x.lot.id),['fresh']);
  assert.deepEqual(state.landSystem.storageLots.map(x=>x.quantity),[3,4]);
 });
 
@@ -257,7 +257,7 @@ test('storage consumption preflight is non-mutating and shortfall is atomic', ()
   assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), before);
   const result = storage.consumeLots(state, 'padi', 4);
   assert.equal(result.ok, true);
-  assert.deepEqual(result.consumed, [{ lotId: 'a', quantity: 2 }, { lotId: 'b', quantity: 2 }]);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.consumed)), [{ lotId: 'a', quantity: 2 }, { lotId: 'b', quantity: 2 }]);
   assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), [1]);
 });
 
@@ -271,7 +271,7 @@ test('FIFO lot valuation drives HPP from actual lot unit costs, not aggregate we
  assert.equal(plan.ok,true);
  assert.equal(plan.consumedCost,200);
  assert.equal(plan.remainingCostValue,900);
- assert.deepEqual(plan.used.map(x=>[x.lot.id,x.quantity,x.unitCost]),[['cheap',2,100]]);
+ assert.deepEqual(Array.from(plan.used, x=>[x.lot.id,x.quantity,x.unitCost]),[['cheap',2,100]]);
 });
 
 test('FIFO HPP after an expired lot write-off remains tied to the surviving lot cost',()=>{
@@ -283,5 +283,5 @@ test('FIFO HPP after an expired lot write-off remains tied to the surviving lot 
  assert.equal(plan.ok,true);
  assert.equal(plan.consumedCost,600);
  assert.equal(plan.remainingCostValue,300);
- assert.deepEqual(plan.used.map(x=>x.lot.id),['survivor']);
+ assert.deepEqual(Array.from(plan.used, x=>x.lot.id),['survivor']);
 });
