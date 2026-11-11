@@ -410,6 +410,7 @@ function addFinishedGoodsLot(productId, quantity, costValue){
    id:"fg-"+productId+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),
    commodityId:productId, quantity:qty, unitCost:cost/qty, costValue:cost,
    createdDay:Number(S.day)||0,
+   shelfLifeDays:Number.isFinite(Number((COMMODITY_ECONOMICS[productId]||{}).processed&&COMMODITY_ECONOMICS[productId].processed.shelfLifeDays))?Number(COMMODITY_ECONOMICS[productId].processed.shelfLifeDays):null,
    quantityUnit:"unconverted_simulation_market_units",
    quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
    quantityScaleStatus:"unconverted_legacy_simulation_index"
