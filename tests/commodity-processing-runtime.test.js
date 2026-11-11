@@ -71,17 +71,20 @@ const sandbox = {
   render: () => {},
   el: () => null,
   ledger: (cat, desc, amt, detail, accounting) => state.ledger.push({ cat, desc, amt, detail, accounting }),
-  spend: (cat, desc, amt, field) => {
+  spend: (cat, desc, amt, field, detail) => {
     if (!Number.isFinite(amt) || amt < 0 || state.gold < amt) return false;
     state.gold -= amt;
     if (cat === "BELANJA") state.dayLog.businessPurchases += amt;
     state.dayLog.cashOut += amt;
     if (field) state.dayLog[field] = (state.dayLog[field] || 0) + amt;
+    state.ledger.push({ cat, desc, amt: -amt, detail });
     return true;
   },
-  earn: (_cat, _desc, amt) => {
+  earn: (_cat, _desc, amt, detail) => {
     state.gold += amt;
     state.dayLog.gross += amt;
+    state.dayLog.cashIn = (state.dayLog.cashIn || 0) + amt;
+    state.ledger.push({ cat: _cat, desc: _desc, amt, detail });
   },
   businessCogsTotal: components => components.reduce((sum, x) => sum + x.amount, 0),
   recordBusinessCogs: (_desc, components) => {
@@ -91,6 +94,7 @@ const sandbox = {
     components.forEach(x => {
       state.dayLog.cogsByAccount[x.account] = (state.dayLog.cogsByAccount[x.account] || 0) + x.amount;
     });
+    state.ledger.push({ cat: "HPP", desc: _desc, amt: -total, detail: { components } });
     return total;
   },
   COMMODITIES: [],
