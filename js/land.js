@@ -549,7 +549,7 @@ function sellFinishedCommodity(productId, requestedQuantity){
     salesVolumeEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current game transaction",geography:"game scenario"},
     wasteRate:0,
     wasteEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current game transaction",geography:"game scenario"},
-    inputs:[{id:id,quantityPerOutput:1,sourcingMode:"own",ownProductionCostPerUnit:valuation.unitCost,ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current finished inventory",geography:"game scenario"},quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"}}],
+    inputs:[{id:id,quantityPerOutput:1,sourcingMode:"own",ownProductionCostPerUnit:valuation.unitCost,ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current finished inventory",geography:"game scenario"},quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"},quantityBasis:"legacy_transformation_output",quantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",physicalConversionEnabled:false}],
     variableCosts:[],
     fixedCostsMonthly:[],capex:[]
   }) : null;
