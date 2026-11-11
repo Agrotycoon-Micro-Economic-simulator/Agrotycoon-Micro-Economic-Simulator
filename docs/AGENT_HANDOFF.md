@@ -1653,3 +1653,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Tests were updated but not executed in this session; no CI pass/fail is claimed.
 
 - Follow-up fix: 112b03e800aa9366eb2c23df3c034e9575b76ec7 defers finished-goods lot creation until cash/lot input mutation is ready, preventing an insufficient-cash processing attempt from creating a phantom finished-goods lot.
+
+## 2026-11-11 — finished-goods expiry/write-off accounting
+
+- js/day.js now has a finished-goods expiry/write-off path independent from raw-material storageLots.
+- A finished-goods lot is eligible for automatic write-off only when the lot explicitly carries shelfLifeDays and reaches that age, or is explicitly marked expired/spoiled. No unsupported shelf-life duration is invented for existing recipes.
+- Write-off uses the lot unitCost, checks the lot quantity against aggregate finishedInventory before mutation, reduces finishedInventory and finishedInventoryCost atomically, and posts loss to Persediaan Produk Jadi (susut).
+- js/land.js preserves an optional processed.shelfLifeDays value into each finished-goods lot for future evidence-backed product-specific shelf-life rules.
+- tests/day-storage-writeoff.test.js adds a finished-goods lot valuation regression.
+- Commits: 1d53c1f2ba90bdc0204d2d964a6cd6d0dccbd450, 914e82ca4516cf1f52061e4c64cc7fcd254cba3c, e05a013d17e8be6b1dac10f4e6e3c5f0ad793379.
+- Current recipes without verified finished-product shelf-life remain unclassified for automatic expiry; this is intentional and requires further research rather than inventing a number.
+- Tests were updated but not executed in this session; no CI pass/fail is claimed.
