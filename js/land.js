@@ -224,6 +224,16 @@ function showCommodityEconomics(focusId){
  });
  h+='<button class="btn btn-info" onclick="configureCommodityStorage()">Atur suhu & kelembapan gudang</button> <button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
+function snapshotAgriTransactionState(){
+ try{return JSON.parse(JSON.stringify(S));}catch(_){return null;}
+}
+function restoreAgriTransactionState(snapshot){
+ if(!snapshot||!S||typeof S!=="object")return false;
+ Object.keys(S).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(snapshot,key))delete S[key];});
+ Object.keys(snapshot).forEach(key=>{S[key]=snapshot[key];});
+ return true;
+}
+
 function sellCommodity(id,channel){
  ensureAgriState();
  if(!inventoryLotBooksHealthy(S)){msg("Rekonsiliasi inventory-lot gagal; penjualan dibatalkan.");return false;}
@@ -283,19 +293,26 @@ function sellCommodity(id,channel){
  if(!Number.isFinite(rev)||rev<=0||!Number.isFinite(net)||!Number.isFinite(grossProfit)){msg("Nilai penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!Number.isFinite(S.gold)||S.gold+rev<logistics.total){msg("Kas dan hasil penjualan tidak cukup untuk membayar distribusi; penjualan dibatalkan.");return false;}
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+" "+channel+"\\nOmzet: "+safeRp(rev)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(grossProfit)+"\\n"+logisticsBreakdown(logistics)+"\\nKas bersih setelah distribusi: "+safeRp(net)))return false;
- const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
- if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
-  msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
+ const transactionSnapshot=snapshotAgriTransactionState();
+ if(!transactionSnapshot){msg("Snapshot transaksi gagal; penjualan dibatalkan sebelum mutasi.");return false;}
+ try{
+  if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){
+   const lotUse=AgroCommodityStorage.consumeLots(S,id,qty);
+   if(!lotUse||!lotUse.ok)throw new Error("raw_lot_consume_failed");
+  }
+  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
+  if(!Number.isFinite(cogsPosted)||Math.abs(cogsPosted-valuation.consumedCost)>1e-6)throw new Error("raw_cogs_post_failed");
+  if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))throw new Error("raw_distribution_post_failed");
+  S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
+  S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
+  S.landSystem.inventory[id]=valuation.remainingQuantity;
+  S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
+  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
+ }catch(error){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg("Transaksi penjualan gagal dan seluruh perubahan kas, lot, persediaan, jurnal, serta ledger dibatalkan ("+(error&&error.message||"unknown") +").");
+  return false;
  }
- if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold})){
-  msg("Pencatatan distribusi gagal; penjualan dibatalkan sebelum persediaan/revenue mutation.");return false;
- }
- S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
- S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
- if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){const lotUse=AgroCommodityStorage.consumeLots(S,id,qty);if(!lotUse.ok){msg('Lot persediaan tidak sinkron; penjualan dihentikan.');return false;}}
- S.landSystem.inventory[id]=valuation.remainingQuantity;
- S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
- earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
  if(channel==="b2b"&&typeof queueMarketTransaction==="function")queueMarketTransaction({commodityId:id,side:"sell",quantity:qty,price,marketStage:"producer",source:"player_b2b_commodity_sale"});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,cogs:valuation.consumedCost,grossProfit,channel,logisticsCost:logistics.total,netAfterLogistics:net});
@@ -540,14 +557,20 @@ function sellFinishedCommodity(productId, requestedQuantity){
  const revenue=rawQuantity*salePrice;
  if(!Number.isFinite(revenue)||revenue<=0){msg("Pendapatan penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!confirm("Konfirmasi penjualan "+rawQuantity+" "+product.name+"?\\nHarga saat konfirmasi: "+safeRp(salePrice)+"/unit\\nOmzet: "+safeRp(revenue)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(revenue-valuation.consumedCost)))return false;
- const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
- if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
-  msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
+ const transactionSnapshot=snapshotAgriTransactionState();
+ if(!transactionSnapshot){msg("Snapshot transaksi gagal; penjualan produk jadi dibatalkan sebelum mutasi.");return false;}
+ try{
+  if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan))throw new Error("finished_lot_consume_failed");
+  const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
+  if(!Number.isFinite(cogsPosted)||Math.abs(cogsPosted-valuation.consumedCost)>1e-6)throw new Error("finished_cogs_post_failed");
+  S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
+  S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
+  earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
+ }catch(error){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg("Transaksi produk jadi gagal dan seluruh perubahan persediaan, jurnal, kas, serta ledger dibatalkan ("+(error&&error.message||"unknown")+").");
+  return false;
  }
- if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan)){msg("Lot produk jadi tidak sinkron; penjualan dibatalkan sebelum perubahan persediaan.");return false;}
- S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
- S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
- earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:product.name,quantity:rawQuantity,unitPrice:salePrice,revenue,cogs:valuation.consumedCost,grossProfit:revenue-valuation.consumedCost,channel:"finished_goods"});
  save();msg("Penjualan selesai: omzet "+safeRp(revenue)+", HPP "+safeRp(valuation.consumedCost)+", laba kotor "+safeRp(revenue-valuation.consumedCost)+".");showCommodityEconomics();render();
