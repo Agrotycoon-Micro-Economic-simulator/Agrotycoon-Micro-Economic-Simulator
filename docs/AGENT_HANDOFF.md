@@ -1786,3 +1786,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43060969229` exposed a production defect on the raw sale FIFO path: `sellCommodity()` computed `remainingQuantity` using an undeclared `stock` identifier (`qty - lotPlan.requested + stock - qty`), throwing `ReferenceError: stock is not defined` whenever a lot plan existed. Replaced it with the correct `Math.max(0, qty - lotPlan.requested)` calculation. Commit: `764a9b5fe2e75ddbbd96abd289617ee9af26ea68`.
 - This is a runtime bug fix; it does not alter HPP, lot selection, sale quantity, or any price parameter.
+
+
+- Raw-sale diagnostics after the undefined-variable fix showed the next guard was unit-economics completeness. Inspection found the raw-sale own-input omitted mandatory `marketOpportunityPricePerUnit` and `marketOpportunityPriceEvidence` fields, unlike the processing and finished-sale scenarios. Added the configured B2B/farmer reference price with game-parameter provenance. Runtime fix commit: `54c5ac2dfa566ac2698354cccc6a1c68f76f2bed`; temporary debug output removed in `2232aefa18500d3b25de2a82ad4eac52f2b5b51f`.
+- This keeps the unit-economics requirement intact and explicitly values the raw commodity's external-sale opportunity cost.
