@@ -235,7 +235,14 @@ function sellCommodity(id,channel){
  if(!Number.isFinite(stockCost)||stockCost<=0){msg("Nilai persediaan bahan baku belum valid; penjualan dibatalkan agar HPP tidak hilang.");return false;}
  const price=getCommodityPrice(id,channel);
  if(!Number.isFinite(price)||price<=0){msg("Harga jual komoditas saat ini tidak valid; penjualan dibatalkan.");return false;}
- const valuation=AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
+ let lotPlan=null;
+ if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
+  lotPlan=AgroCommodityStorage.planLotConsumption(S,id,qty);
+  if(!lotPlan||!lotPlan.ok){msg("Lot persediaan tidak sinkron; penjualan dibatalkan sebelum valuasi HPP.");return false;}
+  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-qty)>1e-6){msg("Jumlah lot yang dapat dijual tidak mencukupi; penjualan dibatalkan.");return false;}
+  if(!Number.isFinite(lotPlan.consumedCost)||lotPlan.consumedCost<=0){msg("HPP lot komoditas tidak valid; penjualan dibatalkan.");return false;}
+ }
+ const valuation=lotPlan?{ok:true,consumedCost:lotPlan.consumedCost,remainingQuantity:Math.max(0,qty-lotPlan.requested+stock-qty),remainingCostValue:Math.max(0,stockCost-lotPlan.consumedCost),unitCost:lotPlan.consumedCost/qty}:AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
  if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP komoditas tidak valid; penjualan dibatalkan.");return false;}
  const economics=(typeof AgroUnitEconomics!=="undefined"&&AgroUnitEconomics.calculate)
   ? AgroUnitEconomics.calculate({
@@ -272,11 +279,6 @@ function sellCommodity(id,channel){
  const rev=qty*price,net=rev-logistics.total,grossProfit=rev-valuation.consumedCost;
  if(!Number.isFinite(rev)||rev<=0||!Number.isFinite(net)||!Number.isFinite(grossProfit)){msg("Nilai penjualan tidak valid; transaksi dibatalkan.");return false;}
  if(!Number.isFinite(S.gold)||S.gold+rev<logistics.total){msg("Kas dan hasil penjualan tidak cukup untuk membayar distribusi; penjualan dibatalkan.");return false;}
- if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
-  const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,qty);
-  if(!lotPlan||!lotPlan.ok){msg("Lot persediaan tidak sinkron; penjualan dibatalkan sebelum pencatatan HPP/kas.");return false;}
-  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-Math.max(0,Number(S.landSystem.inventory[id])||0))>1e-6){msg("Jumlah lot dan agregat persediaan tidak sinkron; penjualan dibatalkan.");return false;}
- }
  if(!confirm("Konfirmasi penjualan "+COMMODITY_BY_ID[id].name+" "+channel+"\\nOmzet: "+safeRp(rev)+"\\nHPP: "+safeRp(valuation.consumedCost)+"\\nLaba kotor: "+safeRp(grossProfit)+"\\n"+logisticsBreakdown(logistics)+"\\nKas bersih setelah distribusi: "+safeRp(net)))return false;
  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
@@ -319,7 +321,14 @@ function processCommodity(id){
   msg("Data resep/valuasi produk olahan tidak valid atau persediaan belum cukup.");return;
  }
  const input=units*inputKg,outputQty=units*outputQtyPerBatch,cashConversion=units*otherCost;
- const inputValuation=AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,input);
+ let inputLotPlan=null;
+ if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
+  inputLotPlan=AgroCommodityStorage.planLotConsumption(S,id,input);
+  if(!inputLotPlan||!inputLotPlan.ok){msg("Lot bahan baku tidak sinkron; pengolahan dibatalkan sebelum valuasi HPP.");return;}
+  if(!Number.isFinite(inputLotPlan.available)||Math.abs(inputLotPlan.available-input)>1e-6){msg("Jumlah lot bahan baku yang layak dipakai tidak mencukupi; pengolahan dibatalkan.");return;}
+  if(!Number.isFinite(inputLotPlan.consumedCost)||inputLotPlan.consumedCost<0){msg("HPP lot bahan baku tidak valid; pengolahan dibatalkan.");return;}
+ }
+ const inputValuation=inputLotPlan?{ok:true,consumedCost:inputLotPlan.consumedCost,remainingQuantity:Math.max(0,stock-input),remainingCostValue:Math.max(0,stockCost-inputLotPlan.consumedCost),unitCost:input>0?inputLotPlan.consumedCost/input:0}:AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,input);
  if(!inputValuation.ok||!Number.isFinite(inputValuation.consumedCost)||inputValuation.consumedCost<0){msg("Valuasi bahan baku tidak valid; pengolahan dibatalkan.");return;}
  const distance=Number(prompt("Jarak pengiriman produk jadi satu arah (km). Default 10 km:", "10"));
  if(!Number.isFinite(distance)||distance<0){msg("Jarak tidak valid; pengolahan dibatalkan.");return;}
@@ -363,11 +372,6 @@ function processCommodity(id){
    finishedCost
  );
  if(!received.ok){msg("Penerimaan persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
- if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
-  const lotPlan=AgroCommodityStorage.planLotConsumption(S,id,input);
-  if(!lotPlan||!lotPlan.ok){msg("Lot bahan baku tidak sinkron; pengolahan dibatalkan sebelum pencatatan kas.");return;}
-  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-stock)>1e-6){msg("Jumlah lot dan agregat persediaan bahan baku tidak sinkron; pengolahan dibatalkan.");return;}
- }
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
  // Lot consumption is preflighted before any cash/accounting mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
  if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
