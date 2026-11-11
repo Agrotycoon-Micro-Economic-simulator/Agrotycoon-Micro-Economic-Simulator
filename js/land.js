@@ -255,7 +255,7 @@ function sellCommodity(id,channel){
   }
   if(!Number.isFinite(lotPlan.consumedCost)||lotPlan.consumedCost<=0){msg("HPP lot komoditas tidak valid; penjualan dibatalkan.");return false;}
  }
- const valuation=lotPlan?{ok:true,consumedCost:lotPlan.consumedCost,remainingQuantity:Math.max(0,qty-lotPlan.requested+stock-qty),remainingCostValue:Math.max(0,stockCost-lotPlan.consumedCost),unitCost:lotPlan.consumedCost/qty}:AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
+ const valuation=lotPlan?{ok:true,consumedCost:lotPlan.consumedCost,remainingQuantity:Math.max(0,qty-lotPlan.requested),remainingCostValue:Math.max(0,stockCost-lotPlan.consumedCost),unitCost:lotPlan.consumedCost/qty}:AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
  if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP komoditas tidak valid; penjualan dibatalkan.");return false;}
  const economics=(typeof AgroUnitEconomics!=="undefined"&&AgroUnitEconomics.calculate)
   ? AgroUnitEconomics.calculate({
