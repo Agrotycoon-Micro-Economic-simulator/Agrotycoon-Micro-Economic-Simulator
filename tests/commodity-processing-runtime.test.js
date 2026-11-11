@@ -1,6 +1,7 @@
 const assert = require("node:assert/strict");
 const test = (_name, run) => run();
 const fs = require("node:fs");
+const path = require("node:path");
 const vm = require("node:vm");
 
 const transformation = require("../js/commodity_transformation.js");
