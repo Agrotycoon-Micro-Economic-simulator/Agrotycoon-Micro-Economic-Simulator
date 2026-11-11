@@ -1756,3 +1756,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43059623025` passed the processing quantity and carrying-value assertions, then failed only because the cabai fixture omitted `outputUnit`; runtime correctly logged the recipe label as `unspecified`, while the test expected `unit`. Added the explicit `outputUnit: "unit"` fixture declaration. Commit: `f96a067f1f745f9c8b70bedd3066dc4872662ad9`.
 - This is test metadata completion; the runtime default remains unchanged.
+
+
+- Run `43059707510` confirmed the initial processing fixture arithmetic after the prior correction, then failed in the later finished-sale subcase: that subcase explicitly resets finished stock to 10 units at Rp105,000, so its original post-sale expectations (8 units, Rp84,000 remaining cost, Rp21,000 COGS) must remain distinct from the 40-pack production output assertion. Restored those expectations only in the explicit 10-unit sale fixture. Commit: `acb2af206e938b6009cf9221af8ed3b00bc82e23`.
