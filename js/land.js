@@ -383,6 +383,10 @@ function processCommodity(id){
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
  S.landSystem.finishedInventoryCost[p.id]=received.costValue;
+ // Finished-goods lot provenance is created only after all input/cash mutations succeed.
+ // The values are already prevalidated above, so this cannot silently introduce a
+ // quantity/cost mismatch into the aggregate finished-inventory boundary.
+ if(!addFinishedGoodsLot(p.id,outputQty,finishedCost)){msg("Lot produk jadi gagal dibuat; transaksi dibatalkan.");return;}
  S.landSystem.finishedInventoryQuantityMeta[p.id]={
    quantityBasis:"legacy_transformation_output",
    declaredRecipeUnit:p.outputUnit||"unspecified",
