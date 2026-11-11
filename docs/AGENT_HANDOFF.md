@@ -1712,3 +1712,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `.github/workflows/targeted-regression.yml`: moved the Node test-runner suites and standalone core Node/benchmark regressions ahead of Playwright/Chromium installation. Browser smoke and E2E tests now run in a later dedicated step. This preserves core regression evidence even if browser OS-dependency installation fails.
 - Workflow change commit: `6977189902f93b7f2dc52f1e05fb682bb4fc06d0`.
 - The new workflow execution has not yet been observed to completion. Do not claim core tests or browser tests pass until their step output is available.
+
+
+## 2026-11-11 — first executable core CI result and cross-realm assertion correction
+
+- After reordering CI, workflow run `43058219849` reached the Node test-runner step instead of failing during browser setup.
+- Result: 129 tests, 125 passed, 4 failed. All four failures were in `tests/commodity-storage.test.js` and shared one test-harness cause: strict deep equality compared arrays created inside the `vm` context against arrays from the Node host realm. The reported values had identical contents but different realm prototypes. The four affected cases covered expired-lot eligibility, non-mutating preflight, FIFO valuation, and surviving-lot valuation after expiry.
+- Corrected those assertions by materializing VM arrays in the host realm (or JSON-normalizing the returned consumed structure); no storage runtime behavior, FIFO ordering, expiry rule, HPP, or inventory data was changed.
+- Test correction commit: `98a21a7fb32c33a94c4daa718ef43bd5648a8fda`.
+- The corrected test commit is awaiting a fresh workflow result. Do not infer a pass from the source correction alone.
