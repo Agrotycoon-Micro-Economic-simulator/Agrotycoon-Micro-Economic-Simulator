@@ -223,17 +223,17 @@ assert.equal(JSON.stringify({
 assert.equal(typeof sandbox.sellFinishedCommodity, "function");
 
 state.gold = 899900;
-state.landSystem.finishedInventory.sambal_cabai_250g = 10;
+state.landSystem.finishedInventory.sambal_cabai_250g = 40;
 state.landSystem.finishedInventoryCost.sambal_cabai_250g = 105000;
 const saleLedgerBefore = state.ledger.length;
 const saleOk = sandbox.sellFinishedCommodity("sambal_cabai_250g", 2);
 assert.equal(saleOk, true);
-assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 8);
-assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 84000);
+assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 38);
+assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 99750);
 assert.equal(state.gold, 935900);
-assert.equal(state.dayLog.cogs, 21000);
+assert.equal(state.dayLog.cogs, 5250);
 assert.equal(state.dayLog.gross, 36000);
-assert.equal(state.dayLog.cogsByAccount["Persediaan Produk Jadi"], 21000);
+assert.equal(state.dayLog.cogsByAccount["Persediaan Produk Jadi"], 5250);
 assert.equal(state.ledger.length, saleLedgerBefore + 2);
 
 const beforeInvalidPrice = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
