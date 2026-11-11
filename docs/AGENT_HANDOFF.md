@@ -1820,3 +1820,18 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Workflow `43062601562` passed the commodity harvest quantity tests and reached `tests/day-storage-writeoff.test.js`. Its finished-goods write-off test destructured `writeOff` instead of the helper's exported `finishedWriteOff`, causing `ReferenceError: finishedWriteOff is not defined`. Corrected the test destructuring. Commit: `89c573671658c1764077bc5b4cbe98efcc4a7971`.
+
+
+## 2026-11-11 — first complete core regression pass for atomic sales
+
+- Workflow run `43062704982`, tested code commit `89c573671658c1764077bc5b4cbe98efcc4a7971`:
+  - Node test-runner suites: success.
+  - UTL oil-palm benchmark guard: success.
+  - UTP broiler benchmark guard: success.
+  - UTP cattle benchmark guard: success.
+  - Official 2024 livestock price benchmark guard: success.
+  - All standalone Node regression tests: success.
+  - Playwright/Chromium installation: still in progress at last inspection; browser smoke and E2E tests pending. Do not claim full workflow green.
+- Core regressions now cover raw and finished-goods sale rollback after injected partial lot mutation, COGS failure, FIFO carrying value, raw distribution posting, finished sale unit-economics quantity contracts, and the prior storage/write-off/reconciliation paths.
+- Latest known branch HEAD before this handoff append: `581dbdb66fdc9c34a5242d62148c2940ed98f267`; this document update does not change runtime code.
+- Next technical target after browser workflow: reconcile ledger debits/credits, COGS, revenue, distribution expense, cash-flow deltas, and inventory carrying-value deltas across raw sale, finished sale, production capitalization, and daily spoilage write-off. Verify external side effects beyond serializable `S` state before describing rollback as globally atomic.
