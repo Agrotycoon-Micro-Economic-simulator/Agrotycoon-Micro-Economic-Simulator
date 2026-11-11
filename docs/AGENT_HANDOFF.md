@@ -1800,3 +1800,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43061807099` passed raw sale success and the injected lot rollback equality check after the market quote baseline was corrected. It then failed the invalid-price regression because setting only `tengkulakPrice=NaN` still allowed the intended fallback to `farmerPrice` and commodity `basePrice`. The test now sets all three anchors to `NaN` for the invalid-price case and restores their valid values afterward. Commit: `eafd1355b227ae9425e31f77b69863d56abc29a6`.
 - The fallback behavior itself is intentional and unchanged.
+
+
+- Run `43061945063` passed the invalid-price guard after all fallback anchors were disabled, then reached the jagung production regression and found its lot-plan stub valued 5 units at Rp2,500 while aggregate inventory carrying value was Rp5,000. The test expected all raw inventory cost to transfer into finished goods (Rp55,000 including Rp50,000 conversion). Set the jagung fixture's lot unit cost to Rp1,000 per simulation unit (Rp5,000 total) so lot HPP and aggregate inventory cost agree. Commit: `1fe53d1869c6647b1fcd5120214c8839f1f06261`.
+- No commodity price or recipe configuration was changed; this aligns the test lot valuation fixture with its stated aggregate HPP.
