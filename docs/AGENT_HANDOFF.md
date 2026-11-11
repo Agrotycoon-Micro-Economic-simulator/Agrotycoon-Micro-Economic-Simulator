@@ -1796,3 +1796,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Raw rollback injection in run `43061667711` reached the failure path and restored cash, inventory, lot book, journal, and ledger. The only whole-state difference was `getCommodityPrice()` refreshing the market quote to Rp25,000 before the transaction snapshot/confirmation boundary. This quote refresh is pre-transaction market state, not a sale posting. The regression fixture now seeds that same quote before taking its baseline snapshot. Commit: `51c221a780cd8cbfdb46ebfadc59b7397d0b4268`.
+
+
+- Run `43061807099` passed raw sale success and the injected lot rollback equality check after the market quote baseline was corrected. It then failed the invalid-price regression because setting only `tengkulakPrice=NaN` still allowed the intended fallback to `farmerPrice` and commodity `basePrice`. The test now sets all three anchors to `NaN` for the invalid-price case and restores their valid values afterward. Commit: `eafd1355b227ae9425e31f77b69863d56abc29a6`.
+- The fallback behavior itself is intentional and unchanged.
