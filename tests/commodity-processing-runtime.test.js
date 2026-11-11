@@ -43,12 +43,18 @@ const sandbox = {
   AgroCommodityStorage: {
     planAllowed: true,
     calls: [],
+    failConsumeAfterMutation: false,
     planLotConsumption: function(_state, commodityId, quantity) {
       this.calls.push({ type: "plan", commodityId, quantity });
       return this.planAllowed ? { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 } : { ok: false, reason: "lot_quantity_shortfall" };
     },
     consumeLots: function(_state, commodityId, quantity) {
       this.calls.push({ type: "consume", commodityId, quantity });
+      if (this.failConsumeAfterMutation) {
+        const lot = (_state.landSystem.storageLots || []).find(x => x.commodityId === commodityId);
+        if (lot) lot.quantity = Math.max(0, lot.quantity - quantity);
+        return { ok: false, reason: "injected_consume_failure_after_mutation" };
+      }
       return { ok: true, consumedQuantity: quantity };
     }
   },
@@ -388,6 +394,22 @@ assert.equal(JSON.stringify({
 }), rawBeforeCogsFailure, "raw agricultural HPP failure must leave cash and inventory unchanged");
 sandbox.recordBusinessCogs = originalRawRecordCogs;
 
+// Failure injection: storage mutates a lot and then reports failure. The sale wrapper
+// must restore the complete pre-transaction state, including the lot book and ledger.
+state.gold = 1000000;
+state.landSystem.inventory = { cabai_merah: 10 };
+state.landSystem.inventoryCost = { cabai_merah: 5000 };
+state.landSystem.storageLots = [{ id: "raw-atomic", commodityId: "cabai_merah", quantity: 10, unitCost: 500 }];
+state.landSystem.market = {};
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+const rawBeforeConsumeFailure = JSON.stringify(state);
+sandbox.AgroCommodityStorage.failConsumeAfterMutation = true;
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify(state), rawBeforeConsumeFailure, "failed raw lot commit must roll back all state after partial lot mutation");
+sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
+delete state.landSystem.storageLots;
+
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = NaN;
 assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
 assert.equal(state.landSystem.inventory.cabai_merah, 10);
@@ -467,6 +489,18 @@ assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar.length, 1);
 assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar[0].id, "fg-expensive");
 assert.equal(state.dayLog.cogs, 200);
 assert.equal(state.dayLog.commoditySales[0].cogs, 200);
+
+// Finished-goods lot consumer mutates FIFO lots and then reports failure.
+// Transaction rollback must restore inventory, lot book, HPP journal, and cash.
+const originalFinishedLotConsumer = sandbox.consumeFinishedGoodsLots;
+const finishedBeforeConsumeFailure = JSON.stringify(state);
+sandbox.consumeFinishedGoodsLots = (productId, plan) => {
+  originalFinishedLotConsumer(productId, plan);
+  return false;
+};
+assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 1), false);
+assert.equal(JSON.stringify(state), finishedBeforeConsumeFailure, "failed finished-goods lot commit must roll back all transaction state");
+sandbox.consumeFinishedGoodsLots = originalFinishedLotConsumer;
 
 const jagungRouteBefore = JSON.stringify({
   gold: state.gold,
