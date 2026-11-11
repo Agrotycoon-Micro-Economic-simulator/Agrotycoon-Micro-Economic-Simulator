@@ -1617,3 +1617,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Important invariant: an expired/spoiled lot that has not yet gone through the daily write-off still causes the land transaction aggregate-vs-eligible-lot check to fail; the transaction is blocked rather than consuming unusable stock. The daily cycle must perform the write-off to restore aggregate inventory/lot consistency.
 - No physical conversion, quantity rescaling, price change, HPP formula change, or map change was made. `main`, `peta.html`, and `js/map_engine.js` remain untouched.
 - Node tests were **not executed in this session** and no CI pass/fail status is claimed.
+
+- Follow-up regression `f61e4312456cedd3cfa6a98b5f7bd4640efca8f5` additionally verifies `consumeLots()` itself remains atomic when all available stock is explicitly mold/spoiled.
