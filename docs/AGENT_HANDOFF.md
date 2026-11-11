@@ -1651,3 +1651,5 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: implementation 922716cbccaf45287a96cd8593bcd422bb3a19d8; regression 444e9f40a8a3a7a0e5f76f015fc00a56e487572c.
 - No physical conversion, quantity rescaling, price rescaling, or map change was introduced. main, peta.html, and js/map_engine.js remain untouched.
 - Tests were updated but not executed in this session; no CI pass/fail is claimed.
+
+- Follow-up fix: 112b03e800aa9366eb2c23df3c034e9575b76ec7 defers finished-goods lot creation until cash/lot input mutation is ready, preventing an insufficient-cash processing attempt from creating a phantom finished-goods lot.
