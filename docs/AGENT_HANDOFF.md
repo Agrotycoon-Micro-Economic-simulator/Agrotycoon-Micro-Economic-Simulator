@@ -1771,3 +1771,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Finished-sale follow-up CI `43060194977` still failed unit-economics completeness after adding the legacy quantity contract. Inspection of `js/unit_economics.js` identified a second required field for `sourcingMode:"own"`: `marketOpportunityPricePerUnit` plus its evidence. Raw-sale scenarios already supply these fields; finished-sale scenarios did not. Added the current configured finished-product sale price and game-parameter provenance as the opportunity-price input. Commit: `6611592fba5e24423cbb45b43ea4f26b1d2044a5`.
 - This keeps the unit-economics validator strict and makes the finished product's external sale price explicit as the opportunity value.
+
+
+- Run `43060321638` reached the finished sale successfully after the unit-economics inputs were completed. It then failed because the headless test stubs for `recordBusinessCogs`, `spend`, and `earn` updated totals but did not emit their corresponding ledger rows. The finished-sale regression expected two rows (HPP + revenue); raw sale additionally requires a distribution-expense row. Updated the stubs to emit ledger entries and corrected raw sale expectation to three postings. Commits: runtime test stubs `213b78e0ebb82779390ef15fb34f2ebff40a63a4`; raw sale ledger assertion `619631e2ea117328f70df848b06021d0dcb0ddca`.
+- The production runtime's real accounting functions were not changed by this test-only correction.
