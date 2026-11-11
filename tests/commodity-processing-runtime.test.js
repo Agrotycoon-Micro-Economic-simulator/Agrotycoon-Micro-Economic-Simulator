@@ -458,6 +458,7 @@ sandbox.COMMODITY_ECONOMICS.jagung = {
 };
 sandbox.prompt = () => "0";
 sandbox.logisticsPrompt = () => ({ total: 100 });
+sandbox.AgroCommodityStorage.planLotConsumption = (_state, commodityId, quantity) => ({ ok: true, requested: quantity, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 1000 });
 sandbox.processCommodity("jagung");
 assert.equal(state.landSystem.inventory.jagung, 0);
 assert.equal(state.landSystem.inventoryCost.jagung, 0);
