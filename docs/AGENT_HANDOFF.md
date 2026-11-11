@@ -1704,3 +1704,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Scope unchanged: no physical-unit conversion, stock/price/HPP rescaling, commodity rule change, map change, or main-branch write.
 - Tests have not been executed in this session; no test pass or CI pass is claimed.
 - Remaining audit: validate whether all transaction-side effects are contained in serializable `S` state (especially any external side-effect in market queue/save/render hooks), then reconcile transaction ledger debit/credit totals against dayLog COGS, revenue, distribution expense, cash flow, and inventory carrying-value deltas.
+
+
+## 2026-11-11 — CI root-cause isolation: browser setup blocked core regressions
+
+- Inspected GitHub Actions run `43046094064` (commit `671a1311fd894cf02634d947ada3cb7112ff10e4`). The job failed at step 4, `Install Playwright and Chromium for browser smoke test`; `apt` could not resolve Ubuntu archive/security hosts (`Temporary failure resolving`). All Node and benchmark steps were skipped. This is an environment/dependency-install failure, not evidence of a failing application test.
+- `.github/workflows/targeted-regression.yml`: moved the Node test-runner suites and standalone core Node/benchmark regressions ahead of Playwright/Chromium installation. Browser smoke and E2E tests now run in a later dedicated step. This preserves core regression evidence even if browser OS-dependency installation fails.
+- Workflow change commit: `6977189902f93b7f2dc52f1e05fb682bb4fc06d0`.
+- The new workflow execution has not yet been observed to completion. Do not claim core tests or browser tests pass until their step output is available.
