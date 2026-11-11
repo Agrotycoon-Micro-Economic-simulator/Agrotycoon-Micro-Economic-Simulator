@@ -419,6 +419,8 @@ sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
 delete state.landSystem.storageLots;
 
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = NaN;
+sandbox.COMMODITY_ECONOMICS.cabai_merah.farmerPrice = NaN;
+sandbox.COMMODITY_BY_ID.cabai_merah.basePrice = NaN;
 assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
 assert.equal(state.landSystem.inventory.cabai_merah, 10);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 5000);
@@ -427,6 +429,8 @@ assert.equal(state.dayLog.cogs, 0);
 assert.equal(state.dayLog.gross, 0);
 assert.equal(state.ledger.length, 0);
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = 25000;
+sandbox.COMMODITY_ECONOMICS.cabai_merah.farmerPrice = 27810;
+sandbox.COMMODITY_BY_ID.cabai_merah.basePrice = 25000;
 
 state.gold = 1000000;
 state.landSystem.inventory = { jagung: 5 };
