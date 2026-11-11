@@ -383,6 +383,7 @@ function processCommodity(id){
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
  S.landSystem.finishedInventoryCost[p.id]=received.costValue;
+ if(!addFinishedGoodsLot(p.id,outputQty,finishedCost)){msg("Lot produk jadi gagal dicatat; pengolahan dibatalkan.");return;}
  S.landSystem.finishedInventoryQuantityMeta[p.id]={
    quantityBasis:"legacy_transformation_output",
    declaredRecipeUnit:p.outputUnit||"unspecified",
@@ -396,6 +397,49 @@ function processCommodity(id){
  if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
  S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,inputQuantityUnit:"unconverted_simulation_market_units",outputQuantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",declaredInputRecipeUnit:e.unit||"unspecified",declaredOutputRecipeUnit:p.outputUnit||"unspecified",conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
  save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
+}
+function ensureFinishedGoodsLots(){
+ if(!S.landSystem.finishedInventoryLots||typeof S.landSystem.finishedInventoryLots!=="object")S.landSystem.finishedInventoryLots={};
+ return S.landSystem.finishedInventoryLots;
+}
+function addFinishedGoodsLot(productId, quantity, costValue){
+ const qty=Number(quantity),cost=Number(costValue);
+ if(!Number.isFinite(qty)||qty<=0||!Number.isFinite(cost)||cost<=0)return false;
+ const lots=ensureFinishedGoodsLots();
+ if(!Array.isArray(lots[productId]))lots[productId]=[];
+ lots[productId].push({
+   id:"fg-"+productId+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),
+   commodityId:productId, quantity:qty, unitCost:cost/qty, costValue:cost,
+   createdDay:Number(S.day)||0,
+   quantityUnit:"unconverted_simulation_market_units",
+   quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
+   quantityScaleStatus:"unconverted_legacy_simulation_index"
+ });
+ return true;
+}
+function planFinishedGoodsConsumption(productId, quantity){
+ const qty=Number(quantity),lots=ensureFinishedGoodsLots(),source=Array.isArray(lots[productId])?lots[productId]:[];
+ if(!Number.isFinite(qty)||qty<=0)return {ok:false,reason:"invalid_quantity"};
+ if(!source.length)return {ok:false,reason:"finished_lot_book_unavailable"};
+ let remaining=qty,consumedCost=0,used=[];
+ for(const lot of source){
+   const q=Math.max(0,Number(lot.quantity)||0),unitCost=Number(lot.unitCost);
+   if(q<=0)continue;
+   if(!Number.isFinite(unitCost)||unitCost<0)return {ok:false,reason:"invalid_finished_lot_cost"};
+   const take=Math.min(remaining,q);
+   if(take>0){used.push({lot,take,unitCost});consumedCost+=take*unitCost;remaining-=take;}
+   if(remaining<=1e-9)break;
+ }
+ if(remaining>1e-9)return {ok:false,reason:"finished_lot_quantity_shortfall",available:qty-remaining};
+ return {ok:true,consumedCost,remainingQuantity:Math.max(0,(Number(S.landSystem.finishedInventory[productId])||0)-qty),remainingCostValue:Math.max(0,(Number(S.landSystem.finishedInventoryCost[productId])||0)-consumedCost),used};
+}
+function consumeFinishedGoodsLots(productId, plan){
+ if(!plan||!plan.ok)return false;
+ const lots=ensureFinishedGoodsLots(),source=Array.isArray(lots[productId])?lots[productId]:[];
+ for(const u of plan.used){const lot=source.find(x=>x===u.lot);if(!lot||Number(lot.quantity)<u.take-1e-9)return false;}
+ for(const u of plan.used){u.lot.quantity=Math.max(0,Number(u.lot.quantity)-u.take);u.lot.costValue=Math.max(0,u.lot.quantity*Number(u.lot.unitCost));}
+ lots[productId]=source.filter(l=>Number(l.quantity)>1e-9);
+ return true;
 }
 function sellFinishedCommodity(productId, requestedQuantity){
  ensureAgriState();
@@ -411,8 +455,16 @@ function sellFinishedCommodity(productId, requestedQuantity){
  if(!Number.isInteger(rawQuantity)||rawQuantity<=0||rawQuantity>stock){msg("Jumlah penjualan harus bilangan bulat positif dan tidak melebihi persediaan.");return false;}
  const salePrice=Number(product.price);
  if(!Number.isFinite(salePrice)||salePrice<=0){msg("Harga jual produk jadi saat ini tidak valid; penjualan dibatalkan.");return false;}
- const valuation=AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,rawQuantity);
- if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP produk jadi tidak valid; penjualan dibatalkan.");return false;}
+ let valuation=null,finishedLotPlan=null;
+ const finishedLots=ensureFinishedGoodsLots()[id];
+ if(Array.isArray(finishedLots)&&finishedLots.length){
+   finishedLotPlan=planFinishedGoodsConsumption(id,rawQuantity);
+   if(!finishedLotPlan.ok||!Number.isFinite(finishedLotPlan.consumedCost)||finishedLotPlan.consumedCost<=0){msg("Valuasi FIFO produk jadi tidak valid; penjualan dibatalkan.");return false;}
+   valuation={ok:true,consumedCost:finishedLotPlan.consumedCost,remainingQuantity:finishedLotPlan.remainingQuantity,remainingCostValue:finishedLotPlan.remainingCostValue,unitCost:rawQuantity>0?finishedLotPlan.consumedCost/rawQuantity:0};
+ }else{
+   valuation=AgroCommodityTransformation.consumeWeightedAverageInventory(stock,stockCost,rawQuantity);
+   if(!valuation.ok||!Number.isFinite(valuation.consumedCost)||valuation.consumedCost<=0){msg("Valuasi HPP produk jadi tidak valid; penjualan dibatalkan.");return false;}
+ }
  const economics=(typeof AgroUnitEconomics!=="undefined"&&AgroUnitEconomics.calculate)
   ? AgroUnitEconomics.calculate({
     id:"finished-goods-live-sale-"+id,
@@ -436,6 +488,7 @@ function sellFinishedCommodity(productId, requestedQuantity){
  if(!Number.isFinite(cogsPosted)||cogsPosted<=0){
   msg("Pencatatan HPP gagal; penjualan dibatalkan tanpa perubahan persediaan.");return false;
  }
+ if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan)){msg("Lot produk jadi tidak sinkron; penjualan dibatalkan sebelum perubahan persediaan.");return false;}
  S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
  S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
  earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
