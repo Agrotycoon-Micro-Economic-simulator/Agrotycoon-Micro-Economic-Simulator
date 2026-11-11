@@ -1752,3 +1752,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43059463540` reached the full processing path and then exposed stale expected quantities in the cabai runtime fixture: `inputKg=0.25`, raw stock 10, and default `outputQty=1` imply 40 production batches/packs, not 10. The existing finished carrying value Rp105,000 already reflected 40 × Rp2,500 conversion cost plus Rp5,000 raw HPP. Updated expected finished quantity to 40 and FIFO sale of 2 packs to HPP Rp5,250, remaining quantity 38 and carrying value Rp99,750. Commit: `2523ade671c63ae61de28dd1e295e66f003168e2`.
 - This aligns assertions with the existing recipe arithmetic; no game recipe, price, quantity conversion, or HPP formula was modified.
+
+
+- Run `43059623025` passed the processing quantity and carrying-value assertions, then failed only because the cabai fixture omitted `outputUnit`; runtime correctly logged the recipe label as `unspecified`, while the test expected `unit`. Added the explicit `outputUnit: "unit"` fixture declaration. Commit: `f96a067f1f745f9c8b70bedd3066dc4872662ad9`.
+- This is test metadata completion; the runtime default remains unchanged.
