@@ -369,7 +369,7 @@ assert.equal(state.dayLog.cogs, 5000);
 assert.equal(state.dayLog.gross, 250000);
 assert.equal(state.dayLog.expense, 100);
 assert.equal(state.dayLog.commoditySales[0].grossProfit, 245000);
-assert.equal(state.ledger.length, 2);
+assert.equal(state.ledger.length, 3, "raw sale must post HPP, distribution expense, and revenue ledger entries");
 
 state.gold = 1000000;
 state.landSystem.inventory.cabai_merah = 10;
