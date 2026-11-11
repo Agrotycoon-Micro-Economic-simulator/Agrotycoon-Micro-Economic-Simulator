@@ -1726,3 +1726,8 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Follow-up CI run `43058406656`: the 129-test Node test-runner suite passed; all four commodity benchmark guard steps also passed. The standalone sequence then stopped at `tests/commodity-processing-runtime.test.js` with `ReferenceError: test is not defined`, because this directly invoked file declared `test(...)` cases without importing `node:test`.
 - Added `const { test } = require("node:test")` to the standalone runtime regression file. Fix commit: `6dc3ab6e318e9078b09bd096ebd511078f0e3a63`.
 - Await a fresh workflow result for this fix; the previous run did not execute the rest of the standalone sequence or browser/E2E tests.
+
+
+- Follow-up run `43058519879` passed the Node test-runner suites and all four benchmark guards, then failed inside the standalone commodity runtime test. Importing `node:test` caused the file's test callbacks to be scheduled separately from its existing top-level stateful regression sequence; the shared mutable fixture was then observed in the wrong order (expected raw inventory 0, observed 10).
+- Replaced that import with a synchronous local `test(name, run)` wrapper. This preserves the file's existing direct `node tests/commodity-processing-runtime.test.js` execution model and guarantees fixture assertions run in source order. Fix commit: `3b9c65c49ccca3d425c5b95cf9a70c871fc23f5e`.
+- Await the next workflow result. No pass is claimed for this adjustment until the standalone suite executes again.
