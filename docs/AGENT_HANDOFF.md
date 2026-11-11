@@ -1814,3 +1814,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Run `43062394104` passed the jagung production and sale ledger-delta assertions, then reached a final source-contract test that referenced `path.join()` without importing Node's `path` module. Added `const path = require("node:path")`. Commit: `e1cb77059b92024fc41ed74ddb5126f8d8427bb8`.
+
+
+- After the runtime suite advanced, workflow `43062497211` failed in `tests/commodity-harvest-quantity.test.js`: the harvest test's pre-VM `showCommodityEconomics` stub was replaced by the real function declaration from `land.js`, which references absent UI global `DATA`. Added a post-`vm.runInNewContext` UI stub, matching the headless runtime test pattern. Commit: `4461c8c61975c3c341cd379637b9dc8cecec40fa`.
