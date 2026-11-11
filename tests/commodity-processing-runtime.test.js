@@ -471,12 +471,13 @@ assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar[0].quantity, 20
 assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar[0].unitCost, 2750);
 assert.equal(state.dayLog.cogs, 0);
 assert.equal(state.gold, 949900);
+const jagungSaleLedgerBefore = state.ledger.length;
 assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 2), true);
 assert.equal(state.landSystem.finishedInventory.jagung_bakar, 18);
 assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar, 49500);
 assert.equal(state.dayLog.cogs, 5500);
 assert.equal(state.dayLog.gross, 20000);
-assert.equal(state.ledger.length, 2);
+assert.equal(state.ledger.length, jagungSaleLedgerBefore + 2);
 
 // Finished-goods FIFO regression: aggregate cost must follow the actual lot removed.
 state.gold = 1000000;
