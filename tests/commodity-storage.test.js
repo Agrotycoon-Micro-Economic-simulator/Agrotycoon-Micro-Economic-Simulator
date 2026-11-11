@@ -260,3 +260,28 @@ test('storage consumption preflight is non-mutating and shortfall is atomic', ()
   assert.deepEqual(result.consumed, [{ lotId: 'a', quantity: 2 }, { lotId: 'b', quantity: 2 }]);
   assert.deepEqual(state.landSystem.storageLots.map(l => l.quantity), [1]);
 });
+
+
+test('FIFO lot valuation drives HPP from actual lot unit costs, not aggregate weighted average',()=>{
+ const state={day:10,landSystem:{inventory:{tomat:5},inventoryCost:{tomat:1100},storageLots:[
+  {id:'cheap',commodityId:'tomat',quantity:2,unitCost:100,receivedDay:1,ageDays:1,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:20,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'},
+  {id:'expensive',commodityId:'tomat',quantity:3,unitCost:300,receivedDay:2,ageDays:1,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:20,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'}
+ ]}};
+ const plan=storage.planLotConsumption(state,'tomat',2);
+ assert.equal(plan.ok,true);
+ assert.equal(plan.consumedCost,200);
+ assert.equal(plan.remainingCostValue,900);
+ assert.deepEqual(plan.used.map(x=>[x.lot.id,x.quantity,x.unitCost]),[['cheap',2,100]]);
+});
+
+test('FIFO HPP after an expired lot write-off remains tied to the surviving lot cost',()=>{
+ const state={day:10,landSystem:{inventory:{tomat:3},inventoryCost:{tomat:900},storageLots:[
+  {id:'expired',commodityId:'tomat',quantity:2,unitCost:100,receivedDay:1,ageDays:9,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:30,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'},
+  {id:'survivor',commodityId:'tomat',quantity:3,unitCost:300,receivedDay:10,ageDays:0,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:20,relativeHumidityPct:85,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'}
+ ]}};
+ const plan=storage.planLotConsumption(state,'tomat',2);
+ assert.equal(plan.ok,true);
+ assert.equal(plan.consumedCost,600);
+ assert.equal(plan.remainingCostValue,300);
+ assert.deepEqual(plan.used.map(x=>x.lot.id),['survivor']);
+});
