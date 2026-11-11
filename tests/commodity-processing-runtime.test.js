@@ -361,6 +361,7 @@ sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, 
   return { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 };
 };
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
+console.log("DEBUG raw sale", JSON.stringify({rawSaleOk,message:sandbox.lastMessage,gold:state.gold,inventory:state.landSystem.inventory,dayLog:state.dayLog,ledger:state.ledger}));
 assert.equal(rawSaleOk, true);
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
