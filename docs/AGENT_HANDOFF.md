@@ -1759,3 +1759,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Run `43059707510` confirmed the initial processing fixture arithmetic after the prior correction, then failed in the later finished-sale subcase: that subcase explicitly resets finished stock to 10 units at Rp105,000, so its original post-sale expectations (8 units, Rp84,000 remaining cost, Rp21,000 COGS) must remain distinct from the 40-pack production output assertion. Restored those expectations only in the explicit 10-unit sale fixture. Commit: `acb2af206e938b6009cf9221af8ed3b00bc82e23`.
+
+
+- Run `43059823538` confirmed the finished sale test's explicit 10-unit reset conflicted with the 40-unit finished lot book created by the preceding production test. The reconciliation guard correctly blocked sale. Removed the inconsistent aggregate-only override and kept the actual 40-unit aggregate aligned with its production lot; expected sale result is 38 units, Rp99,750 remaining carrying value, and Rp5,250 FIFO HPP for 2 units. Commit: `c936697f2061dbe38884b78d29594a4865d38c17`.
+- This is an integrity-correct test fixture; production reconciliation remains strict and unchanged.
