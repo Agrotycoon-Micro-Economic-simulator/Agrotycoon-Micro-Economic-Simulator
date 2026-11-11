@@ -1619,3 +1619,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Node tests were **not executed in this session** and no CI pass/fail status is claimed.
 
 - Follow-up regression `f61e4312456cedd3cfa6a98b5f7bd4640efca8f5` additionally verifies `consumeLots()` itself remains atomic when all available stock is explicitly mold/spoiled.
+
+
+## 2026-11-11 — lot-level storage write-off regression hardening
+
+- js/day.js: extracted the existing expired-storage write-off calculation into writeOffExpiredStorageLot(state, result, lot). The daily cycle still owns the write-off timing and dayLog.storageWriteoffs; the helper isolates valuation/mutation so different lot acquisition costs can be tested directly without changing the gameplay rule.
+- Write-off valuation remains lot-specific: lot.unitCost is used when finite; aggregate average inventory cost is only the fallback for legacy lots without a unit cost. Aggregate quantity and inventoryCost are reduced by the same write-off value, and the lot is marked/removed exactly as before.
+- Added tests/day-storage-writeoff.test.js covering: (1) expired cheap lot beside higher-cost remaining stock, (2) multiple expired lots with distinct unit costs, and (3) legacy fallback to aggregate average cost when lot unit cost is absent.
+- .github/workflows/targeted-regression.yml now includes tests/day-storage-writeoff.test.js in the standalone Node regression sequence.
+- Commits: helper integration 070555bd073a08782699941eb6c2636fd972ef28; regression 92c257a92a17b24af72d86c32bf50cb1e3929d33; CI wiring 51960b2d716893ba5c3b3426958801825d30f809.
+- Tests were added but not executed in this session; no CI pass/fail is claimed. No physical conversion, quantity rescaling, price/HPP formula change, or map change. main, peta.html, and js/map_engine.js remain untouched.
