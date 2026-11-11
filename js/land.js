@@ -226,6 +226,7 @@ function showCommodityEconomics(focusId){
 }
 function sellCommodity(id,channel){
  ensureAgriState();
+ if(!inventoryLotBooksHealthy(S)){msg("Rekonsiliasi inventory-lot gagal; penjualan dibatalkan.");return false;}
  const e=COMMODITY_ECONOMICS[id];
  if(!e||id==="kelapa"){msg("Penjualan kelapa warisan tetap memakai sistem warung/tengkulak lama.");return false;}
  if(!S.landSystem.inventoryCost)S.landSystem.inventoryCost={};
@@ -303,6 +304,7 @@ function sellCommodity(id,channel){
 }
 function processCommodity(id){
  ensureAgriState();
+ if(!inventoryLotBooksHealthy(S)){msg("Rekonsiliasi inventory-lot gagal; pengolahan dibatalkan.");return false;}
  const e=COMMODITY_ECONOMICS[id],p=e&&e.processed;
  if(!e||!p||id==="kelapa"){msg("Produk olahan komoditas ini belum diaktifkan di mode uji.");return;}
  const inputTier=Number(p.inputTier),outputTier=Number(p.outputTier);
@@ -405,6 +407,19 @@ function ensureFinishedGoodsLots(){
  if(!S.landSystem.finishedInventoryLots||typeof S.landSystem.finishedInventoryLots!=="object")S.landSystem.finishedInventoryLots={};
  return S.landSystem.finishedInventoryLots;
 }
+function inventoryLotBooksHealthy(state){
+ const audit=reconcileInventoryLotBooks(state||S);
+ if(!audit.ok){
+  const log=state||S;
+  if(log.dayLog){
+   if(!Array.isArray(log.dayLog.inventoryReconciliationErrors))log.dayLog.inventoryReconciliationErrors=[];
+   log.dayLog.inventoryReconciliationErrors.push({day:log.day,errors:audit.errors});
+  }
+  return false;
+ }
+ return true;
+}
+
 function reconcileInventoryLotBooks(state){
  const source=state||S,ls=source&&source.landSystem;
  if(!ls)return {ok:false,reason:"missing_land_system",raw:[],finished:[],errors:[]};
@@ -483,6 +498,7 @@ function consumeFinishedGoodsLots(productId, plan){
 }
 function sellFinishedCommodity(productId, requestedQuantity){
  ensureAgriState();
+ if(!inventoryLotBooksHealthy(S)){msg("Rekonsiliasi inventory-lot gagal; penjualan produk jadi dibatalkan.");return false;}
  const id=String(productId||"");
  const product=Object.values(COMMODITY_ECONOMICS||{}).map(e=>e&&e.processed).find(p=>p&&p.id===id);
  if(!product){msg("Produk jadi tidak dikenali; penjualan dibatalkan.");return false;}
