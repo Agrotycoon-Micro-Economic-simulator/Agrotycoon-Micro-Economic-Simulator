@@ -1835,3 +1835,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Core regressions now cover raw and finished-goods sale rollback after injected partial lot mutation, COGS failure, FIFO carrying value, raw distribution posting, finished sale unit-economics quantity contracts, and the prior storage/write-off/reconciliation paths.
 - Latest known branch HEAD before this handoff append: `581dbdb66fdc9c34a5242d62148c2940ed98f267`; this document update does not change runtime code.
 - Next technical target after browser workflow: reconcile ledger debits/credits, COGS, revenue, distribution expense, cash-flow deltas, and inventory carrying-value deltas across raw sale, finished sale, production capitalization, and daily spoilage write-off. Verify external side effects beyond serializable `S` state before describing rollback as globally atomic.
+
+
+## Browser/E2E status — 2026-11-11
+
+- In workflow `43062704982`, Playwright/Chromium installation succeeded and `tests/browser_smoke.test.js` passed.
+- `tests/gameplay_e2e.test.js` then timed out after 15 seconds waiting for persisted `day === 2` after the sleep action. The test executes the full daily pipeline (living costs, agriculture, NPC/world simulation, national economy, background market and order generation) before the day increment/save point. The timeout does not establish whether the transition is broken or merely slower than the previous 15-second allowance.
+- Increased only the E2E wait allowance to 60 seconds to measure/allow the complete aggregate daily pipeline under CI. No game timing, simulation cadence, or day-transition logic was changed. Commit: `55fa3e2b2c25e95ab1f5a39f247d086def233e64`.
+- Await the new workflow before declaring gameplay E2E green; if it still times out, inspect `finishDay()` performance and browser console errors rather than extending the timeout again without evidence.
