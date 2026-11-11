@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { test } = require("node:test");
+const test = (_name, run) => run();
 const fs = require("node:fs");
 const vm = require("node:vm");
 
