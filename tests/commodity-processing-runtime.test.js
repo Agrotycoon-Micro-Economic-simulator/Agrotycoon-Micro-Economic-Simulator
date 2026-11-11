@@ -358,7 +358,7 @@ assert.equal(JSON.stringify({
 }), beforeLotAggregateMismatch, "aggregate/lot mismatch must block raw sale before mutation");
 sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, quantity) {
   this.calls.push({ type: "plan", commodityId, quantity });
-  return { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 };
+  return { ok: true, requested: quantity, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 };
 };
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
 assert.equal(rawSaleOk, true);
