@@ -69,11 +69,14 @@ function writeOffExpiredStorageLot(state,result,lot){
  const inventoryCost=Math.max(0,Number(state.landSystem.inventoryCost[commodityId])||0);
  const lotUnitCost=Number.isFinite(Number(lot.unitCost))?Math.max(0,Number(lot.unitCost)):(inventoryQty>0?inventoryCost/inventoryQty:0);
  const lossValue=Math.min(inventoryCost,writeoffQty*lotUnitCost);
+ if(lossValue>0&&typeof recordBusinessCogs==='function'){
+  const posted=recordBusinessCogs('Susut persediaan '+commodityId+' kedaluwarsa',[{account:'Persediaan Bahan Baku Pertanian (susut)',amount:lossValue}]);
+  if(posted!==lossValue)return {ok:false,reason:'finished_writeoff_cogs_post_failed'};
+ }
  state.landSystem.inventory[commodityId]=Math.max(0,inventoryQty-writeoffQty);
  state.landSystem.inventoryCost[commodityId]=Math.max(0,inventoryCost-lossValue);
  lot.quantity=0;lot.writeoffDay=state.day;lot.writeoffReason=result.risk;
- if(lossValue>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan '+commodityId+' kedaluwarsa',[{account:'Persediaan Bahan Baku Pertanian (susut)',amount:lossValue}]);
- else if(typeof ledger==='function')ledger('RUGI','Persediaan '+commodityId+' kedaluwarsa '+writeoffQty,0,{lotId:lot.id,quantity:writeoffQty});
+ if(lossValue<=0&&typeof ledger==='function')ledger('RUGI','Persediaan '+commodityId+' kedaluwarsa '+writeoffQty,0,{lotId:lot.id,quantity:writeoffQty});
  return {ok:true,quantity:writeoffQty,value:lossValue,lotId:lot.id,commodityId,reason:result.risk};
 }
 
@@ -88,11 +91,14 @@ function writeOffExpiredFinishedGoodsLot(state,lot){
  const unitCost=Number(lot.unitCost);
  if(!Number.isFinite(unitCost)||unitCost<0)return {ok:false,reason:'invalid_finished_lot_cost'};
  const value=Math.min(totalCost,qty*unitCost);
+ if(value>0&&typeof recordBusinessCogs==='function'){
+  const posted=recordBusinessCogs('Susut persediaan produk jadi '+id+' kedaluwarsa',[{account:'Persediaan Produk Jadi (susut)',amount:value}]);
+  if(posted!==value)return {ok:false,reason:'finished_writeoff_cogs_post_failed'};
+ }
  state.landSystem.finishedInventory[id]=Math.max(0,totalQty-qty);
  state.landSystem.finishedInventoryCost[id]=Math.max(0,totalCost-value);
  lot.quantity=0;lot.costValue=0;lot.writeoffDay=state.day;lot.writeoffReason=lot.writeoffReason||'expired';
- if(value>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan produk jadi '+id+' kedaluwarsa',[{account:'Persediaan Produk Jadi (susut)',amount:value}]);
- else if(typeof ledger==='function')ledger('RUGI','Produk jadi '+id+' kedaluwarsa '+qty,0,{lotId:lot.id,quantity:qty});
+ if(value<=0&&typeof ledger==='function')ledger('RUGI','Produk jadi '+id+' kedaluwarsa '+qty,0,{lotId:lot.id,quantity:qty});
  return {ok:true,quantity:qty,value,lotId:lot.id,commodityId:id,reason:lot.writeoffReason};
 }
 function tickFinishedGoodsExpiry(state){
