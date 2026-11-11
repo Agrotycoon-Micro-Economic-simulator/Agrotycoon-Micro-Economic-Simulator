@@ -227,7 +227,6 @@ state.landSystem.finishedInventory.sambal_cabai_250g = 40;
 state.landSystem.finishedInventoryCost.sambal_cabai_250g = 105000;
 const saleLedgerBefore = state.ledger.length;
 const saleOk = sandbox.sellFinishedCommodity("sambal_cabai_250g", 2);
-console.log("DEBUG finished sale", JSON.stringify({saleOk,message:sandbox.lastMessage,inventory:state.landSystem.finishedInventory,cost:state.landSystem.finishedInventoryCost,lots:state.landSystem.finishedInventoryLots,reconciliation:sandbox.reconcileInventoryLotBooks(state)}));
 assert.equal(saleOk, true);
 assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 38);
 assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 99750);
