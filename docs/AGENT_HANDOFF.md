@@ -1721,3 +1721,8 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Corrected those assertions by materializing VM arrays in the host realm (or JSON-normalizing the returned consumed structure); no storage runtime behavior, FIFO ordering, expiry rule, HPP, or inventory data was changed.
 - Test correction commit: `98a21a7fb32c33a94c4daa718ef43bd5648a8fda`.
 - The corrected test commit is awaiting a fresh workflow result. Do not infer a pass from the source correction alone.
+
+
+- Follow-up CI run `43058406656`: the 129-test Node test-runner suite passed; all four commodity benchmark guard steps also passed. The standalone sequence then stopped at `tests/commodity-processing-runtime.test.js` with `ReferenceError: test is not defined`, because this directly invoked file declared `test(...)` cases without importing `node:test`.
+- Added `const { test } = require("node:test")` to the standalone runtime regression file. Fix commit: `6dc3ab6e318e9078b09bd096ebd511078f0e3a63`.
+- Await a fresh workflow result for this fix; the previous run did not execute the rest of the standalone sequence or browser/E2E tests.
