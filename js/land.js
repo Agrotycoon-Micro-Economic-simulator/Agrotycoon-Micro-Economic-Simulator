@@ -442,15 +442,15 @@ function reconcileInventoryLotBooks(state){
   const costMatch=lot.costComplete&&Math.abs(aggregateCost-lot.cost)<=1e-6;
   return {status:!quantityMatch?"quantity_mismatch":!lot.costComplete?"lot_cost_unverified":!costMatch?"cost_mismatch":"ok",aggregateQuantity:aggregateQty,aggregateCost,lotQuantity:lot.quantity,lotCost:lot.cost,costComplete:lot.costComplete};
  };
- const raw=[],rawLots=Array.isArray(ls.storageLots)?ls.storageLots:[],rawIds=new Set([...Object.keys(ls.inventory||{}),...rawLots.map(l=>String(l&&l.commodityId||"")).filter(Boolean)]);
+ const raw=[],rawLots=Array.isArray(ls.storageLots)?ls.storageLots:[],rawBookActive=rawLots.length>0,rawIds=new Set([...Object.keys(ls.inventory||{}),...rawLots.map(l=>String(l&&l.commodityId||"")).filter(Boolean)]);
  rawIds.forEach(id=>{
   const q=Math.max(0,Number(ls.inventory&&ls.inventory[id])||0),cost=Math.max(0,Number(ls.inventoryCost&&ls.inventoryCost[id])||0),lots=rawLots.filter(l=>String(l&&l.commodityId||"")===id);
-  raw.push({commodityId:id,...(lots.length?audit(q,cost,lots):{status:q>epsilon?"lot_book_missing":"ok",aggregateQuantity:q,aggregateCost:cost,lotQuantity:0,lotCost:0,costComplete:true})});
+  raw.push({commodityId:id,...(lots.length?audit(q,cost,lots):{status:rawBookActive&&q>epsilon?"lot_book_missing":q>epsilon?"lot_book_missing":"ok",aggregateQuantity:q,aggregateCost:cost,lotQuantity:0,lotCost:0,costComplete:true})});
  });
- const finished=[],finishedLots=ls.finishedInventoryLots&&typeof ls.finishedInventoryLots==="object"?ls.finishedInventoryLots:{},finishedIds=new Set([...Object.keys(ls.finishedInventory||{}),...Object.keys(finishedLots)]);
+ const finished=[],finishedLots=ls.finishedInventoryLots&&typeof ls.finishedInventoryLots==="object"?ls.finishedInventoryLots:{},finishedBookActive=Object.values(finishedLots).some(v=>Array.isArray(v)&&v.length>0),finishedIds=new Set([...Object.keys(ls.finishedInventory||{}),...Object.keys(finishedLots)]);
  finishedIds.forEach(id=>{
   const q=Math.max(0,Number(ls.finishedInventory&&ls.finishedInventory[id])||0),cost=Math.max(0,Number(ls.finishedInventoryCost&&ls.finishedInventoryCost[id])||0),lots=Array.isArray(finishedLots[id])?finishedLots[id]:[];
-  finished.push({commodityId:id,...(lots.length?audit(q,cost,lots):{status:q>epsilon?"lot_book_missing":"ok",aggregateQuantity:q,aggregateCost:cost,lotQuantity:0,lotCost:0,costComplete:true})});
+  finished.push({commodityId:id,...(lots.length?audit(q,cost,lots):{status:finishedBookActive&&q>epsilon?"lot_book_missing":q>epsilon?"lot_book_missing":"ok",aggregateQuantity:q,aggregateCost:cost,lotQuantity:0,lotCost:0,costComplete:true})});
  });
  const all=[...raw,...finished];
  return {ok:all.every(x=>x.status==="ok"||x.status==="lot_book_missing"),raw,finished,errors:all.filter(x=>x.status!=="ok"&&x.status!=="lot_book_missing")};
