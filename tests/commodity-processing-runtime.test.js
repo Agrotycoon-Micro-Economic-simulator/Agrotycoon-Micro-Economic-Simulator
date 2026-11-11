@@ -386,6 +386,33 @@ assert.equal(state.dayLog.cogs, 5500);
 assert.equal(state.dayLog.gross, 20000);
 assert.equal(state.ledger.length, 2);
 
+// Finished-goods FIFO regression: aggregate cost must follow the actual lot removed.
+state.gold = 1000000;
+state.landSystem.finishedInventory = { jagung_bakar: 5 };
+state.landSystem.finishedInventoryCost = { jagung_bakar: 1100 };
+state.landSystem.finishedInventoryQuantityMeta = {
+  jagung_bakar: {
+    quantityUnit: "unconverted_simulation_market_units",
+    quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
+    quantityScaleStatus: "unconverted_legacy_simulation_index"
+  }
+};
+state.landSystem.finishedInventoryLots = {
+  jagung_bakar: [
+    { id: "fg-cheap", commodityId: "jagung_bakar", quantity: 2, unitCost: 100, costValue: 200 },
+    { id: "fg-expensive", commodityId: "jagung_bakar", quantity: 3, unitCost: 300, costValue: 900 }
+  ]
+};
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 2), true);
+assert.equal(state.landSystem.finishedInventory.jagung_bakar, 3);
+assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar, 900);
+assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar.length, 1);
+assert.equal(state.landSystem.finishedInventoryLots.jagung_bakar[0].id, "fg-expensive");
+assert.equal(state.dayLog.cogs, 200);
+assert.equal(state.dayLog.commoditySales[0].cogs, 200);
+
 const jagungRouteBefore = JSON.stringify({
   gold: state.gold,
   qty: state.landSystem.finishedInventory.jagung_bakar,
