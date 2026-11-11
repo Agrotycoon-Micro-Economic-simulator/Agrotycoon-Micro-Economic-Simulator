@@ -1811,3 +1811,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Run `43062265434` passed jagung production and finished-sale inventory/HPP assertions. It then failed an absolute ledger count: production correctly posted two cash-out ledger entries (conversion and distribution), followed by two finished-sale entries (HPP and revenue), so the cumulative count was 4 rather than 2. The regression now captures the ledger baseline immediately before finished sale and asserts a +2 delta. Commit: `7109419d9917e9b2ae123d02d5a17a42cf8ecef9`.
+
+
+- Run `43062394104` passed the jagung production and sale ledger-delta assertions, then reached a final source-contract test that referenced `path.join()` without importing Node's `path` module. Added `const path = require("node:path")`. Commit: `e1cb77059b92024fc41ed74ddb5126f8d8427bb8`.
