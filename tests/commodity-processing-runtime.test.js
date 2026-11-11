@@ -103,6 +103,7 @@ const sandbox = {
 vm.runInNewContext(landSource, sandbox, { filename: "js/land.js" });
 // Override the real logistics prompt after loading land.js, which declares its own function.
 sandbox.logisticsPrompt = () => ({ total: 100 });
+sandbox.showCommodityEconomics = () => {};
 
 test("inventory lot reconciliation detects aggregate and lot-book divergence",()=>{
   state.landSystem.storageLots=[
