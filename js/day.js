@@ -77,6 +77,45 @@ function writeOffExpiredStorageLot(state,result,lot){
  return {ok:true,quantity:writeoffQty,value:lossValue,lotId:lot.id,commodityId,reason:result.risk};
 }
 
+function writeOffExpiredFinishedGoodsLot(state,lot){
+ if(!state||!state.landSystem||!lot)return {ok:false,reason:'invalid_finished_writeoff_context'};
+ if(lot.writeoffDay)return {ok:false,reason:'already_written_off'};
+ const id=String(lot.commodityId||''),qty=Math.max(0,Number(lot.quantity)||0);
+ if(qty<=0){lot.writeoffDay=state.day;lot.writeoffReason=lot.writeoffReason||'expired';return {ok:true,quantity:0,value:0,lotId:lot.id,commodityId:id,reason:lot.writeoffReason};}
+ const totalQty=Math.max(0,Number(state.landSystem.finishedInventory[id])||0);
+ const totalCost=Math.max(0,Number(state.landSystem.finishedInventoryCost[id])||0);
+ if(qty>totalQty+1e-9)return {ok:false,reason:'finished_lot_aggregate_mismatch'};
+ const unitCost=Number(lot.unitCost);
+ if(!Number.isFinite(unitCost)||unitCost<0)return {ok:false,reason:'invalid_finished_lot_cost'};
+ const value=Math.min(totalCost,qty*unitCost);
+ state.landSystem.finishedInventory[id]=Math.max(0,totalQty-qty);
+ state.landSystem.finishedInventoryCost[id]=Math.max(0,totalCost-value);
+ lot.quantity=0;lot.costValue=0;lot.writeoffDay=state.day;lot.writeoffReason=lot.writeoffReason||'expired';
+ if(value>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan produk jadi '+id+' kedaluwarsa',[{account:'Persediaan Produk Jadi (susut)',amount:value}]);
+ else if(typeof ledger==='function')ledger('RUGI','Produk jadi '+id+' kedaluwarsa '+qty,0,{lotId:lot.id,quantity:qty});
+ return {ok:true,quantity:qty,value,lotId:lot.id,commodityId:id,reason:lot.writeoffReason};
+}
+function tickFinishedGoodsExpiry(state){
+ const ls=state&&state.landSystem;
+ if(!ls||!ls.finishedInventoryLots||typeof ls.finishedInventoryLots!=='object')return [];
+ const out=[];
+ Object.keys(ls.finishedInventoryLots).forEach(id=>{
+  const lots=Array.isArray(ls.finishedInventoryLots[id])?ls.finishedInventoryLots[id]:[];
+  lots.forEach(lot=>{
+   if(Math.max(0,Number(lot.quantity)||0)<=0||lot.writeoffDay)return;
+   const age=Math.max(0,Number(state.day||0)-Number(lot.createdDay||state.day||0));
+   const shelf=Number(lot.shelfLifeDays);
+   const explicitlyExpired=lot.expired===true||lot.spoiled===true;
+   if(explicitlyExpired||(Number.isFinite(shelf)&&shelf>=0&&age>=shelf)){
+    lot.writeoffReason=lot.spoiled===true?'spoiled':'expired';
+    const result=writeOffExpiredFinishedGoodsLot(state,lot);
+    if(result.ok)out.push({...result,ageDays:age,shelfLifeDays:Number.isFinite(shelf)?shelf:null});
+   }
+  });
+  ls.finishedInventoryLots[id]=lots.filter(l=>Math.max(0,Number(l.quantity)||0)>1e-9);
+ });
+ return out;
+}
 function finishDay(){
  console.log('finishDay dipanggil');
  const ov=el('progress');
@@ -188,6 +227,7 @@ function finishDay(){
  const mOld=monthOf(S.day);
  S.day++;
  if(typeof AgroCommodityStorage!=='undefined'&&S.quarterUsed>0){const openedAge=Math.max(0,S.day-(Number(S.quarterOpenedDay)||S.day));const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const opened=AgroCommodityStorage.assessLot({commodityId:'kelapa',form:'opened',opened:true,ageDays:openedAge,temperatureC:S.warung&&S.warung.fridge?4:env.temperatureC,relativeHumidityPct:env.relativeHumidityPct,storageType:S.warung&&S.warung.fridge?'refrigerated':(env.storageType||'ambient')});if(opened.expired){const loss=Math.max(0,Number(S.quarterCost)||0)*(Math.max(0,4-(Number(S.quarterUsed)||0))/4);if(loss>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut kelapa terbuka rusak',[{account:'Persediaan Kelapa Dalam Proses (susut)',amount:loss}]);else ledger('RUGI','Kelapa terbuka rusak',0);L.lossOpenedCoconut=loss;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}}
+ const finishedWriteoffs=tickFinishedGoodsExpiry(S); if(finishedWriteoffs.length){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push(...finishedWriteoffs.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,value:x.value,reason:x.reason,finishedGoods:true,ageDays:x.ageDays,shelfLifeDays:x.shelfLifeDays})));}
  if(typeof AgroCommodityStorage!=='undefined'&&S.landSystem){const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const storageTick=AgroCommodityStorage.tickLots(S,S.day,env);if(storageTick&&storageTick.ok){const expired=storageTick.results.filter(x=>!x.skipped&&x.expired);expired.forEach(result=>{const lot=S.landSystem.storageLots.find(x=>x.id===result.lotId);if(!lot||lot.writeoffDay)return;const writeoff=writeOffExpiredStorageLot(S,result,lot);if(writeoff.ok){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push({day:S.day,lotId:writeoff.lotId,commodityId:writeoff.commodityId,quantity:writeoff.quantity,value:writeoff.value,reason:writeoff.reason});}});S.landSystem.storageLots=S.landSystem.storageLots.filter(x=>Number(x.quantity)>1e-9);const alerts=storageTick.results.filter(x=>!x.skipped&&['high','critical','expired','spoiled'].includes(x.risk));if(alerts.length){if(!S.dayLog.storageAlerts)S.dayLog.storageAlerts=[];S.dayLog.storageAlerts.push(...alerts.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,risk:x.risk,quality:x.quality})));}}}
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
