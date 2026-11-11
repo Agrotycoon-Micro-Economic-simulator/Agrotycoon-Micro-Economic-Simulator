@@ -1804,3 +1804,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43061945063` passed the invalid-price guard after all fallback anchors were disabled, then reached the jagung production regression and found its lot-plan stub valued 5 units at Rp2,500 while aggregate inventory carrying value was Rp5,000. The test expected all raw inventory cost to transfer into finished goods (Rp55,000 including Rp50,000 conversion). Set the jagung fixture's lot unit cost to Rp1,000 per simulation unit (Rp5,000 total) so lot HPP and aggregate inventory cost agree. Commit: `1fe53d1869c6647b1fcd5120214c8839f1f06261`.
 - No commodity price or recipe configuration was changed; this aligns the test lot valuation fixture with its stated aggregate HPP.
+
+
+- Run `43062105511` reached the jagung runtime fixture but processing was blocked by the strict reconciliation guard: the fixture reset aggregate finished inventory to empty while leaving the previous cabai finished-goods lot book active. Reset the finished-goods lot book and quantity metadata when switching the test state to jagung. Commit: `d06ed1e8ba60d808a8f697175a4d398836e731e2`.
+- No reconciliation rule was weakened; the test now resets all related aggregate and lot-book state consistently.
