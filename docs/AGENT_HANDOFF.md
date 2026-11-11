@@ -1740,3 +1740,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Diagnostic run `43059064145` showed the previous fixture correction was incomplete: processing aborted with `Rute Tier komoditas belum lengkap/valid` because the cabai processed-product fixture also lacked `inputTier`, `outputTier`, and `routeId`. Added Tier 1 → Tier 4 and an explicit test route ID to the fixture, and removed temporary diagnostic output. Commit: `a0bf15331095cbd78cb35874a507142cf453c665`.
 - This is fixture completion only; production route rules were not relaxed. Await CI to verify the corrected fixture and transaction rollback regressions.
+
+
+- Diagnostic run `43059249910` confirmed Tier-route fixture fields were now valid and lot preflight was reached, but the test still aborted at logistics validation. Root cause: `js/land.js` declares its own `logisticsPrompt()`, overriding the test stub passed into the VM sandbox before source evaluation. The test now replaces `sandbox.logisticsPrompt` after `vm.runInNewContext()`, ensuring the intended deterministic logistics fixture is active. Temporary debug output was removed. Commit: `1fdeeb408e2fcbf0dba29d8f15988dd442d6e8c4`.
+- Await a fresh workflow result. This corrects the test harness only; production logistics calculations remain unchanged.
