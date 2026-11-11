@@ -94,6 +94,34 @@ const sandbox = {
 };
 
 vm.runInNewContext(landSource, sandbox, { filename: "js/land.js" });
+
+test("inventory lot reconciliation detects aggregate and lot-book divergence",()=>{
+  state.landSystem.storageLots=[
+    {id:"raw-1",commodityId:"jagung",quantity:4,unitCost:500},
+    {id:"raw-2",commodityId:"jagung",quantity:1,unitCost:600}
+  ];
+  state.landSystem.inventory={jagung:5};
+  state.landSystem.inventoryCost={jagung:2600};
+  state.landSystem.finishedInventory={jagung_bakar:5};
+  state.landSystem.finishedInventoryCost={jagung_bakar:1100};
+  state.landSystem.finishedInventoryLots={
+    jagung_bakar:[
+      {id:"fg-1",commodityId:"jagung_bakar",quantity:2,unitCost:100},
+      {id:"fg-2",commodityId:"jagung_bakar",quantity:3,unitCost:300}
+    ]
+  };
+  const ok=sandbox.reconcileInventoryLotBooks(state);
+  assert.equal(ok.ok,true);
+  assert.equal(ok.raw[0].status,"ok");
+  assert.equal(ok.finished[0].status,"ok");
+
+  state.landSystem.finishedInventoryCost.jagung_bakar=1000;
+  const mismatch=sandbox.reconcileInventoryLotBooks(state);
+  assert.equal(mismatch.ok,false);
+  assert.equal(mismatch.finished[0].status,"cost_mismatch");
+  state.landSystem.finishedInventoryCost.jagung_bakar=1100;
+});
+
 assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
