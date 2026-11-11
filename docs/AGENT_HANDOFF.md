@@ -1682,3 +1682,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
   - 269e9a80607bc4de6b74fd1456230c0e3e1ca430 — reconciliation fixture isolation
 - Tests/CI for these newest commits have not been executed through an available runner in this session; do not treat them as passing until actual output is obtained.
 - Next implementation target: wire reconciliation into transaction/day-end integrity checks without breaking legacy aggregate-only saves, then audit COGS/ledger consistency across raw sale, processing, finished-goods sale, and write-off paths.
+
+### 2026-11-11 continuation — transaction/day-end lot integrity boundary
+- js/land.js: commodity raw sale, commodity processing, and finished-goods sale now call inventoryLotBooksHealthy() before transaction work. Active lot books therefore become a hard integrity boundary; detected quantity/cost divergence blocks the transaction instead of allowing HPP/COGS to proceed from inconsistent state.
+- js/land.js: reconcileInventoryLotBooks() now distinguishes legacy aggregate-only saves from active lot books. lot_book_missing is tolerated only when the corresponding lot book is not active; a partial active lot book is an integrity error.
+- js/day.js: end-of-day reconciliation is recorded in dayLog.inventoryReconciliation. A failed reconciliation also emits an INTEGRITAS ledger event with the detected errors. No automatic repair is performed.
+- tests/commodity-processing-runtime.test.js: added a regression proving a raw commodity transaction is blocked when aggregate inventory and active storage lots disagree, with no inventory/ledger mutation.
+- Latest continuation commits: 41d3feffc2f6ca8cf5164bd441db4e5846a5c538, 1e1341ace2898bddb390e69fe201588f7f4cb117, 47f57933a686e7b9192c7a5d27117053ba0c13e8, 64ab06344a17de34accfb3a9f77ad94773944192, 8ce2256ff2c13b7cd2462ee234eeb53d437a9a45.
+- Test execution remains unverified: no workflow run is available for the latest commits in GitHub. Do not report these regressions as passing until an actual runner output exists.
+- Next audit target: eliminate the remaining mutation-after-COGS failure window in raw and finished sales by ensuring lot mutation cannot fail after COGS posting; then reconcile ledger totals against dayLog COGS/revenue and inventory carrying-value deltas.
