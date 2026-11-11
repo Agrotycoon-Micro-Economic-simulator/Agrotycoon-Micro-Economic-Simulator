@@ -1790,3 +1790,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Raw-sale diagnostics after the undefined-variable fix showed the next guard was unit-economics completeness. Inspection found the raw-sale own-input omitted mandatory `marketOpportunityPricePerUnit` and `marketOpportunityPriceEvidence` fields, unlike the processing and finished-sale scenarios. Added the configured B2B/farmer reference price with game-parameter provenance. Runtime fix commit: `54c5ac2dfa566ac2698354cccc6a1c68f76f2bed`; temporary debug output removed in `2232aefa18500d3b25de2a82ad4eac52f2b5b51f`.
 - This keeps the unit-economics requirement intact and explicitly values the raw commodity's external-sale opportunity cost.
+
+
+- Raw-sale CI after adding opportunity-price evidence progressed past unit economics but failed with `NaN` remaining inventory quantity. The test's replacement `planLotConsumption()` fixture supplied `plannedQuantity` but omitted the actual contract field `requested` used by `sellCommodity()`. Added `requested: quantity` to that fixture. Commit: `0803b6817e038fbff8b82b6c4599eb2e4e6b3ad6`.
