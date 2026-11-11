@@ -131,6 +131,21 @@ delete state.landSystem.storageLots;
 state.dayLog={gross:0,expense:0,businessPurchases:0,cashOut:0,shopping:0,cogs:0,cogsByAccount:{}};
 state.ledger=[];
 
+test("commodity transactions are blocked when lot-book reconciliation fails",()=>{
+  state.landSystem.inventory={cabai_merah:5};
+  state.landSystem.inventoryCost={cabai_merah:2500};
+  state.landSystem.storageLots=[{id:"broken",commodityId:"cabai_merah",quantity:4,unitCost:500}];
+  state.dayLog.inventoryReconciliationErrors=[];
+  const before=JSON.stringify({inventory:state.landSystem.inventory,inventoryCost:state.landSystem.inventoryCost,ledger:state.ledger.length});
+  assert.equal(sandbox.sellCommodity("cabai_merah","retail"),false);
+  assert.equal(JSON.stringify({inventory:state.landSystem.inventory,inventoryCost:state.landSystem.inventoryCost,ledger:state.ledger.length}),before);
+  assert.equal(state.dayLog.inventoryReconciliationErrors.length,1);
+  delete state.landSystem.storageLots;
+  state.landSystem.inventory={cabai_merah:10};
+  state.landSystem.inventoryCost={cabai_merah:5000};
+  state.dayLog.inventoryReconciliationErrors=[];
+});
+
 assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
