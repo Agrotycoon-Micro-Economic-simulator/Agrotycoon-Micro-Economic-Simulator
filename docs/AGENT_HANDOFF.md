@@ -1744,3 +1744,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Diagnostic run `43059249910` confirmed Tier-route fixture fields were now valid and lot preflight was reached, but the test still aborted at logistics validation. Root cause: `js/land.js` declares its own `logisticsPrompt()`, overriding the test stub passed into the VM sandbox before source evaluation. The test now replaces `sandbox.logisticsPrompt` after `vm.runInNewContext()`, ensuring the intended deterministic logistics fixture is active. Temporary debug output was removed. Commit: `1fdeeb408e2fcbf0dba29d8f15988dd442d6e8c4`.
 - Await a fresh workflow result. This corrects the test harness only; production logistics calculations remain unchanged.
+
+
+- Run `43059368174` progressed through production and then exposed another test-harness override: `processCommodity()` calls the real `showCommodityEconomics()` after committing, but the function declaration in `js/land.js` replaced the earlier VM stub and attempted to read absent `DATA`. The test now stubs `sandbox.showCommodityEconomics` after VM source evaluation, alongside the logistics stub. Commit: `442ed8033c4f6bd70ef15a793ee2fca2941a71c9`.
+- This prevents UI rendering from leaking into the headless transaction regression. No production UI or economic logic was changed.
