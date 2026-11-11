@@ -1808,3 +1808,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43062105511` reached the jagung runtime fixture but processing was blocked by the strict reconciliation guard: the fixture reset aggregate finished inventory to empty while leaving the previous cabai finished-goods lot book active. Reset the finished-goods lot book and quantity metadata when switching the test state to jagung. Commit: `d06ed1e8ba60d808a8f697175a4d398836e731e2`.
 - No reconciliation rule was weakened; the test now resets all related aggregate and lot-book state consistently.
+
+
+- Run `43062265434` passed jagung production and finished-sale inventory/HPP assertions. It then failed an absolute ledger count: production correctly posted two cash-out ledger entries (conversion and distribution), followed by two finished-sale entries (HPP and revenue), so the cumulative count was 4 rather than 2. The regression now captures the ledger baseline immediately before finished sale and asserts a +2 delta. Commit: `7109419d9917e9b2ae123d02d5a17a42cf8ecef9`.
