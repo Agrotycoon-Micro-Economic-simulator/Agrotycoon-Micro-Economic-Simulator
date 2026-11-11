@@ -1664,3 +1664,21 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: 1d53c1f2ba90bdc0204d2d964a6cd6d0dccbd450, 914e82ca4516cf1f52061e4c64cc7fcd254cba3c, e05a013d17e8be6b1dac10f4e6e3c5f0ad793379.
 - Current recipes without verified finished-product shelf-life remain unclassified for automatic expiry; this is intentional and requires further research rather than inventing a number.
 - Tests were updated but not executed in this session; no CI pass/fail is claimed.
+
+### 2026-11-11 — Finished-goods lot provenance + accounting-atomic write-off + lot reconciliation
+- js/land.js: fixed a runtime gap where addFinishedGoodsLot() existed and FIFO sale logic consumed finished-goods lots, but processCommodity() did not actually create a finished-goods lot after successful production. Successful processing now records one finished-goods lot with the produced quantity and capitalized finished cost after input/cash mutations complete.
+- tests/commodity-processing-runtime.test.js: production regression now asserts finished-goods lot creation, quantity, and unit cost; added reconcileInventoryLotBooks() coverage for raw storage lots and finished-goods lots, including deliberate cost mismatch detection.
+- js/day.js: raw and finished-goods expiry write-off now posts the corresponding COGS/loss entry before mutating inventory/lot state. If recordBusinessCogs() does not post the exact expected loss value, the write-off aborts without changing the lot or aggregate inventory.
+- tests/day-storage-writeoff.test.js: cleaned the finished-write-off helper path and added regression proving a failed finished-goods loss posting leaves quantity, carrying value, and lot metadata unchanged.
+- js/land.js: added reconcileInventoryLotBooks(state), a diagnostic invariant checker for aggregate raw inventory vs storageLots and aggregate finished inventory vs finishedInventoryLots. It reports quantity_mismatch, cost_mismatch, lot_cost_unverified, and lot_book_missing rather than silently repairing state. lot_book_missing remains a compatibility status for legacy aggregate-only saves.
+- Current branch remains feat/production-tier-taxonomy; no main, peta.html, or js/map_engine.js changes.
+- Latest implementation commits in this continuation:
+  - ca13751dd67128dc8c3cafb4a920a803d1687d18 — finished-goods production lot creation
+  - 39f02f2af691ff2e63c438db30c9f36dd975b2b4 — production lot regression
+  - 5403ebdb0ab9f84de0af039f4597b12de23dc55b — accounting-atomic storage write-offs
+  - 6f13c346693a72fe086da37fd49277e3e92af11d — write-off atomicity regression
+  - 671a1311fd894cf02634d947ada3cb7112ff10e4 — inventory/lot reconciliation diagnostics
+  - 10095f3687a357628020048bd0a7b3594816ac48 — reconciliation regression
+  - 269e9a80607bc4de6b74fd1456230c0e3e1ca430 — reconciliation fixture isolation
+- Tests/CI for these newest commits have not been executed through an available runner in this session; do not treat them as passing until actual output is obtained.
+- Next implementation target: wire reconciliation into transaction/day-end integrity checks without breaking legacy aggregate-only saves, then audit COGS/ledger consistency across raw sale, processing, finished-goods sale, and write-off paths.
