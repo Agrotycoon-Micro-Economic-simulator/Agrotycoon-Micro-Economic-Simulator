@@ -25,6 +25,7 @@ function makeSandbox(receiptResult) {
     showCommodityEconomics: () => {}, render: () => {}
   };
   vm.runInNewContext(source, sandbox, { filename: "js/land.js" });
+  sandbox.showCommodityEconomics = () => {};
   return { sandbox, state };
 }
 
