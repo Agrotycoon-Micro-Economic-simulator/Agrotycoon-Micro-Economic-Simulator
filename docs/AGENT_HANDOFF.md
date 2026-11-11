@@ -1782,3 +1782,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - Run `43060827536` exposed the remaining raw-sale fixture omission: `getCommodityPrice()` uses `COMMODITY_BY_ID[id].basePrice` as the market anchor, but the cabai fixture omitted `basePrice`, producing `NaN` and correctly blocking the sale. Added a test-only base price of Rp25,000 and removed temporary debug output. Commit: `d66c4cb20b21ab23f7e79ee95314788fbc04e25f`.
+
+
+- Run `43060969229` exposed a production defect on the raw sale FIFO path: `sellCommodity()` computed `remainingQuantity` using an undeclared `stock` identifier (`qty - lotPlan.requested + stock - qty`), throwing `ReferenceError: stock is not defined` whenever a lot plan existed. Replaced it with the correct `Math.max(0, qty - lotPlan.requested)` calculation. Commit: `764a9b5fe2e75ddbbd96abd289617ee9af26ea68`.
+- This is a runtime bug fix; it does not alter HPP, lot selection, sale quantity, or any price parameter.
