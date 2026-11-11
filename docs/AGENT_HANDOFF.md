@@ -1641,3 +1641,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: 8592c92e16d1c8b2870d74140a71374e215d6656; 9ce392101e180d196f773bdaedb48c7b5b1bf492; f270cc23a8c58483e2b776600136c66805617083; 68e64c25944584c06f36262dd2d626a31f331273; 1965633d51b985474793b9eadcca7cab081d71f1.
 - The latest commit has no workflow run visible yet. Tests were not executed locally in this session; no pass/green claim is made.
 - No quantity rescaling, physical conversion activation, price formula change, or map change. main, peta.html, and js/map_engine.js remain untouched.
+
+## 2026-11-11 — finished-goods FIFO HPP provenance
+
+- js/land.js: finished-goods production now records a separate finishedInventoryLots lot ledger with quantity, unit cost, cost value, and the same legacy quantity contract used by the aggregate finished inventory.
+- sellFinishedCommodity() now uses FIFO lot valuation when a finished-goods lot book exists. The aggregate finishedInventoryCost is reduced by the actual cost of the lots consumed, rather than weighted-average HPP. Existing saves without a finished-goods lot book retain the weighted-average compatibility fallback.
+- Finished-goods lot consumption is preflighted before the COGS posting and aggregate inventory mutation; the final lot mutation is verified against the planned lot references.
+- tests/commodity-processing-runtime.test.js now verifies a two-lot case (2 units at Rp100 + 3 units at Rp300): selling the first 2 units posts Rp200 HPP and leaves Rp900 carrying cost on the remaining 3 units.
+- Commits: implementation 922716cbccaf45287a96cd8593bcd422bb3a19d8; regression 444e9f40a8a3a7a0e5f76f015fc00a56e487572c.
+- No physical conversion, quantity rescaling, price rescaling, or map change was introduced. main, peta.html, and js/map_engine.js remain untouched.
+- Tests were updated but not executed in this session; no CI pass/fail is claimed.
