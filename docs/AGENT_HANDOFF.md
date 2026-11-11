@@ -1817,3 +1817,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - After the runtime suite advanced, workflow `43062497211` failed in `tests/commodity-harvest-quantity.test.js`: the harvest test's pre-VM `showCommodityEconomics` stub was replaced by the real function declaration from `land.js`, which references absent UI global `DATA`. Added a post-`vm.runInNewContext` UI stub, matching the headless runtime test pattern. Commit: `4461c8c61975c3c341cd379637b9dc8cecec40fa`.
+
+
+- Workflow `43062601562` passed the commodity harvest quantity tests and reached `tests/day-storage-writeoff.test.js`. Its finished-goods write-off test destructured `writeOff` instead of the helper's exported `finishedWriteOff`, causing `ReferenceError: finishedWriteOff is not defined`. Corrected the test destructuring. Commit: `89c573671658c1764077bc5b4cbe98efcc4a7971`.
