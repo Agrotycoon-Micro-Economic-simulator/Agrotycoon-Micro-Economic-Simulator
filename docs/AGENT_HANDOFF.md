@@ -1748,3 +1748,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43059368174` progressed through production and then exposed another test-harness override: `processCommodity()` calls the real `showCommodityEconomics()` after committing, but the function declaration in `js/land.js` replaced the earlier VM stub and attempted to read absent `DATA`. The test now stubs `sandbox.showCommodityEconomics` after VM source evaluation, alongside the logistics stub. Commit: `442ed8033c4f6bd70ef15a793ee2fca2941a71c9`.
 - This prevents UI rendering from leaking into the headless transaction regression. No production UI or economic logic was changed.
+
+
+- Run `43059463540` reached the full processing path and then exposed stale expected quantities in the cabai runtime fixture: `inputKg=0.25`, raw stock 10, and default `outputQty=1` imply 40 production batches/packs, not 10. The existing finished carrying value Rp105,000 already reflected 40 × Rp2,500 conversion cost plus Rp5,000 raw HPP. Updated expected finished quantity to 40 and FIFO sale of 2 packs to HPP Rp5,250, remaining quantity 38 and carrying value Rp99,750. Commit: `2523ade671c63ae61de28dd1e295e66f003168e2`.
+- This aligns assertions with the existing recipe arithmetic; no game recipe, price, quantity conversion, or HPP formula was modified.
