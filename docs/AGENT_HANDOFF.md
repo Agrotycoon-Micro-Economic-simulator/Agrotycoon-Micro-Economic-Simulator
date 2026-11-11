@@ -1779,3 +1779,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43060548437` passed finished sale and ledger posting assertions, then failed the processing-receipt failure injection. The test attempted to overwrite `transformation.addInventoryCost` directly, but the imported transformation API is immutable/frozen; the override silently did not replace the runtime method, so processing succeeded and mutated state. The test now swaps `sandbox.AgroCommodityTransformation` for a shallow API copy with a failing `addInventoryCost`, then restores the original API. Commit: `930fbc44c9084a7ecd8df5e1770624e0f4b3dfdc`.
 - No production code change was made for this test-harness correction.
+
+
+- Run `43060827536` exposed the remaining raw-sale fixture omission: `getCommodityPrice()` uses `COMMODITY_BY_ID[id].basePrice` as the market anchor, but the cabai fixture omitted `basePrice`, producing `NaN` and correctly blocking the sale. Added a test-only base price of Rp25,000 and removed temporary debug output. Commit: `d66c4cb20b21ab23f7e79ee95314788fbc04e25f`.
