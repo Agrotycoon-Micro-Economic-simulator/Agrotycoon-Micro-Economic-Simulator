@@ -1736,3 +1736,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Run `43058772046` confirmed the synchronous wrapper resolved the test execution ordering issue but exposed a separate pre-existing fixture defect: the cabai processed-product fixture omitted `processed.id`, while production code correctly uses that identifier to index finished inventory. The observed failure was raw inventory remaining at 10 because production exited before committing the expected finished-goods record.
 - Added the explicit fixture ID `sambal_cabai_250g`; no production runtime behavior was changed. Fix commit: `96a217e8fcdc7208ead799013754aa635c60d1f9`.
 - Await the next workflow result to validate the complete runtime regression and downstream standalone suites.
+
+
+- Diagnostic run `43059064145` showed the previous fixture correction was incomplete: processing aborted with `Rute Tier komoditas belum lengkap/valid` because the cabai processed-product fixture also lacked `inputTier`, `outputTier`, and `routeId`. Added Tier 1 → Tier 4 and an explicit test route ID to the fixture, and removed temporary diagnostic output. Commit: `a0bf15331095cbd78cb35874a507142cf453c665`.
+- This is fixture completion only; production route rules were not relaxed. Await CI to verify the corrected fixture and transaction rollback regressions.
