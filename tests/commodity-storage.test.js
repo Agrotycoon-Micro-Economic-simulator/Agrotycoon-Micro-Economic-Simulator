@@ -218,6 +218,19 @@ test('storage receipts and FIFO consumption remain on legacy index until convers
  assert.equal(state.landSystem.storageLots[0].quantity,5);
 });
 
+test('consumeLots also preserves atomicity when all eligible stock is spoiled',()=>{
+ const state={day:10,landSystem:{inventory:{tomat:2},inventoryCost:{tomat:400},storageLots:[
+  {id:'moldy',commodityId:'tomat',quantity:2,unitCost:200,receivedDay:10,ageDays:0,ageKnown:true,form:'whole_fresh',storageType:'ambient',temperatureC:30,relativeHumidityPct:85,moldObserved:true,quantityUnit:'unconverted_simulation_market_units',quantityCalibrationStatus:'legacy_index_to_physical_unit_conversion_pending',quantityScaleStatus:'unconverted_legacy_simulation_index'}
+ ]}};
+ const before=JSON.stringify(state.landSystem.storageLots);
+ const result=storage.consumeLots(state,'tomat',1);
+ assert.equal(result.ok,false);
+ assert.equal(result.reason,'lot_quantity_unavailable_due_to_spoilage');
+ assert.equal(JSON.stringify(state.landSystem.storageLots),before);
+ assert.equal(state.landSystem.inventory.tomat,2);
+ assert.equal(state.landSystem.inventoryCost.tomat,400);
+});
+
 test('legacy storage lots receive only the explicit legacy quantity contract during migration',()=>{
  const state={day:10,landSystem:{inventory:{},inventoryCost:{},storageLots:[{id:'old-lot',commodityId:'padi',quantity:8,receivedDay:9}]}};
  const book=storage.ensureLotBook(state);
