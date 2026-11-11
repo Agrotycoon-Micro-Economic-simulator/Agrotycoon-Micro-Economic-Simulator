@@ -383,7 +383,6 @@ function processCommodity(id){
  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
  S.landSystem.finishedInventory[p.id]=received.quantity;
  S.landSystem.finishedInventoryCost[p.id]=received.costValue;
- if(!addFinishedGoodsLot(p.id,outputQty,finishedCost)){msg("Lot produk jadi gagal dicatat; pengolahan dibatalkan.");return;}
  S.landSystem.finishedInventoryQuantityMeta[p.id]={
    quantityBasis:"legacy_transformation_output",
    declaredRecipeUnit:p.outputUnit||"unspecified",
