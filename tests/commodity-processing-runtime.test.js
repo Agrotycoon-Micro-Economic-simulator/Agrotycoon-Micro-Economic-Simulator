@@ -45,7 +45,7 @@ const sandbox = {
     calls: [],
     planLotConsumption: function(_state, commodityId, quantity) {
       this.calls.push({ type: "plan", commodityId, quantity });
-      return this.planAllowed ? { ok: true, plannedQuantity: quantity, available: quantity } : { ok: false, reason: "lot_quantity_shortfall" };
+      return this.planAllowed ? { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 } : { ok: false, reason: "lot_quantity_shortfall" };
     },
     consumeLots: function(_state, commodityId, quantity) {
       this.calls.push({ type: "consume", commodityId, quantity });
@@ -269,7 +269,7 @@ assert.equal(JSON.stringify({
 sandbox.AgroCommodityStorage.planAllowed = true;
 sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, quantity) {
   this.calls.push({ type: "plan", commodityId, quantity });
-  return { ok: true, plannedQuantity: quantity, available: quantity - 1 };
+  return { ok: true, plannedQuantity: quantity, available: quantity - 1, consumedCost: quantity * 500 };
 };
 const beforeLotAggregateMismatch = JSON.stringify({
   gold: state.gold,
@@ -292,7 +292,7 @@ assert.equal(JSON.stringify({
 }), beforeLotAggregateMismatch, "aggregate/lot mismatch must block raw sale before mutation");
 sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, quantity) {
   this.calls.push({ type: "plan", commodityId, quantity });
-  return { ok: true, plannedQuantity: quantity, available: quantity };
+  return { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 };
 };
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
 assert.equal(rawSaleOk, true);
