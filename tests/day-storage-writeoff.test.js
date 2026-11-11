@@ -5,12 +5,20 @@ const vm=require('node:vm');
 
 const source=fs.readFileSync(require.resolve('../js/day.js'),'utf8');
 
-function sandboxWriteOffFinished(state,lot){ return globalThis.__finishedWriteOff(state,lot); }
-function loadHelper(){
+function loadHelper(recordResult){
  const events=[];
- const sandbox={console,recordBusinessCogs:(desc,components)=>events.push({desc,components}),ledger:(...args)=>events.push({ledger:args})};
+ const sandbox={
+  console,
+  recordBusinessCogs:(desc,components)=>{
+   events.push({desc,components});
+   return recordResult===undefined
+    ? components.reduce((sum,x)=>sum+Number(x.amount),0)
+    : recordResult;
+  },
+  ledger:(...args)=>events.push({ledger:args})
+ };
  vm.runInNewContext(source,sandbox,{filename:'js/day.js'});
- globalThis.__finishedWriteOff=sandbox.writeOffExpiredFinishedGoodsLot; return {writeOff:sandbox.writeOffExpiredStorageLot,events};
+ return {writeOff:sandbox.writeOffExpiredStorageLot,finishedWriteOff:sandbox.writeOffExpiredFinishedGoodsLot,events};
 }
 
 test('daily storage write-off values each expired lot from its own unit cost',()=>{
@@ -57,11 +65,26 @@ test('finished-goods write-off uses the expired lot unit cost and preserves rema
  const {writeOff}=loadHelper();
  const state={day:10,landSystem:{finishedInventory:{jagung_bakar:5},finishedInventoryCost:{jagung_bakar:1100}}};
  const lot={id:'fg-old',commodityId:'jagung_bakar',quantity:2,unitCost:100,writeoffReason:'expired'};
- const result=sandboxWriteOffFinished(state,lot);
+ const result=finishedWriteOff(state,lot);
  assert.equal(result.ok,true);
  assert.equal(result.quantity,2);
  assert.equal(result.value,200);
  assert.equal(state.landSystem.finishedInventory.jagung_bakar,3);
  assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar,900);
  assert.equal(lot.quantity,0);
+});
+
+
+test('finished-goods write-off leaves inventory untouched when HPP loss posting fails',()=>{
+ const {finishedWriteOff,events}=loadHelper(0);
+ const state={day:11,landSystem:{finishedInventory:{jagung_bakar:5},finishedInventoryCost:{jagung_bakar:1100}}};
+ const lot={id:'fg-fail',commodityId:'jagung_bakar',quantity:2,unitCost:100,writeoffReason:'expired'};
+ const result=finishedWriteOff(state,lot);
+ assert.equal(result.ok,false);
+ assert.equal(result.reason,'finished_writeoff_cogs_post_failed');
+ assert.equal(state.landSystem.finishedInventory.jagung_bakar,5);
+ assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar,1100);
+ assert.equal(lot.quantity,2);
+ assert.equal(lot.writeoffDay,undefined);
+ assert.equal(events.length,1);
 });
