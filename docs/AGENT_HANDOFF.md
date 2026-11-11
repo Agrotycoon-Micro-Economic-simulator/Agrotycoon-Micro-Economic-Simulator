@@ -1629,3 +1629,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - .github/workflows/targeted-regression.yml now includes tests/day-storage-writeoff.test.js in the standalone Node regression sequence.
 - Commits: helper integration 070555bd073a08782699941eb6c2636fd972ef28; regression 92c257a92a17b24af72d86c32bf50cb1e3929d33; CI wiring 51960b2d716893ba5c3b3426958801825d30f809.
 - Tests were added but not executed in this session; no CI pass/fail is claimed. No physical conversion, quantity rescaling, price/HPP formula change, or map change. main, peta.html, and js/map_engine.js remain untouched.
+
+
+## 2026-11-11 — FIFO HPP aligned with storage lots
+
+- js/commodity_storage.js: planLotConsumption() now returns lot-level consumedCost and remainingCostValue. HPP is derived from the actual FIFO lots selected for consumption, using each lot.unitCost; aggregate average cost remains only a fallback for legacy lots without unitCost.
+- js/land.js: raw commodity sales and commodity processing now use the storage lot plan for HPP valuation when the lot engine is available. The old weighted-average valuation is retained only as the compatibility fallback when the storage engine is unavailable.
+- This closes the specific inconsistency where, for example, 2 units at Rp100 plus 3 units at Rp300 could previously be sold using aggregate weighted-average HPP (Rp220/unit) while FIFO removed the Rp100 lots, leaving aggregate inventory cost inconsistent with the surviving lots.
+- Added regression coverage in tests/commodity-storage.test.js for FIFO HPP and for HPP after an expired cheap lot is removed while a higher-cost survivor remains.
+- Updated tests/commodity-processing-runtime.test.js storage stubs to expose consumedCost required by the new HPP preflight.
+- Commits: 8592c92e16d1c8b2870d74140a71374e215d6656; 9ce392101e180d196f773bdaedb48c7b5b1bf492; f270cc23a8c58483e2b776600136c66805617083; 68e64c25944584c06f36262dd2d626a31f331273; 1965633d51b985474793b9eadcca7cab081d71f1.
+- The latest commit has no workflow run visible yet. Tests were not executed locally in this session; no pass/green claim is made.
+- No quantity rescaling, physical conversion activation, price formula change, or map change. main, peta.html, and js/map_engine.js remain untouched.
