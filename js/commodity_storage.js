@@ -121,10 +121,15 @@ function planLotConsumption(state,id,qty){
   }
   available+=lotQuantity;
   if(rem<=1e-9)continue;
-  const n=Math.min(lotQuantity,rem);if(!n)continue;used.push({lot:l,quantity:n});rem-=n;
+  const n=Math.min(lotQuantity,rem);if(!n)continue;used.push({lot:l,quantity:n,unitCost:Number.isFinite(Number(l.unitCost))?Math.max(0,Number(l.unitCost)):null});rem-=n;
  }
  if(rem>1e-6)return {ok:false,reason:unusable>0?'lot_quantity_unavailable_due_to_spoilage':'lot_quantity_shortfall',commodityId:id,requested:remTarget,remaining:rem,available,unusable,unusableLots};
- return {ok:true,commodityId:id,requested:remTarget,available,unusable,unusableLots,used};
+ const aggregateQty=Math.max(0,Number(state.landSystem.inventory&&state.landSystem.inventory[id])||0);
+ const aggregateCost=Math.max(0,Number(state.landSystem.inventoryCost&&state.landSystem.inventoryCost[id])||0);
+ const fallbackUnitCost=aggregateQty>0?aggregateCost/aggregateQty:0;
+ const consumedCost=used.reduce((sum,item)=>sum+item.quantity*(Number.isFinite(item.unitCost)?item.unitCost:fallbackUnitCost),0);
+ const remainingCostValue=Math.max(0,aggregateCost-consumedCost);
+ return {ok:true,commodityId:id,requested:remTarget,available,unusable,unusableLots,used,consumedCost,remainingCostValue,aggregateQuantity:aggregateQty,aggregateCost,lotValuationFallbackUsed:used.some(item=>!Number.isFinite(item.unitCost))};
 }
 function consumeLots(state,id,qty){
  const plan=planLotConsumption(state,id,qty);if(!plan.ok)return plan;
