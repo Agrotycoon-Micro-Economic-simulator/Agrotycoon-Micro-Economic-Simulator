@@ -62,7 +62,7 @@ test('write-off falls back to aggregate average cost only when lot unit cost is 
 });
 
 test('finished-goods write-off uses the expired lot unit cost and preserves remaining lot value',()=>{
- const {writeOff}=loadHelper();
+ const {finishedWriteOff}=loadHelper();
  const state={day:10,landSystem:{finishedInventory:{jagung_bakar:5},finishedInventoryCost:{jagung_bakar:1100}}};
  const lot={id:'fg-old',commodityId:'jagung_bakar',quantity:2,unitCost:100,writeoffReason:'expired'};
  const result=finishedWriteOff(state,lot);
