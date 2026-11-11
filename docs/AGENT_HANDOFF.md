@@ -1691,3 +1691,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Latest continuation commits: 41d3feffc2f6ca8cf5164bd441db4e5846a5c538, 1e1341ace2898bddb390e69fe201588f7f4cb117, 47f57933a686e7b9192c7a5d27117053ba0c13e8, 64ab06344a17de34accfb3a9f77ad94773944192, 8ce2256ff2c13b7cd2462ee234eeb53d437a9a45.
 - Test execution remains unverified: no workflow run is available for the latest commits in GitHub. Do not report these regressions as passing until an actual runner output exists.
 - Next audit target: eliminate the remaining mutation-after-COGS failure window in raw and finished sales by ensuring lot mutation cannot fail after COGS posting; then reconcile ledger totals against dayLog COGS/revenue and inventory carrying-value deltas.
+
+
+## 2026-11-11 — raw and finished-goods sale rollback atomicity
+
+- `js/land.js`: added a serializable full-game-state snapshot/restore boundary for commodity sale commits. The snapshot is taken only after validation, logistics calculation, and user confirmation, immediately before the first state mutation.
+- Raw commodity sale now consumes the planned FIFO storage lots before posting HPP. If lot consumption, exact COGS posting, or distribution posting fails/throws, the full state snapshot is restored. Market sold quantity, aggregate inventory, revenue, and sale log are applied only after the required lot/COGS/distribution operations succeed.
+- Finished-goods sale now consumes the preflighted FIFO finished-goods lots before HPP posting. A failed lot commit or non-exact COGS posting restores the full state, including finished lots, carrying value, cash, dayLog, and ledger.
+- Exact COGS equality is checked (within Rp0.000001) rather than accepting any positive partial posting.
+- `tests/commodity-processing-runtime.test.js`: added failure injection where raw and finished lot consumers mutate lot quantities and then return failure. The regression asserts byte-for-byte JSON state equality before/after the failed transaction.
+- Commits: implementation `07a3ef46a5e9e423b49d9d3b3e6772338a448d6c`; failure-injection regression `d0c9e82bc2cfb9cdaa3f2a3ec203ae280cd10b44`.
+- Scope unchanged: no physical-unit conversion, stock/price/HPP rescaling, commodity rule change, map change, or main-branch write.
+- Tests have not been executed in this session; no test pass or CI pass is claimed.
+- Remaining audit: validate whether all transaction-side effects are contained in serializable `S` state (especially any external side-effect in market queue/save/render hooks), then reconcile transaction ledger debit/credit totals against dayLog COGS, revenue, distribution expense, cash flow, and inventory carrying-value deltas.
