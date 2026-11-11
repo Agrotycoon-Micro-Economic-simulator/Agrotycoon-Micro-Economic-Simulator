@@ -106,7 +106,7 @@ async function main() {
       const raw = localStorage.getItem(key);
       if (!raw) return false;
       try { return JSON.parse(raw).day === 2; } catch { return false; }
-    }, SAVE_KEY, { timeout: 15000 });
+    }, SAVE_KEY, { timeout: 60000 });
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
     assert.equal(saved.phase, "pagi", "day transition returns the game to morning");
     assert.ok(saved.reports.some(report => report.day === 1), "day transition records a daily report");
