@@ -156,6 +156,7 @@ test("commodity transactions are blocked when lot-book reconciliation fails",()=
 assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
+console.log("DEBUG processing", JSON.stringify({message:sandbox.lastMessage,gold:state.gold,inventory:state.landSystem.inventory,finished:state.landSystem.finishedInventory,storageCalls:sandbox.AgroCommodityStorage.calls}));
 
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
