@@ -1731,3 +1731,8 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Follow-up run `43058519879` passed the Node test-runner suites and all four benchmark guards, then failed inside the standalone commodity runtime test. Importing `node:test` caused the file's test callbacks to be scheduled separately from its existing top-level stateful regression sequence; the shared mutable fixture was then observed in the wrong order (expected raw inventory 0, observed 10).
 - Replaced that import with a synchronous local `test(name, run)` wrapper. This preserves the file's existing direct `node tests/commodity-processing-runtime.test.js` execution model and guarantees fixture assertions run in source order. Fix commit: `3b9c65c49ccca3d425c5b95cf9a70c871fc23f5e`.
 - Await the next workflow result. No pass is claimed for this adjustment until the standalone suite executes again.
+
+
+- Run `43058772046` confirmed the synchronous wrapper resolved the test execution ordering issue but exposed a separate pre-existing fixture defect: the cabai processed-product fixture omitted `processed.id`, while production code correctly uses that identifier to index finished inventory. The observed failure was raw inventory remaining at 10 because production exited before committing the expected finished-goods record.
+- Added the explicit fixture ID `sambal_cabai_250g`; no production runtime behavior was changed. Fix commit: `96a217e8fcdc7208ead799013754aa635c60d1f9`.
+- Await the next workflow result to validate the complete runtime regression and downstream standalone suites.
