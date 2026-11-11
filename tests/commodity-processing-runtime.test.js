@@ -101,6 +101,8 @@ const sandbox = {
 };
 
 vm.runInNewContext(landSource, sandbox, { filename: "js/land.js" });
+// Override the real logistics prompt after loading land.js, which declares its own function.
+sandbox.logisticsPrompt = () => ({ total: 100 });
 
 test("inventory lot reconciliation detects aggregate and lot-book divergence",()=>{
   state.landSystem.storageLots=[
@@ -156,7 +158,6 @@ test("commodity transactions are blocked when lot-book reconciliation fails",()=
 assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
-console.log("DEBUG processing", JSON.stringify({message:sandbox.lastMessage,gold:state.gold,inventory:state.landSystem.inventory,finished:state.landSystem.finishedInventory,storageCalls:sandbox.AgroCommodityStorage.calls}));
 
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
