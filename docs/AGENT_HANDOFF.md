@@ -1775,3 +1775,7 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 - Run `43060321638` reached the finished sale successfully after the unit-economics inputs were completed. It then failed because the headless test stubs for `recordBusinessCogs`, `spend`, and `earn` updated totals but did not emit their corresponding ledger rows. The finished-sale regression expected two rows (HPP + revenue); raw sale additionally requires a distribution-expense row. Updated the stubs to emit ledger entries and corrected raw sale expectation to three postings. Commits: runtime test stubs `213b78e0ebb82779390ef15fb34f2ebff40a63a4`; raw sale ledger assertion `619631e2ea117328f70df848b06021d0dcb0ddca`.
 - The production runtime's real accounting functions were not changed by this test-only correction.
+
+
+- Run `43060548437` passed finished sale and ledger posting assertions, then failed the processing-receipt failure injection. The test attempted to overwrite `transformation.addInventoryCost` directly, but the imported transformation API is immutable/frozen; the override silently did not replace the runtime method, so processing succeeded and mutated state. The test now swaps `sandbox.AgroCommodityTransformation` for a shallow API copy with a failing `addInventoryCost`, then restores the original API. Commit: `930fbc44c9084a7ecd8df5e1770624e0f4b3dfdc`.
+- No production code change was made for this test-harness correction.
