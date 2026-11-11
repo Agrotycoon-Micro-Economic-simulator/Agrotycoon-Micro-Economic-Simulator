@@ -239,7 +239,9 @@ function sellCommodity(id,channel){
  if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.planLotConsumption){
   lotPlan=AgroCommodityStorage.planLotConsumption(S,id,qty);
   if(!lotPlan||!lotPlan.ok){msg("Lot persediaan tidak sinkron; penjualan dibatalkan sebelum valuasi HPP.");return false;}
-  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-qty)>1e-6){msg("Jumlah lot yang dapat dijual tidak mencukupi; penjualan dibatalkan.");return false;}
+  if(!Number.isFinite(lotPlan.available)||Math.abs(lotPlan.available-qty)>1e-6){
+   if(Math.abs(lotPlan.available-Math.max(0,Number(S.landSystem.inventory[id])||0))>1e-6){msg("Jumlah lot dan agregat persediaan tidak sinkron; penjualan dibatalkan.");return false;}
+  }
   if(!Number.isFinite(lotPlan.consumedCost)||lotPlan.consumedCost<=0){msg("HPP lot komoditas tidak valid; penjualan dibatalkan.");return false;}
  }
  const valuation=lotPlan?{ok:true,consumedCost:lotPlan.consumedCost,remainingQuantity:Math.max(0,qty-lotPlan.requested+stock-qty),remainingCostValue:Math.max(0,stockCost-lotPlan.consumedCost),unitCost:lotPlan.consumedCost/qty}:AgroCommodityTransformation.consumeWeightedAverageInventory(qty,stockCost,qty);
