@@ -29,7 +29,7 @@ const sandbox = {
   window: { REAL_ECONOMIC_DATA: { tollSegments: [] } },
   S: state,
   COMMODITY_BY_ID: {
-    cabai_merah: { id: "cabai_merah", name: "Cabai Merah" }
+    cabai_merah: { id: "cabai_merah", name: "Cabai Merah", basePrice: 25000 }
   },
   COMMODITY_ECONOMICS: {
     cabai_merah: {
@@ -361,7 +361,6 @@ sandbox.AgroCommodityStorage.planLotConsumption = function(_state, commodityId, 
   return { ok: true, plannedQuantity: quantity, available: quantity, consumedCost: quantity * 500 };
 };
 const rawSaleOk = sandbox.sellCommodity("cabai_merah", "b2b");
-console.log("DEBUG raw sale", JSON.stringify({rawSaleOk,message:sandbox.lastMessage,gold:state.gold,inventory:state.landSystem.inventory,dayLog:state.dayLog,ledger:state.ledger}));
 assert.equal(rawSaleOk, true);
 assert.equal(state.landSystem.inventory.cabai_merah, 0);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
