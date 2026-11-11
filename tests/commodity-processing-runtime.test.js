@@ -36,7 +36,7 @@ const sandbox = {
       unit: "kg",
       tengkulakPrice: 25000,
       farmerPrice: 27810,
-      processed: { id: "sambal_cabai_250g", name: "Sambal kemasan 250 g", inputKg: 0.25, price: 18000, otherCost: 2500, inputTier: 1, outputTier: 4, routeId: "cabai-to-sambal" }
+      processed: { id: "sambal_cabai_250g", name: "Sambal kemasan 250 g", inputKg: 0.25, price: 18000, otherCost: 2500, inputTier: 1, outputTier: 4, routeId: "cabai-to-sambal", outputUnit: "unit" }
     }
   },
   AgroCommodityTransformation: transformation,
