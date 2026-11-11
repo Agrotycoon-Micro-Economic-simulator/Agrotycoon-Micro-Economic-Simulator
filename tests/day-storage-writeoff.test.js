@@ -5,11 +5,12 @@ const vm=require('node:vm');
 
 const source=fs.readFileSync(require.resolve('../js/day.js'),'utf8');
 
+function sandboxWriteOffFinished(state,lot){ return globalThis.__finishedWriteOff(state,lot); }
 function loadHelper(){
  const events=[];
  const sandbox={console,recordBusinessCogs:(desc,components)=>events.push({desc,components}),ledger:(...args)=>events.push({ledger:args})};
  vm.runInNewContext(source,sandbox,{filename:'js/day.js'});
- return {writeOff:sandbox.writeOffExpiredStorageLot,events};
+ globalThis.__finishedWriteOff=sandbox.writeOffExpiredFinishedGoodsLot; return {writeOff:sandbox.writeOffExpiredStorageLot,events};
 }
 
 test('daily storage write-off values each expired lot from its own unit cost',()=>{
@@ -50,4 +51,17 @@ test('write-off falls back to aggregate average cost only when lot unit cost is 
  assert.equal(result.value,400);
  assert.equal(state.landSystem.inventory.jagung,2);
  assert.equal(state.landSystem.inventoryCost.jagung,400);
+});
+
+test('finished-goods write-off uses the expired lot unit cost and preserves remaining lot value',()=>{
+ const {writeOff}=loadHelper();
+ const state={day:10,landSystem:{finishedInventory:{jagung_bakar:5},finishedInventoryCost:{jagung_bakar:1100}}};
+ const lot={id:'fg-old',commodityId:'jagung_bakar',quantity:2,unitCost:100,writeoffReason:'expired'};
+ const result=sandboxWriteOffFinished(state,lot);
+ assert.equal(result.ok,true);
+ assert.equal(result.quantity,2);
+ assert.equal(result.value,200);
+ assert.equal(state.landSystem.finishedInventory.jagung_bakar,3);
+ assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar,900);
+ assert.equal(lot.quantity,0);
 });
