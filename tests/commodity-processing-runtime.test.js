@@ -122,6 +122,15 @@ test("inventory lot reconciliation detects aggregate and lot-book divergence",()
   state.landSystem.finishedInventoryCost.jagung_bakar=1100;
 });
 
+state.landSystem.inventory={cabai_merah:10};
+state.landSystem.inventoryCost={cabai_merah:5000};
+state.landSystem.finishedInventory={};
+state.landSystem.finishedInventoryCost={};
+delete state.landSystem.finishedInventoryLots;
+delete state.landSystem.storageLots;
+state.dayLog={gross:0,expense:0,businessPurchases:0,cashOut:0,shopping:0,cogs:0,cogsByAccount:{}};
+state.ledger=[];
+
 assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
