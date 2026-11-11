@@ -272,6 +272,8 @@ function sellCommodity(id,channel){
       id:id,quantityPerOutput:1,sourcingMode:"own",
       ownProductionCostPerUnit:valuation.unitCost,
       ownProductionCostEvidence:{kind:"game_parameter",sourceUrl:"js/land.js",period:"current harvested inventory",geography:"game scenario"},
+      marketOpportunityPricePerUnit:Number(e.tengkulakPrice||e.farmerPrice||e.basePrice||0),
+      marketOpportunityPriceEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"},
       quantityEvidence:{kind:"game_parameter",sourceUrl:"js/commodities.js",period:"current game config",geography:"game scenario"},
       quantityBasis:"legacy_transformation_output",
       quantityUnit:"unconverted_simulation_market_units",
