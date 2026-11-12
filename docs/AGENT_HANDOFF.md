@@ -1843,3 +1843,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `tests/gameplay_e2e.test.js` then timed out after 15 seconds waiting for persisted `day === 2` after the sleep action. The test executes the full daily pipeline (living costs, agriculture, NPC/world simulation, national economy, background market and order generation) before the day increment/save point. The timeout does not establish whether the transition is broken or merely slower than the previous 15-second allowance.
 - Increased only the E2E wait allowance to 60 seconds to measure/allow the complete aggregate daily pipeline under CI. No game timing, simulation cadence, or day-transition logic was changed. Commit: `55fa3e2b2c25e95ab1f5a39f247d086def233e64`.
 - Await the new workflow before declaring gameplay E2E green; if it still times out, inspect `finishDay()` performance and browser console errors rather than extending the timeout again without evidence.
+
+
+## 2026-11-12 — NPC order persistence quota fix
+
+- Browser E2E exposed `localStorage` quota exhaustion during day transition: `Setting the value of 'agrotycoon_save_v15' exceeded the quota`.
+- Root cause: the daily regional NPC order generator can create a large province × commodity batch (up to two orders per active commodity/province) and `player_order_book` was persisting the full transient `npcOrders` batch before and after matching.
+- Fix: `replaceNpcOrders()` keeps the generated batch in memory until settlement; `matchAndSettle()` clears transient NPC orders before persistence and stores only player-relevant fills plus aggregate match counters in `lastMatch`. Persistent `trades` is also restricted to player-involved executions.
+- Regression test added to `tests/player-order-book.test.js`: 5,000 NPC orders must not be persisted as the save payload and post-settlement save remains bounded.
+- Gameplay diagnostic commit `264424b...` proved the exact failure was browser localStorage quota, not a day-transition logic timeout.
+- Commits: `71fd65956a2ec2ea11d7bbcf9caa230789e3f276`, `965504320540af354d0b17c140581abf24b8bd26`, `bd8646791da226d2141e7437db00ac733af51bbc`.
