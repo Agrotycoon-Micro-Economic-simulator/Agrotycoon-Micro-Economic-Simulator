@@ -356,14 +356,19 @@
         order.status = "cancelled"; order.remainingQuantity = 0; order.cancelledAt = day;
       }
     });
-    book.npcOrders = matched.openOrders.filter(order => order.actorType === "npc");
+    // NPC regional orders are a one-day execution layer, not persistent player state.
+    // Persisting the full province × commodity batch can exceed browser localStorage quotas
+    // (hundreds/thousands of transient orders). Keep only aggregate/player-relevant state.
+    book.npcOrders = [];
     if (matched.priceTransactions.length) root.MARKET_ENGINE.reprice(matched.priceTransactions, { emergency });
     const executionRecords = matched.fills.map(fill => Object.assign({}, fill, { settlement: settled.includes(fill.fillId) ? "player_settled" : "npc_aggregate_execution" }));
-    book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords).slice(-1000);
-    book.lastMatch = { day, fills: executionRecords, openOrderCount: matched.openOrders.length,
-      expired: matched.expired, rejected: matched.rejected, prevented: matched.prevented,
-      quantityMismatches: matched.quantityMismatches || [],
-      executedQuantity: matched.executedQuantity, executedNotional: matched.executedNotional };
+    book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords.filter(fill => fill.buyerId === "player" || fill.sellerId === "player")).slice(-1000);
+    const playerExecutionRecords = executionRecords.filter(fill => fill.buyerId === "player" || fill.sellerId === "player");
+    book.lastMatch = { day, fills: playerExecutionRecords, openOrderCount: matched.openOrders.filter(order => order.actorType !== "npc").length,
+      expiredCount: matched.expired.length, rejectedCount: matched.rejected.length, preventedCount: matched.prevented.length,
+      quantityMismatchCount: (matched.quantityMismatches || []).length,
+      executedQuantity: matched.executedQuantity, executedNotional: matched.executedNotional,
+      npcExecutionCount: executionRecords.length - playerExecutionRecords.length };
     persist(book);
     return { ok: true, alreadyMatched: false, day, fills: executionRecords,
       openOrderCount: matched.openOrders.length, executedQuantity: matched.executedQuantity,
