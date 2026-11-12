@@ -372,3 +372,46 @@ test('player and NPC orders with incompatible quantity contracts remain unmatche
   assert.equal(snapshot.orders[0].remainingQuantity, 1);
   assert.equal(snapshot.lastMatch.quantityMismatches.length, 1);
 });
+
+
+test('daily NPC order batches stay transient and do not inflate the persistent save', () => {
+  freshState();
+  saved.clear();
+  const orders = Array.from({ length: 5000 }, (_, i) => ({
+    orderId: 'npc-supply-1-lampung-jagung-' + i,
+    commodityId: 'jagung',
+    side: 'sell',
+    quantity: 1,
+    limitPrice: 6000,
+    createdAt: 1,
+    expiresAt: 2,
+    actorType: 'npc',
+    ownerId: 'npc-producer-pool-lampung',
+    regionId: 'lampung',
+    stage: 'producer'
+  }));
+  const replaced = context.AgroPlayerOrderBook.replaceNpcOrders(orders, 1);
+  assert.equal(replaced.ok, true);
+  assert.equal(saved.has('agrotycoon_save_v15'), false, 'transient NPC generation must not save the full batch');
+
+  const originalMatcher = context.MARKET_ENGINE.matchOrderBook;
+  const originalReprice = context.MARKET_ENGINE.reprice;
+  context.MARKET_ENGINE.matchOrderBook = () => ({
+    fills: [], openOrders: context.S.marketOrderBook.npcOrders.slice(),
+    expired: [], rejected: [], prevented: [], quantityMismatches: [],
+    priceTransactions: [], executedQuantity: 0, executedNotional: 0
+  });
+  context.MARKET_ENGINE.reprice = () => {};
+  try {
+    const matched = context.AgroPlayerOrderBook.matchAndSettle(1);
+    assert.equal(matched.ok, true);
+    assert.equal(context.S.marketOrderBook.npcOrders.length, 0, 'NPC orders are transient after settlement');
+    assert.equal(context.S.marketOrderBook.lastMatch.fills.length, 0);
+    const persisted = saved.get('agrotycoon_save_v15');
+    assert.ok(persisted, 'post-settlement state is persisted');
+    assert.ok(persisted.length < 200000, 'persistent save remains bounded after a large NPC batch');
+  } finally {
+    context.MARKET_ENGINE.matchOrderBook = originalMatcher;
+    context.MARKET_ENGINE.reprice = originalReprice;
+  }
+});
