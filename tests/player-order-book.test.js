@@ -397,7 +397,7 @@ test('daily NPC order batches stay transient and do not inflate the persistent s
   const originalMatcher = context.MARKET_ENGINE.matchOrderBook;
   const originalReprice = context.MARKET_ENGINE.reprice;
   context.MARKET_ENGINE.matchOrderBook = () => ({
-    fills: [], openOrders: context.S.marketOrderBook.npcOrders.slice(),
+    fills: [], openOrders: context.AgroPlayerOrderBook.snapshot().npcOrders.slice(),
     expired: [], rejected: [], prevented: [], quantityMismatches: [],
     priceTransactions: [], executedQuantity: 0, executedNotional: 0
   });
