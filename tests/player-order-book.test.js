@@ -182,7 +182,7 @@ test('expiry rejects invalid game-day values without changing open orders', () =
 });
 
 
-test('daily NPC order batches persist once, validate provenance and do not settle player assets', () => {
+test('daily NPC order batches remain transient, validate provenance and do not settle player assets', () => {
   freshState();
   vm.runInContext("S.day = 9; S.gold = 500000; S.landSystem.inventory.jagung = 25;", context);
   const beforeGold = vm.runInContext('S.gold', context);
@@ -199,8 +199,7 @@ test('daily NPC order batches persist once, validate provenance and do not settl
   assert.equal(first.storedCount, 1);
   assert.equal(context.AgroPlayerOrderBook.snapshot().npcOrders[0].orderId, order.orderId);
   assert.equal(context.AgroPlayerOrderBook.snapshot().lastNpcGenerationDay, 9);
-  const serialized = saved.get('agrotycoon_save_v15');
-  assert.ok(serialized.includes('npc-supply-9-lampung-jagung'));
+  assert.equal(saved.has('agrotycoon_save_v15'), false, 'NPC generation is not persisted before settlement');
   const repeated = context.AgroPlayerOrderBook.replaceNpcOrders([], 9);
   assert.equal(repeated.ok, true);
   assert.equal(repeated.alreadyGenerated, true);
@@ -405,8 +404,9 @@ test('daily NPC order batches stay transient and do not inflate the persistent s
   try {
     const matched = context.AgroPlayerOrderBook.matchAndSettle(1);
     assert.equal(matched.ok, true);
-    assert.equal(context.S.marketOrderBook.npcOrders.length, 0, 'NPC orders are transient after settlement');
-    assert.equal(context.S.marketOrderBook.lastMatch.fills.length, 0);
+    const afterMatch = context.AgroPlayerOrderBook.snapshot();
+    assert.equal(afterMatch.npcOrders.length, 0, 'NPC orders are transient after settlement');
+    assert.equal(afterMatch.lastMatch.fills.length, 0);
     const persisted = saved.get('agrotycoon_save_v15');
     assert.ok(persisted, 'post-settlement state is persisted');
     assert.ok(persisted.length < 200000, 'persistent save remains bounded after a large NPC batch');
