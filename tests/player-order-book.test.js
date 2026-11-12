@@ -183,6 +183,7 @@ test('expiry rejects invalid game-day values without changing open orders', () =
 
 
 test('daily NPC order batches remain transient, validate provenance and do not settle player assets', () => {
+  saved.clear();
   freshState();
   vm.runInContext("S.day = 9; S.gold = 500000; S.landSystem.inventory.jagung = 25;", context);
   const beforeGold = vm.runInContext('S.gold', context);
