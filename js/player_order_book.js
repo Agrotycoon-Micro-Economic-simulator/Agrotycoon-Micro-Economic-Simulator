@@ -365,9 +365,10 @@
     const executionRecords = matched.fills.map(fill => Object.assign({}, fill, { settlement: settled.includes(fill.fillId) ? "player_settled" : "npc_aggregate_execution" }));
     book.trades = (Array.isArray(book.trades) ? book.trades : []).concat(executionRecords.filter(fill => fill.buyerId === "player" || fill.sellerId === "player")).slice(-1000);
     const playerExecutionRecords = executionRecords.filter(fill => fill.buyerId === "player" || fill.sellerId === "player");
+    const quantityMismatches = (matched.quantityMismatches || []).slice(-100);
     book.lastMatch = { day, fills: playerExecutionRecords, openOrderCount: matched.openOrders.filter(order => order.actorType !== "npc").length,
-      expiredCount: matched.expired.length, rejectedCount: matched.rejected.length, preventedCount: matched.prevented.length,
-      quantityMismatchCount: (matched.quantityMismatches || []).length,
+      expired: (matched.expired || []).slice(-100), rejected: (matched.rejected || []).slice(-100), prevented: (matched.prevented || []).slice(-100),
+      quantityMismatches, quantityMismatchCount: (matched.quantityMismatches || []).length,
       executedQuantity: matched.executedQuantity, executedNotional: matched.executedNotional,
       npcExecutionCount: executionRecords.length - playerExecutionRecords.length };
     persist(book);
