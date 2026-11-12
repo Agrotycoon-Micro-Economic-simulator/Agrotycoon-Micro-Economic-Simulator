@@ -102,11 +102,27 @@ async function main() {
 
     await page.getByRole("button", { name: /Lanjut ke Sore/ }).click();
     await page.getByRole("button", { name: /Tidur \(Ganti Hari\)/ }).click();
-    await page.waitForFunction(key => {
-      const raw = localStorage.getItem(key);
-      if (!raw) return false;
-      try { return JSON.parse(raw).day === 2; } catch { return false; }
-    }, SAVE_KEY, { timeout: 60000 });
+    try {
+      await page.waitForFunction(key => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return false;
+        try { return JSON.parse(raw).day === 2; } catch { return false; }
+      }, SAVE_KEY, { timeout: 15000 });
+    } catch (error) {
+      const diagnostic = await page.evaluate(key => {
+        const raw = localStorage.getItem(key);
+        let parsed = null;
+        try { parsed = raw ? JSON.parse(raw) : null; } catch {}
+        return {
+          day: parsed && parsed.day,
+          phase: parsed && parsed.phase,
+          progressHidden: document.getElementById("progress")?.classList.contains("hidden"),
+          progressText: document.getElementById("prog-text")?.textContent,
+          progressWidth: document.getElementById("bar-fill")?.style.width
+        };
+      }, SAVE_KEY);
+      throw new Error("day transition did not persist: "+JSON.stringify({diagnostic,pageErrors,error:String(error)}));
+    }
     saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
     assert.equal(saved.phase, "pagi", "day transition returns the game to morning");
     assert.ok(saved.reports.some(report => report.day === 1), "day transition records a daily report");
