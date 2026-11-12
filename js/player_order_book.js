@@ -207,7 +207,8 @@
     }
     book.npcOrders = accepted;
     book.lastNpcGenerationDay = day;
-    persist(book);
+    // Do not persist the transient NPC batch here. Matching and settlement consume it
+    // in-memory, then persist only the compact post-settlement state.
     return { ok: true, alreadyGenerated: false, day, storedCount: accepted.length };
   }
 
