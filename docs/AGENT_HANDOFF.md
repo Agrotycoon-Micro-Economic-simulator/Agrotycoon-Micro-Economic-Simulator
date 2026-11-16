@@ -1853,3 +1853,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression test added to `tests/player-order-book.test.js`: 5,000 NPC orders must not be persisted as the save payload and post-settlement save remains bounded.
 - Gameplay diagnostic commit `264424b...` proved the exact failure was browser localStorage quota, not a day-transition logic timeout.
 - Commits: `71fd65956a2ec2ea11d7bbcf9caa230789e3f276`, `965504320540af354d0b17c140581abf24b8bd26`, `bd8646791da226d2141e7437db00ac733af51bbc`.
+
+
+## 2026-11-17 — processing transaction atomicity
+
+- Branch HEAD verified before implementation: `9e7bb1c5a77e106f2ca9ac713a3cf6e7eec49706` on `feat/production-tier-taxonomy`.
+- Targeted Regression workflow `43241184759` completed `success` for that HEAD before the next change.
+- Raw and finished-goods sales already used a serializable `S` snapshot/restore boundary. Commodity processing did not: conversion spend could succeed before a later distribution/lot/finished-lot failure, leaving partial state.
+- `js/land.js` now wraps the processing mutation phase in the same snapshot/restore transaction boundary: conversion cash posting → distribution cash posting → raw lot consumption → aggregate inventory/carrying value mutation → finished-goods lot creation → production log. Any failure restores cash, lot book, inventories, day log, ledger, and related state.
+- `tests/commodity-processing-runtime.test.js` adds regressions for (1) storage lot mutation followed by failure and (2) second distribution posting failure after the first conversion cash posting. Both must restore the complete serialized state.
+- Implementation commits: `9ee5e3ee50a22c25009f369fcb1d02734bb7defc` and `a1b734143d2da90b7403636ee10eb11a9f5c40bb`.
+- Next verification: targeted CI for these commits. Do not claim the new processing-atomicity tests pass until workflow output confirms it.
