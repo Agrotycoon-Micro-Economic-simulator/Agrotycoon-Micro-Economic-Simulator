@@ -295,6 +295,56 @@ assert.equal(JSON.stringify({
 }), receiptFailureBefore, "processing receipt failure must leave cash and inventory unchanged");
 sandbox.AgroCommodityTransformation = originalTransformationApi;
 
+// Processing transaction rollback: a storage consumer that mutates a lot and then fails
+// must restore cash, inventory, finished goods, lot book, day log, and ledger.
+state.gold = 899900;
+state.landSystem.inventory.cabai_merah = 10;
+state.landSystem.inventoryCost.cabai_merah = 5000;
+state.landSystem.storageLots = [{ id: "raw-processing-atomic", commodityId: "cabai_merah", quantity: 10, unitCost: 500 }];
+state.landSystem.finishedInventory = { sambal_cabai_250g: 40 };
+state.landSystem.finishedInventoryCost = { sambal_cabai_250g: 105000 };
+state.landSystem.finishedInventoryLots = {
+  sambal_cabai_250g: [{ id: "fg-processing-atomic", commodityId: "sambal_cabai_250g", quantity: 40, unitCost: 2625, costValue: 105000 }]
+};
+state.landSystem.finishedInventoryQuantityMeta = {
+  sambal_cabai_250g: {
+    quantityUnit: "unconverted_simulation_market_units",
+    quantityCalibrationStatus: "legacy_index_to_physical_unit_conversion_pending",
+    quantityScaleStatus: "unconverted_legacy_simulation_index"
+  }
+};
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+sandbox.AgroCommodityStorage.failConsumeAfterMutation = true;
+const processingBeforeConsumeFailure = JSON.stringify(state);
+assert.equal(sandbox.processCommodity("cabai_merah"), false);
+assert.equal(JSON.stringify(state), processingBeforeConsumeFailure, "processing must roll back cash and all inventory state when lot consumption fails after mutation");
+sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
+
+// Processing transaction rollback: a later distribution posting failure must also undo
+// an earlier conversion cash posting.
+const originalSpend = sandbox.spend;
+let spendCalls = 0;
+sandbox.spend = function(...args) {
+  spendCalls++;
+  if(spendCalls === 2) return false;
+  return originalSpend(...args);
+};
+state.gold = 899900;
+state.landSystem.inventory = { cabai_merah: 10 };
+state.landSystem.inventoryCost = { cabai_merah: 5000 };
+state.landSystem.storageLots = [{ id: "raw-processing-distribution", commodityId: "cabai_merah", quantity: 10, unitCost: 500 }];
+state.landSystem.finishedInventory = {};
+state.landSystem.finishedInventoryCost = {};
+state.landSystem.finishedInventoryLots = {};
+state.landSystem.finishedInventoryQuantityMeta = {};
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+const processingBeforeDistributionFailure = JSON.stringify(state);
+assert.equal(sandbox.processCommodity("cabai_merah"), false);
+assert.equal(JSON.stringify(state), processingBeforeDistributionFailure, "processing must roll back the first cash posting when distribution posting fails");
+sandbox.spend = originalSpend;
+
 const beforeBadQty = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
 assert.equal(sandbox.sellFinishedCommodity("sambal_cabai_250g", 1.5), false);
 assert.equal(JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length}), beforeBadQty);
