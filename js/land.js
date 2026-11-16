@@ -396,30 +396,44 @@ function processCommodity(id){
  );
  if(!received.ok){msg("Penerimaan persediaan produk jadi tidak valid; transaksi dibatalkan.");return;}
  if(!confirm("Olah "+input.toFixed(2)+" "+e.unit+" menjadi "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+"? Nilai persediaan baru "+safeRp(finishedCost)+", distribusi "+safeRp(logistics.total)+"\n"+logisticsBreakdown(logistics)+"\nProduk jadi TIDAK langsung dijual."))return;
- // Lot consumption is preflighted before any cash/accounting mutation. Conversion is capitalized into finished-goods inventory; it is not COGS until sale.
- if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true}))return;
- if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))return;
- if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){const lotUse=AgroCommodityStorage.consumeLots(S,id,input);if(!lotUse.ok){msg('Lot bahan baku tidak sinkron; pengolahan dihentikan.');return;}}
- S.landSystem.inventory[id]=inputValuation.remainingQuantity;
- S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
- S.landSystem.finishedInventory[p.id]=received.quantity;
- S.landSystem.finishedInventoryCost[p.id]=received.costValue;
- // Finished-goods lot provenance is created only after all input/cash mutations succeed.
- // The values are already prevalidated above, so this cannot silently introduce a
- // quantity/cost mismatch into the aggregate finished-inventory boundary.
- if(!addFinishedGoodsLot(p.id,outputQty,finishedCost)){msg("Lot produk jadi gagal dibuat; transaksi dibatalkan.");return;}
- S.landSystem.finishedInventoryQuantityMeta[p.id]={
-   quantityBasis:"legacy_transformation_output",
-   declaredRecipeUnit:p.outputUnit||"unspecified",
-   quantityUnit:"unconverted_simulation_market_units",
-   quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
-   quantityScaleStatus:"unconverted_legacy_simulation_index",
-   physicalConversionEnabled:false,
-   sourceCommodityId:id,
-   routeId:p.routeId||null
- };
- if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
- S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,inputQuantityUnit:"unconverted_simulation_market_units",outputQuantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",declaredInputRecipeUnit:e.unit||"unspecified",declaredOutputRecipeUnit:p.outputUnit||"unspecified",conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
+ // Mutation phase is one transaction boundary. Every operation after this point is
+ // either committed completely or restored from the exact pre-mutation snapshot.
+ const transactionSnapshot=snapshotAgriTransactionState();
+ if(!transactionSnapshot){msg("Snapshot transaksi gagal; pengolahan dibatalkan sebelum mutasi.");return;}
+ try{
+  if(cashConversion>0&&!spend("BELANJA","Konversi menjadi "+p.name,cashConversion,"shopping",{commodity:id,units:outputQty,processing:true,capitalizedInventory:true})){
+   throw new Error("processing_conversion_post_failed");
+  }
+  if(logistics.total>0&&!spend("OPEX","Distribusi produk jadi "+p.name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold})){
+   throw new Error("processing_distribution_post_failed");
+  }
+  if(typeof AgroCommodityStorage!=="undefined"&&AgroCommodityStorage.consumeLots){
+   const lotUse=AgroCommodityStorage.consumeLots(S,id,input);
+   if(!lotUse||!lotUse.ok)throw new Error("processing_lot_consume_failed");
+  }
+  S.landSystem.inventory[id]=inputValuation.remainingQuantity;
+  S.landSystem.inventoryCost[id]=inputValuation.remainingCostValue;
+  S.landSystem.finishedInventory[p.id]=received.quantity;
+  S.landSystem.finishedInventoryCost[p.id]=received.costValue;
+  // Finished-goods lot provenance is created only after all input/cash mutations succeed.
+  if(!addFinishedGoodsLot(p.id,outputQty,finishedCost))throw new Error("processing_finished_lot_create_failed");
+  S.landSystem.finishedInventoryQuantityMeta[p.id]={
+    quantityBasis:"legacy_transformation_output",
+    declaredRecipeUnit:p.outputUnit||"unspecified",
+    quantityUnit:"unconverted_simulation_market_units",
+    quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",
+    quantityScaleStatus:"unconverted_legacy_simulation_index",
+    physicalConversionEnabled:false,
+    sourceCommodityId:id,
+    routeId:p.routeId||null
+  };
+  if(!S.dayLog.commodityProduction)S.dayLog.commodityProduction=[];
+  S.dayLog.commodityProduction.push({inputCommodity:id,outputCommodity:p.id,name:p.name,inputQuantity:input,outputQuantity:outputQty,inputQuantityUnit:"unconverted_simulation_market_units",outputQuantityUnit:"unconverted_simulation_market_units",quantityCalibrationStatus:"legacy_index_to_physical_unit_conversion_pending",quantityScaleStatus:"unconverted_legacy_simulation_index",declaredInputRecipeUnit:e.unit||"unspecified",declaredOutputRecipeUnit:p.outputUnit||"unspecified",conversionCost:cashConversion,inventoryCost:finishedCost,logisticsCost:logistics.total});
+ }catch(error){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg("Pengolahan gagal dan seluruh perubahan kas, lot, persediaan, jurnal, serta ledger dibatalkan ("+(error&&error.message||"unknown")+").");
+  return false;
+ }
  save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
 }
 function ensureFinishedGoodsLots(){
