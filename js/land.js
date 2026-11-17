@@ -224,7 +224,7 @@ function showCommodityEconomics(focusId){
  });
  h+='<button class="btn btn-info" onclick="configureCommodityStorage()">Atur suhu & kelembapan gudang</button> <button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
-let AGRO_TRANSACTION_DEPTH=typeof AGRO_TRANSACTION_DEPTH==='number'?AGRO_TRANSACTION_DEPTH:0;
+let AGRO_TRANSACTION_DEPTH=0;
 function snapshotAgriTransactionState(){
  try{const snapshot=JSON.parse(JSON.stringify(S));AGRO_TRANSACTION_DEPTH++;return snapshot;}catch(_){return null;}
 }
