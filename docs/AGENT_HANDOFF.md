@@ -1874,3 +1874,6 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Added a regression assertion that an injected processing failure after a mutation does not persist an intermediate save payload.
 - Commits: `de2b8e55d914cb7d5ae1925aa680cd3858ec7c34`, `dd5c69b92dbada3a551eb886279a07167da16875`, `8f5abee452acb3bdb4f7fc13ea496ee997df29a8`, `a017a024a8e5f60c6dca2b8885a17e5d4e49910a8`.
 - Current post-change CI must be treated as pending until the new workflow completes.
+
+
+- CI follow-up: runs `44017764923`, `44017797694`, and `44017810990` failed while validating the persistence-boundary change. The first two failures exposed the transaction-depth initialization/persistence harness; the `a017...` run log still showed the pre-fix lexical initializer, while the current branch now contains `let AGRO_TRANSACTION_DEPTH=0`. The final regression harness was corrected so its `save()` function is created inside the VM context and therefore observes the VM transaction depth. Commit: `1edc07a444e4f8ad7abd3aa7668757575712b43c`.
