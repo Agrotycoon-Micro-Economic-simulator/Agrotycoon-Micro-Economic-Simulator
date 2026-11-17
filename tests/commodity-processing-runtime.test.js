@@ -25,6 +25,7 @@ const state = {
 };
 
 const prompts = ["10", "pickup", "tidak"];
+const persistedStates = [];
 const sandbox = {
   console,
   window: { REAL_ECONOMIC_DATA: { tollSegments: [] } },
@@ -67,7 +68,7 @@ const sandbox = {
   logisticsBreakdown: () => "Distribusi Rp 100",
   safeRp: n => "Rp " + Math.round(n),
   msg: message => { sandbox.lastMessage = message; },
-  save: () => {},
+  save: () => { if (typeof AGRO_TRANSACTION_DEPTH === "number" && AGRO_TRANSACTION_DEPTH > 0) return; persistedStates.push(JSON.stringify(state)); },
   showCommodityEconomics: () => {},
   render: () => {},
   el: () => null,
@@ -79,6 +80,7 @@ const sandbox = {
     state.dayLog.cashOut += amt;
     if (field) state.dayLog[field] = (state.dayLog[field] || 0) + amt;
     state.ledger.push({ cat, desc, amt: -amt, detail });
+    sandbox.save();
     return true;
   },
   earn: (_cat, _desc, amt, detail) => {
@@ -317,8 +319,10 @@ state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shoppin
 state.ledger = [];
 sandbox.AgroCommodityStorage.failConsumeAfterMutation = true;
 const processingBeforeConsumeFailure = JSON.stringify(state);
+persistedStates.length = 0;
 assert.equal(sandbox.processCommodity("cabai_merah"), false);
 assert.equal(JSON.stringify(state), processingBeforeConsumeFailure, "processing must roll back cash and all inventory state when lot consumption fails after mutation");
+assert.equal(persistedStates.length, 0, "failed atomic transaction must not persist an intermediate state");
 sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
 
 // Processing transaction rollback: a later distribution posting failure must also undo
