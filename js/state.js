@@ -96,7 +96,7 @@ function loadSaved(){
   } else { throw new Error('Null save'); }
  }catch(e){ console.error(e); S=defaultState(); if(typeof ensureAgriState==='function')ensureAgriState(); save(); }
 }
-function save(){ if(S&&typeof ensureAgriState==='function')ensureAgriState(); localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
+function save(){ if(typeof AGRO_TRANSACTION_DEPTH!=='undefined'&&AGRO_TRANSACTION_DEPTH>0)return; if(S&&typeof ensureAgriState==='function')ensureAgriState(); localStorage.setItem(SAVE_KEY,JSON.stringify(S)); }
 function gainXP(amount){
  S.xp = Math.max(0,Number(S.xp)||0) + Math.max(0,Number(amount)||0);
  const gained=[];
