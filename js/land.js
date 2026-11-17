@@ -224,13 +224,19 @@ function showCommodityEconomics(focusId){
  });
  h+='<button class="btn btn-info" onclick="configureCommodityStorage()">Atur suhu & kelembapan gudang</button> <button class="btn btn-primary" onclick="showLogisticsCalculator()">🚚 Kalkulator Distribusi</button> <button class="btn btn-warning" onclick="resetTestCrops()">♻️ Reset petak & stok komoditas uji</button> <button class="btn" onclick="showGarden()">Kembali ke kebun</button> <button class="btn" onclick="closeModal()">Tutup</button>';showModal(h);
 }
+let AGRO_TRANSACTION_DEPTH=typeof AGRO_TRANSACTION_DEPTH==='number'?AGRO_TRANSACTION_DEPTH:0;
 function snapshotAgriTransactionState(){
- try{return JSON.parse(JSON.stringify(S));}catch(_){return null;}
+ try{const snapshot=JSON.parse(JSON.stringify(S));AGRO_TRANSACTION_DEPTH++;return snapshot;}catch(_){return null;}
+}
+function commitAgriTransactionState(){
+ AGRO_TRANSACTION_DEPTH=Math.max(0,AGRO_TRANSACTION_DEPTH-1);
 }
 function restoreAgriTransactionState(snapshot){
- if(!snapshot||!S||typeof S!=="object")return false;
+ if(!snapshot||!S||typeof S!=="object"){AGRO_TRANSACTION_DEPTH=Math.max(0,AGRO_TRANSACTION_DEPTH-1);return false;}
  Object.keys(S).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(snapshot,key))delete S[key];});
  Object.keys(snapshot).forEach(key=>{S[key]=snapshot[key];});
+ AGRO_TRANSACTION_DEPTH=Math.max(0,AGRO_TRANSACTION_DEPTH-1);
+ save();
  return true;
 }
 
@@ -315,6 +321,7 @@ function sellCommodity(id,channel){
   msg("Transaksi penjualan gagal dan seluruh perubahan kas, lot, persediaan, jurnal, serta ledger dibatalkan ("+(error&&error.message||"unknown") +").");
   return false;
  }
+ commitAgriTransactionState();
  if(channel==="b2b"&&typeof queueMarketTransaction==="function")queueMarketTransaction({commodityId:id,side:"sell",quantity:qty,price,marketStage:"producer",source:"player_b2b_commodity_sale"});
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:COMMODITY_BY_ID[id].name,quantity:qty,unitPrice:price,revenue:rev,cogs:valuation.consumedCost,grossProfit,channel,logisticsCost:logistics.total,netAfterLogistics:net});
@@ -434,6 +441,7 @@ function processCommodity(id){
   msg("Pengolahan gagal dan seluruh perubahan kas, lot, persediaan, jurnal, serta ledger dibatalkan ("+(error&&error.message||"unknown")+").");
   return false;
  }
+ commitAgriTransactionState();
  save();msg("Produksi selesai: "+outputQty.toFixed(2)+" "+(p.outputUnit||"unit")+" "+p.name+" masuk persediaan produk jadi. Belum dijual.");showCommodityEconomics(id);render();
 }
 function ensureFinishedGoodsLots(){
