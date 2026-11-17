@@ -1864,3 +1864,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - `tests/commodity-processing-runtime.test.js` adds regressions for (1) storage lot mutation followed by failure and (2) second distribution posting failure after the first conversion cash posting. Both must restore the complete serialized state.
 - Implementation commits: `9ee5e3ee50a22c25009f369fcb1d02734bb7defc` and `a1b734143d2da90b7403636ee10eb11a9f5c40bb`.
 - Next verification: targeted CI for these commits. Do not claim the new processing-atomicity tests pass until workflow output confirms it.
+
+
+## 2026-11-17 — persistence boundary for atomic transactions
+
+- Regression workflow runs `43979454724` (processing atomicity code) and `43979489661` (processing rollback tests) both completed `success`.
+- Extended the transaction boundary so `save()` does not persist intermediate state while an atomic agricultural transaction is active. `AGRO_TRANSACTION_DEPTH` is incremented by transaction snapshot, decremented on commit/rollback, and rollback explicitly persists only the restored state.
+- Applied to raw commodity sale, commodity processing, and finished-goods sale transaction boundaries.
+- Added a regression assertion that an injected processing failure after a mutation does not persist an intermediate save payload.
+- Commits: `de2b8e55d914cb7d5ae1925aa680cd3858ec7c34`, `dd5c69b92dbada3a551eb886279a07167da16875`, `8f5abee452acb3bdb4f7fc13ea496ee997df29a8`, `a017a024a8e5f60c6dca2b8885a17e5d4e49910a8`.
+- Current post-change CI must be treated as pending until the new workflow completes.
