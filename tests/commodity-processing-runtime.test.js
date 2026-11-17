@@ -68,7 +68,7 @@ const sandbox = {
   logisticsBreakdown: () => "Distribusi Rp 100",
   safeRp: n => "Rp " + Math.round(n),
   msg: message => { sandbox.lastMessage = message; },
-  save: () => { if (typeof AGRO_TRANSACTION_DEPTH === "number" && AGRO_TRANSACTION_DEPTH > 0) return; persistedStates.push(JSON.stringify(state)); },
+  save: () => {},
   showCommodityEconomics: () => {},
   render: () => {},
   el: () => null,
@@ -80,7 +80,7 @@ const sandbox = {
     state.dayLog.cashOut += amt;
     if (field) state.dayLog[field] = (state.dayLog[field] || 0) + amt;
     state.ledger.push({ cat, desc, amt: -amt, detail });
-    sandbox.save();
+    save();
     return true;
   },
   earn: (_cat, _desc, amt, detail) => {
@@ -108,6 +108,8 @@ const sandbox = {
 };
 
 vm.runInNewContext(landSource, sandbox, { filename: "js/land.js" });
+sandbox.persistedStates = persistedStates;
+vm.runInContext('save = function(){ if (typeof AGRO_TRANSACTION_DEPTH === "number" && AGRO_TRANSACTION_DEPTH > 0) return; persistedStates.push(JSON.stringify(S)); };', sandbox);
 // Override the real logistics prompt after loading land.js, which declares its own function.
 sandbox.logisticsPrompt = () => ({ total: 100 });
 sandbox.showCommodityEconomics = () => {};
