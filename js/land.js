@@ -584,9 +584,9 @@ function sellFinishedCommodity(productId, requestedQuantity){
  const transactionSnapshot=snapshotAgriTransactionState();
  if(!transactionSnapshot){msg("Snapshot transaksi gagal; penjualan produk jadi dibatalkan sebelum mutasi.");return false;}
  try{
-  if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan))throw new Error("finished_lot_consume_failed");
   const cogsPosted=recordBusinessCogs("Penjualan "+product.name,[{account:"Persediaan Produk Jadi",amount:valuation.consumedCost}]);
   if(!Number.isFinite(cogsPosted)||Math.abs(cogsPosted-valuation.consumedCost)>1e-6)throw new Error("finished_cogs_post_failed");
+  if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan))throw new Error("finished_lot_consume_failed");
   S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
   S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
   earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
@@ -595,6 +595,7 @@ function sellFinishedCommodity(productId, requestedQuantity){
   msg("Transaksi produk jadi gagal dan seluruh perubahan persediaan, jurnal, kas, serta ledger dibatalkan ("+(error&&error.message||"unknown")+").");
   return false;
  }
+ commitAgriTransactionState();
  if(!S.dayLog.commoditySales)S.dayLog.commoditySales=[];
  S.dayLog.commoditySales.push({commodity:id,name:product.name,quantity:rawQuantity,unitPrice:salePrice,revenue,cogs:valuation.consumedCost,grossProfit:revenue-valuation.consumedCost,channel:"finished_goods"});
  save();msg("Penjualan selesai: omzet "+safeRp(revenue)+", HPP "+safeRp(valuation.consumedCost)+", laba kotor "+safeRp(revenue-valuation.consumedCost)+".");showCommodityEconomics();render();
