@@ -235,6 +235,7 @@ state.gold = 899900;
 state.landSystem.finishedInventory.sambal_cabai_250g = 40;
 state.landSystem.finishedInventoryCost.sambal_cabai_250g = 105000;
 const saleLedgerBefore = state.ledger.length;
+persistedStates.length = 0;
 const saleOk = sandbox.sellFinishedCommodity("sambal_cabai_250g", 2);
 assert.equal(saleOk, true);
 assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 38);
@@ -244,6 +245,7 @@ assert.equal(state.dayLog.cogs, 5250);
 assert.equal(state.dayLog.gross, 36000);
 assert.equal(state.dayLog.cogsByAccount["Persediaan Produk Jadi"], 5250);
 assert.equal(state.ledger.length, saleLedgerBefore + 2);
+assert.equal(persistedStates.length, 1, "successful finished-goods transaction must commit transaction depth and persist exactly one final state");
 
 const beforeInvalidPrice = JSON.stringify({gold:state.gold,qty:state.landSystem.finishedInventory.sambal_cabai_250g,cost:state.landSystem.finishedInventoryCost.sambal_cabai_250g,cogs:state.dayLog.cogs,gross:state.dayLog.gross,ledger:state.ledger.length});
 sandbox.COMMODITY_ECONOMICS.cabai_merah.processed.price = NaN;
