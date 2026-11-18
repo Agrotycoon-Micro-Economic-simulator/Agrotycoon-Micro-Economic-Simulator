@@ -1877,3 +1877,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - CI follow-up: runs `44017764923`, `44017797694`, and `44017810990` failed while validating the persistence-boundary change. The first two failures exposed the transaction-depth initialization/persistence harness; the `a017...` run log still showed the pre-fix lexical initializer, while the current branch now contains `let AGRO_TRANSACTION_DEPTH=0`. The final regression harness was corrected so its `save()` function is created inside the VM context and therefore observes the VM transaction depth. Commit: `1edc07a444e4f8ad7abd3aa7668757575712b43c`.
+
+
+## 2026-11-18 — finished-goods transaction boundary correction
+
+- Branch `feat/production-tier-taxonomy` remains the implementation branch; map files are untouched.
+- Verified current HEAD before this change was `c6a4e72c22b966489e0411685a55f9d38d1786a9`; no workflow run was yet attached to the prior regression-harness fix `1edc07a444e4f8ad7abd3aa7668757575712b43c` at verification time.
+- Audit of `sellFinishedCommodity()` found a transaction-depth bug: it created `snapshotAgriTransactionState()` but did not call `commitAgriTransactionState()` after success. Because `save()` suppresses persistence while `AGRO_TRANSACTION_DEPTH > 0`, a successful finished-goods sale could leave the transaction depth elevated and suppress later saves.
+- Corrected `js/land.js` so finished-goods sales commit the transaction boundary after successful mutation and before the final `save()`.
+- Reordered finished-goods sale mutation so HPP/COGS posting is validated before lot mutation, while the snapshot/restore boundary still guarantees rollback if lot mutation or later revenue posting fails.
+- Added regression in `tests/commodity-processing-runtime.test.js`: a successful finished-goods sale must persist exactly one final state, proving the transaction depth is released.
+- Implementation commits: `c4e863134bf26373eef8212fe3f6826cbf1f4867` and `e25d6643e6cf0e15eaa5fa88b0b9a3ff853b586`.
+- Verification status: `e25d6643e6cf0e15eaa5fa88b0b9a3ff853b586` had no associated workflow run at the time of this handoff check. Therefore CI is **pending**, not green.
+- Next target after CI: apply the same invariant-driven failure injection to raw sales for distribution/revenue side effects, then verify accounting equation, COGS, revenue, cash, inventory carrying value, and ledger deltas across raw sale, finished sale, production, and spoilage write-off.
