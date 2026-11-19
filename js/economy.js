@@ -293,13 +293,23 @@ function confirmSellTengkulak(jual,rev){
   msg('⚠️ Unit economics kelapa muda ke tengkulak tidak valid. Penjualan dibatalkan.');save();render();return;
  }
  if(recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
- earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper});
- if(typeof queueMarketTransaction==='function'){
-  if(soldBiasa>0)queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:soldBiasa,price:ordinaryUnitPrice,marketStage:'producer',source:'player_sale_to_collector'});
-  if(soldSuper>0)queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:soldSuper,price:superUnitPrice,marketStage:'producer',source:'player_sale_to_collector'});
+ const transactionSnapshot=typeof snapshotAgriTransactionState==='function'?snapshotAgriTransactionState():null;
+ try{
+  if(transactionSnapshot===null)throw new Error('transaction_snapshot_failed');
+  if(!earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper}))throw new Error('revenue_post_failed');
+  if(typeof queueMarketTransaction==='function'){
+   if(soldBiasa>0)queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:soldBiasa,price:ordinaryUnitPrice,marketStage:'producer',source:'player_sale_to_collector'});
+   if(soldSuper>0)queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:soldSuper,price:superUnitPrice,marketStage:'producer',source:'player_sale_to_collector'});
+  }
+  S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=saleRevenue;
+  S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
+  commitAgriTransactionState();
+ }catch(e){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg('⚠️ Transaksi penjualan kelapa gagal dan telah dibatalkan.');
+  render();
+  return;
  }
- S.dayLog.sales.tengkulak=soldQty;S.dayLog.sales.tengkulakRev=saleRevenue;
- S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
  say('Tengkulak','🧑‍💼','"Makasih Bos! Saya angkut semua ya."');
  save();render();
 }
@@ -312,10 +322,20 @@ function sellPasar(){
  const unitCost=stockValue/q;
  if(!Number.isFinite(unitCost)||unitCost<=0||!validateOldCoconutMarketUnitEconomics(salePrice,unitCost)){msg('⚠️ Unit economics kelapa tua tidak valid. Penjualan dibatalkan.');save();render();return;}
  if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
- earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev);
- if(typeof queueMarketTransaction==='function')queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:q,price:salePrice,marketStage:'producer',source:'player_sale_to_market'});
- S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
- S.stock={biasa:0,super:0};S.stockCostValue=0;
+ const transactionSnapshot=typeof snapshotAgriTransactionState==='function'?snapshotAgriTransactionState():null;
+ try{
+  if(transactionSnapshot===null)throw new Error('transaction_snapshot_failed');
+  if(!earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev))throw new Error('revenue_post_failed');
+  if(typeof queueMarketTransaction==='function')queueMarketTransaction({commodityId:'kelapa',side:'sell',quantity:q,price:salePrice,marketStage:'producer',source:'player_sale_to_market'});
+  S.dayLog.sales.pasar=q;S.dayLog.sales.pasarRev=rev;
+  S.stock={biasa:0,super:0};S.stockCostValue=0;
+  commitAgriTransactionState();
+ }catch(e){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg('⚠️ Transaksi penjualan kelapa gagal dan telah dibatalkan.');
+  render();
+  return;
+ }
  say('Pedagang','👩‍🌾','Yang tua saya ambil untuk santan.');
  save();render();
 }
