@@ -109,8 +109,9 @@ test('day-end write-off batch rolls back earlier lots when a later lot posting f
  assert.equal(result.reason,'storage_writeoff_cogs_post_failed');
  assert.equal(state.landSystem.inventory.padi,7);
  assert.equal(state.landSystem.inventoryCost.padi,1700);
- assert.deepEqual(state.landSystem.storageLots.map(x=>[x.quantity,x.writeoffDay]),[[2,undefined],[3,undefined]]);
- assert.deepEqual(state.dayLog.storageWriteoffs,[]);
+ assert.equal(state.landSystem.storageLots[0].quantity,2);assert.equal(state.landSystem.storageLots[0].writeoffDay,undefined);
+ assert.equal(state.landSystem.storageLots[1].quantity,3);assert.equal(state.landSystem.storageLots[1].writeoffDay,undefined);
+ assert.equal(state.dayLog.storageWriteoffs.length,0);
  assert.equal(state.dayLog,originalDayLog);
 });
 
