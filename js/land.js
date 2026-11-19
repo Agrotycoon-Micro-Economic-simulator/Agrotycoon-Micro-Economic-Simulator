@@ -315,7 +315,7 @@ function sellCommodity(id,channel){
   S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
   S.landSystem.inventory[id]=valuation.remainingQuantity;
   S.landSystem.inventoryCost[id]=valuation.remainingCostValue;
-  earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel});
+  if(!earn("PENJUALAN","Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,rev,{commodity:id,quantity:qty,unitPrice:price,channel}))throw new Error("raw_revenue_post_failed");
  }catch(error){
   restoreAgriTransactionState(transactionSnapshot);
   msg("Transaksi penjualan gagal dan seluruh perubahan kas, lot, persediaan, jurnal, serta ledger dibatalkan ("+(error&&error.message||"unknown") +").");
@@ -589,7 +589,7 @@ function sellFinishedCommodity(productId, requestedQuantity){
   if(finishedLotPlan&&!consumeFinishedGoodsLots(id,finishedLotPlan))throw new Error("finished_lot_consume_failed");
   S.landSystem.finishedInventory[id]=valuation.remainingQuantity;
   S.landSystem.finishedInventoryCost[id]=valuation.remainingCostValue;
-  earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"});
+  if(!earn("PENJUALAN","Jual "+rawQuantity+" "+product.name,revenue,{commodity:id,quantity:rawQuantity,unitPrice:salePrice,channel:"finished_goods"}))throw new Error("finished_revenue_post_failed");
  }catch(error){
   restoreAgriTransactionState(transactionSnapshot);
   msg("Transaksi produk jadi gagal dan seluruh perubahan persediaan, jurnal, kas, serta ledger dibatalkan ("+(error&&error.message||"unknown")+").");
