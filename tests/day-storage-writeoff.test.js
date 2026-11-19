@@ -18,7 +18,7 @@ function loadHelper(recordResult){
   ledger:(...args)=>events.push({ledger:args})
  };
  vm.runInNewContext(source,sandbox,{filename:'js/day.js'});
- return {writeOff:sandbox.writeOffExpiredStorageLot,finishedWriteOff:sandbox.writeOffExpiredFinishedGoodsLot,events};
+ return {writeOff:sandbox.writeOffExpiredStorageLot,finishedWriteOff:sandbox.writeOffExpiredFinishedGoodsLot,runBatch:sandbox.runDayEndWriteoffTransaction,events};
 }
 
 test('daily storage write-off values each expired lot from its own unit cost',()=>{
@@ -87,4 +87,47 @@ test('finished-goods write-off leaves inventory untouched when HPP loss posting 
  assert.equal(lot.quantity,2);
  assert.equal(lot.writeoffDay,undefined);
  assert.equal(events.length,1);
+});
+
+
+test('day-end write-off batch rolls back earlier lots when a later lot posting fails',()=>{
+ const {writeOff,runBatch}=loadHelper();
+ const state={day:50,dayLog:{storageWriteoffs:[]},landSystem:{inventory:{padi:7},inventoryCost:{padi:1700},storageLots:[
+  {id:'a',commodityId:'padi',quantity:2,unitCost:100},
+  {id:'b',commodityId:'padi',quantity:3,unitCost:500}
+ ]}};
+ const originalDayLog=state.dayLog;
+ const result=runBatch(state,()=>{
+  const first=writeOff(state,{risk:'expired'},state.landSystem.storageLots[0]);
+  if(!first.ok)return first;
+  state.dayLog.storageWriteoffs.push({lotId:first.lotId,value:first.value});
+  return writeOff(state,{risk:'expired'},state.landSystem.storageLots[1]);
+ });
+ assert.equal(result.ok,false);
+ assert.equal(result.reason,'finished_writeoff_cogs_post_failed');
+ assert.equal(state.landSystem.inventory.padi,7);
+ assert.equal(state.landSystem.inventoryCost.padi,1700);
+ assert.deepEqual(state.landSystem.storageLots.map(x=>[x.quantity,x.writeoffDay]),[[2,undefined],[3,undefined]]);
+ assert.deepEqual(state.dayLog.storageWriteoffs,[]);
+ assert.equal(state.dayLog,originalDayLog);
+});
+
+test('day-end write-off batch commits all lot changes when every posting succeeds',()=>{
+ const {writeOff,runBatch}=loadHelper();
+ const state={day:51,dayLog:{storageWriteoffs:[]},landSystem:{inventory:{padi:7},inventoryCost:{padi:1700},storageLots:[
+  {id:'a',commodityId:'padi',quantity:2,unitCost:100},
+  {id:'b',commodityId:'padi',quantity:3,unitCost:500}
+ ]}};
+ const result=runBatch(state,()=>{
+  for(const lot of state.landSystem.storageLots){
+   const posted=writeOff(state,{risk:'expired'},lot);
+   if(!posted.ok)return posted;
+   state.dayLog.storageWriteoffs.push({lotId:posted.lotId,value:posted.value});
+  }
+  return {ok:true};
+ });
+ assert.equal(result.ok,true);
+ assert.equal(state.landSystem.inventory.padi,2);
+ assert.equal(state.landSystem.inventoryCost.padi,0);
+ assert.deepEqual(state.dayLog.storageWriteoffs.map(x=>x.value),[200,1500]);
 });
