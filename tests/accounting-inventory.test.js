@@ -58,7 +58,7 @@ function makeHarness(overrides = {}) {
       : (Number(S.stock.biasa) || 0) > 0
         ? 'muda'
         : 'kosong',
-    msg: () => {},
+    msg: (...args) => journal.push({ msg: args }),
     save: () => {},
     render: () => {},
     say: () => {},
@@ -125,7 +125,7 @@ test('young coconut tengkulak sale uses unit economics before HPP or inventory m
   context.stockClass = () => 'muda';
 
   assert.equal(context.confirmSellTengkulak(true, 999999), undefined);
-  assert.equal(S.gold, 103500);
+  assert.equal(S.gold, 103500, JSON.stringify(journal));
   assert.equal(S.stock.biasa + S.stock.super, 0);
   assert.equal(S.stockCostValue, 0);
   assert.equal(S.dayLog.cogs, 3500);
@@ -154,7 +154,7 @@ test('old coconut market sale uses unit economics before HPP or inventory mutati
   S.stockCostValue = 7000;
   DATA.pricePasarTua = 6000;
   assert.equal(context.sellPasar(), undefined);
-  assert.equal(S.gold, 112000);
+  assert.equal(S.gold, 112000, JSON.stringify(journal));
   assert.equal(S.stock.biasa + S.stock.super, 0);
   assert.equal(S.stockCostValue, 0);
   assert.equal(S.dayLog.cogs, 7000);
