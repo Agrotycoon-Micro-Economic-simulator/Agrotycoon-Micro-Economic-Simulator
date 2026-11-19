@@ -1944,3 +1944,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 
 
 - CI follow-up correction: workflow `44552039732` repeated the six coconut-sale failures after transaction helper stubs were added. The precise remaining cause was the test fixture's missing `S.ledger` array, which the hardened `earn()` contract requires before it can post revenue. Added `ledger: []` to the accounting-inventory fixture in commit `800fc20e16d920661139e7d1d90bd2e544ff2058`. The previous bullet's statement that transaction-helper absence was the complete root cause was incomplete; both transaction helpers and the ledger state are required by this harness.
+
+
+## 2026-11-19 — expanded day-end spoilage transaction boundary and revenue wrapper regression
+
+- Expanded `finishDay()`'s atomic expiry/write-off batch to include ice melt and rotten whole-coconut inventory, in addition to opened coconut, finished goods, and raw storage lots. These paths now require successful HPP posting before clearing stock/quantity/cost state. If any write-off posting fails, the batch restores the spoilage-related state together.
+- Added regression coverage for rollback of ice portions/cost, whole coconut stock/value, opened coconut WIP, rotten statistics, and the original day-log object when the batch fails.
+- CI exposed a separate pre-existing wrapper contract bug: a later `earn = function(...)` achievement wrapper discarded the boolean result returned by the hardened revenue poster. As a result, coconut sale callers interpreted successful revenue postings as failures and rolled them back. The wrapper now returns the original result and triggers achievements only after successful posting.
+- The accounting-inventory fixture now separates user-facing message capture from the accounting journal so invalid-input assertions continue to test that no accounting entries were posted.
+- Added diagnostic reason text to the two legacy coconut-sale rollback messages and console diagnostics to aid future failure analysis.
+- Commits in this continuation: `6d53553e2462695a422800f06b7b328bf456e1bd`, `6b8d344086ffe4f0db62382761ae0e8ea0573451`, `bba9c87efc76021f235ed2a5f9d8bb1298fa6143`, `ac5cdb17810a40dc07e6ef93c416e7cd4b8b876d`, `e990516e105358c89f223f3e735278a0f3d3f9b3`, `20f523ce8907c74226c6400cba65676d18560073`, `ae458bba05604320589afccde1cf38fe4a27fe86`.
+- CI on `20f523c...` still failed because the fixture captured validation messages inside the journal array, invalidating “no journal mutation” assertions. This was corrected by separating message capture in `ae458bb...`. Workflow `44554210024` for `ae458bb...` is queued at the time of this handoff update; no pass is claimed.
+- Next: verify workflow `44554210024`, then audit all daily economic side effects for atomicity and reconcile the end-of-day write-off batch with inventory-lot reconciliation.
