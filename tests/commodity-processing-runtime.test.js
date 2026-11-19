@@ -461,6 +461,26 @@ assert.equal(JSON.stringify({
 }), rawBeforeCogsFailure, "raw agricultural HPP failure must leave cash and inventory unchanged");
 sandbox.recordBusinessCogs = originalRawRecordCogs;
 
+// Failure injection: distribution posting after COGS and lot mutation must roll back
+// the entire raw-sale transaction.
+const originalRawSpend = sandbox.spend;
+sandbox.spend = function(...args) {
+  if(args[0] === "OPEX") return false;
+  return originalRawSpend(...args);
+};
+state.gold = 1000000;
+state.landSystem.inventory = { cabai_merah: 10 };
+state.landSystem.inventoryCost = { cabai_merah: 5000 };
+state.landSystem.storageLots = [{ id: "raw-distribution-atomic", commodityId: "cabai_merah", quantity: 10, unitCost: 500 }];
+state.landSystem.market = { cabai_merah: { sold: 0, price: 25000 } };
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+const rawBeforeDistributionFailure = JSON.stringify(state);
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify(state), rawBeforeDistributionFailure, "raw-sale distribution failure must roll back COGS, lot mutation, inventory, and ledger");
+sandbox.spend = originalRawSpend;
+delete state.landSystem.storageLots;
+
 // Failure injection: storage mutates a lot and then reports failure. The sale wrapper
 // must restore the complete pre-transaction state, including the lot book and ledger.
 state.gold = 1000000;
