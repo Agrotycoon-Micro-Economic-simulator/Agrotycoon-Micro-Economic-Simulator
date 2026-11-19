@@ -1902,3 +1902,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression commit: `a69ccab77fc22c3ffe29ee5f798a91a2cbbd3dae`.
 - CI status for these commits: pending; GitHub currently reports no workflow run associated with the new commits. Do not claim green CI.
 - Next invariant target: verify the revenue-posting failure path and enforce that `earn()` either returns/throws a verifiable success result or is wrapped by an explicit postcondition, so a partial revenue mutation cannot escape the transaction boundary.
+
+
+## 2026-11-19 — revenue-posting transaction invariant
+
+- Re-checked branch feat/production-tier-taxonomy; current implementation work remains isolated from main and the map sandbox.
+- Hardened js/economy.js::earn() with an explicit success contract: invalid revenue/state returns false; successful posting returns true only after cash, gross revenue, and cash-in deltas match the requested amount.
+- Hardened both sellCommodity() and sellFinishedCommodity() in js/land.js to treat a false revenue-posting result as a transaction failure and restore the complete snapshot.
+- Added regression injection in tests/commodity-processing-runtime.test.js for raw-sale revenue failure after COGS/lot mutation and finished-goods revenue failure after FIFO/HPP mutation.
+- Implementation commits: 6a415666c3ad607bb4ae7c5cb04299c879e62b5d, 95894fd376cf43813f68388139545f5147166cb4.
+- Regression commit: 699baa559a39f3995bd5241983d4f9e891b27132.
+- Verification: GitHub Actions status must be checked against the resulting HEAD; do not infer CI success from commit creation.
+- Next target: verify the new regression suite in GitHub Actions, then audit transaction-depth/persistence invariants across raw sale, finished sale, production, and spoilage write-off before moving to the next accounting subsystem.
