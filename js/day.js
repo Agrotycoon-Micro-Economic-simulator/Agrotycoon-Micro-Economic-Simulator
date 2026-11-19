@@ -151,16 +151,6 @@ function finishDay(){
  const L=S.dayLog;
  if(!L){console.error('dayLog tidak ada');return;}
  
- // Es mencair jika tidak ada kulkas
- if(!S.warung.fridge&&S.warung.ice>0){
-  L.lossIcePortions=S.warung.ice;
-  L.lossIceValue=Number.isFinite(S.warung.iceCost)?Math.max(0,S.warung.iceCost):S.warung.ice/DATA.shop.iceKarung.portions*DATA.shop.iceKarung.price;
-  if(L.lossIceValue>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan es mencair',[{account:'Persediaan Es (susut)',amount:L.lossIceValue}]);
-  else ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
-  S.warung.ice=0;S.warung.iceCost=0;
- }else if(S.warung.fridge&&S.warung.ice>0){
-  ledger('INFO','Es tersisa di kulkas: '+S.warung.ice+' porsi (aman)',0);
- }
  S.warung.operatedToday=false;
  
  // Konsumsi paket mengikuti periode daya pakai DATA.living.period.
@@ -255,10 +245,36 @@ function finishDay(){
  const mOld=monthOf(S.day);
  S.day++;
  const expiryBatch=runDayEndWriteoffTransaction(S,()=>{
+  // Es mencair, kelapa terbuka, produk jadi, dan bahan baku berada dalam satu batas rollback.
+  if(!S.warung.fridge&&S.warung.ice>0){
+   L.lossIcePortions=S.warung.ice;
+   L.lossIceValue=Number.isFinite(S.warung.iceCost)?Math.max(0,S.warung.iceCost):S.warung.ice/DATA.shop.iceKarung.portions*DATA.shop.iceKarung.price;
+   if(L.lossIceValue>0&&typeof recordBusinessCogs==='function'){
+    const posted=recordBusinessCogs('Susut persediaan es mencair',[{account:'Persediaan Es (susut)',amount:L.lossIceValue}]);
+    if(posted!==L.lossIceValue)throw new Error('ice_melt_writeoff_cogs_post_failed');
+   }else ledger('RUGI','Es mencair '+S.warung.ice+' porsi (nilai '+rp(L.lossIceValue)+')',0);
+   S.warung.ice=0;S.warung.iceCost=0;
+  }else if(S.warung.fridge&&S.warung.ice>0){
+   ledger('INFO','Es tersisa di kulkas: '+S.warung.ice+' porsi (aman)',0);
+  }
   if(typeof AgroCommodityStorage!=='undefined'&&S.quarterUsed>0){const openedAge=Math.max(0,S.day-(Number(S.quarterOpenedDay)||S.day));const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const opened=AgroCommodityStorage.assessLot({commodityId:'kelapa',form:'opened',opened:true,ageDays:openedAge,temperatureC:S.warung&&S.warung.fridge?4:env.temperatureC,relativeHumidityPct:env.relativeHumidityPct,storageType:S.warung&&S.warung.fridge?'refrigerated':(env.storageType||'ambient')});if(opened.expired){const loss=Math.max(0,Number(S.quarterCost)||0)*(Math.max(0,4-(Number(S.quarterUsed)||0))/4);if(loss>0&&typeof recordBusinessCogs==='function'){const posted=recordBusinessCogs('Susut kelapa terbuka rusak',[{account:'Persediaan Kelapa Dalam Proses (susut)',amount:loss}]);if(posted!==loss)throw new Error('opened_coconut_writeoff_cogs_post_failed');}else ledger('RUGI','Kelapa terbuka rusak',0);L.lossOpenedCoconut=loss;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}}
   const finishedWriteoffs=tickFinishedGoodsExpiry(S); if(finishedWriteoffs.length){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push(...finishedWriteoffs.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,value:x.value,reason:x.reason,finishedGoods:true,ageDays:x.ageDays,shelfLifeDays:x.shelfLifeDays})));}
   if(typeof AgroCommodityStorage!=='undefined'&&S.landSystem){const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const storageTick=AgroCommodityStorage.tickLots(S,S.day,env);if(storageTick&&!storageTick.ok)throw new Error(storageTick.reason||'storage_expiry_tick_failed');if(storageTick&&storageTick.ok){const expired=storageTick.results.filter(x=>!x.skipped&&x.expired);expired.forEach(result=>{const lot=S.landSystem.storageLots.find(x=>x.id===result.lotId);if(!lot||lot.writeoffDay)return;const writeoff=writeOffExpiredStorageLot(S,result,lot);if(!writeoff.ok)throw new Error(writeoff.reason||'storage_writeoff_failed');if(writeoff.ok){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push({day:S.day,lotId:writeoff.lotId,commodityId:writeoff.commodityId,quantity:writeoff.quantity,value:writeoff.value,reason:writeoff.reason});}});S.landSystem.storageLots=S.landSystem.storageLots.filter(x=>Number(x.quantity)>1e-9);const alerts=storageTick.results.filter(x=>!x.skipped&&['high','critical','expired','spoiled'].includes(x.risk));if(alerts.length){if(!S.dayLog.storageAlerts)S.dayLog.storageAlerts=[];S.dayLog.storageAlerts.push(...alerts.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,risk:x.risk,quality:x.quality})));}}}
  
+  if(stockClass()==='busuk'&&stockQty()>0){
+   const q=stockQty(),stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
+   const openCoconutValue=Math.max(0,Number(S.quarterCost)||0)*Math.max(0,4-(Number(S.quarterUsed)||0))/4;
+   const rottenComponents=[];
+   if(stockValue>0)rottenComponents.push({account:'Persediaan Kelapa (susut)',amount:stockValue});
+   if(openCoconutValue>0)rottenComponents.push({account:'Persediaan Kelapa Dalam Proses (susut)',amount:openCoconutValue});
+   if(rottenComponents.length&&typeof recordBusinessCogs==='function'){
+    const expected=rottenComponents.reduce((sum,x)=>sum+Number(x.amount),0);
+    const posted=recordBusinessCogs('Susut persediaan kelapa busuk',rottenComponents);
+    if(posted!==expected)throw new Error('rotten_coconut_writeoff_cogs_post_failed');
+   }else ledger('RUGI','Kelapa busuk '+q+' butir',0);
+   S.stats.rotten=(Number(S.stats.rotten)||0)+q;
+   L.lossRot=q;S.stock={biasa:0,super:0};S.stockCostValue=0;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;
+  }
   return {ok:true};
  });
  if(!expiryBatch.ok){
@@ -274,17 +290,6 @@ function finishDay(){
  }
  if(monthOf(S.day)!==mOld&&S.purchases){S.purchases.seedlingMonth=0;S.purchases.externalCoconutMonth=0;}
  if(monthOf(S.day)>mOld && DATA.living && DATA.living.bills && Number.isFinite(DATA.living.bills.amount) && DATA.living.bills.amount>0){spend('HIDUP','Tagihan bulanan',DATA.living.bills.amount,'bills');}
- if(stockClass()==='busuk'&&stockQty()>0){
-  const q=stockQty();S.stats.rotten+=q;
-  const stockValue=Number.isFinite(S.stockCostValue)?Math.max(0,S.stockCostValue):q*3500;
-  const openCoconutValue=Math.max(0,Number(S.quarterCost)||0)*Math.max(0,4-(Number(S.quarterUsed)||0))/4;
-  const rottenComponents=[];
-  if(stockValue>0)rottenComponents.push({account:'Persediaan Kelapa (susut)',amount:stockValue});
-  if(openCoconutValue>0)rottenComponents.push({account:'Persediaan Kelapa Dalam Proses (susut)',amount:openCoconutValue});
-  if(rottenComponents.length&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut persediaan kelapa busuk',rottenComponents);
-  else ledger('RUGI','Kelapa busuk '+q+' butir',0);
-  L.lossRot=q;S.stock={biasa:0,super:0};S.stockCostValue=0;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;
- }
  S.cuaca=rollWeather();
  const net=-L.expense+L.gross;
  const businessResult=(Number(L.gross)||0)-(Number(L.cogs)||0)-(Number(L.businessExpense)||0);
