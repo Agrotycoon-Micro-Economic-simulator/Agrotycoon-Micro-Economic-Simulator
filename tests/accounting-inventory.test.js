@@ -63,7 +63,15 @@ function makeHarness(overrides = {}) {
     say: () => {},
     closeModal: () => {},
     el: () => ({ value: '1' }),
-    monthOf: () => 1
+    monthOf: () => 1,
+    snapshotAgriTransactionState: () => JSON.parse(JSON.stringify(S)),
+    commitAgriTransactionState: () => {},
+    restoreAgriTransactionState: snapshot => {
+      if (!snapshot) return false;
+      Object.keys(S).forEach(key => { if (!Object.prototype.hasOwnProperty.call(snapshot, key)) delete S[key]; });
+      Object.keys(snapshot).forEach(key => { S[key] = snapshot[key]; });
+      return true;
+    }
   });
   vm.runInContext(economySource, context, { filename: 'js/economy.js' });
   return { S, DATA, journal, context };
