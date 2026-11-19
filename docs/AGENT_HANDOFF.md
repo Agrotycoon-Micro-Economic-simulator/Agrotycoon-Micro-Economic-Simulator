@@ -1956,3 +1956,12 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits in this continuation: `6d53553e2462695a422800f06b7b328bf456e1bd`, `6b8d344086ffe4f0db62382761ae0e8ea0573451`, `bba9c87efc76021f235ed2a5f9d8bb1298fa6143`, `ac5cdb17810a40dc07e6ef93c416e7cd4b8b876d`, `e990516e105358c89f223f3e735278a0f3d3f9b3`, `20f523ce8907c74226c6400cba65676d18560073`, `ae458bba05604320589afccde1cf38fe4a27fe86`.
 - CI on `20f523c...` still failed because the fixture captured validation messages inside the journal array, invalidating “no journal mutation” assertions. This was corrected by separating message capture in `ae458bb...`. Workflow `44554210024` for `ae458bb...` is queued at the time of this handoff update; no pass is claimed.
 - Next: verify workflow `44554210024`, then audit all daily economic side effects for atomicity and reconcile the end-of-day write-off batch with inventory-lot reconciliation.
+
+
+- Further CI diagnosis/fixes after the previous note:
+  - `accounting-inventory.test.js` initially captured user-facing validation messages in the accounting journal, falsely failing “no accounting mutation” assertions; separated `messages` from `journal` and corrected fixture destructuring.
+  - `commodity-processing-runtime.test.js` had a host-scope `save()` call inside its mocked `spend()`; removed it. The test now asserts that rollback persists exactly one restored pre-transaction snapshot, consistent with `restoreAgriTransactionState()` decrementing transaction depth before saving.
+  - `day-storage-writeoff.test.js` failure injection now succeeds on the first lot HPP posting and fails on the second; assertions avoid cross-VM-realm deep equality.
+  - Write-off functions now fail closed when `recordBusinessCogs` is unavailable, rather than clearing inventory after a non-HPP fallback. Raw-storage and finished-goods failure reasons are distinct.
+- Latest code/test commits: `23f390a4ae67c6b986ce1cbf379cdd4e833f321c`, `09b82f03c67772ffef655f48a89009fef9f859a3`, `2b4a32c1fd3b1f7984a806e84066495c380fec2b`, `a6e65834f247061bdc17a68c2b48a9f1fabb4e01`, `d8ec0a4ca0a20e5b97fce13645e40481b89334a7`, `ff95db8b04e8792bd950b592e791949a3b1af11c`.
+- CI run `44555870538` is currently in progress for `ff95db8...`; the preceding runs failed on test-fixture assertions now corrected. Do not treat the latest workflow as green until it completes.
