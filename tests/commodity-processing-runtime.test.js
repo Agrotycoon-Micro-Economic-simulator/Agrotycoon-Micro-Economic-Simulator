@@ -84,10 +84,12 @@ const sandbox = {
     return true;
   },
   earn: (_cat, _desc, amt, detail) => {
-    state.gold += amt;
-    state.dayLog.gross += amt;
-    state.dayLog.cashIn = (state.dayLog.cashIn || 0) + amt;
-    state.ledger.push({ cat: _cat, desc: _desc, amt, detail });
+    if (!Number.isFinite(Number(amt)) || Number(amt) <= 0) return false;
+    state.gold += Number(amt);
+    state.dayLog.gross += Number(amt);
+    state.dayLog.cashIn = (state.dayLog.cashIn || 0) + Number(amt);
+    state.ledger.push({ cat: _cat, desc: _desc, amt: Number(amt), detail });
+    return true;
   },
   businessCogsTotal: components => components.reduce((sum, x) => sum + x.amount, 0),
   recordBusinessCogs: (_desc, components) => {
