@@ -171,7 +171,7 @@ assert.equal(typeof sandbox.processCommodity, "function");
 
 sandbox.processCommodity("cabai_merah");
 
-assert.equal(state.landSystem.inventory.cabai_merah, 0);
+assert.equal(state.landSystem.inventory.cabai_merah, 0, sandbox.lastMessage);
 assert.equal(state.landSystem.inventoryCost.cabai_merah, 0);
 assert.equal(state.landSystem.finishedInventory.sambal_cabai_250g, 40, "10 kg raw input at 0.25 kg per pack must yield 40 finished packs");
 assert.equal(state.landSystem.finishedInventoryCost.sambal_cabai_250g, 105000, "finished goods carrying value must include raw input plus conversion");
