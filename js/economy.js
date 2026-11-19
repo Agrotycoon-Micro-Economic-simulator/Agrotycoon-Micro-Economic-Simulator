@@ -52,7 +52,13 @@ function spend(cat,desc,amt,field,detail){
  return true;
 }
 function earn(cat,desc,amt,detail){
- const value=Number(amt)||0;
+ const value=Number(amt);
+ if(!Number.isFinite(value)||value<=0)return false;
+ if(!S||typeof S!=='object'||!S.dayLog||!Array.isArray(S.ledger))return false;
+ const goldBefore=Number(S.gold);
+ const grossBefore=Number(S.dayLog.gross)||0;
+ const cashInBefore=Number(S.dayLog.cashIn)||0;
+ if(!Number.isFinite(goldBefore))return false;
  S.gold+=value;
  ledger(cat,desc,value,detail,{
   classification:'business_revenue',
@@ -62,9 +68,12 @@ function earn(cat,desc,amt,detail){
   credit:value,
   basis:'cash'
  });
- S.dayLog.gross+=value;
- S.dayLog.cashIn=(Number(S.dayLog.cashIn)||0)+value;
+ S.dayLog.gross=grossBefore+value;
+ S.dayLog.cashIn=cashInBefore+value;
  gainXP(5);
+ return Number.isFinite(S.gold)&&Math.abs(S.gold-(goldBefore+value))<1e-9
+   &&Math.abs((Number(S.dayLog.gross)||0)-(grossBefore+value))<1e-9
+   &&Math.abs((Number(S.dayLog.cashIn)||0)-(cashInBefore+value))<1e-9;
 } // +5 XP per transaksi
 function harvest(){
  if(stockQty()>0){msg('⚠️ Gudang masih berisi. Jual/olah dulu stok lama.');return;}
