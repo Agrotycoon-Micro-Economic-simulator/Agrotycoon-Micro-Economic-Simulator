@@ -1926,3 +1926,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Commits: acc919c7a2df970e2b762d08e1572009cf66f8ce, 79caa375b2b692fc574c318d043cb38405f9d8eb, 881534a1b9433b9186d2e85239d60d65d1f5b53b.
 - CI verification remains pending/no workflow run observed for the recent commits.
 - Day-end spoilage/write-off audit found individual write-off functions post COGS before mutation and therefore reject failed COGS without mutating the lot. A broader multi-lot day-end rollback is not yet introduced; this remains the next integrity target if a write-off batch failure injection is warranted.
+
+
+## 2026-11-19 — day-end spoilage batch atomicity
+
+- Verified branch `feat/production-tier-taxonomy` at `0fc595b8e7fc75bd7bea22d6e85390138a1a8873` before continuing; implementation remained isolated from `main`. `peta.html` and `js/map_engine.js` were not changed.
+- Wrapped the day-end opened-coconut, finished-goods expiry, and raw-storage expiry/write-off phase in `runDayEndWriteoffTransaction()`. The snapshot is taken after the day counter advances and after the earlier daily simulation steps, so a failed spoilage batch rolls back only the expiry/write-off phase rather than undoing the rest of the completed day.
+- A failed HPP posting, failed finished-goods write-off, or failed storage expiry tick now aborts the complete expiry batch. Previously completed lot write-offs, lot quantities/costs, expiry markers, storage alerts, and write-off log entries are restored together. The existing day-log object identity is preserved because `finishDay()` holds a reference to it.
+- Successful batches retain all write-offs. The failed batch is recorded as an `INTEGRITAS` event after rollback; the day itself can still complete and be saved.
+- Added failure-injection tests in `tests/day-storage-writeoff.test.js` for multi-lot rollback after the first lot succeeds and the second HPP posting fails, plus successful multi-lot commit.
+- Commits: `48d2d8527fc703ffaf4d3a11a9bb9655b30767e7`, `7c9bd1916d59b084cf2aad032fa5c6ee3ac8d733`, `701046be1a489720080bd0031de729a213f589f6`, `635d8a5aae8e8226a0101bf1efaed04bcabe4858`.
+- Verification status at handoff update: GitHub reports no workflow runs associated with the latest code commit `701046be1a489720080bd0031de729a213f589f6`; the later storage-tick guard is `635d8a5aae8e8226a0101bf1efaed04bcabe4858`. CI is pending/unobserved, not green. The test file has been added but has not yet been executed in this environment.
+- Next target: inspect the full day-end pipeline for other non-atomic inventory/accounting effects (especially ice melt, opened-coconut write-off, and rotten whole-coconut write-off), then verify the new batch tests in Actions before claiming regression coverage passes.
