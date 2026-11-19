@@ -47,6 +47,7 @@ function makeHarness(overrides = {}) {
     }
   };
   const journal = [];
+  const messages = [];
   const context = vm.createContext({
     S,
     DATA,
@@ -58,7 +59,7 @@ function makeHarness(overrides = {}) {
       : (Number(S.stock.biasa) || 0) > 0
         ? 'muda'
         : 'kosong',
-    msg: (...args) => journal.push({ msg: args }),
+    msg: (...args) => messages.push(args),
     save: () => {},
     render: () => {},
     say: () => {},
@@ -75,11 +76,11 @@ function makeHarness(overrides = {}) {
     }
   });
   vm.runInContext(economySource, context, { filename: 'js/economy.js' });
-  return { S, DATA, journal, context };
+  return { S, DATA, journal, messages, context };
 }
 
 test('live es kelapa sale uses unit economics as a pre-posting consistency guard', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   const unitEconomics = require('../js/unit_economics.js');
   context.AgroUnitEconomics = unitEconomics;
 
@@ -125,7 +126,7 @@ test('young coconut tengkulak sale uses unit economics before HPP or inventory m
   context.stockClass = () => 'muda';
 
   assert.equal(context.confirmSellTengkulak(true, 999999), undefined);
-  assert.equal(S.gold, 103500, JSON.stringify(journal));
+  assert.equal(S.gold, 103500, JSON.stringify({journal,messages}));
   assert.equal(S.stock.biasa + S.stock.super, 0);
   assert.equal(S.stockCostValue, 0);
   assert.equal(S.dayLog.cogs, 3500);
@@ -154,7 +155,7 @@ test('old coconut market sale uses unit economics before HPP or inventory mutati
   S.stockCostValue = 7000;
   DATA.pricePasarTua = 6000;
   assert.equal(context.sellPasar(), undefined);
-  assert.equal(S.gold, 112000, JSON.stringify(journal));
+  assert.equal(S.gold, 112000, JSON.stringify({journal,messages}));
   assert.equal(S.stock.biasa + S.stock.super, 0);
   assert.equal(S.stockCostValue, 0);
   assert.equal(S.dayLog.cogs, 7000);
