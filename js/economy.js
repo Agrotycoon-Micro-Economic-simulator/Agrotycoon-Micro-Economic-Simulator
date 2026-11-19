@@ -311,6 +311,7 @@ function confirmSellTengkulak(jual,rev){
   S.stats.tengkulak+=soldQty;S.stock={biasa:0,super:0};S.stockCostValue=0;
   commitAgriTransactionState();
  }catch(e){
+  if(typeof console!=='undefined'&&console.error)console.error('Transaksi penjualan kelapa dibatalkan:',e);
   restoreAgriTransactionState(transactionSnapshot);
   msg('⚠️ Transaksi penjualan kelapa gagal dan telah dibatalkan.');
   render();
@@ -343,6 +344,7 @@ function sellPasar(){
   S.stock={biasa:0,super:0};S.stockCostValue=0;
   commitAgriTransactionState();
  }catch(e){
+  if(typeof console!=='undefined'&&console.error)console.error('Transaksi penjualan kelapa dibatalkan:',e);
   restoreAgriTransactionState(transactionSnapshot);
   msg('⚠️ Transaksi penjualan kelapa gagal dan telah dibatalkan.');
   render();
