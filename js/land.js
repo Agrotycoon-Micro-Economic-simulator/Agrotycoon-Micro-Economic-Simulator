@@ -304,12 +304,12 @@ function sellCommodity(id,channel){
  const transactionSnapshot=snapshotAgriTransactionState();
  if(!transactionSnapshot){msg("Snapshot transaksi gagal; penjualan dibatalkan sebelum mutasi.");return false;}
  try{
+  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
+  if(!Number.isFinite(cogsPosted)||Math.abs(cogsPosted-valuation.consumedCost)>1e-6)throw new Error("raw_cogs_post_failed");
   if(typeof AgroCommodityStorage!=='undefined'&&AgroCommodityStorage.consumeLots){
    const lotUse=AgroCommodityStorage.consumeLots(S,id,qty);
    if(!lotUse||!lotUse.ok)throw new Error("raw_lot_consume_failed");
   }
-  const cogsPosted=recordBusinessCogs("Penjualan "+COMMODITY_BY_ID[id].name+" "+channel,[{account:"Persediaan Bahan Baku Pertanian",amount:valuation.consumedCost}]);
-  if(!Number.isFinite(cogsPosted)||Math.abs(cogsPosted-valuation.consumedCost)>1e-6)throw new Error("raw_cogs_post_failed");
   if(logistics.total>0&&!spend("OPEX","Distribusi "+COMMODITY_BY_ID[id].name,logistics.total,"expense",{distanceKm:distance,vehicle,coldBox:cold}))throw new Error("raw_distribution_post_failed");
   S.landSystem.market[id]=S.landSystem.market[id]||{sold:0,price};
   S.landSystem.market[id].sold=(S.landSystem.market[id].sold||0)+qty;
