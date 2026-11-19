@@ -80,7 +80,6 @@ const sandbox = {
     state.dayLog.cashOut += amt;
     if (field) state.dayLog[field] = (state.dayLog[field] || 0) + amt;
     state.ledger.push({ cat, desc, amt: -amt, detail });
-    save();
     return true;
   },
   earn: (_cat, _desc, amt, detail) => {
