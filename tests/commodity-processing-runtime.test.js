@@ -327,7 +327,8 @@ const processingBeforeConsumeFailure = JSON.stringify(state);
 persistedStates.length = 0;
 assert.equal(sandbox.processCommodity("cabai_merah"), false);
 assert.equal(JSON.stringify(state), processingBeforeConsumeFailure, "processing must roll back cash and all inventory state when lot consumption fails after mutation");
-assert.equal(persistedStates.length, 0, "failed atomic transaction must not persist an intermediate state");
+assert.equal(persistedStates.length, 1, "rollback may persist exactly one restored snapshot, never an intermediate state");
+assert.equal(persistedStates[0], processingBefore, "the only persisted rollback state must equal the pre-transaction state");
 sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
 
 // Processing transaction rollback: a later distribution posting failure must also undo
