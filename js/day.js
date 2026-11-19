@@ -59,6 +59,21 @@ function recordLivingStockConsumption(consumed){
  });
 }
 
+function runDayEndWriteoffTransaction(state,run){
+ if(!state||typeof state!=='object'||typeof run!=='function')return {ok:false,reason:'invalid_writeoff_transaction'};
+ let snapshot;
+ try{snapshot=JSON.parse(JSON.stringify(state));}catch(_){return {ok:false,reason:'writeoff_snapshot_failed'};}
+ try{
+  const result=run();
+  if(!result||result.ok!==true)throw new Error(result&&result.reason||'writeoff_batch_failed');
+  return {ok:true,result};
+ }catch(error){
+  Object.keys(state).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(snapshot,key))delete state[key];});
+  Object.keys(snapshot).forEach(key=>{state[key]=snapshot[key];});
+  return {ok:false,reason:error&&error.message||'writeoff_batch_failed'};
+ }
+}
+
 function writeOffExpiredStorageLot(state,result,lot){
  if(!state||!state.landSystem||!result||!lot)return {ok:false,reason:'invalid_writeoff_context'};
  if(lot.writeoffDay)return {ok:false,reason:'already_written_off'};
@@ -232,9 +247,17 @@ function finishDay(){
  }
  const mOld=monthOf(S.day);
  S.day++;
- if(typeof AgroCommodityStorage!=='undefined'&&S.quarterUsed>0){const openedAge=Math.max(0,S.day-(Number(S.quarterOpenedDay)||S.day));const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const opened=AgroCommodityStorage.assessLot({commodityId:'kelapa',form:'opened',opened:true,ageDays:openedAge,temperatureC:S.warung&&S.warung.fridge?4:env.temperatureC,relativeHumidityPct:env.relativeHumidityPct,storageType:S.warung&&S.warung.fridge?'refrigerated':(env.storageType||'ambient')});if(opened.expired){const loss=Math.max(0,Number(S.quarterCost)||0)*(Math.max(0,4-(Number(S.quarterUsed)||0))/4);if(loss>0&&typeof recordBusinessCogs==='function')recordBusinessCogs('Susut kelapa terbuka rusak',[{account:'Persediaan Kelapa Dalam Proses (susut)',amount:loss}]);else ledger('RUGI','Kelapa terbuka rusak',0);L.lossOpenedCoconut=loss;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}}
- const finishedWriteoffs=tickFinishedGoodsExpiry(S); if(finishedWriteoffs.length){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push(...finishedWriteoffs.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,value:x.value,reason:x.reason,finishedGoods:true,ageDays:x.ageDays,shelfLifeDays:x.shelfLifeDays})));}
- if(typeof AgroCommodityStorage!=='undefined'&&S.landSystem){const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const storageTick=AgroCommodityStorage.tickLots(S,S.day,env);if(storageTick&&storageTick.ok){const expired=storageTick.results.filter(x=>!x.skipped&&x.expired);expired.forEach(result=>{const lot=S.landSystem.storageLots.find(x=>x.id===result.lotId);if(!lot||lot.writeoffDay)return;const writeoff=writeOffExpiredStorageLot(S,result,lot);if(writeoff.ok){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push({day:S.day,lotId:writeoff.lotId,commodityId:writeoff.commodityId,quantity:writeoff.quantity,value:writeoff.value,reason:writeoff.reason});}});S.landSystem.storageLots=S.landSystem.storageLots.filter(x=>Number(x.quantity)>1e-9);const alerts=storageTick.results.filter(x=>!x.skipped&&['high','critical','expired','spoiled'].includes(x.risk));if(alerts.length){if(!S.dayLog.storageAlerts)S.dayLog.storageAlerts=[];S.dayLog.storageAlerts.push(...alerts.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,risk:x.risk,quality:x.quality})));}}}
+ const expiryBatch=runDayEndWriteoffTransaction(S,()=>{
+  if(typeof AgroCommodityStorage!=='undefined'&&S.quarterUsed>0){const openedAge=Math.max(0,S.day-(Number(S.quarterOpenedDay)||S.day));const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const opened=AgroCommodityStorage.assessLot({commodityId:'kelapa',form:'opened',opened:true,ageDays:openedAge,temperatureC:S.warung&&S.warung.fridge?4:env.temperatureC,relativeHumidityPct:env.relativeHumidityPct,storageType:S.warung&&S.warung.fridge?'refrigerated':(env.storageType||'ambient')});if(opened.expired){const loss=Math.max(0,Number(S.quarterCost)||0)*(Math.max(0,4-(Number(S.quarterUsed)||0))/4);if(loss>0&&typeof recordBusinessCogs==='function'){const posted=recordBusinessCogs('Susut kelapa terbuka rusak',[{account:'Persediaan Kelapa Dalam Proses (susut)',amount:loss}]);if(posted!==loss)throw new Error('opened_coconut_writeoff_cogs_post_failed');}else ledger('RUGI','Kelapa terbuka rusak',0);L.lossOpenedCoconut=loss;S.quarterUsed=0;S.quarterCost=0;S.quarterOpenedDay=null;}}
+  const finishedWriteoffs=tickFinishedGoodsExpiry(S); if(finishedWriteoffs.length){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push(...finishedWriteoffs.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,value:x.value,reason:x.reason,finishedGoods:true,ageDays:x.ageDays,shelfLifeDays:x.shelfLifeDays})));}
+  if(typeof AgroCommodityStorage!=='undefined'&&S.landSystem){const weather=S.cuaca||'berawan';const env=S.storageEnvironment||{temperatureC:weather==='panas'?33:weather==='hujan'?27:30,relativeHumidityPct:weather==='hujan'?95:weather==='panas'?65:80};const storageTick=AgroCommodityStorage.tickLots(S,S.day,env);if(storageTick&&storageTick.ok){const expired=storageTick.results.filter(x=>!x.skipped&&x.expired);expired.forEach(result=>{const lot=S.landSystem.storageLots.find(x=>x.id===result.lotId);if(!lot||lot.writeoffDay)return;const writeoff=writeOffExpiredStorageLot(S,result,lot);if(!writeoff.ok)throw new Error(writeoff.reason||'storage_writeoff_failed');if(writeoff.ok){if(!S.dayLog.storageWriteoffs)S.dayLog.storageWriteoffs=[];S.dayLog.storageWriteoffs.push({day:S.day,lotId:writeoff.lotId,commodityId:writeoff.commodityId,quantity:writeoff.quantity,value:writeoff.value,reason:writeoff.reason});}});S.landSystem.storageLots=S.landSystem.storageLots.filter(x=>Number(x.quantity)>1e-9);const alerts=storageTick.results.filter(x=>!x.skipped&&['high','critical','expired','spoiled'].includes(x.risk));if(alerts.length){if(!S.dayLog.storageAlerts)S.dayLog.storageAlerts=[];S.dayLog.storageAlerts.push(...alerts.map(x=>({day:S.day,lotId:x.lotId,commodityId:x.commodityId,quantity:x.quantity,risk:x.risk,quality:x.quality})));}}}
+ 
+  return {ok:true};
+ });
+ if(!expiryBatch.ok){
+  if(typeof ledger==='function')ledger('INTEGRITAS','Batch write-off akhir hari dibatalkan',0,{day:S.day,reason:expiryBatch.reason});
+  console.error('Batch write-off akhir hari dibatalkan:',expiryBatch.reason);
+ }
  if(typeof reconcileInventoryLotBooks==="function"&&S.landSystem){
   const reconciliation=reconcileInventoryLotBooks(S);
   L.inventoryReconciliation=reconciliation;
