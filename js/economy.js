@@ -652,6 +652,7 @@ function triggerAchievementCheck() {
 // Override earn() untuk trigger achievement
 const originalEarn = earn;
 earn = function(cat, desc, amt, detail) {
-  originalEarn(cat, desc, amt, detail);
-  triggerAchievementCheck();
+  const posted = originalEarn(cat, desc, amt, detail);
+  if(posted)triggerAchievementCheck();
+  return posted;
 };
