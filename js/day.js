@@ -68,8 +68,14 @@ function runDayEndWriteoffTransaction(state,run){
   if(!result||result.ok!==true)throw new Error(result&&result.reason||'writeoff_batch_failed');
   return {ok:true,result};
  }catch(error){
+  const originalDayLog=state.dayLog;
   Object.keys(state).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(snapshot,key))delete state[key];});
   Object.keys(snapshot).forEach(key=>{state[key]=snapshot[key];});
+  if(originalDayLog&&snapshot.dayLog&&typeof originalDayLog==='object'){
+   Object.keys(originalDayLog).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(snapshot.dayLog,key))delete originalDayLog[key];});
+   Object.keys(snapshot.dayLog).forEach(key=>{originalDayLog[key]=snapshot.dayLog[key];});
+   state.dayLog=originalDayLog;
+  }
   return {ok:false,reason:error&&error.message||'writeoff_batch_failed'};
  }
 }
@@ -130,7 +136,8 @@ function tickFinishedGoodsExpiry(state){
    if(explicitlyExpired||(Number.isFinite(shelf)&&shelf>=0&&age>=shelf)){
     lot.writeoffReason=lot.spoiled===true?'spoiled':'expired';
     const result=writeOffExpiredFinishedGoodsLot(state,lot);
-    if(result.ok)out.push({...result,ageDays:age,shelfLifeDays:Number.isFinite(shelf)?shelf:null});
+    if(!result.ok)throw new Error(result.reason||'finished_goods_writeoff_failed');
+    out.push({...result,ageDays:age,shelfLifeDays:Number.isFinite(shelf)?shelf:null});
    }
   });
   ls.finishedInventoryLots[id]=lots.filter(l=>Math.max(0,Number(l.quantity)||0)>1e-9);
