@@ -1890,3 +1890,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Implementation commits: `c4e863134bf26373eef8212fe3f6826cbf1f4867` and `e25d6643e6cf0e15eaa5fa88b0b9a3ff853b586`.
 - Verification status: `e25d6643e6cf0e15eaa5fa88b0b9a3ff853b586` had no associated workflow run at the time of this handoff check. Therefore CI is **pending**, not green.
 - Next target after CI: apply the same invariant-driven failure injection to raw sales for distribution/revenue side effects, then verify accounting equation, COGS, revenue, cash, inventory carrying value, and ledger deltas across raw sale, finished sale, production, and spoilage write-off.
+
+
+## 2026-11-19 — raw-sale transaction invariant hardening
+
+- Audited the raw commodity sale path after the finished-goods transaction correction.
+- `sellCommodity()` previously consumed storage lots before posting COGS. The transaction snapshot made rollback safe, but the mutation order did not match the intended invariant sequence.
+- Corrected the raw-sale order to: validated preflight → COGS posting → lot consumption → distribution expense → market/inventory mutation → revenue → transaction commit → persistence.
+- Added regression coverage for a distribution-posting failure after COGS/lot mutation. The complete raw-sale state must be restored, including lot book, aggregate inventory, carrying cost, cash, COGS, expense, and ledger.
+- Implementation commit: `57be3860bb67dc5e3d582664931197d1e6f67116`.
+- Regression commit: `a69ccab77fc22c3ffe29ee5f798a91a2cbbd3dae`.
+- CI status for these commits: pending; GitHub currently reports no workflow run associated with the new commits. Do not claim green CI.
+- Next invariant target: verify the revenue-posting failure path and enforce that `earn()` either returns/throws a verifiable success result or is wrapped by an explicit postcondition, so a partial revenue mutation cannot escape the transaction boundary.
