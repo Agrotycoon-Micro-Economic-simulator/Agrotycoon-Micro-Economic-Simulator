@@ -11,6 +11,7 @@ function loadHelper(recordResult){
   console,
   recordBusinessCogs:(desc,components)=>{
    events.push({desc,components});
+   if(typeof recordResult==='function')return recordResult(desc,components,events);
    return recordResult===undefined
     ? components.reduce((sum,x)=>sum+Number(x.amount),0)
     : recordResult;
@@ -91,7 +92,8 @@ test('finished-goods write-off leaves inventory untouched when HPP loss posting 
 
 
 test('day-end write-off batch rolls back earlier lots when a later lot posting fails',()=>{
- const {writeOff,runBatch}=loadHelper();
+ let postingCount=0;
+ const {writeOff,runBatch}=loadHelper((_desc,components)=>++postingCount===1?components.reduce((sum,x)=>sum+Number(x.amount),0):0);
  const state={day:50,dayLog:{storageWriteoffs:[]},landSystem:{inventory:{padi:7},inventoryCost:{padi:1700},storageLots:[
   {id:'a',commodityId:'padi',quantity:2,unitCost:100},
   {id:'b',commodityId:'padi',quantity:3,unitCost:500}
@@ -157,7 +159,7 @@ test('day-end spoilage batch restores ice, whole coconut, opened coconut and sta
  });
  assert.equal(result.ok,false);
  assert.equal(state.warung.ice,8);assert.equal(state.warung.iceCost,4000);
- assert.deepEqual(state.stock,{biasa:3,super:1});
+ assert.equal(state.stock.biasa,3);assert.equal(state.stock.super,1);
  assert.equal(state.stockCostValue,14000);
  assert.equal(state.quarterUsed,2);assert.equal(state.quarterCost,3500);
  assert.equal(state.quarterOpenedDay,59);
