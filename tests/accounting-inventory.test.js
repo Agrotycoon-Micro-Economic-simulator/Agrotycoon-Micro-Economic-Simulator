@@ -96,7 +96,7 @@ test('live es kelapa sale uses unit economics as a pre-posting consistency guard
 });
 
 test('whole coconut sale uses unit economics before any HPP or inventory mutation', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   const unitEconomics = require('../js/unit_economics.js');
   context.AgroUnitEconomics = unitEconomics;
 
@@ -120,7 +120,7 @@ test('whole coconut sale uses unit economics before any HPP or inventory mutatio
 });
 
 test('young coconut tengkulak sale uses unit economics before HPP or inventory mutation', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   const unitEconomics = require('../js/unit_economics.js');
   context.AgroUnitEconomics = unitEconomics;
   context.stockClass = () => 'muda';
