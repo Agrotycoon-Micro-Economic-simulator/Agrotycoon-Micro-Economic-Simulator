@@ -131,3 +131,37 @@ test('day-end write-off batch commits all lot changes when every posting succeed
  assert.equal(state.landSystem.inventoryCost.padi,0);
  assert.deepEqual(state.dayLog.storageWriteoffs.map(x=>x.value),[200,1500]);
 });
+
+
+test('day-end spoilage batch restores ice, whole coconut, opened coconut and stats when any HPP posting fails',()=>{
+ const {runBatch}=loadHelper();
+ const state={
+  day:60,
+  dayLog:{lossIcePortions:0,lossIceValue:0,lossRot:0,storageWriteoffs:[]},
+  warung:{fridge:false,ice:8,iceCost:4000},
+  stats:{rotten:2},
+  stock:{biasa:3,super:1},
+  stockCostValue:14000,
+  quarterUsed:2,
+  quarterCost:3500,
+  quarterOpenedDay:59,
+  landSystem:{inventory:{},inventoryCost:{},storageLots:[]}
+ };
+ const originalDayLog=state.dayLog;
+ const result=runBatch(state,()=>{
+  state.warung.ice=0;state.warung.iceCost=0;
+  state.dayLog.lossIcePortions=8;state.dayLog.lossIceValue=4000;
+  state.stats.rotten+=4;state.stock={biasa:0,super:0};state.stockCostValue=0;
+  state.quarterUsed=0;state.quarterCost=0;state.quarterOpenedDay=null;
+  return {ok:false,reason:'rotten_coconut_writeoff_cogs_post_failed'};
+ });
+ assert.equal(result.ok,false);
+ assert.equal(state.warung.ice,8);assert.equal(state.warung.iceCost,4000);
+ assert.deepEqual(state.stock,{biasa:3,super:1});
+ assert.equal(state.stockCostValue,14000);
+ assert.equal(state.quarterUsed,2);assert.equal(state.quarterCost,3500);
+ assert.equal(state.quarterOpenedDay,59);
+ assert.equal(state.stats.rotten,2);
+ assert.equal(state.dayLog.lossIcePortions,0);
+ assert.equal(state.dayLog,originalDayLog);
+});
