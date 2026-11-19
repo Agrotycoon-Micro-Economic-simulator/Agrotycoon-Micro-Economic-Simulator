@@ -9,6 +9,7 @@ const economySource = fs.readFileSync(path.join(__dirname, '..', 'js', 'economy.
 function makeHarness(overrides = {}) {
   const S = {
     gold: 100000,
+    ledger: [],
     day: 1,
     stock: { biasa: 1, super: 0 },
     stockCostValue: 3500,
