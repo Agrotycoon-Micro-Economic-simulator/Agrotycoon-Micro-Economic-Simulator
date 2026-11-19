@@ -1914,3 +1914,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Regression commit: 699baa559a39f3995bd5241983d4f9e891b27132.
 - Verification: GitHub Actions status must be checked against the resulting HEAD; do not infer CI success from commit creation.
 - Next target: verify the new regression suite in GitHub Actions, then audit transaction-depth/persistence invariants across raw sale, finished sale, production, and spoilage write-off before moving to the next accounting subsystem.
+
+
+## 2026-11-19 — transaction-depth audit continuation
+
+- Audited transaction-depth/save boundaries in js/land.js, js/state.js, js/day.js, and js/economy.js.
+- Confirmed state.save() is suppressed while AGRO_TRANSACTION_DEPTH > 0, while rollback restores the snapshot and persists the restored state after decrementing depth.
+- Found two legacy coconut sale paths (confirmSellTengkulak and sellPasar) that still used the older non-atomic sequence. Both are now wrapped in the same transaction boundary and treat earn() failure as fatal.
+- The coconut transaction snapshot now starts before HPP posting, so HPP mutations are also rolled back if revenue posting or later market/state mutation fails.
+- Fixed the commodity-processing test harness to return true from its earn stub, matching the production earn() success contract.
+- Commits: acc919c7a2df970e2b762d08e1572009cf66f8ce, 79caa375b2b692fc574c318d043cb38405f9d8eb, 881534a1b9433b9186d2e85239d60d65d1f5b53b.
+- CI verification remains pending/no workflow run observed for the recent commits.
+- Day-end spoilage/write-off audit found individual write-off functions post COGS before mutation and therefore reject failed COGS without mutating the lot. A broader multi-lot day-end rollback is not yet introduced; this remains the next integrity target if a write-off batch failure injection is warranted.
