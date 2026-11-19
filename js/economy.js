@@ -292,8 +292,14 @@ function confirmSellTengkulak(jual,rev){
     !validateYoungCoconutTengkulakUnitEconomics(weightedSalePrice,unitCost)){
   msg('⚠️ Unit economics kelapa muda ke tengkulak tidak valid. Penjualan dibatalkan.');save();render();return;
  }
- if(recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  const transactionSnapshot=typeof snapshotAgriTransactionState==='function'?snapshotAgriTransactionState():null;
+ if(transactionSnapshot===null){msg('⚠️ Snapshot transaksi gagal. Penjualan dibatalkan.');save();render();return;}
+ if(recordBusinessCogs('HPP kelapa dijual ke tengkulak',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');
+  render();
+  return;
+ }
  try{
   if(transactionSnapshot===null)throw new Error('transaction_snapshot_failed');
   if(!earn('PENJUALAN','Jual tengkulak '+soldQty+' butir',saleRevenue,{biasa:soldBiasa,super:soldSuper}))throw new Error('revenue_post_failed');
@@ -321,8 +327,14 @@ function sellPasar(){
  if(!Number.isFinite(stockValue)||stockValue<=0){msg('⚠️ Nilai persediaan kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  const unitCost=stockValue/q;
  if(!Number.isFinite(unitCost)||unitCost<=0||!validateOldCoconutMarketUnitEconomics(salePrice,unitCost)){msg('⚠️ Unit economics kelapa tua tidak valid. Penjualan dibatalkan.');save();render();return;}
- if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');save();render();return;}
  const transactionSnapshot=typeof snapshotAgriTransactionState==='function'?snapshotAgriTransactionState():null;
+ if(transactionSnapshot===null){msg('⚠️ Snapshot transaksi gagal. Penjualan dibatalkan.');save();render();return;}
+ if(recordBusinessCogs('HPP kelapa tua dijual ke pasar',[{account:'Persediaan Kelapa',amount:stockValue}])!==stockValue){
+  restoreAgriTransactionState(transactionSnapshot);
+  msg('⚠️ HPP kelapa tidak valid. Penjualan dibatalkan.');
+  render();
+  return;
+ }
  try{
   if(transactionSnapshot===null)throw new Error('transaction_snapshot_failed');
   if(!earn('PENJUALAN','Jual pasar kelapa tua '+q+' butir',rev))throw new Error('revenue_post_failed');
