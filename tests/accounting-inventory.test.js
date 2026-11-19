@@ -146,7 +146,7 @@ test('young coconut tengkulak sale uses unit economics before HPP or inventory m
 });
 
 test('old coconut market sale uses unit economics before HPP or inventory mutation', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   const unitEconomics = require('../js/unit_economics.js');
   context.AgroUnitEconomics = unitEconomics;
 
@@ -229,7 +229,7 @@ test('four es kelapa sales recognize HPP once and do not create cash outflow', (
 });
 
 test('tengkulak sale recomputes revenue from current stock instead of trusting stale modal amount', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   DATA.priceTengkulak = { biasa: 3500, super: 5000 };
   context.stockClass = () => 'muda';
   context.confirmSellTengkulak(true, 999999999);
@@ -471,7 +471,7 @@ test('business COGS accepts complete positive components and balances the postin
 
 
 test('es kelapa sale rejects invalid component HPP before consuming any stock or posting revenue', () => {
-  const { S, DATA, context, journal } = makeHarness();
+  const { S, DATA, context, journal, messages } = makeHarness();
   DATA.shop.iceKarung.price = NaN;
   S.warung.iceCost = 0;
   const before = {
@@ -541,7 +541,7 @@ test('wholesale coconut channels reject zero inventory valuation without consumi
 
 test('all retail and market sale channels reject invalid sale prices before HPP or stock mutation', () => {
   {
-    const { S, DATA, context, journal } = makeHarness();
+    const { S, DATA, context, journal, messages } = makeHarness();
     DATA.es.price = NaN;
     assert.equal(context.trySellEs(), false);
     assert.equal(S.gold, 100000);
@@ -552,7 +552,7 @@ test('all retail and market sale channels reject invalid sale prices before HPP 
     assert.equal(journal.length, 0);
   }
   {
-    const { S, DATA, context, journal } = makeHarness();
+    const { S, DATA, context, journal, messages } = makeHarness();
     DATA.wholePrice = 0;
     assert.equal(context.trySellWhole(), false);
     assert.equal(S.gold, 100000);
@@ -562,7 +562,7 @@ test('all retail and market sale channels reject invalid sale prices before HPP 
     assert.equal(journal.length, 0);
   }
   {
-    const { S, DATA, context, journal } = makeHarness();
+    const { S, DATA, context, journal, messages } = makeHarness();
     DATA.pricePasarTua = NaN;
     context.stockClass = () => 'tua';
     context.sellPasar();
