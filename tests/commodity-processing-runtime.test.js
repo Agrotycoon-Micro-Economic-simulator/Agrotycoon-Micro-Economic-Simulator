@@ -497,6 +497,23 @@ assert.equal(JSON.stringify(state), rawBeforeConsumeFailure, "failed raw lot com
 sandbox.AgroCommodityStorage.failConsumeAfterMutation = false;
 delete state.landSystem.storageLots;
 
+// Failure injection: revenue posting must be a verifiable transaction step.
+// If earn() reports failure after COGS/lot work, the raw sale must restore every field.
+state.gold = 1000000;
+state.landSystem.inventory = { cabai_merah: 10 };
+state.landSystem.inventoryCost = { cabai_merah: 5000 };
+state.landSystem.storageLots = [{ id: "raw-revenue-atomic", commodityId: "cabai_merah", quantity: 10, unitCost: 500 }];
+state.landSystem.market = { cabai_merah: { sold: 0, price: 25000 } };
+state.dayLog = { gross: 0, expense: 0, businessPurchases: 0, cashOut: 0, shopping: 0, cogs: 0, cogsByAccount: {} };
+state.ledger = [];
+const rawBeforeRevenueFailure = JSON.stringify(state);
+const originalRawEarn = sandbox.earn;
+sandbox.earn = () => false;
+assert.equal(sandbox.sellCommodity("cabai_merah", "b2b"), false);
+assert.equal(JSON.stringify(state), rawBeforeRevenueFailure, "raw-sale revenue failure must roll back COGS, lot mutation, inventory, cash, market, and ledger");
+sandbox.earn = originalRawEarn;
+delete state.landSystem.storageLots;
+
 sandbox.COMMODITY_ECONOMICS.cabai_merah.tengkulakPrice = NaN;
 sandbox.COMMODITY_ECONOMICS.cabai_merah.farmerPrice = NaN;
 sandbox.COMMODITY_BY_ID.cabai_merah.basePrice = NaN;
@@ -596,6 +613,14 @@ sandbox.consumeFinishedGoodsLots = (productId, plan) => {
 assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 1), false);
 assert.equal(JSON.stringify(state), finishedBeforeConsumeFailure, "failed finished-goods lot commit must roll back all transaction state");
 sandbox.consumeFinishedGoodsLots = originalFinishedLotConsumer;
+
+// Failure injection: finished-goods revenue posting must also be atomic.
+const finishedBeforeRevenueFailure = JSON.stringify(state);
+const originalFinishedEarn = sandbox.earn;
+sandbox.earn = () => false;
+assert.equal(sandbox.sellFinishedCommodity("jagung_bakar", 1), false);
+assert.equal(JSON.stringify(state), finishedBeforeRevenueFailure, "finished-goods revenue failure must roll back COGS, FIFO lot mutation, inventory, cash, and ledger");
+sandbox.earn = originalFinishedEarn;
 
 const jagungRouteBefore = JSON.stringify({
   gold: state.gold,
