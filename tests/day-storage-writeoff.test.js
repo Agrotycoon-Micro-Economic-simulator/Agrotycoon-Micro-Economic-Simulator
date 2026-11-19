@@ -82,7 +82,7 @@ test('finished-goods write-off leaves inventory untouched when HPP loss posting 
  const lot={id:'fg-fail',commodityId:'jagung_bakar',quantity:2,unitCost:100,writeoffReason:'expired'};
  const result=finishedWriteOff(state,lot);
  assert.equal(result.ok,false);
- assert.equal(result.reason,'finished_writeoff_cogs_post_failed');
+ assert.equal(result.reason,'storage_writeoff_cogs_post_failed');
  assert.equal(state.landSystem.finishedInventory.jagung_bakar,5);
  assert.equal(state.landSystem.finishedInventoryCost.jagung_bakar,1100);
  assert.equal(lot.quantity,2);
