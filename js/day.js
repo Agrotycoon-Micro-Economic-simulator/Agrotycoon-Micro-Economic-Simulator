@@ -66,6 +66,12 @@ function runDayEndWriteoffTransaction(state,run){
  try{
   const result=run();
   if(!result||result.ok!==true)throw new Error(result&&result.reason||'writeoff_batch_failed');
+  // The write-off batch is not committed until its inventory/lot invariants also hold.
+  // This prevents a successful HPP posting from being committed alongside a broken lot book.
+  if(state.landSystem&&typeof reconcileInventoryLotBooks==='function'){
+   const reconciliation=reconcileInventoryLotBooks(state);
+   if(!reconciliation||reconciliation.ok!==true)throw new Error('writeoff_inventory_reconciliation_failed');
+  }
   return {ok:true,result};
  }catch(error){
   const originalDayLog=state.dayLog;
