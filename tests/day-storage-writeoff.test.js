@@ -168,3 +168,35 @@ test('day-end spoilage batch restores ice, whole coconut, opened coconut and sta
  assert.equal(state.dayLog.lossIcePortions,0);
  assert.equal(state.dayLog,originalDayLog);
 });
+
+
+test('day-end write-off batch rolls back when post-write-off inventory reconciliation fails',()=>{
+ const {writeOff,runBatch}=loadHelper();
+ const state={day:52,dayLog:{storageWriteoffs:[]},landSystem:{inventory:{padi:2},inventoryCost:{padi:200},storageLots:[
+  {id:'reconcile-fail',commodityId:'padi',quantity:2,unitCost:100}
+ ]}};
+ const originalDayLog=state.dayLog;
+ const context={
+  ...Object.fromEntries(Object.entries(globalThis)),
+  reconcileInventoryLotBooks:()=>({ok:false,errors:[{status:'cost_mismatch'}]})
+ };
+ // Rebuild the helper with the reconciliation dependency visible inside day.js.
+ const sourceWithReconcile=source;
+ const sandbox={console,recordBusinessCogs:(desc,components)=>components.reduce((sum,x)=>sum+Number(x.amount),0),ledger:(...args)=>eventsPush.push(args),reconcileInventoryLotBooks:context.reconcileInventoryLotBooks};
+ const eventsPush=[];
+ vm.runInNewContext(sourceWithReconcile,sandbox,{filename:'js/day.js'});
+ const batch=sandbox.runDayEndWriteoffTransaction(state,()=>{
+  const result=sandbox.writeOffExpiredStorageLot(state,{risk:'expired'},state.landSystem.storageLots[0]);
+  if(!result.ok)return result;
+  state.dayLog.storageWriteoffs.push({lotId:result.lotId,value:result.value});
+  return {ok:true};
+ });
+ assert.equal(batch.ok,false);
+ assert.equal(batch.reason,'writeoff_inventory_reconciliation_failed');
+ assert.equal(state.landSystem.inventory.padi,2);
+ assert.equal(state.landSystem.inventoryCost.padi,200);
+ assert.equal(state.landSystem.storageLots[0].quantity,2);
+ assert.equal(state.landSystem.storageLots[0].writeoffDay,undefined);
+ assert.equal(state.dayLog.storageWriteoffs.length,0);
+ assert.equal(state.dayLog,originalDayLog);
+});
