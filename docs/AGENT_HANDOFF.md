@@ -1965,3 +1965,14 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
   - Write-off functions now fail closed when `recordBusinessCogs` is unavailable, rather than clearing inventory after a non-HPP fallback. Raw-storage and finished-goods failure reasons are distinct.
 - Latest code/test commits: `23f390a4ae67c6b986ce1cbf379cdd4e833f321c`, `09b82f03c67772ffef655f48a89009fef9f859a3`, `2b4a32c1fd3b1f7984a806e84066495c380fec2b`, `a6e65834f247061bdc17a68c2b48a9f1fabb4e01`, `d8ec0a4ca0a20e5b97fce13645e40481b89334a7`, `ff95db8b04e8792bd950b592e791949a3b1af11c`.
 - CI run `44555870538` is currently in progress for `ff95db8...`; the preceding runs failed on test-fixture assertions now corrected. Do not treat the latest workflow as green until it completes.
+
+
+## 2026-11-20 — day-end write-off commit now requires lot reconciliation
+
+- Re-audited the day-end expiry/write-off boundary after workflow '44555870538' completed successfully for the prior code/test checkpoint 'ff95db8b04e8792bd950b592e791949a3b1af11c'. The workflow job 'node-regression' passed its targeted accounting/NPC/market suites, all benchmark guards, standalone Node regressions, browser smoke, and browser/E2E regression tests.
+- Found an integrity gap in `runDayEndWriteoffTransaction()`: a write-off batch could pass all HPP postings and still be committed before the subsequent `reconcileInventoryLotBooks()` check detected a quantity/carrying-value mismatch.
+- Hardened `js/day.js` so the batch is committed only after `reconcileInventoryLotBooks(state)` returns `ok === true` when a land-system lot book is present. A reconciliation failure now throws `writeoff_inventory_reconciliation_failed`, restores the complete pre-batch state, and prevents the write-off from being retained.
+- Added `tests/day-storage-writeoff.test.js` regression coverage that injects a post-write-off reconciliation failure and verifies restoration of aggregate quantity, carrying cost, lot quantity/writeoff marker, day-log write-off entries, and day-log object identity.
+- Runtime commit: '943216e02d26d24ca9b4792219af981b1dfc0cab'; test commits: '8f213b3d18e1f3b4332f8f25af4796aae1c9b424', 'd15454feab91f7005e3073a725a4a0277bc5ed25'.
+- The new commits have not yet produced a completed GitHub Actions run at this handoff update. CI is therefore **pending**, not green.
+- Next target remains the P0 economic runtime gate after this verification: strengthen source-backed national/regional demand and capacity integration without inventing physical quantities, with BPS 2025 Non-Rumah-Tangga numeric extraction still marked **butuh riset lanjutan** until the machine-readable tables are actually retrievable.
