@@ -171,20 +171,18 @@ test('day-end spoilage batch restores ice, whole coconut, opened coconut and sta
 
 
 test('day-end write-off batch rolls back when post-write-off inventory reconciliation fails',()=>{
- const {writeOff,runBatch}=loadHelper();
  const state={day:52,dayLog:{storageWriteoffs:[]},landSystem:{inventory:{padi:2},inventoryCost:{padi:200},storageLots:[
   {id:'reconcile-fail',commodityId:'padi',quantity:2,unitCost:100}
  ]}};
  const originalDayLog=state.dayLog;
- const context={
-  ...Object.fromEntries(Object.entries(globalThis)),
+ const events=[];
+ const sandbox={
+  console,
+  recordBusinessCogs:(desc,components)=>components.reduce((sum,x)=>sum+Number(x.amount),0),
+  ledger:(...args)=>events.push(args),
   reconcileInventoryLotBooks:()=>({ok:false,errors:[{status:'cost_mismatch'}]})
  };
- // Rebuild the helper with the reconciliation dependency visible inside day.js.
- const sourceWithReconcile=source;
- const sandbox={console,recordBusinessCogs:(desc,components)=>components.reduce((sum,x)=>sum+Number(x.amount),0),ledger:(...args)=>eventsPush.push(args),reconcileInventoryLotBooks:context.reconcileInventoryLotBooks};
- const eventsPush=[];
- vm.runInNewContext(sourceWithReconcile,sandbox,{filename:'js/day.js'});
+ vm.runInNewContext(source,sandbox,{filename:'js/day.js'});
  const batch=sandbox.runDayEndWriteoffTransaction(state,()=>{
   const result=sandbox.writeOffExpiredStorageLot(state,{risk:'expired'},state.landSystem.storageLots[0]);
   if(!result.ok)return result;
