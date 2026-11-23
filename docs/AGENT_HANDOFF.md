@@ -1976,3 +1976,11 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Runtime commit: '943216e02d26d24ca9b4792219af981b1dfc0cab'; test commits: '8f213b3d18e1f3b4332f8f25af4796aae1c9b424', 'd15454feab91f7005e3073a725a4a0277bc5ed25'.
 - The new commits have not yet produced a completed GitHub Actions run at this handoff update. CI is therefore **pending**, not green.
 - Next target remains the P0 economic runtime gate after this verification: strengthen source-backed national/regional demand and capacity integration without inventing physical quantities, with BPS 2025 Non-Rumah-Tangga numeric extraction still marked **butuh riset lanjutan** until the machine-readable tables are actually retrievable.
+
+
+## 2026-11-23 — CI verification
+
+- Workflow `44671651117` (run 712, head `d15454feab91f7005e3073a725a4a0277bc5ed25`) completed **success**. Node regression, benchmark guards, standalone regressions, browser smoke and E2E completed successfully.
+- Prior runs `44671637508` (run 711) and `44671624410` (run 710) also completed **success**.
+- The day-end write-off reconciliation hardening is therefore CI-verified at the targeted regression workflow level.
+- Continue to P0 national/regional demand-capacity runtime only after preserving the legacy/physical quantity contract boundary.
