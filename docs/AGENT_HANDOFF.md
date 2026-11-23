@@ -1984,3 +1984,15 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Prior runs `44671637508` (run 711) and `44671624410` (run 710) also completed **success**.
 - The day-end write-off reconciliation hardening is therefore CI-verified at the targeted regression workflow level.
 - Continue to P0 national/regional demand-capacity runtime only after preserving the legacy/physical quantity contract boundary.
+
+
+## 2026-11-23 — P0 physical demand/supply reference boundary
+
+- Added `AgroNationalEconomy.physicalDemandCapacityReference(commodityId, provinceId?)` to expose a strict physical-unit reference ledger without converting legacy market-index quantities.
+- The ledger separates: physical annual demand, verified annual supply references, and executable capacity. Daily/monthly capacity remains `null` until source-backed production-capacity/harvest curves exist.
+- Maize is explicitly classified as annual supply reference versus all-channel projected need; no stock, inventory, reserve, or order-book quantity is mutated by this API.
+- Paddy/rice and horticulture references retain scope/compatibility warnings rather than being forced into a false demand-minus-supply balance.
+- Added regression coverage in `tests/national-economy.test.js` for country/province references, physical-unit contracts, pending capacity, and unknown commodities.
+- Latest implementation commit: `2c207a8bdb2f15e54c3977e8eef39446c137e951`.
+- Targeted workflow `45158678837` is currently **in_progress**; no green claim yet.
+- Non-household BPS 2025 numeric extraction remains **butuh riset lanjutan**. It is still metadata-only and therefore does not enter runtime quantities.
