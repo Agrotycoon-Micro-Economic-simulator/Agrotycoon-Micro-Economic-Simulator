@@ -916,6 +916,7 @@
   if(hort){
    supplyRefs.push({commodityId:id,unit:"tonne/year",nationalAnnualSupply:Number(hort.productionTon||hort.productionTons||hort.productionKg/1000||0),provinceAnnualSupply:null,referenceYear:2025,source:nationalSupply.horticulture.source,status:nationalSupply.horticulture.status,comparability:"annual_supply_reference_only; provincial/daily capacity pending"});
   }
+  if(!anchor&&!supplyRefs.length)return null;
   const capacityStatus=supplyRefs.length?"annual_supply_reference_only_daily_capacity_pending":"no_verified_annual_supply_reference";
   return {level:province?"province":"country",provinceId:province,population,commodityId:id,demand,supplyReferences:supplyRefs,capacity:{status:capacityStatus,unitContract:"physical_units_only",dailyCapacity:null,monthlyCapacity:null,conversionStatus:"no_legacy_index_conversion",marketExecutionStatus:"reference_only_not_order_book_inventory"}};
  }
