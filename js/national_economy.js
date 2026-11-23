@@ -889,6 +889,36 @@
   audit.allVerifiedDatasetsRuntimeBound=Object.values(audit).every(x=>x&&x.runtimeBound===true&&x.runtimeApplied!==false&&x.runtimeStateSignals!==false);
   return {runtimeAvailable:true,audit};
  }
+ function physicalDemandCapacityReference(commodityId,provinceId){
+  const s=ensure(); if(!s)return null;
+  const id=String(commodityId||"").trim();
+  const province=provinceId?String(provinceId):null;
+  if(province&& !s.provinces[province])return null;
+  const population=province?s.provinces[province].population:POPULATION;
+  const anchor=PHYSICAL_DEMAND_ANCHORS_2025[id];
+  const demand=anchor?{
+   commodityId:id,unit:anchor.unit,annualPerCapita:anchor.annualPerCapita,
+   annualDemand:anchor.annualPerCapita*population,monthlyDemand:anchor.annualPerCapita*population/12,
+   source:anchor.source,year:anchor.year,status:anchor.status
+  }:null;
+  const supplyRefs=[];
+  const nationalSupply=s.national.marketSupplyReference2025||{};
+  const p=province?s.provinces[province]:null;
+  const paddy=nationalSupply.padi;
+  if(id==="padi"&&paddy){
+   supplyRefs.push({commodityId:id,unit:"tonne_rice_equivalent/year",nationalAnnualSupply:Number(paddy.nationalRiceEquivalentTon),provinceAnnualSupply:p?.marketSupplyReference2025?.padi?.riceEquivalentKg!=null?p.marketSupplyReference2025.padi.riceEquivalentKg/1000:null,referenceYear:paddy.referenceYear,source:paddy.source,status:paddy.status,comparability:"reference_only_household_demand_scope_must_not_be_assumed_equal_to_total_supply"});
+  }
+  const maize=nationalSupply.jagung;
+  if(id==="jagung"&&maize){
+   supplyRefs.push({commodityId:id,unit:"tonne/year",nationalAnnualSupply:Number(maize.officialNationalProductionTon),provinceAnnualSupply:null,referenceYear:maize.referenceYear,source:maize.source,status:maize.status,comparability:"national_annual_supply_reference_vs_all_channel_need; no stock or daily allocation"});
+  }
+  const hort=nationalSupply.horticulture?.records?.[id];
+  if(hort){
+   supplyRefs.push({commodityId:id,unit:"tonne/year",nationalAnnualSupply:Number(hort.productionTon||hort.productionTons||hort.productionKg/1000||0),provinceAnnualSupply:null,referenceYear:2025,source:nationalSupply.horticulture.source,status:nationalSupply.horticulture.status,comparability:"annual_supply_reference_only; provincial/daily capacity pending"});
+  }
+  const capacityStatus=supplyRefs.length?"annual_supply_reference_only_daily_capacity_pending":"no_verified_annual_supply_reference";
+  return {level:province?"province":"country",provinceId:province,population,commodityId:id,demand,supplyReferences:supplyRefs,capacity:{status:capacityStatus,unitContract:"physical_units_only",dailyCapacity:null,monthlyCapacity:null,conversionStatus:"no_legacy_index_conversion",marketExecutionStatus:"reference_only_not_order_book_inventory"}};
+ }
  function physicalDemandSnapshot(provinceId){const s=ensure();if(!s)return null;const population=provinceId?((s.provinces[String(provinceId)]||{}).population):POPULATION;if(!population)return null;const anchors={};Object.entries(PHYSICAL_DEMAND_ANCHORS_2025).forEach(([id,a])=>{const annualTotal=a.annualPerCapita*population;anchors[id]={unit:a.unit,annualPerCapita:a.annualPerCapita,annualTotal,monthlyTotal:annualTotal/12,sourceCommodity:a.sourceCommodity,source:a.source,status:a.status,year:a.year};});return {level:provinceId?"province":"country",provinceId:provinceId||null,population,anchors};}
  function commodityPhysicalCoverageSnapshot(provinceId){
   const s=ensure();if(!s)return null;
@@ -896,5 +926,5 @@
   return {commodityCount:items.length,provinceIds:ids,coverage:ids.map(id=>{const p=s.provinces[id];return p?{provinceId:id,commodities:items.map(item=>Object.assign({},p.commodityPhysicalCoverage?.[item.id]||{commodityId:item.id,name:item.name,qualityStatus:"coverage_not_initialized"}))}:null;}).filter(Boolean)};
  }
  function snapshot(){const s=ensure();return {countryName:COUNTRY_NAME,population:POPULATION,provinceCount:provinceRecords.length,administrativeTotals:Object.assign({},NATIONAL_ADMIN),bpsAdministrativeReference:Object.assign({},BPS_ADMIN_REFERENCE),activeAgentCount:s.activeAgents.length,activeAgentCap:s.agentCap,government:Object.assign({},s.government),national:Object.assign({},s.national),calibrationStatus:s.calibrationStatus,regionalPriceReference2025:s.regionalPriceReference2025||null,administrativeMasterLoaded:!!adminMasterCache,provinces:provinceRecords.map(p=>({id:p.id,name:p.name,population:s.provinces[p.id].population,regencies:p.regencyCount,cities:p.cityCount,districts:p.districtCount,desa:p.desaCount,kelurahan:p.kelurahanCount,uptSpt:p.uptSptCount,villageKelurahan:p.villageKelurahanCount}))};}
- root.AgroNationalEconomy={version:VERSION,runtimeDataRegistry,runtimeDataUsageAudit,maizeProjectionRuntimeData,applyMaizeTotalDemandProjection,applyLivestockPopulationReference,applyPoultryPopulationReference,applyAquacultureProductionReference,applyAquacultureProvincialProductionReference,countryName:COUNTRY_NAME,population:POPULATION,provinces:provinceRecords,nationalAdminTotals:NATIONAL_ADMIN,bpsAdminReference:BPS_ADMIN_REFERENCE,sources:SOURCES,podesMix:PODES_MIX,physicalDemandAnchors2025:PHYSICAL_DEMAND_ANCHORS_2025,bpsKabkotaPopulation2025:BPS_KABKOTA_POPULATION_2025,bpsKabkotaSimulationPopulation2025:getBpsDkiLocalityGamePopulation2025(),bapanasMonthlyDemand2025:BAPANAS_MONTHLY_DEMAND_2025,seasonalDemandCoefficient,seasonalDemandFactor,bapanasNationalConsumption2025:BAPANAS_NATIONAL_CONSUMPTION_2025,bapanasConsumptionModel2025:BAPANAS_CONSUMPTION_MODEL_2025,bapanasProvincialConsumption2025Partial:BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL,bapanasKabupatenKotaConsumption2025Partial:BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL,applyProvincialConsumptionRecords,applyKabupatenKotaConsumptionRecords,localityConsumptionSnapshot,quoteLocality,physicalDemandSnapshot,commodityPhysicalCoverageSnapshot,regionalConsumerPriceReference,applyRegionalConsumerPriceReference,nonHouseholdConsumptionSource:SOURCES.nonHouseholdConsumption,ensure,applyDisaster,applyNationalEmergency,marketEmergencySnapshot,endNationalEmergency,generateMonthlyEvents,updateDay,provinceSnapshot,getLocalityAggregate,getLocalityAggregateAsync,searchLocalities,loadAdministrativeMaster,quote,snapshot,activeAgentTarget,applyOrderBookFills};
+ root.AgroNationalEconomy={version:VERSION,runtimeDataRegistry,runtimeDataUsageAudit,maizeProjectionRuntimeData,applyMaizeTotalDemandProjection,applyLivestockPopulationReference,applyPoultryPopulationReference,applyAquacultureProductionReference,applyAquacultureProvincialProductionReference,countryName:COUNTRY_NAME,population:POPULATION,provinces:provinceRecords,nationalAdminTotals:NATIONAL_ADMIN,bpsAdminReference:BPS_ADMIN_REFERENCE,sources:SOURCES,podesMix:PODES_MIX,physicalDemandAnchors2025:PHYSICAL_DEMAND_ANCHORS_2025,bpsKabkotaPopulation2025:BPS_KABKOTA_POPULATION_2025,bpsKabkotaSimulationPopulation2025:getBpsDkiLocalityGamePopulation2025(),bapanasMonthlyDemand2025:BAPANAS_MONTHLY_DEMAND_2025,seasonalDemandCoefficient,seasonalDemandFactor,bapanasNationalConsumption2025:BAPANAS_NATIONAL_CONSUMPTION_2025,bapanasConsumptionModel2025:BAPANAS_CONSUMPTION_MODEL_2025,bapanasProvincialConsumption2025Partial:BAPANAS_PROVINCIAL_CONSUMPTION_2025_PARTIAL,bapanasKabupatenKotaConsumption2025Partial:BAPANAS_KABKOTA_CONSUMPTION_2025_PARTIAL,applyProvincialConsumptionRecords,applyKabupatenKotaConsumptionRecords,localityConsumptionSnapshot,quoteLocality,physicalDemandSnapshot,physicalDemandCapacityReference,commodityPhysicalCoverageSnapshot,regionalConsumerPriceReference,applyRegionalConsumerPriceReference,nonHouseholdConsumptionSource:SOURCES.nonHouseholdConsumption,ensure,applyDisaster,applyNationalEmergency,marketEmergencySnapshot,endNationalEmergency,generateMonthlyEvents,updateDay,provinceSnapshot,getLocalityAggregate,getLocalityAggregateAsync,searchLocalities,loadAdministrativeMaster,quote,snapshot,activeAgentTarget,applyOrderBookFills};
 })(typeof window!=="undefined"?window:globalThis);
