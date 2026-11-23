@@ -1004,3 +1004,29 @@ test('official 2025 provincial consumer prices are runtime-bound and missing reg
   const quote = api.quote('dki-jakarta', 'jagung', 1);
   assert.ok(Number.isFinite(quote));
 });
+
+
+test('physical demand and annual supply references stay separate from legacy market quantities', () => {
+  const api = context.AgroNationalEconomy;
+  vm.runInContext("S = { name: 'physical-demand-capacity-reference-test' }", context);
+  api.ensure();
+  const maize = api.physicalDemandCapacityReference('jagung');
+  assert.equal(maize.level, 'country');
+  assert.equal(maize.demand.unit, 'kg');
+  assert.ok(maize.demand.annualDemand > 0);
+  assert.equal(maize.capacity.status, 'annual_supply_reference_only_daily_capacity_pending');
+  assert.equal(maize.capacity.dailyCapacity, null);
+  assert.equal(maize.capacity.unitContract, 'physical_units_only');
+  assert.ok(maize.supplyReferences.some(row => row.referenceYear === 2025));
+  assert.equal(maize.supplyReferences[0].comparability, 'national_annual_supply_reference_vs_all_channel_need; no stock or daily allocation');
+  const lampung = api.physicalDemandCapacityReference('jagung', 'lampung');
+  assert.equal(lampung.level, 'province');
+  assert.equal(lampung.provinceId, 'lampung');
+  assert.ok(lampung.population > 0);
+  assert.equal(lampung.capacity.dailyCapacity, null);
+  const kelapa = api.physicalDemandCapacityReference('kelapa', 'lampung');
+  assert.equal(kelapa.demand.unit, 'kg');
+  assert.equal(kelapa.supplyReferences.length, 0);
+  assert.equal(kelapa.capacity.status, 'no_verified_annual_supply_reference');
+  assert.equal(api.physicalDemandCapacityReference('not-a-commodity'), null);
+});
