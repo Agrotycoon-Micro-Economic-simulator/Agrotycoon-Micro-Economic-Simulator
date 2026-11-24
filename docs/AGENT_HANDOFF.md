@@ -1996,3 +1996,16 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - Latest implementation commit: `2c207a8bdb2f15e54c3977e8eef39446c137e951`.
 - Targeted workflow `45158678837` is currently **in_progress**; no green claim yet.
 - Non-household BPS 2025 numeric extraction remains **butuh riset lanjutan**. It is still metadata-only and therefore does not enter runtime quantities.
+
+
+## 2026-11-25 — annual supply references bound into P0 demand-capacity API
+
+- Re-verified the previous P0 checkpoint: workflow 45158678837 completed successfully for commit 2c207a8bdb2f15e54c3977e8eef39446c137e951. The targeted regression job passed market/NPC/accounting suites, benchmark guards, standalone regressions, browser smoke, and browser/E2E tests.
+- Continued implementation rather than leaving the annual production datasets as documentation-only references. Extended `AgroNationalEconomy.physicalDemandCapacityReference()` so verified annual plantation output (BPS 2024) and aquaculture output (KKP/BPS 2024) are exposed as physical tonne/year supply references at country/province scope when the runtime data is available.
+- The API still does not fabricate daily capacity, stock, reserve, or order-book quantities. `dailyCapacity` and `monthlyCapacity` remain null; annual output is explicitly marked as a reference with comparability warnings.
+- Added regression coverage for Lampung coconut plantation output and Lampung patin aquaculture output. Coconut now correctly reports its verified 2024 annual provincial supply reference instead of incorrectly returning zero supply references.
+- Implementation commit: `f6590ca2609e56276467e7dcfa831fef49712ec2`.
+- Regression commit: `6f5a9ab05e451da5e597fe7145bd1f5e2ec587cb`.
+- No workflow run is currently attached to the new test commit, so this continuation is **not CI-verified yet**. Do not claim the new regression is green until Actions produces a completed run.
+- Non-household BPS 2025 numeric extraction remains **butuh riset lanjutan** and is still excluded from runtime quantities until the numeric table is machine-verifiable.
+- Map sandbox remains untouched: `peta.html` and `js/map_engine.js` were not modified.
