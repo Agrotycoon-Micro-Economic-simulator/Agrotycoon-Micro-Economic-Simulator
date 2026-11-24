@@ -1026,7 +1026,13 @@ test('physical demand and annual supply references stay separate from legacy mar
   assert.equal(lampung.capacity.dailyCapacity, null);
   const kelapa = api.physicalDemandCapacityReference('kelapa', 'lampung');
   assert.equal(kelapa.demand.unit, 'kg');
-  assert.equal(kelapa.supplyReferences.length, 0);
-  assert.equal(kelapa.capacity.status, 'no_verified_annual_supply_reference');
+  assert.equal(kelapa.supplyReferences.length, 1);
+  assert.equal(kelapa.supplyReferences[0].referenceYear, 2024);
+  assert.equal(kelapa.supplyReferences[0].provinceAnnualSupply, 0.10364 * 1000);
+  assert.match(kelapa.supplyReferences[0].comparability, /annual_supply_reference_only/);
+  assert.equal(kelapa.capacity.status, 'annual_supply_reference_only_daily_capacity_pending');
+  const patin = api.physicalDemandCapacityReference('patin', 'lampung');
+  assert.ok(patin.supplyReferences.some(row => row.provinceAnnualSupply === 22359));
+  assert.equal(patin.capacity.dailyCapacity, null);
   assert.equal(api.physicalDemandCapacityReference('not-a-commodity'), null);
 });
