@@ -916,6 +916,46 @@
   if(hort){
    supplyRefs.push({commodityId:id,unit:"tonne/year",nationalAnnualSupply:Number(hort.productionTon||hort.productionTons||hort.productionKg/1000||0),provinceAnnualSupply:null,referenceYear:2025,source:nationalSupply.horticulture.source,status:nationalSupply.horticulture.status,comparability:"annual_supply_reference_only; provincial/daily capacity pending"});
   }
+  // Official annual plantation output is a supply reference, not a daily harvest curve.
+  const plantationNational=nationalSupply.plantation?.[id];
+  const plantationProvince=p?.marketSupplyReference2024?.plantation?.[id];
+  if(plantationNational||plantationProvince){
+   supplyRefs.push({
+    commodityId:id,unit:"tonne/year",
+    nationalAnnualSupply:plantationNational?.productionKg!=null?Number(plantationNational.productionKg)/1000:null,
+    provinceAnnualSupply:plantationProvince?.productionKg!=null?Number(plantationProvince.productionKg)/1000:null,
+    referenceYear:2024,
+    source:nationalSupply.plantation?.source||"BPS plantation production 2024",
+    status:plantationNational?.status||plantationProvince?.status||"official_provincial_annual_supply_partial",
+    comparability:"annual_supply_reference_only; provincial/daily capacity pending"
+   });
+  }
+  // KKP/BPS aquaculture output is also annual output; never convert it to daily supply here.
+  const aquaNational=nationalSupply.aquaculture?.recordsTon?.[id];
+  const aquaProvince=p?.aquacultureProductionReference2024Bps?.[id];
+  if(aquaNational!=null||aquaProvince!=null){
+   supplyRefs.push({
+    commodityId:id,unit:"tonne/year",
+    nationalAnnualSupply:aquaNational!=null?Number(aquaNational):null,
+    provinceAnnualSupply:aquaProvince!=null?Number(aquaProvince):null,
+    referenceYear:2024,
+    source:nationalSupply.aquaculture?.source||"KKP aquaculture production 2024",
+    status:nationalSupply.aquaculture?.status||"official_annual_aquaculture_output_reference",
+    comparability:"annual_aquaculture_output_reference; provincial/daily capacity pending; no stock allocation"
+   });
+  }
+  const aquaBpsNational=nationalSupply.aquacultureBps?.nationalTotalsTon?.[id];
+  if(aquaBpsNational!=null){
+   supplyRefs.push({
+    commodityId:id,unit:"tonne/year",
+    nationalAnnualSupply:Number(aquaBpsNational),
+    provinceAnnualSupply:aquaProvince!=null?Number(aquaProvince):null,
+    referenceYear:2024,
+    source:nationalSupply.aquacultureBps?.source||"BPS aquaculture production 2024",
+    status:"official_provincial_annual_aquaculture_output_reference",
+    comparability:"BPS provincial annual output; do not reconcile to KKP national total; daily capacity pending"
+   });
+  }
   if(!anchor&&!supplyRefs.length)return null;
   const capacityStatus=supplyRefs.length?"annual_supply_reference_only_daily_capacity_pending":"no_verified_annual_supply_reference";
   return {level:province?"province":"country",provinceId:province,population,commodityId:id,demand,supplyReferences:supplyRefs,capacity:{status:capacityStatus,unitContract:"physical_units_only",dailyCapacity:null,monthlyCapacity:null,conversionStatus:"no_legacy_index_conversion",marketExecutionStatus:"reference_only_not_order_book_inventory"}};
