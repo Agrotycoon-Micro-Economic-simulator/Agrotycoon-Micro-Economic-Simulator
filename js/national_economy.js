@@ -382,7 +382,7 @@
    coverage:data.coverage,source:data.source,status:data.status,runtimeUse:data.runtimeUse,
    records:Object.fromEntries(provinceIds.map(provinceId=>[provinceId,Object.assign({},data.records[provinceId])])),
    nationalTotalsThousandTon:Object.assign({},nationalTotals),
-   nationalTotalsTon:Object.fromEntries(commodityIds.map(id=>[id,nationalTotals[id]*data.conversion.thousandTonneToTonne]))
+   nationalTotalsTon:Object.fromEntries(commodityIds.map(id=>[id,nationalTotals[id]*1000]))
   };
   provinceIds.forEach(provinceId=>{
    const p=s.provinces[provinceId];
