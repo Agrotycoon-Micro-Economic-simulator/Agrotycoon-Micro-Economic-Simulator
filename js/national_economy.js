@@ -371,10 +371,18 @@
   const provinceIds=Object.keys(data.records||{}),commodityIds=Object.keys(data.commodityMap||{});
   if(provinceIds.length!==38||commodityIds.length!==7||provinceIds.some(id=>!provinceRecords.some(p=>p.id===id))||commodityIds.some(id=>!catalog().some(item=>item.id===id)))return {status:"source_catalog_mismatch",provinceRows:provinceIds.length,commodityRows:commodityIds.length};
   if(!s.national.marketSupplyReference2024)s.national.marketSupplyReference2024={};
+  const nationalTotals=Object.fromEntries(commodityIds.map(id=>[id,0]));
+  provinceIds.forEach(provinceId=>commodityIds.forEach(id=>{
+   const value=Number(data.records[provinceId][id]);
+   if(!Number.isFinite(value)||value<0)throw new Error("Invalid BPS plantation production value: "+provinceId+"/"+id);
+   nationalTotals[id]+=value;
+  }));
   s.national.marketSupplyReference2024.plantation={
    referenceYear:2024,sourceUnit:data.sourceUnit,conversion:data.conversion,
    coverage:data.coverage,source:data.source,status:data.status,runtimeUse:data.runtimeUse,
-   records:Object.fromEntries(provinceIds.map(provinceId=>[provinceId,Object.assign({},data.records[provinceId])]))
+   records:Object.fromEntries(provinceIds.map(provinceId=>[provinceId,Object.assign({},data.records[provinceId])])),
+   nationalTotalsThousandTon:Object.assign({},nationalTotals),
+   nationalTotalsTon:Object.fromEntries(commodityIds.map(id=>[id,nationalTotals[id]*data.conversion.thousandTonneToTonne]))
   };
   provinceIds.forEach(provinceId=>{
    const p=s.provinces[provinceId];
@@ -917,7 +925,7 @@
    supplyRefs.push({commodityId:id,unit:"tonne/year",nationalAnnualSupply:Number(hort.productionTon||hort.productionTons||hort.productionKg/1000||0),provinceAnnualSupply:null,referenceYear:2025,source:nationalSupply.horticulture.source,status:nationalSupply.horticulture.status,comparability:"annual_supply_reference_only; provincial/daily capacity pending"});
   }
   // Official annual plantation output is a supply reference, not a daily harvest curve.
-  const plantationNational=nationalSupply.plantation?.[id];
+  const plantationNational=nationalSupply.plantation?.nationalTotalsTon?.[id]!=null?{productionKg:Number(nationalSupply.plantation.nationalTotalsTon[id])*1000,status:nationalSupply.plantation.status}:null;
   const plantationProvince=p?.marketSupplyReference2024?.plantation?.[id];
   if(plantationNational||plantationProvince){
    supplyRefs.push({
