@@ -1029,6 +1029,7 @@ test('physical demand and annual supply references stay separate from legacy mar
   assert.equal(kelapa.supplyReferences.length, 1);
   assert.equal(kelapa.supplyReferences[0].referenceYear, 2024);
   assert.equal(kelapa.supplyReferences[0].provinceAnnualSupply, 0.10364 * 1000);
+  assert.ok(kelapa.supplyReferences[0].nationalAnnualSupply > 0);
   assert.match(kelapa.supplyReferences[0].comparability, /annual_supply_reference_only/);
   assert.equal(kelapa.capacity.status, 'annual_supply_reference_only_daily_capacity_pending');
   const patin = api.physicalDemandCapacityReference('patin', 'lampung');
