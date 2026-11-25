@@ -2009,3 +2009,13 @@ GitHub Actions run [41184860562](https://github.com/Agrotycoon-Micro-Economic-si
 - No workflow run is currently attached to the new test commit, so this continuation is **not CI-verified yet**. Do not claim the new regression is green until Actions produces a completed run.
 - Non-household BPS 2025 numeric extraction remains **butuh riset lanjutan** and is still excluded from runtime quantities until the numeric table is machine-verifiable.
 - Map sandbox remains untouched: `peta.html` and `js/map_engine.js` were not modified.
+
+
+## 2026-11-25 — national plantation supply aggregation
+
+- Continued P0 physical demand/supply integration by aggregating the verified BPS plantation 2024 provincial observations into national annual totals inside `s.national.marketSupplyReference2024.plantation`.
+- `physicalDemandCapacityReference()` can now expose both national and province annual plantation supply for mapped commodities, while retaining `dailyCapacity=null` and the explicit annual-reference-only boundary.
+- Added regression assertion that the Lampung coconut reference includes a positive national annual supply total in addition to the verified provincial value.
+- Implementation commits: `eb85f372ce2c388f3058a67668a41746086d75a4`, `947a6708a30f5bb0b98e55afbd382a265e7d3c59`.
+- Regression commit: `425ea870bff63e06c5743b46935e6d7ede106745`.
+- New commits are not yet CI-verified; no success claim is made until Actions returns a completed run.
